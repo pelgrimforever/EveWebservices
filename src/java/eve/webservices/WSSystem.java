@@ -1,0 +1,187 @@
+package eve.webservices;
+
+import eve.BusinessObject.Logic.*;
+import eve.conversion.json.*;
+import eve.entity.pk.*;
+import eve.interfaces.entity.pk.*;
+import eve.interfaces.logicentity.*;
+import eve.interfaces.webservice.WSISystem;
+import eve.logicentity.System;
+import eve.searchentity.Systemsearch;
+import general.exception.CustomException;
+import general.exception.DataException;
+import general.exception.DBException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import javax.jws.WebMethod;
+import javax.jws.WebService;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+/**
+ *
+ * @author Franky Laseure
+ */
+@WebService(endpointInterface = "eve.interfaces.webservice.WSISystem")
+public class WSSystem implements WSISystem {
+
+    private JSONArray toJSONArray(ArrayList systems) {
+        JSONArray jsonsystems = new JSONArray();
+        Iterator systemsI = systems.iterator();
+        while(systemsI.hasNext()) {
+            jsonsystems.add(JSONSystem.toJSON((System)systemsI.next()));
+        }
+        return jsonsystems;
+    }
+
+    /**
+     * Web service operation
+     */
+    //@WebMethod(operationName = "getSystems")
+    @Override
+    public String getSystems() {
+        try {
+            BLsystem blsystem = new BLsystem();
+            ArrayList systems = blsystem.getAll();
+            JSONArray jsonsystems = toJSONArray(systems);
+            return jsonsystems.toJSONString();
+        }
+        catch(DBException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "search")
+    @Override
+    public String search(String json) {
+        BLsystem blsystem = new BLsystem();
+        JSONParser parser = new JSONParser();
+        String result = "";
+        System system;
+        try {
+            Systemsearch systemsearch = JSONSystem.toSystemsearch((JSONObject)parser.parse(json));
+            ArrayList systems = blsystem.search(systemsearch);
+            JSONArray jsonsystems = toJSONArray(systems);
+            result = jsonsystems.toJSONString();
+        }
+        catch(ParseException e) {
+            result = "";
+        }
+        catch(DBException e) {
+            result = "";
+        }
+        return result;
+    }
+
+    //@WebMethod(operationName = "getSystem")
+    @Override
+    public String getSystem(String json) {
+        BLsystem blsystem = new BLsystem();
+        JSONParser parser = new JSONParser();
+        String result = "";
+        System system;
+        try {
+            SystemPK systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
+            system = blsystem.getSystem(systemPK);
+            if(system!=null) {
+                result = JSONSystem.toJSON(system).toJSONString();
+            }
+        }
+        catch(ParseException e) {
+        }
+        catch(DBException e) {
+        }
+        return result;
+    }
+
+    //@WebMethod(operationName = "insertSystem")
+    @Override
+    public void insertSystem(String json) {
+        BLsystem blsystem = new BLsystem();
+        JSONParser parser = new JSONParser();
+        try {
+            ISystem system = JSONSystem.toSystem((JSONObject)parser.parse(json));
+            blsystem.insertSystem(system);
+        }
+        catch(ParseException e) {
+        }
+        catch(DataException e) {
+        }
+        catch(DBException e) {
+        }
+    }
+
+    //@WebMethod(operationName = "updateSystem")
+    @Override
+    public void updateSystem(String json) {
+        BLsystem blsystem = new BLsystem();
+        JSONParser parser = new JSONParser();
+        try {
+            ISystem system = JSONSystem.toSystem((JSONObject)parser.parse(json));
+            blsystem.updateSystem(system);
+        }
+        catch(ParseException e) {
+        }
+        catch(DataException e) {
+        }
+        catch(DBException e) {
+        }
+    }
+
+    //@WebMethod(operationName = "deleteSystem")
+    @Override
+    public void deleteSystem(String json) {
+        BLsystem blsystem = new BLsystem();
+        JSONParser parser = new JSONParser();
+        try {
+            ISystem system = JSONSystem.toSystem((JSONObject)parser.parse(json));
+            blsystem.deleteSystem(system);
+        }
+        catch(ParseException e) {
+        }
+        catch(DBException e) {
+        }
+    }
+
+    //@WebMethod(operationName = "getSystems4constellation")
+    @Override
+    public String getSystems4constellation(String json) {
+        BLsystem blsystem = new BLsystem();
+        JSONParser parser = new JSONParser();
+        System system;
+        try {
+            IConstellationPK constellationPK = JSONConstellation.toConstellationPK((JSONObject)parser.parse(json));
+            ArrayList systems = blsystem.getSystems4constellation(constellationPK);
+            JSONArray jsonsystems = toJSONArray(systems);
+            return jsonsystems.toJSONString();
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "delete4constellation")
+    @Override
+    public void delete4constellation(String json) {
+        BLsystem blsystem = new BLsystem();
+        JSONParser parser = new JSONParser();
+        System system;
+        try {
+            IConstellationPK constellationPK = JSONConstellation.toConstellationPK((JSONObject)parser.parse(json));
+            blsystem.delete4constellation(this.getClass().getName(), constellationPK);
+        }
+        catch(ParseException e) {
+        }
+    }
+
+
+}
+
