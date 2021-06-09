@@ -2,7 +2,7 @@
  * Bevetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.4.2021 13:20
+ * Generated on 8.5.2021 19:33
  *
  */
 
@@ -14,6 +14,8 @@ import general.exception.*;
 import java.util.ArrayList;
 
 import data.gis.shape.*;
+import data.json.piJson;
+import data.json.psqlJsonobject;
 import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
@@ -30,6 +32,8 @@ import java.sql.Time;
 import org.postgresql.geometric.PGpoint;
 import org.postgis.PGgeometry;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * Business Entity class Bevetype
@@ -89,6 +93,12 @@ public abstract class Bevetype extends GeneralEntityObject implements ProjectCon
                 evetype.initPortion_size(dbresult.getInt("portion_size"));
                 evetype.initRadius(dbresult.getDouble("radius"));
                 evetype.initVolume(dbresult.getDouble("volume"));
+                evetype.initAvg_buyorder(dbresult.getDouble("avg_buyorder"));
+                evetype.initAvg_sellorder(dbresult.getDouble("avg_sellorder"));
+                evetype.initMin_buyorder(dbresult.getDouble("min_buyorder"));
+                evetype.initMax_buyorder(dbresult.getDouble("max_buyorder"));
+                evetype.initMin_selorder(dbresult.getDouble("min_selorder"));
+                evetype.initMax_selorder(dbresult.getDouble("max_selorder"));
             }
             catch(SQLException sqle) {
                 throw sqle;
@@ -267,6 +277,8 @@ public abstract class Bevetype extends GeneralEntityObject implements ProjectCon
      * @param evetypePK: Evetype primary key
      */
     public void cascadedeleteEvetype(String senderobject, IEvetypePK evetypePK) {
+        BLorder_history blorder_history = new BLorder_history(this);
+        blorder_history.delete4evetype(senderobject, evetypePK);
     }
 
     /**
@@ -332,6 +344,18 @@ public abstract class Bevetype extends GeneralEntityObject implements ProjectCon
             return getMapper().loadEntityVector(this, Evetype.SQLSelect4graphic, graphicPK.getKeyFields());
         } else return new ArrayList();
     }
+    /**
+     * @param order_historyPK: parent Order_history for child object Evetype Entity
+     * @return child Evetype Entity object
+     * @throws eve.general.exception.CustomException
+     */
+    public IEvetype getOrder_history(IOrder_historyPK order_historyPK) throws CustomException {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            EvetypePK evetypePK = new EvetypePK(order_historyPK.getEvetype());
+            return this.getEvetype(evetypePK);
+        } else return null;
+    }
+
 
     /**
      * get all Evetype objects for sqlparameters

@@ -8,17 +8,23 @@
 
 package eve.BusinessObject.Logic;
 
+import BusinessObject.BLRecordcount;
 import general.exception.DBException;
-import general.exception.DataException;
 import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.ITypegroup;
 import eve.logicentity.Typegroup;
 import BusinessObject.GeneralEntityObject;
 import data.conversion.JSONConversion;
+import data.interfaces.db.Recordcount;
+import db.AbstractSQLMapper;
+import db.ViewMapper;
 import eve.BusinessObject.table.Btypegroup;
 import eve.entity.pk.CategoryPK;
 import general.exception.DataException;
 import eve.interfaces.BusinessObject.IBLtypegroup;
+import eve.interfaces.entity.pk.ICategoryPK;
+import eve.logicentity.Evetype;
+import general.exception.CustomException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.json.simple.JSONObject;
@@ -71,6 +77,19 @@ public class BLtypegroup extends Btypegroup implements IBLtypegroup {
         typegroup.setPublished(JSONConversion.getboolean(jsongroupdetails, "published"));
         System.out.println("       " + typegroup.getName());
         this.insertupdateTypegroup(typegroup);
+    }
+
+    /**
+     * @param categoryPK: foreign key for category
+     * @return count of all typegroups linked to category
+     * @throws eve.general.exception.CustomException
+     */
+    public long getTypegroup4categorycount(ICategoryPK categoryPK) throws CustomException {
+        AbstractSQLMapper sqlmapper = entitymapper.resetSQLMapper("");
+        BLRecordcount blrecordcount = new BLRecordcount(sqlmapper);
+        ViewMapper viewmapper = new ViewMapper(sqlmapper);
+        Recordcount recordcount = (Recordcount)viewmapper.loadView(blrecordcount, Typegroup.SQLSelect4categoryCount, categoryPK.getKeyFields());
+        return recordcount.getCount();
     }
 
     /**

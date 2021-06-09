@@ -2,7 +2,7 @@
  * DataServlet.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 8.4.2021 13:20
+ * Generated on 8.5.2021 19:33
  *
  */
 
@@ -65,6 +65,14 @@ public class Constellation extends SecurityDataServlet {
                         case IConstellationOperation.SELECT_Region:
                             IRegionPK regionPK = (IRegionPK)parser.getJavaObject("regionpk");
                             dataobject = blconstellation.getConstellations4region(regionPK);
+                            break;
+                        case IConstellationOperation.SELECT_Constellation_neighbourneighbour:
+                            IConstellation_neighbourPK constellation_neighbourNeighbourPK = (IConstellation_neighbourPK)parser.getJavaObject("constellation_neighbourpk");
+                            dataobject = blconstellation.getConstellation_neighbourneighbour(constellation_neighbourNeighbourPK);
+                            break;
+                        case IConstellationOperation.SELECT_Constellation_neighbourconstellation:
+                            IConstellation_neighbourPK constellation_neighbourConstellationPK = (IConstellation_neighbourPK)parser.getJavaObject("constellation_neighbourpk");
+                            dataobject = blconstellation.getConstellation_neighbourconstellation(constellation_neighbourConstellationPK);
                             break;
                         case IConstellationOperation.SELECT_SEARCH:
                             IConstellationsearch search = (IConstellationsearch)parser.getJavaObject("search");

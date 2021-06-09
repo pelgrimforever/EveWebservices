@@ -113,6 +113,10 @@ public class RSRace {
                             racePK = (IRacePK)JSONRace.toRacePK((JSONObject)json.get("racepk"));
                             result = JSONRace.toJSON(blrace.getRace(racePK)).toJSONString();
                             break;
+                        case IRaceOperation.SELECT_Faction:
+                            IFactionPK factionPK = (IFactionPK)JSONFaction.toFactionPK((JSONObject)json.get("factionpk"));
+                            result = JSONRace.toJSONArray(blrace.getRaces4faction(factionPK)).toJSONString();
+                            break;
                         case IRaceOperation.SELECT_SEARCH:
                             IRacesearch search = (IRacesearch)JSONRace.toRacesearch((JSONObject)json.get("search"));
                             result = JSONRace.toJSONArray(blrace.search(search)).toJSONString();
@@ -180,6 +184,10 @@ public class RSRace {
                         case IRaceOperation.SELECT_RACE:
                             racePK = (IRacePK)JSONRace.toRacePK((JSONObject)json.get("racepk"));
                             result = JSONRace.toJSON(blrace.getRace(racePK)).toJSONString();
+                            break;
+                        case IRaceOperation.SELECT_Faction:
+                            IFactionPK factionPK = (IFactionPK)JSONFaction.toFactionPK((JSONObject)json.get("factionpk"));
+                            result = JSONRace.toJSONArray(blrace.getRaces4faction(factionPK)).toJSONString();
                             break;
                         case IRaceOperation.SELECT_SEARCH:
                             IRacesearch search = (IRacesearch)JSONRace.toRacesearch((JSONObject)json.get("search"));

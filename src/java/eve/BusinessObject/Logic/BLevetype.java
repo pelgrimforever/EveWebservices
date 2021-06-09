@@ -8,18 +8,27 @@
 
 package eve.BusinessObject.Logic;
 
+import BusinessObject.BLRecordcount;
 import general.exception.DBException;
 import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IEvetype;
 import eve.logicentity.Evetype;
 import BusinessObject.GeneralEntityObject;
 import data.conversion.JSONConversion;
+import data.interfaces.db.Recordcount;
+import db.AbstractSQLMapper;
+import db.ViewMapper;
 import eve.BusinessObject.table.Bevetype;
 import eve.entity.pk.GraphicPK;
 import eve.entity.pk.Market_groupPK;
 import eve.entity.pk.TypegroupPK;
 import general.exception.DataException;
 import eve.interfaces.BusinessObject.IBLevetype;
+import eve.interfaces.entity.pk.ITypegroupPK;
+import eve.logicentity.Orders;
+import eve.logicentity.Station;
+import eve.logicentity.Typegroup;
+import general.exception.CustomException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.json.simple.JSONObject;
@@ -81,6 +90,31 @@ public class BLevetype extends Bevetype implements IBLevetype {
         if(jsontypedetails.containsKey("radius")) evetype.setRadius(JSONConversion.getDouble(jsontypedetails, "radius"));
         if(jsontypedetails.containsKey("volume")) evetype.setVolume(JSONConversion.getDouble(jsontypedetails, "volume"));
         this.insertupdateEvetype(evetype);
+    }
+
+    /**
+     * @param typegroupPK: foreign key for typegroup
+     * @return count of all evetypes linked to typegroup
+     * @throws eve.general.exception.CustomException
+     */
+    public long getEvetypes4typegroupcount(ITypegroupPK typegroupPK) throws CustomException {
+        AbstractSQLMapper sqlmapper = entitymapper.resetSQLMapper("");
+        BLRecordcount blrecordcount = new BLRecordcount(sqlmapper);
+        ViewMapper viewmapper = new ViewMapper(sqlmapper);
+        Recordcount recordcount = (Recordcount)viewmapper.loadView(blrecordcount, Evetype.SQLSelect4typegroupCount, typegroupPK.getKeyFields());
+        return recordcount.getCount();
+    }
+
+    /**
+     * update average buy and sell prices of all found evetypes in orders
+     * @throws DBException
+     * @throws DataException 
+     */
+    public void updateaverageprices() throws DBException, DataException {
+        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Evetype.SQLUpdateBuyprices, null);
+        this.Commit2DB();
+        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Evetype.SQLUpdateSellprices, null);
+        this.Commit2DB();
     }
 
     /**

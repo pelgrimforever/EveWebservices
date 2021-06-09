@@ -2,7 +2,7 @@
  * Bconstellation.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.4.2021 13:20
+ * Generated on 8.5.2021 19:33
  *
  */
 
@@ -14,6 +14,8 @@ import general.exception.*;
 import java.util.ArrayList;
 
 import data.gis.shape.*;
+import data.json.piJson;
+import data.json.psqlJsonobject;
 import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
@@ -30,6 +32,8 @@ import java.sql.Time;
 import org.postgresql.geometric.PGpoint;
 import org.postgis.PGgeometry;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * Business Entity class Bconstellation
@@ -76,6 +80,7 @@ public abstract class Bconstellation extends GeneralEntityObject implements Proj
                 constellation.initRegionPK(new RegionPK(dbresult.getLong("region")));
                 if(dbresult.wasNull()) constellation.setRegionPK(null);                
                 constellation.initName(dbresult.getString("name"));
+                constellation.initNoaccess(dbresult.getBoolean("noaccess"));
             }
             catch(SQLException sqle) {
                 throw sqle;
@@ -249,6 +254,10 @@ public abstract class Bconstellation extends GeneralEntityObject implements Proj
      * @param constellationPK: Constellation primary key
      */
     public void cascadedeleteConstellation(String senderobject, IConstellationPK constellationPK) {
+        BLconstellation_neighbour blconstellation_neighbourNeighbour = new BLconstellation_neighbour(this);
+        blconstellation_neighbourNeighbour.delete4constellationNeighbour(senderobject, constellationPK);
+        BLconstellation_neighbour blconstellation_neighbourConstellation = new BLconstellation_neighbour(this);
+        blconstellation_neighbourConstellation.delete4constellationConstellation(senderobject, constellationPK);
     }
 
     /**
@@ -272,6 +281,30 @@ public abstract class Bconstellation extends GeneralEntityObject implements Proj
             return getMapper().loadEntityVector(this, Constellation.SQLSelect4region, regionPK.getKeyFields());
         } else return new ArrayList();
     }
+    /**
+     * @param constellation_neighbourPK: parent Constellation_neighbour for child object Constellation Entity
+     * @return child Constellation Entity object
+     * @throws eve.general.exception.CustomException
+     */
+    public IConstellation getConstellation_neighbourneighbour(IConstellation_neighbourPK constellation_neighbourPK) throws CustomException {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            ConstellationPK constellationPK = new ConstellationPK(constellation_neighbourPK.getNeighbour());
+            return this.getConstellation(constellationPK);
+        } else return null;
+    }
+
+    /**
+     * @param constellation_neighbourPK: parent Constellation_neighbour for child object Constellation Entity
+     * @return child Constellation Entity object
+     * @throws eve.general.exception.CustomException
+     */
+    public IConstellation getConstellation_neighbourconstellation(IConstellation_neighbourPK constellation_neighbourPK) throws CustomException {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            ConstellationPK constellationPK = new ConstellationPK(constellation_neighbourPK.getConstellation());
+            return this.getConstellation(constellationPK);
+        } else return null;
+    }
+
 
     /**
      * get all Constellation objects for sqlparameters

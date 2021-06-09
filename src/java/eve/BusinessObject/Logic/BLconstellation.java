@@ -91,6 +91,21 @@ public class BLconstellation extends Bconstellation implements IBLconstellation 
     }
     
     /**
+     * post process downloaded constellation data
+     * set noaccess to true for all constellations that have no accessible systems
+     * set noaccess to false for all systems that have at least one accesible system
+     * @throws DBException
+     * @throws DataException 
+     */
+    public void postprocess() throws DBException, DataException {
+        Object[][] parameter1 = {{ "noaccess", true }, { "systemnoaccess", false }};
+        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Constellation.updateNoaccess1, parameter1);
+        Object[][] parameter2 = {{ "noaccess", false }, { "systemnoaccess", false }};
+        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Constellation.updateNoaccess2, parameter2);
+        this.Commit2DB();
+    }
+    
+    /**
      * try to insert Constellation object in database
      * commit transaction
      * @param constellation: Constellation Entity Object

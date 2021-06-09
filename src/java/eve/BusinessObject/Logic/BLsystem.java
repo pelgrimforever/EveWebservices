@@ -14,12 +14,17 @@ import eve.interfaces.logicentity.ISystem;
 import eve.logicentity.System;
 import BusinessObject.GeneralEntityObject;
 import data.conversion.JSONConversion;
+import db.AbstractSQLMapper;
 import eve.BusinessObject.table.Bsystem;
+import eve.data.Swagger;
 import eve.entity.pk.ConstellationPK;
 import general.exception.DataException;
 import eve.interfaces.BusinessObject.IBLsystem;
+import eve.interfaces.entity.pk.ISecurity_islandPK;
+import general.exception.CustomException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import org.json.simple.JSONObject;
 
 /**
@@ -72,6 +77,52 @@ public class BLsystem extends Bsystem implements IBLsystem {
         if(jsonsystemdetails.containsKey("star_id")) system.setStar_id(JSONConversion.getLong(jsonsystemdetails, "star_id"));
         java.lang.System.out.println("       " + system.getName());
         this.insertupdateSystem(system);
+    }
+
+    public void updateborders() throws DBException, DataException {
+        Object[][] parameter = { { "isborder", true } };
+        this.transactionqueue.addStatement(this.getClass().getSimpleName(), System.SQLupdateconstellationborders, parameter);
+        this.transactionqueue.addStatement(this.getClass().getSimpleName(), System.SQLupdateregionborders, parameter);
+        this.Commit2DB();
+    }
+
+    /**
+     * get all system from high security that needs to be assigned to an island
+     * security_status >= Swagger.EVE_HIGHSEC_LIMIT
+     * security_island = null
+     * @return
+     * @throws DBException 
+     */
+    public ArrayList GetSystems_HiSecNoislands() throws DBException {
+        Object[][] parameter = { { "highsec", Swagger.EVE_HIGHSEC_LIMIT } };
+        return getMapper().loadEntityVector(this, System.SQLSelectHiSecNoIsland, parameter);
+    }
+    
+    /**
+     * post process downloaded system data
+     * set noaccess to true for all systems that have no stargate
+     * set noaccess to false for all systems that have a stargate
+     * @throws DBException
+     * @throws DataException 
+     */
+    public void postprocess() throws DBException, DataException {
+        Object[][] parameter1 = {{ "noaccess", true }};
+        this.transactionqueue.addStatement(this.getClass().getSimpleName(), System.updateNoaccess1, parameter1);
+        Object[][] parameter2 = {{ "noaccess", false }};
+        this.transactionqueue.addStatement(this.getClass().getSimpleName(), System.updateNoaccess2, parameter2);
+        this.Commit2DB();
+    }
+    
+    /**
+     * Select connected systems to security_island not assigned to a security_island
+     * @param security_islandPK: foreign key for Security_island
+     * @return all System Entity objects for Security_island
+     * @throws eve.general.exception.CustomException
+     */
+    public ArrayList getHiSecConnectedSystems(ISecurity_islandPK security_islandPK) throws CustomException {
+        Object[][] parameter = { { "highsec", Swagger.EVE_HIGHSEC_LIMIT } };
+        parameter = AbstractSQLMapper.addKeyArrays(parameter, security_islandPK.getKeyFields());
+        return getMapper().loadEntityVector(this, System.SQLSelectHiSecSystemsConnected, parameter);
     }
 
     /**

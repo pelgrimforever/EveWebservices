@@ -2,7 +2,7 @@
  * Brace.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.4.2021 13:20
+ * Generated on 8.5.2021 19:33
  *
  */
 
@@ -14,6 +14,8 @@ import general.exception.*;
 import java.util.ArrayList;
 
 import data.gis.shape.*;
+import data.json.piJson;
+import data.json.psqlJsonobject;
 import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
@@ -30,6 +32,8 @@ import java.sql.Time;
 import org.postgresql.geometric.PGpoint;
 import org.postgis.PGgeometry;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * Business Entity class Brace
@@ -73,9 +77,10 @@ public abstract class Brace extends GeneralEntityObject implements ProjectConsta
             try {
                 racePK = new RacePK(dbresult.getLong("id"));
                 race = new Race(racePK);
+                race.initFactionPK(new FactionPK(dbresult.getLong("faction")));
+                if(dbresult.wasNull()) race.setFactionPK(null);                
                 race.initName(dbresult.getString("name"));
                 race.initDescription(dbresult.getString("description"));
-                race.initAlliance(dbresult.getLong("alliance"));
             }
             catch(SQLException sqle) {
                 throw sqle;
@@ -232,6 +237,7 @@ public abstract class Brace extends GeneralEntityObject implements ProjectConsta
     public void checkDATA(IRace race) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
+
         if(race.getName()!=null && race.getName().length()>IRace.SIZE_NAME) {
             message.append("Name is langer dan toegestaan. Max aantal karakters: " + IRace.SIZE_NAME + "\n");
         }
@@ -256,6 +262,27 @@ public abstract class Brace extends GeneralEntityObject implements ProjectConsta
     public void cascadedeleteRace(String senderobject, IRacePK racePK) {
     }
 
+    /**
+     * @param factionPK: foreign key for Faction
+     * @delete all Race Entity objects for Faction in database
+     * @throws eve.general.exception.CustomException
+     */
+    public void delete4faction(String senderobject, IFactionPK factionPK) {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            super.addStatement(senderobject, Race.SQLDelete4faction, factionPK.getKeyFields());
+        }
+    }
+
+    /**
+     * @param factionPK: foreign key for Faction
+     * @return all Race Entity objects for Faction
+     * @throws eve.general.exception.CustomException
+     */
+    public ArrayList getRaces4faction(IFactionPK factionPK) throws CustomException {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            return getMapper().loadEntityVector(this, Race.SQLSelect4faction, factionPK.getKeyFields());
+        } else return new ArrayList();
+    }
 
     /**
      * get all Race objects for sqlparameters

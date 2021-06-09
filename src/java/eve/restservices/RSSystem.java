@@ -113,9 +113,25 @@ public class RSSystem {
                             systemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
                             result = JSONSystem.toJSON(blsystem.getSystem(systemPK)).toJSONString();
                             break;
+                        case ISystemOperation.SELECT_Security_island:
+                            ISecurity_islandPK security_islandPK = (ISecurity_islandPK)JSONSecurity_island.toSecurity_islandPK((JSONObject)json.get("security_islandpk"));
+                            result = JSONSystem.toJSONArray(blsystem.getSystems4security_island(security_islandPK)).toJSONString();
+                            break;
                         case ISystemOperation.SELECT_Constellation:
                             IConstellationPK constellationPK = (IConstellationPK)JSONConstellation.toConstellationPK((JSONObject)json.get("constellationpk"));
                             result = JSONSystem.toJSONArray(blsystem.getSystems4constellation(constellationPK)).toJSONString();
+                            break;
+                        case ISystemOperation.SELECT_Systemjumpssystem_end:
+                            ISystemjumpsPK systemjumpsSystem_endPK = (ISystemjumpsPK)JSONSystemjumps.toSystemjumpsPK((JSONObject)json.get("systemjumpspk"));
+                            result = JSONSystem.toJSON(blsystem.getSystemjumpssystem_end(systemjumpsSystem_endPK)).toJSONString();
+                            break;
+                        case ISystemOperation.SELECT_Systemjumpssystem_start:
+                            ISystemjumpsPK systemjumpsSystem_startPK = (ISystemjumpsPK)JSONSystemjumps.toSystemjumpsPK((JSONObject)json.get("systemjumpspk"));
+                            result = JSONSystem.toJSON(blsystem.getSystemjumpssystem_start(systemjumpsSystem_startPK)).toJSONString();
+                            break;
+                        case ISystemOperation.SELECT_Route:
+                            IRoutePK routePK = (IRoutePK)JSONRoute.toRoutePK((JSONObject)json.get("routepk"));
+                            result = JSONSystem.toJSON(blsystem.getRoute(routePK)).toJSONString();
                             break;
                         case ISystemOperation.SELECT_SEARCH:
                             ISystemsearch search = (ISystemsearch)JSONSystem.toSystemsearch((JSONObject)json.get("search"));
@@ -185,9 +201,25 @@ public class RSSystem {
                             systemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
                             result = JSONSystem.toJSON(blsystem.getSystem(systemPK)).toJSONString();
                             break;
+                        case ISystemOperation.SELECT_Security_island:
+                            ISecurity_islandPK security_islandPK = (ISecurity_islandPK)JSONSecurity_island.toSecurity_islandPK((JSONObject)json.get("security_islandpk"));
+                            result = JSONSystem.toJSONArray(blsystem.getSystems4security_island(security_islandPK)).toJSONString();
+                            break;
                         case ISystemOperation.SELECT_Constellation:
                             IConstellationPK constellationPK = (IConstellationPK)JSONConstellation.toConstellationPK((JSONObject)json.get("constellationpk"));
                             result = JSONSystem.toJSONArray(blsystem.getSystems4constellation(constellationPK)).toJSONString();
+                            break;
+                        case ISystemOperation.SELECT_Systemjumpssystem_end:
+                            ISystemjumpsPK systemjumpsSystem_endPK = (ISystemjumpsPK)JSONSystemjumps.toSystemjumpsPK((JSONObject)json.get("systemjumpspk"));
+                            result = JSONSystem.toJSON(blsystem.getSystemjumpssystem_end(systemjumpsSystem_endPK)).toJSONString();
+                            break;
+                        case ISystemOperation.SELECT_Systemjumpssystem_start:
+                            ISystemjumpsPK systemjumpsSystem_startPK = (ISystemjumpsPK)JSONSystemjumps.toSystemjumpsPK((JSONObject)json.get("systemjumpspk"));
+                            result = JSONSystem.toJSON(blsystem.getSystemjumpssystem_start(systemjumpsSystem_startPK)).toJSONString();
+                            break;
+                        case ISystemOperation.SELECT_Route:
+                            IRoutePK routePK = (IRoutePK)JSONRoute.toRoutePK((JSONObject)json.get("routepk"));
+                            result = JSONSystem.toJSON(blsystem.getRoute(routePK)).toJSONString();
                             break;
                         case ISystemOperation.SELECT_SEARCH:
                             ISystemsearch search = (ISystemsearch)JSONSystem.toSystemsearch((JSONObject)json.get("search"));

@@ -15,6 +15,7 @@ import eve.logicentity.Race;
 import BusinessObject.GeneralEntityObject;
 import data.conversion.JSONConversion;
 import eve.BusinessObject.table.Brace;
+import eve.entity.pk.FactionPK;
 import general.exception.DataException;
 import eve.interfaces.BusinessObject.IBLrace;
 import java.sql.ResultSet;
@@ -66,7 +67,7 @@ public class BLrace extends Brace implements IBLrace {
         Race race = new Race(JSONConversion.getLong(jsonracedetails, "race_id"));
         race.setName(JSONConversion.getString(jsonracedetails, "name"));
         race.setDescription(JSONConversion.getString(jsonracedetails, "description"));
-        race.setAlliance(JSONConversion.getLong(jsonracedetails, "alliance_id"));
+        race.setFactionPK(new FactionPK(JSONConversion.getLong(jsonracedetails, "alliance_id")));
         this.insertupdateRace(race);
     }
 

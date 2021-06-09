@@ -182,6 +182,58 @@ public class WSConstellation implements WSIConstellation {
         }
     }
 
+    //@WebMethod(operationName = "getConstellations4constellation_neighbourNeighbour")
+    @Override
+    public String getConstellations4constellation_neighbourNeighbour(String json) {
+        BLconstellation blconstellation = new BLconstellation();
+        JSONParser parser = new JSONParser();
+        Constellation constellation;
+        try {
+            String result = null;
+            IConstellation_neighbourPK constellation_neighbourNeighbourPK = JSONConstellation_neighbour.toConstellation_neighbourPK((JSONObject)parser.parse(json));
+            constellation = (Constellation)blconstellation.getConstellation_neighbourneighbour(constellation_neighbourNeighbourPK);
+            if(constellation!=null) {
+                result = JSONConstellation.toJSON(constellation).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getConstellations4constellation_neighbourConstellation")
+    @Override
+    public String getConstellations4constellation_neighbourConstellation(String json) {
+        BLconstellation blconstellation = new BLconstellation();
+        JSONParser parser = new JSONParser();
+        Constellation constellation;
+        try {
+            String result = null;
+            IConstellation_neighbourPK constellation_neighbourConstellationPK = JSONConstellation_neighbour.toConstellation_neighbourPK((JSONObject)parser.parse(json));
+            constellation = (Constellation)blconstellation.getConstellation_neighbourconstellation(constellation_neighbourConstellationPK);
+            if(constellation!=null) {
+                result = JSONConstellation.toJSON(constellation).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
 
 }
 

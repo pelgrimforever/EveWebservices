@@ -145,6 +145,43 @@ public class WSRace implements WSIRace {
         }
     }
 
+    //@WebMethod(operationName = "getRaces4faction")
+    @Override
+    public String getRaces4faction(String json) {
+        BLrace blrace = new BLrace();
+        JSONParser parser = new JSONParser();
+        Race race;
+        try {
+            IFactionPK factionPK = JSONFaction.toFactionPK((JSONObject)parser.parse(json));
+            ArrayList races = blrace.getRaces4faction(factionPK);
+            JSONArray jsonraces = toJSONArray(races);
+            return jsonraces.toJSONString();
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "delete4faction")
+    @Override
+    public void delete4faction(String json) {
+        BLrace blrace = new BLrace();
+        JSONParser parser = new JSONParser();
+        Race race;
+        try {
+            IFactionPK factionPK = JSONFaction.toFactionPK((JSONObject)parser.parse(json));
+            blrace.delete4faction(this.getClass().getName(), factionPK);
+        }
+        catch(ParseException e) {
+        }
+    }
+
 
 }
 

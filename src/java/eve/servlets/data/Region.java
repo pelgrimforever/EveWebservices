@@ -2,7 +2,7 @@
  * DataServlet.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 8.4.2021 13:20
+ * Generated on 8.5.2021 19:33
  *
  */
 
@@ -61,6 +61,18 @@ public class Region extends SecurityDataServlet {
                         case IRegionOperation.SELECT_REGION:
                             regionPK = (IRegionPK)parser.getJavaObject("regionpk");
                             dataobject = blregion.getRegion(regionPK);
+                            break;
+                        case IRegionOperation.SELECT_Order_history:
+                            IOrder_historyPK order_historyPK = (IOrder_historyPK)parser.getJavaObject("order_historypk");
+                            dataobject = blregion.getOrder_history(order_historyPK);
+                            break;
+                        case IRegionOperation.SELECT_Region_neighbourregion:
+                            IRegion_neighbourPK region_neighbourRegionPK = (IRegion_neighbourPK)parser.getJavaObject("region_neighbourpk");
+                            dataobject = blregion.getRegion_neighbourregion(region_neighbourRegionPK);
+                            break;
+                        case IRegionOperation.SELECT_Region_neighbourneighbour:
+                            IRegion_neighbourPK region_neighbourNeighbourPK = (IRegion_neighbourPK)parser.getJavaObject("region_neighbourpk");
+                            dataobject = blregion.getRegion_neighbourneighbour(region_neighbourNeighbourPK);
                             break;
                         case IRegionOperation.SELECT_SEARCH:
                             IRegionsearch search = (IRegionsearch)parser.getJavaObject("search");

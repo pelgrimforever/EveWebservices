@@ -117,6 +117,14 @@ public class RSConstellation {
                             IRegionPK regionPK = (IRegionPK)JSONRegion.toRegionPK((JSONObject)json.get("regionpk"));
                             result = JSONConstellation.toJSONArray(blconstellation.getConstellations4region(regionPK)).toJSONString();
                             break;
+                        case IConstellationOperation.SELECT_Constellation_neighbourneighbour:
+                            IConstellation_neighbourPK constellation_neighbourNeighbourPK = (IConstellation_neighbourPK)JSONConstellation_neighbour.toConstellation_neighbourPK((JSONObject)json.get("constellation_neighbourpk"));
+                            result = JSONConstellation.toJSON(blconstellation.getConstellation_neighbourneighbour(constellation_neighbourNeighbourPK)).toJSONString();
+                            break;
+                        case IConstellationOperation.SELECT_Constellation_neighbourconstellation:
+                            IConstellation_neighbourPK constellation_neighbourConstellationPK = (IConstellation_neighbourPK)JSONConstellation_neighbour.toConstellation_neighbourPK((JSONObject)json.get("constellation_neighbourpk"));
+                            result = JSONConstellation.toJSON(blconstellation.getConstellation_neighbourconstellation(constellation_neighbourConstellationPK)).toJSONString();
+                            break;
                         case IConstellationOperation.SELECT_SEARCH:
                             IConstellationsearch search = (IConstellationsearch)JSONConstellation.toConstellationsearch((JSONObject)json.get("search"));
                             result = JSONConstellation.toJSONArray(blconstellation.search(search)).toJSONString();
@@ -188,6 +196,14 @@ public class RSConstellation {
                         case IConstellationOperation.SELECT_Region:
                             IRegionPK regionPK = (IRegionPK)JSONRegion.toRegionPK((JSONObject)json.get("regionpk"));
                             result = JSONConstellation.toJSONArray(blconstellation.getConstellations4region(regionPK)).toJSONString();
+                            break;
+                        case IConstellationOperation.SELECT_Constellation_neighbourneighbour:
+                            IConstellation_neighbourPK constellation_neighbourNeighbourPK = (IConstellation_neighbourPK)JSONConstellation_neighbour.toConstellation_neighbourPK((JSONObject)json.get("constellation_neighbourpk"));
+                            result = JSONConstellation.toJSON(blconstellation.getConstellation_neighbourneighbour(constellation_neighbourNeighbourPK)).toJSONString();
+                            break;
+                        case IConstellationOperation.SELECT_Constellation_neighbourconstellation:
+                            IConstellation_neighbourPK constellation_neighbourConstellationPK = (IConstellation_neighbourPK)JSONConstellation_neighbour.toConstellation_neighbourPK((JSONObject)json.get("constellation_neighbourpk"));
+                            result = JSONConstellation.toJSON(blconstellation.getConstellation_neighbourconstellation(constellation_neighbourConstellationPK)).toJSONString();
                             break;
                         case IConstellationOperation.SELECT_SEARCH:
                             IConstellationsearch search = (IConstellationsearch)JSONConstellation.toConstellationsearch((JSONObject)json.get("search"));

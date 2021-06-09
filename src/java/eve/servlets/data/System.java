@@ -2,7 +2,7 @@
  * DataServlet.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 8.4.2021 13:20
+ * Generated on 8.5.2021 19:33
  *
  */
 
@@ -62,9 +62,25 @@ public class System extends SecurityDataServlet {
                             systemPK = (ISystemPK)parser.getJavaObject("systempk");
                             dataobject = blsystem.getSystem(systemPK);
                             break;
+                        case ISystemOperation.SELECT_Security_island:
+                            ISecurity_islandPK security_islandPK = (ISecurity_islandPK)parser.getJavaObject("security_islandpk");
+                            dataobject = blsystem.getSystems4security_island(security_islandPK);
+                            break;
                         case ISystemOperation.SELECT_Constellation:
                             IConstellationPK constellationPK = (IConstellationPK)parser.getJavaObject("constellationpk");
                             dataobject = blsystem.getSystems4constellation(constellationPK);
+                            break;
+                        case ISystemOperation.SELECT_Systemjumpssystem_end:
+                            ISystemjumpsPK systemjumpsSystem_endPK = (ISystemjumpsPK)parser.getJavaObject("systemjumpspk");
+                            dataobject = blsystem.getSystemjumpssystem_end(systemjumpsSystem_endPK);
+                            break;
+                        case ISystemOperation.SELECT_Systemjumpssystem_start:
+                            ISystemjumpsPK systemjumpsSystem_startPK = (ISystemjumpsPK)parser.getJavaObject("systemjumpspk");
+                            dataobject = blsystem.getSystemjumpssystem_start(systemjumpsSystem_startPK);
+                            break;
+                        case ISystemOperation.SELECT_Route:
+                            IRoutePK routePK = (IRoutePK)parser.getJavaObject("routepk");
+                            dataobject = blsystem.getRoute(routePK);
                             break;
                         case ISystemOperation.SELECT_SEARCH:
                             ISystemsearch search = (ISystemsearch)parser.getJavaObject("search");
@@ -107,6 +123,10 @@ public class System extends SecurityDataServlet {
                         case ISystemOperation.DELETE_SYSTEM:
                             system = (ISystem)parser.getJavaObject("system");
                             blsystem.deleteSystem(system);
+                            break;
+                        case ISystemOperation.DELETE_Security_island:
+                            ISecurity_islandPK security_islandPK = (ISecurity_islandPK)parser.getJavaObject("security_islandpk");
+                            blsystem.delete4security_island(this.getServletName(), security_islandPK);
                             break;
                         case ISystemOperation.DELETE_Constellation:
                             IConstellationPK constellationPK = (IConstellationPK)parser.getJavaObject("constellationpk");

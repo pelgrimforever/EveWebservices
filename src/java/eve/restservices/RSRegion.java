@@ -113,6 +113,18 @@ public class RSRegion {
                             regionPK = (IRegionPK)JSONRegion.toRegionPK((JSONObject)json.get("regionpk"));
                             result = JSONRegion.toJSON(blregion.getRegion(regionPK)).toJSONString();
                             break;
+                        case IRegionOperation.SELECT_Order_history:
+                            IOrder_historyPK order_historyPK = (IOrder_historyPK)JSONOrder_history.toOrder_historyPK((JSONObject)json.get("order_historypk"));
+                            result = JSONRegion.toJSON(blregion.getOrder_history(order_historyPK)).toJSONString();
+                            break;
+                        case IRegionOperation.SELECT_Region_neighbourregion:
+                            IRegion_neighbourPK region_neighbourRegionPK = (IRegion_neighbourPK)JSONRegion_neighbour.toRegion_neighbourPK((JSONObject)json.get("region_neighbourpk"));
+                            result = JSONRegion.toJSON(blregion.getRegion_neighbourregion(region_neighbourRegionPK)).toJSONString();
+                            break;
+                        case IRegionOperation.SELECT_Region_neighbourneighbour:
+                            IRegion_neighbourPK region_neighbourNeighbourPK = (IRegion_neighbourPK)JSONRegion_neighbour.toRegion_neighbourPK((JSONObject)json.get("region_neighbourpk"));
+                            result = JSONRegion.toJSON(blregion.getRegion_neighbourneighbour(region_neighbourNeighbourPK)).toJSONString();
+                            break;
                         case IRegionOperation.SELECT_SEARCH:
                             IRegionsearch search = (IRegionsearch)JSONRegion.toRegionsearch((JSONObject)json.get("search"));
                             result = JSONRegion.toJSONArray(blregion.search(search)).toJSONString();
@@ -180,6 +192,18 @@ public class RSRegion {
                         case IRegionOperation.SELECT_REGION:
                             regionPK = (IRegionPK)JSONRegion.toRegionPK((JSONObject)json.get("regionpk"));
                             result = JSONRegion.toJSON(blregion.getRegion(regionPK)).toJSONString();
+                            break;
+                        case IRegionOperation.SELECT_Order_history:
+                            IOrder_historyPK order_historyPK = (IOrder_historyPK)JSONOrder_history.toOrder_historyPK((JSONObject)json.get("order_historypk"));
+                            result = JSONRegion.toJSON(blregion.getOrder_history(order_historyPK)).toJSONString();
+                            break;
+                        case IRegionOperation.SELECT_Region_neighbourregion:
+                            IRegion_neighbourPK region_neighbourRegionPK = (IRegion_neighbourPK)JSONRegion_neighbour.toRegion_neighbourPK((JSONObject)json.get("region_neighbourpk"));
+                            result = JSONRegion.toJSON(blregion.getRegion_neighbourregion(region_neighbourRegionPK)).toJSONString();
+                            break;
+                        case IRegionOperation.SELECT_Region_neighbourneighbour:
+                            IRegion_neighbourPK region_neighbourNeighbourPK = (IRegion_neighbourPK)JSONRegion_neighbour.toRegion_neighbourPK((JSONObject)json.get("region_neighbourpk"));
+                            result = JSONRegion.toJSON(blregion.getRegion_neighbourneighbour(region_neighbourNeighbourPK)).toJSONString();
                             break;
                         case IRegionOperation.SELECT_SEARCH:
                             IRegionsearch search = (IRegionsearch)JSONRegion.toRegionsearch((JSONObject)json.get("search"));

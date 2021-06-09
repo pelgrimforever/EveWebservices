@@ -125,6 +125,10 @@ public class RSEvetype {
                             IGraphicPK graphicPK = (IGraphicPK)JSONGraphic.toGraphicPK((JSONObject)json.get("graphicpk"));
                             result = JSONEvetype.toJSONArray(blevetype.getEvetypes4graphic(graphicPK)).toJSONString();
                             break;
+                        case IEvetypeOperation.SELECT_Order_history:
+                            IOrder_historyPK order_historyPK = (IOrder_historyPK)JSONOrder_history.toOrder_historyPK((JSONObject)json.get("order_historypk"));
+                            result = JSONEvetype.toJSON(blevetype.getOrder_history(order_historyPK)).toJSONString();
+                            break;
                         case IEvetypeOperation.SELECT_SEARCH:
                             IEvetypesearch search = (IEvetypesearch)JSONEvetype.toEvetypesearch((JSONObject)json.get("search"));
                             result = JSONEvetype.toJSONArray(blevetype.search(search)).toJSONString();
@@ -204,6 +208,10 @@ public class RSEvetype {
                         case IEvetypeOperation.SELECT_Graphic:
                             IGraphicPK graphicPK = (IGraphicPK)JSONGraphic.toGraphicPK((JSONObject)json.get("graphicpk"));
                             result = JSONEvetype.toJSONArray(blevetype.getEvetypes4graphic(graphicPK)).toJSONString();
+                            break;
+                        case IEvetypeOperation.SELECT_Order_history:
+                            IOrder_historyPK order_historyPK = (IOrder_historyPK)JSONOrder_history.toOrder_historyPK((JSONObject)json.get("order_historypk"));
+                            result = JSONEvetype.toJSON(blevetype.getOrder_history(order_historyPK)).toJSONString();
                             break;
                         case IEvetypeOperation.SELECT_SEARCH:
                             IEvetypesearch search = (IEvetypesearch)JSONEvetype.toEvetypesearch((JSONObject)json.get("search"));

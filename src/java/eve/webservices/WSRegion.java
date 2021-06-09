@@ -145,6 +145,84 @@ public class WSRegion implements WSIRegion {
         }
     }
 
+    //@WebMethod(operationName = "getRegions4order_history")
+    @Override
+    public String getRegions4order_history(String json) {
+        BLregion blregion = new BLregion();
+        JSONParser parser = new JSONParser();
+        Region region;
+        try {
+            String result = null;
+            IOrder_historyPK order_historyPK = JSONOrder_history.toOrder_historyPK((JSONObject)parser.parse(json));
+            region = (Region)blregion.getOrder_history(order_historyPK);
+            if(region!=null) {
+                result = JSONRegion.toJSON(region).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getRegions4region_neighbourRegion")
+    @Override
+    public String getRegions4region_neighbourRegion(String json) {
+        BLregion blregion = new BLregion();
+        JSONParser parser = new JSONParser();
+        Region region;
+        try {
+            String result = null;
+            IRegion_neighbourPK region_neighbourRegionPK = JSONRegion_neighbour.toRegion_neighbourPK((JSONObject)parser.parse(json));
+            region = (Region)blregion.getRegion_neighbourregion(region_neighbourRegionPK);
+            if(region!=null) {
+                result = JSONRegion.toJSON(region).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getRegions4region_neighbourNeighbour")
+    @Override
+    public String getRegions4region_neighbourNeighbour(String json) {
+        BLregion blregion = new BLregion();
+        JSONParser parser = new JSONParser();
+        Region region;
+        try {
+            String result = null;
+            IRegion_neighbourPK region_neighbourNeighbourPK = JSONRegion_neighbour.toRegion_neighbourPK((JSONObject)parser.parse(json));
+            region = (Region)blregion.getRegion_neighbourneighbour(region_neighbourNeighbourPK);
+            if(region!=null) {
+                result = JSONRegion.toJSON(region).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
 
 }
 

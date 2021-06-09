@@ -145,6 +145,43 @@ public class WSSystem implements WSISystem {
         }
     }
 
+    //@WebMethod(operationName = "getSystems4security_island")
+    @Override
+    public String getSystems4security_island(String json) {
+        BLsystem blsystem = new BLsystem();
+        JSONParser parser = new JSONParser();
+        System system;
+        try {
+            ISecurity_islandPK security_islandPK = JSONSecurity_island.toSecurity_islandPK((JSONObject)parser.parse(json));
+            ArrayList systems = blsystem.getSystems4security_island(security_islandPK);
+            JSONArray jsonsystems = toJSONArray(systems);
+            return jsonsystems.toJSONString();
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "delete4security_island")
+    @Override
+    public void delete4security_island(String json) {
+        BLsystem blsystem = new BLsystem();
+        JSONParser parser = new JSONParser();
+        System system;
+        try {
+            ISecurity_islandPK security_islandPK = JSONSecurity_island.toSecurity_islandPK((JSONObject)parser.parse(json));
+            blsystem.delete4security_island(this.getClass().getName(), security_islandPK);
+        }
+        catch(ParseException e) {
+        }
+    }
+
     //@WebMethod(operationName = "getSystems4constellation")
     @Override
     public String getSystems4constellation(String json) {
@@ -179,6 +216,84 @@ public class WSSystem implements WSISystem {
             blsystem.delete4constellation(this.getClass().getName(), constellationPK);
         }
         catch(ParseException e) {
+        }
+    }
+
+    //@WebMethod(operationName = "getSystems4systemjumpsSystem_end")
+    @Override
+    public String getSystems4systemjumpsSystem_end(String json) {
+        BLsystem blsystem = new BLsystem();
+        JSONParser parser = new JSONParser();
+        System system;
+        try {
+            String result = null;
+            ISystemjumpsPK systemjumpsSystem_endPK = JSONSystemjumps.toSystemjumpsPK((JSONObject)parser.parse(json));
+            system = (System)blsystem.getSystemjumpssystem_end(systemjumpsSystem_endPK);
+            if(system!=null) {
+                result = JSONSystem.toJSON(system).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getSystems4systemjumpsSystem_start")
+    @Override
+    public String getSystems4systemjumpsSystem_start(String json) {
+        BLsystem blsystem = new BLsystem();
+        JSONParser parser = new JSONParser();
+        System system;
+        try {
+            String result = null;
+            ISystemjumpsPK systemjumpsSystem_startPK = JSONSystemjumps.toSystemjumpsPK((JSONObject)parser.parse(json));
+            system = (System)blsystem.getSystemjumpssystem_start(systemjumpsSystem_startPK);
+            if(system!=null) {
+                result = JSONSystem.toJSON(system).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getSystems4route")
+    @Override
+    public String getSystems4route(String json) {
+        BLsystem blsystem = new BLsystem();
+        JSONParser parser = new JSONParser();
+        System system;
+        try {
+            String result = null;
+            IRoutePK routePK = JSONRoute.toRoutePK((JSONObject)parser.parse(json));
+            system = (System)blsystem.getRoute(routePK);
+            if(system!=null) {
+                result = JSONSystem.toJSON(system).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
         }
     }
 

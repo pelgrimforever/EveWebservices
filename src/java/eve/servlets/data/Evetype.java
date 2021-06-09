@@ -2,7 +2,7 @@
  * DataServlet.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 8.4.2021 13:20
+ * Generated on 8.5.2021 19:33
  *
  */
 
@@ -73,6 +73,10 @@ public class Evetype extends SecurityDataServlet {
                         case IEvetypeOperation.SELECT_Graphic:
                             IGraphicPK graphicPK = (IGraphicPK)parser.getJavaObject("graphicpk");
                             dataobject = blevetype.getEvetypes4graphic(graphicPK);
+                            break;
+                        case IEvetypeOperation.SELECT_Order_history:
+                            IOrder_historyPK order_historyPK = (IOrder_historyPK)parser.getJavaObject("order_historypk");
+                            dataobject = blevetype.getOrder_history(order_historyPK);
                             break;
                         case IEvetypeOperation.SELECT_SEARCH:
                             IEvetypesearch search = (IEvetypesearch)parser.getJavaObject("search");

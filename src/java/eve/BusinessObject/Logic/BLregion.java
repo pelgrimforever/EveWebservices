@@ -17,8 +17,10 @@ import data.conversion.JSONConversion;
 import eve.BusinessObject.table.Bregion;
 import general.exception.DataException;
 import eve.interfaces.BusinessObject.IBLregion;
+import eve.logicentity.Constellation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -80,6 +82,31 @@ public class BLregion extends Bregion implements IBLregion {
             insertupdateRegion(region);
         }
         Commit2DB();
+    }
+    
+    /**
+     * post process downloaded region data
+     * set noaccess to true for all regions that have no accessible constellation
+     * set noaccess to false for all regions that have at least one accesible constellation
+     * @throws DBException
+     * @throws DataException 
+     */
+    public void postprocess() throws DBException, DataException {
+        Object[][] parameter1 = {{ "noaccess", true }, { "constellationnoaccess", false }};
+        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Region.updateNoaccess1, parameter1);
+        Object[][] parameter2 = {{ "noaccess", false }, { "constellationnoaccess", false }};
+        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Region.updateNoaccess2, parameter2);
+        this.Commit2DB();
+    }
+    
+    /**
+     * Get all Regions that are accessible
+     * @return ArrayList of all Entities
+     * @throws DBException
+     */
+    @Override
+    public ArrayList getAll() throws DBException {
+        return entitymapper.loadEntityVector(this, Region.SQLSelectAllaccess);
     }
     
     /**

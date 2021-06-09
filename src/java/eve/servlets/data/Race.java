@@ -2,7 +2,7 @@
  * DataServlet.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 8.4.2021 13:20
+ * Generated on 8.5.2021 19:33
  *
  */
 
@@ -62,6 +62,10 @@ public class Race extends SecurityDataServlet {
                             racePK = (IRacePK)parser.getJavaObject("racepk");
                             dataobject = blrace.getRace(racePK);
                             break;
+                        case IRaceOperation.SELECT_Faction:
+                            IFactionPK factionPK = (IFactionPK)parser.getJavaObject("factionpk");
+                            dataobject = blrace.getRaces4faction(factionPK);
+                            break;
                         case IRaceOperation.SELECT_SEARCH:
                             IRacesearch search = (IRacesearch)parser.getJavaObject("search");
                             dataobject = blrace.search(search);
@@ -103,6 +107,10 @@ public class Race extends SecurityDataServlet {
                         case IRaceOperation.DELETE_RACE:
                             race = (IRace)parser.getJavaObject("race");
                             blrace.deleteRace(race);
+                            break;
+                        case IRaceOperation.DELETE_Faction:
+                            IFactionPK factionPK = (IFactionPK)parser.getJavaObject("factionpk");
+                            blrace.delete4faction(this.getServletName(), factionPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

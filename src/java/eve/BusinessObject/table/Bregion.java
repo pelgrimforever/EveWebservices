@@ -2,7 +2,7 @@
  * Bregion.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.4.2021 13:20
+ * Generated on 8.5.2021 19:33
  *
  */
 
@@ -14,6 +14,8 @@ import general.exception.*;
 import java.util.ArrayList;
 
 import data.gis.shape.*;
+import data.json.piJson;
+import data.json.psqlJsonobject;
 import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
@@ -30,6 +32,8 @@ import java.sql.Time;
 import org.postgresql.geometric.PGpoint;
 import org.postgis.PGgeometry;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * Business Entity class Bregion
@@ -74,6 +78,8 @@ public abstract class Bregion extends GeneralEntityObject implements ProjectCons
                 regionPK = new RegionPK(dbresult.getLong("id"));
                 region = new Region(regionPK);
                 region.initName(dbresult.getString("name"));
+                region.initNoaccess(dbresult.getBoolean("noaccess"));
+                region.initOrderpages(dbresult.getInt("orderpages"));
             }
             catch(SQLException sqle) {
                 throw sqle;
@@ -246,6 +252,48 @@ public abstract class Bregion extends GeneralEntityObject implements ProjectCons
      * @param regionPK: Region primary key
      */
     public void cascadedeleteRegion(String senderobject, IRegionPK regionPK) {
+        BLorder_history blorder_history = new BLorder_history(this);
+        blorder_history.delete4region(senderobject, regionPK);
+        BLregion_neighbour blregion_neighbourRegion = new BLregion_neighbour(this);
+        blregion_neighbourRegion.delete4regionRegion(senderobject, regionPK);
+        BLregion_neighbour blregion_neighbourNeighbour = new BLregion_neighbour(this);
+        blregion_neighbourNeighbour.delete4regionNeighbour(senderobject, regionPK);
+    }
+
+    /**
+     * @param order_historyPK: parent Order_history for child object Region Entity
+     * @return child Region Entity object
+     * @throws eve.general.exception.CustomException
+     */
+    public IRegion getOrder_history(IOrder_historyPK order_historyPK) throws CustomException {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            RegionPK regionPK = new RegionPK(order_historyPK.getRegion());
+            return this.getRegion(regionPK);
+        } else return null;
+    }
+
+    /**
+     * @param region_neighbourPK: parent Region_neighbour for child object Region Entity
+     * @return child Region Entity object
+     * @throws eve.general.exception.CustomException
+     */
+    public IRegion getRegion_neighbourregion(IRegion_neighbourPK region_neighbourPK) throws CustomException {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            RegionPK regionPK = new RegionPK(region_neighbourPK.getRegion());
+            return this.getRegion(regionPK);
+        } else return null;
+    }
+
+    /**
+     * @param region_neighbourPK: parent Region_neighbour for child object Region Entity
+     * @return child Region Entity object
+     * @throws eve.general.exception.CustomException
+     */
+    public IRegion getRegion_neighbourneighbour(IRegion_neighbourPK region_neighbourPK) throws CustomException {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            RegionPK regionPK = new RegionPK(region_neighbourPK.getNeighbour());
+            return this.getRegion(regionPK);
+        } else return null;
     }
 
 

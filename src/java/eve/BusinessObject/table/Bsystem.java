@@ -2,7 +2,7 @@
  * Bsystem.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.4.2021 13:20
+ * Generated on 8.5.2021 19:33
  *
  */
 
@@ -14,6 +14,8 @@ import general.exception.*;
 import java.util.ArrayList;
 
 import data.gis.shape.*;
+import data.json.piJson;
+import data.json.psqlJsonobject;
 import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
@@ -30,6 +32,8 @@ import java.sql.Time;
 import org.postgresql.geometric.PGpoint;
 import org.postgis.PGgeometry;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * Business Entity class Bsystem
@@ -73,12 +77,17 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
             try {
                 systemPK = new SystemPK(dbresult.getLong("id"));
                 system = new System(systemPK);
+                system.initSecurity_islandPK(new Security_islandPK(dbresult.getLong("security_island")));
+                if(dbresult.wasNull()) system.setSecurity_islandPK(null);                
                 system.initConstellationPK(new ConstellationPK(dbresult.getLong("constellation")));
                 if(dbresult.wasNull()) system.setConstellationPK(null);                
                 system.initName(dbresult.getString("name"));
                 system.initSecurity_class(dbresult.getString("security_class"));
                 system.initSecurity_status(dbresult.getDouble("security_status"));
                 system.initStar_id(dbresult.getLong("star_id"));
+                system.initNoaccess(dbresult.getBoolean("noaccess"));
+                system.initIsconstellationborder(dbresult.getBoolean("isconstellationborder"));
+                system.initIsregionborder(dbresult.getBoolean("isregionborder"));
             }
             catch(SQLException sqle) {
                 throw sqle;
@@ -236,6 +245,7 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
         StringBuffer message = new StringBuffer();
         //Primary key
 
+
         if(system.getName()!=null && system.getName().length()>ISystem.SIZE_NAME) {
             message.append("Name is langer dan toegestaan. Max aantal karakters: " + ISystem.SIZE_NAME + "\n");
         }
@@ -255,8 +265,35 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
      * @param systemPK: System primary key
      */
     public void cascadedeleteSystem(String senderobject, ISystemPK systemPK) {
+        BLsystemjumps blsystemjumpsSystem_end = new BLsystemjumps(this);
+        blsystemjumpsSystem_end.delete4systemSystem_end(senderobject, systemPK);
+        BLsystemjumps blsystemjumpsSystem_start = new BLsystemjumps(this);
+        blsystemjumpsSystem_start.delete4systemSystem_start(senderobject, systemPK);
+        BLroute blroute = new BLroute(this);
+        blroute.delete4system(senderobject, systemPK);
     }
 
+    /**
+     * @param security_islandPK: foreign key for Security_island
+     * @delete all System Entity objects for Security_island in database
+     * @throws eve.general.exception.CustomException
+     */
+    public void delete4security_island(String senderobject, ISecurity_islandPK security_islandPK) {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            super.addStatement(senderobject, System.SQLDelete4security_island, security_islandPK.getKeyFields());
+        }
+    }
+
+    /**
+     * @param security_islandPK: foreign key for Security_island
+     * @return all System Entity objects for Security_island
+     * @throws eve.general.exception.CustomException
+     */
+    public ArrayList getSystems4security_island(ISecurity_islandPK security_islandPK) throws CustomException {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            return getMapper().loadEntityVector(this, System.SQLSelect4security_island, security_islandPK.getKeyFields());
+        } else return new ArrayList();
+    }
     /**
      * @param constellationPK: foreign key for Constellation
      * @delete all System Entity objects for Constellation in database
@@ -278,6 +315,42 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
             return getMapper().loadEntityVector(this, System.SQLSelect4constellation, constellationPK.getKeyFields());
         } else return new ArrayList();
     }
+    /**
+     * @param systemjumpsPK: parent Systemjumps for child object System Entity
+     * @return child System Entity object
+     * @throws eve.general.exception.CustomException
+     */
+    public ISystem getSystemjumpssystem_end(ISystemjumpsPK systemjumpsPK) throws CustomException {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            SystemPK systemPK = new SystemPK(systemjumpsPK.getSystem_end());
+            return this.getSystem(systemPK);
+        } else return null;
+    }
+
+    /**
+     * @param systemjumpsPK: parent Systemjumps for child object System Entity
+     * @return child System Entity object
+     * @throws eve.general.exception.CustomException
+     */
+    public ISystem getSystemjumpssystem_start(ISystemjumpsPK systemjumpsPK) throws CustomException {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            SystemPK systemPK = new SystemPK(systemjumpsPK.getSystem_start());
+            return this.getSystem(systemPK);
+        } else return null;
+    }
+
+    /**
+     * @param routePK: parent Route for child object System Entity
+     * @return child System Entity object
+     * @throws eve.general.exception.CustomException
+     */
+    public ISystem getRoute(IRoutePK routePK) throws CustomException {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            SystemPK systemPK = new SystemPK(routePK.getSystem());
+            return this.getSystem(systemPK);
+        } else return null;
+    }
+
 
     /**
      * get all System objects for sqlparameters
