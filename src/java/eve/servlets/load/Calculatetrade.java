@@ -37,7 +37,7 @@ public class Calculatetrade extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         String outputstring = "";
-        
+/*        
         try {
             //process order data locally
             Market.processView_tradeorders();
@@ -52,7 +52,7 @@ public class Calculatetrade extends HttpServlet {
         catch(Exception e) {
             outputstring = e.getMessage();
         }
-
+*/
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");

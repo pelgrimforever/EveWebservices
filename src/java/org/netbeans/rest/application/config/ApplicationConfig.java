@@ -24,6 +24,10 @@ public class ApplicationConfig extends Application {
      */
     private Set<Class<?>> getRestResourceClasses() {
         Set<Class<?>> resources = new java.util.HashSet<Class<?>>();
+//Custom code, do not change this line
+//add here custom operations
+        resources.add(eve.restservices.RSdownloadswagger.class);
+//Custom code, do not change this line   
         resources.add(eve.restservices.RSAlliance.class);
         resources.add(eve.restservices.RSCategory.class);
         resources.add(eve.restservices.RSConstellation.class);

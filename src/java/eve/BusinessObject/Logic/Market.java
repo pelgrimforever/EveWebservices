@@ -7,6 +7,7 @@ package eve.BusinessObject.Logic;
 
 import data.conversion.JSONConversion;
 import db.AbstractSQLMapper;
+import db.TransactionOutput;
 import eve.data.Swagger;
 import eve.entity.pk.RoutetypePK;
 import eve.entity.pk.Security_islandPK;
@@ -18,6 +19,7 @@ import eve.logicview.View_tradeorders;
 import general.exception.DBException;
 import general.exception.DataException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -26,22 +28,138 @@ import org.json.simple.JSONObject;
  *
  * @author pelgrim
  */
-public class Market {
+public class Market implements Runnable {
     
-    public static void downloadOrders() throws DataException, DBException {
+    private MarketStatus marketstatus;
+    private boolean keeprunning = true;
+    
+    public Market() throws DBException {
+        marketstatus = new MarketStatus();
+    }
+    
+    public void stoprunning() {
+        this.keeprunning = false;
+    }
+    
+    public MarketStatus getStatus() {
+        return marketstatus;
+    }
+    
+    public class MarketStatus {
+
+        private HashMap<Long, RegionStatus> regions = new HashMap<>();
+        private ArrayList<String> messages = new ArrayList<>();
+        private boolean done = false;
+        
+        public MarketStatus() throws DBException {
+            BLregion blregion = new BLregion();
+            Iterator<Region> regionI = blregion.getAll().iterator();
+            Region region;
+            while(regionI.hasNext()) {
+                region = regionI.next();
+                regions.put(region.getPrimaryKey().getId(), new RegionStatus(region));
+            }
+        }
+        
+        public void updateStatus(long regionid, int page) {
+            regions.get(regionid).setPage(page);
+        }
+        
+        public void setDone(long regionid) {
+            regions.get(regionid).setDone();
+        }
+        
+        public void addMessage(String message) {
+            messages.add(message);
+        }
+        
+        public HashMap<Long, RegionStatus> getRegions() {
+            return regions;
+        }
+        
+        public ArrayList getMessages() {
+            return this.messages;
+        }
+        
+        public void setDone() {
+            this.done = true;
+        }
+        
+        public boolean isDone() {
+            return done;
+        }
+        
+    }
+    
+    public class RegionStatus {
+        private String name = "";
+        private int page = 0;
+        private int totalpages = 1;
+        private boolean done = false;
+        
+        public RegionStatus(Region region) {
+            this.name = region.getName();
+            this.totalpages = region.getOrderpages();
+        }
+        
+        public String getName() {
+            return name;
+        }
+        
+        public void setPage(int page) {
+            this.page = page;
+        }
+        
+        public int getPage() {
+            return page;
+        }
+        
+        public int getTotalpages() {
+            return totalpages;
+        }
+        
+        public void setDone() {
+            this.done = true;
+        }
+        
+        public boolean isDone() {
+            return this.done;
+        }
+    }
+    
+    public void run() {
+        try {
+            this.keeprunning = true;
+            //download orders from game server
+            downloadOrders();
+            //process order data locally
+            processView_tradeorders();
+
+        }
+        catch(DataException e) {
+            marketstatus.addMessage(e.getMessage());
+        }
+        catch(DBException e) {
+            marketstatus.addMessage(e.getMessage());
+        }
+        catch(Exception e) {
+            marketstatus.addMessage(e.getMessage());
+        }        
+    }
+    
+    private void downloadOrders() throws DataException, DBException {
         BLorders blorders = new BLorders();
         BLorder_hist blorderhist = new BLorder_hist();
         BLregion blregion = new BLregion();
 
         //more orders to order_hist
-        System.out.print("Start downloadOrders");
+        marketstatus.addMessage("Delete orders");
         if(blorders.count()>0) {
             //blorderhist.deleteorders();
             //blorderhist.copyorders();
             blorders.deleteorders();
         }
-        System.out.print("Orders deleted");
-        System.out.print("Starting orders");
+        marketstatus.addMessage("Download orders");
         long start = System.currentTimeMillis();
         //add market orders for each region
         int pagenr;
@@ -52,21 +170,23 @@ public class Market {
         JSONArray jsonorders;
         Iterator<JSONObject> jsonordersI;
         int ordercounter = 0;
+        int errorcounter = 0;
         int orderbatch = 0;
         int rangenumber = 0;
 
         StringBuilder sqlb = new StringBuilder();
         JSONObject jsonorderdetails;
-        while(regionsI.hasNext()) {
+        TransactionOutput toutput;
+        while(keeprunning && regionsI.hasNext()) {
             region = regionsI.next();
-            System.out.println("Region " + region.getPrimaryKey().getId() + " " + region.getName());
             pagenr = 1;
+            errorcounter = 0;
             do {
                 //System.out.print("Page " + pagenr + " * ");
                 jsonorders = Swagger.getMarket_region_orders(region.getPrimaryKey().getId(), pagenr);
                 jsonordersI = jsonorders.iterator();
                 ordercounter = 0;
-                while(jsonordersI.hasNext()) {
+                while(keeprunning && jsonordersI.hasNext()) {
                     jsonorderdetails = jsonordersI.next();
                     sqlb.delete(0, 200);
                     sqlb.append("insert into orders values (");
@@ -92,20 +212,31 @@ public class Market {
                     if(ordercounter==100) {
                         orderbatch = ordercounter;
                         ordercounter = 0;
-                        blorders.Commit2DB();
+                        toutput = blorders.Commit2DB_returnSQL();
+                        if(toutput.getHaserror()) {
+                            errorcounter++;
+                            marketstatus.addMessage(toutput.getErrormessage());
+                        }
                     }
                 }
-                blorders.Commit2DB();
+                toutput = blorders.Commit2DB_returnSQL();
+                if(toutput.getHaserror()) {
+                    errorcounter++;
+                    marketstatus.addMessage(toutput.getErrormessage());
+                }
                 pagenr++;
-            } while(jsonorders.size()>0);
+                marketstatus.updateStatus(region.getPrimaryKey().getId(), pagenr);
+            } while(keeprunning && jsonorders.size()>0);
+            marketstatus.setDone(region.getPrimaryKey().getId());
             region.setOrderpages(pagenr);
+            region.setOrdererrors(errorcounter);
             blregion.updateRegion(region);
         }         
         long end = System.currentTimeMillis();
-        System.out.println("Download time Swagger -> orders " + ((end - start)/1000));
+        marketstatus.addMessage("Download time Swagger -> orders " + ((end - start)/1000) + "sec.");
     }
     
-    public static void downloadJsonorders() throws DataException, DBException {
+    private void downloadJsonorders() throws DataException, DBException {
         BLjson_orders bljsonorders = new BLjson_orders();
         BLorders blorders = new BLorders();
         BLregion blregion = new BLregion();
@@ -134,6 +265,7 @@ public class Market {
 
         StringBuilder sqlb = new StringBuilder();
         JSONObject jsonorderdetails;
+        TransactionOutput toutput;
         while(regionsI.hasNext()) {
             region = regionsI.next();
             System.out.println("Region " + region.getPrimaryKey().getId() + " " + region.getName());
@@ -153,10 +285,17 @@ public class Market {
                     if(ordercounter==100) {
                         orderbatch = ordercounter;
                         ordercounter = 0;
+                        toutput = blorders.Commit2DB_returnSQL();
+                        if(toutput.getHaserror()) {
+                            marketstatus.addMessage(toutput.getErrormessage());                    
+                        }
                         blorders.Commit2DB();
                     }
                 }
-                blorders.Commit2DB();
+                toutput = blorders.Commit2DB_returnSQL();
+                if(toutput.getHaserror()) {
+                    marketstatus.addMessage(toutput.getErrormessage());
+                }
                 pagenr++;
             } while(jsonorders.size()>0);
         }         
@@ -164,7 +303,7 @@ public class Market {
         System.out.println("Download time Swagger -> orders " + ((end - start)/1000));
     }
     
-    public static void processOrders() throws DataException, DBException {
+    private void processOrders() throws DataException, DBException {
         RouteHash routehash = new RouteHash(new RoutetypePK(1));
         BLorders blorders = new BLorders();
         BLorder_hist blorderhist = new BLorder_hist();
@@ -175,10 +314,11 @@ public class Market {
         BLtrade bltrade = new BLtrade();
 
         //calculate average, min and max price for buy/sell orders for each evetype
+        marketstatus.addMessage("Update average prices");
         blevetype.updateaverageprices();
-        System.out.println("Evetype average prices");
         
         bltrade.deletetrade();
+        marketstatus.addMessage("Contruct trade table");
         double max_volume = 33980.4;
         long min_profit = 1000000;
         long min_profit_per_jump = 100000;
@@ -204,6 +344,7 @@ public class Market {
         int runs; //times to travel between buy and sell station to process total amount
         Trade trade;
         int count = 0;
+        TransactionOutput toutput;
         
         //loop all sell orders
         while(sellordersI.hasNext()) {
@@ -246,17 +387,23 @@ public class Market {
                         bltrade.trans_insertTrade(trade);
                         count++;
                         if(count==100) {
-                            bltrade.Commit2DB();
+                            toutput = bltrade.Commit2DB_returnSQL();
+                            if(toutput.getHaserror()) {
+                                marketstatus.addMessage(toutput.getErrormessage());
+                            }
                         }
                     }
                 }
             }
-            bltrade.Commit2DB();
+            toutput = bltrade.Commit2DB_returnSQL();
+            if(toutput.getHaserror()) {
+                marketstatus.addMessage(toutput.getErrormessage());
+            }
         }
         
     }
 
-    public static void processView_tradeorders() throws DataException, DBException {
+    private void processView_tradeorders() throws DataException, DBException {
         RouteHash routehash = new RouteHash(new RoutetypePK(1));
         BLorders blorders = new BLorders();
         BLorder_hist blorderhist = new BLorder_hist();
@@ -268,9 +415,10 @@ public class Market {
         BLview_tradeorders blviewtradeorders = new BLview_tradeorders();
 
         //calculate average, min and max price for buy/sell orders for each evetype
+        marketstatus.addMessage("Update average prices");
         blevetype.updateaverageprices();
-        System.out.println("Evetype average prices");
         
+        marketstatus.addMessage("Construct trade table");
         bltrade.deletetrade();
         float max_cargo = 33980.4f;
         long min_profit = 1000000;
@@ -294,6 +442,7 @@ public class Market {
         int runs; //times to travel between buy and sell station to process total amount
         Trade trade;
         int count = 0;
+        TransactionOutput toutput;
         
         //loop all orders from view
         while(tradeordersI.hasNext()) {
@@ -329,12 +478,18 @@ public class Market {
                     bltrade.trans_insertTrade(trade);
                     count++;
                     if(count==100) {
-                        bltrade.Commit2DB();
+                        toutput = bltrade.Commit2DB_returnSQL();
+                        if(toutput.getHaserror()) {
+                            marketstatus.addMessage(toutput.getErrormessage());
+                        }
                     }
                 }
             }
-            bltrade.Commit2DB();
+            toutput = bltrade.Commit2DB_returnSQL();
+            if(toutput.getHaserror()) {
+                marketstatus.addMessage(toutput.getErrormessage());
+            }
         }
-        
+        marketstatus.setDone();
     }
 }

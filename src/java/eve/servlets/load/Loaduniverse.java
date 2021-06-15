@@ -47,15 +47,15 @@ public class Loaduniverse extends HttpServlet {
             Universe.downloadGraphics();
             Universe.downloadMarketgroups();
             Universe.downloadTypes();
-            Universe.downloadRaces();
-            Universe.downloadSystems();
-            Universe.downloadFactions();
-            Universe.downloadCorporations();
-            Universe.downloadAlliances();
+            //Universe.downloadRaces();
+            //Universe.downloadSystems();
+            //Universe.downloadFactions();
+            //Universe.downloadCorporations();
+            //Universe.downloadAlliances();
             
             //post process data
-            Universe.processDevsystems();
-            Universe.createSecurityislands();
+            //Universe.processDevsystems();
+            //Universe.createSecurityislands();
         }
         catch(DataException e) {
             outputstring = e.getMessage();

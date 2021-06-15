@@ -2,7 +2,7 @@
  * Borders.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.5.2021 19:33
+ * Generated on 14.5.2021 13:35
  *
  */
 
@@ -92,6 +92,7 @@ public abstract class Borders extends GeneralEntityObject implements ProjectCons
                 orders.initIs_buy_order(dbresult.getBoolean("is_buy_order"));
                 orders.initIssued(dbresult.getTimestamp("issued"));
                 orders.initDuration(dbresult.getInt("duration"));
+                orders.initPage(dbresult.getInt("page"));
             }
             catch(SQLException sqle) {
                 throw sqle;

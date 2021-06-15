@@ -42,7 +42,7 @@ public class Loadmarket extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         String outputstring = "";
-        
+/*        
         try {
             //download orders from game server
             Market.downloadOrders();
@@ -59,7 +59,7 @@ public class Loadmarket extends HttpServlet {
         catch(Exception e) {
             outputstring = e.getMessage();
         }
-        
+*/        
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");

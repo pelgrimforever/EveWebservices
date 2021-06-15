@@ -2,7 +2,7 @@
  * Bregion.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.5.2021 19:33
+ * Generated on 14.5.2021 13:35
  *
  */
 
@@ -80,6 +80,7 @@ public abstract class Bregion extends GeneralEntityObject implements ProjectCons
                 region.initName(dbresult.getString("name"));
                 region.initNoaccess(dbresult.getBoolean("noaccess"));
                 region.initOrderpages(dbresult.getInt("orderpages"));
+                region.initOrdererrors(dbresult.getInt("ordererrors"));
             }
             catch(SQLException sqle) {
                 throw sqle;
