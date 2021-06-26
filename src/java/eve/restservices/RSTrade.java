@@ -160,6 +160,12 @@ public class RSTrade {
                             break;
 //Custom code, do not change this line
 //add here custom operations
+                        case ITradeOperation.UPDATE_TRADING:
+                            tradePK = (ITradePK)JSONTrade.toTradePK((JSONObject)json.get("tradepk"));
+                            long volume = JSONConversion.getlong(json, "volume");
+                            bltrade.executetrade(tradePK, volume);
+                            result = returnstatus("OK");
+                            break;
 //Custom code, do not change this line   
                     }
                     break;

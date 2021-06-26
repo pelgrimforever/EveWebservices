@@ -9,17 +9,19 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import general.exception.DataException;
 import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.ITrade;
-import eve.logicentity.Trade;
 import BusinessObject.GeneralEntityObject;
 import eve.BusinessObject.table.Btrade;
 import general.exception.DataException;
 import eve.interfaces.BusinessObject.IBLtrade;
+import eve.interfaces.entity.pk.ITradePK;
 import eve.logicentity.Orders;
+import eve.logicentity.Trade;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Business Logic Entity class BLtrade
@@ -59,6 +61,64 @@ public class BLtrade extends Btrade implements IBLtrade {
     @Override
     public void loadExtra(ResultSet dbresult, LogicEntity trade) throws SQLException {
         
+    }
+    
+    /**
+     * update all trade lines that contain a sell or buy order from this trade line
+     * @param tradePK: trade primary key
+     * @param volume: traded volume
+     * @throws DBException
+     * @throws DataException 
+     */
+    public void executetrade(ITradePK tradePK, long volume) throws DBException, DataException {
+        ArrayList trades = getMapper().loadEntityVector(this, Trade.SQLSellBuyOrders, tradePK.getKeyFields());
+        BLorders blorders = new BLorders();
+        Orders sellorder = blorders.getOrders(tradePK.getOrderssell_order_idPK());
+        Orders buyorder = blorders.getOrders(tradePK.getOrdersbuy_order_idPK());
+        Iterator<Trade> tradeI = trades.iterator();
+        Trade trade;
+        //update sell and buy orders
+        subtractOrdervolume(sellorder, volume);
+        subtractOrdervolume(buyorder, volume);
+        //update trade lines
+        Orders trade_sellorder = null;
+        Orders trade_buyorder = null;
+        while(tradeI.hasNext()) {
+            trade = tradeI.next();
+            if(trade.getPrimaryKey().equals(tradePK)) {
+                trade_sellorder = sellorder;
+                trade_buyorder = buyorder;
+            } else {
+                if(trade.getPrimaryKey().getOrderssell_order_idPK().equals(tradePK.getOrderssell_order_idPK())) {
+                    trade_sellorder = sellorder;
+                    trade_buyorder = blorders.getOrders(trade.getPrimaryKey().getOrdersbuy_order_idPK());
+                }
+                if(trade.getPrimaryKey().getOrdersbuy_order_idPK().equals(tradePK.getOrdersbuy_order_idPK())) {
+                    trade_sellorder = blorders.getOrders(trade.getPrimaryKey().getOrderssell_order_idPK());
+                    trade_buyorder = buyorder;
+                }
+            }
+            recalculateTrade(trade, trade_sellorder, trade_buyorder);
+            trans_updateTrade(trade);
+        }
+        Commit2DB();
+    }
+    
+    public void subtractOrdervolume(Orders order, long volume) {
+        order.setVolume_remain(order.getVolume_remain() - volume);
+    }
+    
+    public void recalculateTrade(Trade trade, Orders sellorder, Orders buyorder) {
+        long volume = Math.min(sellorder.getVolume_remain(), buyorder.getVolume_remain());
+        trade.setTotal_volume(volume);
+        trade.setSell_order_value(volume * sellorder.getPrice());
+        trade.setBuy_order_value(volume * buyorder.getPrice());
+        trade.setProfit(trade.getBuy_order_value()*0.95 - trade.getSell_order_value());
+        trade.setProfit_per_jump(trade.getProfit() / trade.getJumps());
+        if(trade.getRuns()>1) {
+            trade.setRuns(0);
+            trade.setSinglerun_profit_per_jump(0);
+        }
     }
     
     /**

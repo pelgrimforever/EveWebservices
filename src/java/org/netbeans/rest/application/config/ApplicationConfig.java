@@ -58,6 +58,7 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSTypegroup.class);
         resources.add(eve.restservices.RSView_order_region_evetype.class);
         resources.add(eve.restservices.RSView_security_island_systemcount.class);
+        resources.add(eve.restservices.RSView_trade.class);
         resources.add(eve.restservices.RSView_tradeorders.class);
         return resources;
     }
