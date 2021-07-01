@@ -133,6 +133,14 @@ public class RSSystem {
                             IRoutePK routePK = (IRoutePK)JSONRoute.toRoutePK((JSONObject)json.get("routepk"));
                             result = JSONSystem.toJSON(blsystem.getRoute(routePK)).toJSONString();
                             break;
+                        case ISystemOperation.SELECT_Systemtradesell_system:
+                            ISystemtradePK systemtradeSell_systemPK = (ISystemtradePK)JSONSystemtrade.toSystemtradePK((JSONObject)json.get("systemtradepk"));
+                            result = JSONSystem.toJSON(blsystem.getSystemtradesell_system(systemtradeSell_systemPK)).toJSONString();
+                            break;
+                        case ISystemOperation.SELECT_Systemtradebuy_system:
+                            ISystemtradePK systemtradeBuy_systemPK = (ISystemtradePK)JSONSystemtrade.toSystemtradePK((JSONObject)json.get("systemtradepk"));
+                            result = JSONSystem.toJSON(blsystem.getSystemtradebuy_system(systemtradeBuy_systemPK)).toJSONString();
+                            break;
                         case ISystemOperation.SELECT_SEARCH:
                             ISystemsearch search = (ISystemsearch)JSONSystem.toSystemsearch((JSONObject)json.get("search"));
                             result = JSONSystem.toJSONArray(blsystem.search(search)).toJSONString();
@@ -220,6 +228,14 @@ public class RSSystem {
                         case ISystemOperation.SELECT_Route:
                             IRoutePK routePK = (IRoutePK)JSONRoute.toRoutePK((JSONObject)json.get("routepk"));
                             result = JSONSystem.toJSON(blsystem.getRoute(routePK)).toJSONString();
+                            break;
+                        case ISystemOperation.SELECT_Systemtradesell_system:
+                            ISystemtradePK systemtradeSell_systemPK = (ISystemtradePK)JSONSystemtrade.toSystemtradePK((JSONObject)json.get("systemtradepk"));
+                            result = JSONSystem.toJSON(blsystem.getSystemtradesell_system(systemtradeSell_systemPK)).toJSONString();
+                            break;
+                        case ISystemOperation.SELECT_Systemtradebuy_system:
+                            ISystemtradePK systemtradeBuy_systemPK = (ISystemtradePK)JSONSystemtrade.toSystemtradePK((JSONObject)json.get("systemtradepk"));
+                            result = JSONSystem.toJSON(blsystem.getSystemtradebuy_system(systemtradeBuy_systemPK)).toJSONString();
                             break;
                         case ISystemOperation.SELECT_SEARCH:
                             ISystemsearch search = (ISystemsearch)JSONSystem.toSystemsearch((JSONObject)json.get("search"));

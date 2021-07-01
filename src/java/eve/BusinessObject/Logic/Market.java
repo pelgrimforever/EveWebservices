@@ -11,9 +11,12 @@ import db.TransactionOutput;
 import eve.data.Swagger;
 import eve.entity.pk.RoutetypePK;
 import eve.entity.pk.Security_islandPK;
-import eve.entity.pk.SystemPK;
+import eve.entity.pk.Systemtrade_orderPK;
+import eve.logicentity.Evetype;
 import eve.logicentity.Orders;
 import eve.logicentity.Region;
+import eve.logicentity.Systemtrade;
+import eve.logicentity.Systemtrade_order;
 import eve.logicentity.Trade;
 import eve.logicview.View_tradeorders;
 import general.exception.DBException;
@@ -131,10 +134,12 @@ public class Market implements Runnable {
         try {
             this.keeprunning = true;
             //download orders from game server
-            downloadOrders();
+//            downloadOrders();
             //process order data locally
-            processView_tradeorders();
-
+            //trade orders from station to station, seperate types
+//            processView_tradeorders();
+            //trade grouped by system, type
+            processView_systemtradeorders();
         }
         catch(DataException e) {
             marketstatus.addMessage(e.getMessage());
@@ -303,106 +308,6 @@ public class Market implements Runnable {
         System.out.println("Download time Swagger -> orders " + ((end - start)/1000));
     }
     
-    private void processOrders() throws DataException, DBException {
-        RouteHash routehash = new RouteHash(new RoutetypePK(1));
-        BLorders blorders = new BLorders();
-        BLorder_hist blorderhist = new BLorder_hist();
-        BLregion blregion = new BLregion();
-        BLevetype blevetype = new BLevetype();
-        BLsystem blsystem = new BLsystem();
-        BLroute blroute = new BLroute();
-        BLtrade bltrade = new BLtrade();
-
-        //calculate average, min and max price for buy/sell orders for each evetype
-        marketstatus.addMessage("Update average prices");
-        blevetype.updateaverageprices();
-        
-        bltrade.deletetrade();
-        marketstatus.addMessage("Contruct trade table");
-        double max_volume = 33980.4;
-        long min_profit = 1000000;
-        long min_profit_per_jump = 100000;
-        float perc_tax = 0.05f;
-        float perc_net = 1 - perc_tax;
-        Security_islandPK security_islandPK = new Security_islandPK(1);
-        //get all buy orders and sell orders that potentially can generate profit
-        ArrayList buyorders = null;
-        Iterator<Orders> buyordersI = null;
-        Iterator<Orders> sellordersI = blorders.load_sell_orders(max_volume, security_islandPK).iterator();
-        Orders buyorder = null;
-        Orders sellorder;
-        double buyordervalue;
-        double sellordervalue;
-        double totalvolume;
-        int maxunits_per_run;
-        double profit_per_unit;
-        double profit; //total profit between buy and sell
-        double profit_per_jump;
-        double singlerun_profit_per_jump;
-        int jumps; //jumps for a single trip between buy and sell station
-        int totaljumps;
-        int runs; //times to travel between buy and sell station to process total amount
-        Trade trade;
-        int count = 0;
-        TransactionOutput toutput;
-        
-        //loop all sell orders
-        while(sellordersI.hasNext()) {
-            sellorder = sellordersI.next();
-            //if evetype has changed, load new buyorder list
-            if(buyorder==null || !buyorder.getEvetypePK().equals(sellorder.getEvetypePK())) {
-                buyorders = blorders.load_buy_orders_4evetype(max_volume, security_islandPK, sellorder.getEvetypePK());
-            }
-            buyordersI = buyorders.iterator();
-            while(buyordersI.hasNext()) {
-                buyorder = buyordersI.next();
-                totalvolume = Math.min(buyorder.getVolume_remain(), sellorder.getVolume_remain());
-                buyordervalue = buyorder.getPrice() * totalvolume;
-                sellordervalue = sellorder.getPrice() * totalvolume;
-                profit_per_unit = buyorder.getPrice() * perc_net - sellorder.getPrice();
-                profit = buyordervalue * perc_net - sellordervalue;
-                if(profit>=min_profit) {
-                    jumps = (int)routehash.getRoutefinder(new SystemPK(sellorder.getSystemPK().getId())).getJumps(buyorder.getSystemPK().getId());
-                    if(jumps==0) jumps = 1;
-                    maxunits_per_run = (int)Math.floor(max_volume/sellorder.getPackaged_volume());
-                    runs = (int)Math.ceil(totalvolume/maxunits_per_run);
-                    totaljumps = jumps * (runs * 2 -1);
-                    profit_per_jump = profit / totaljumps;
-                    singlerun_profit_per_jump = profit_per_jump;
-                    if(runs>1) {
-                        singlerun_profit_per_jump = maxunits_per_run * (profit_per_unit) / jumps;
-                    }
-                    if(profit_per_jump >= min_profit_per_jump || singlerun_profit_per_jump >= min_profit_per_jump) {
-                        trade = new Trade(sellorder.getPrimaryKey().getId(), buyorder.getPrimaryKey().getId());
-                        trade.setBuy_order_value(buyordervalue);
-                        trade.setJumps(jumps);
-                        trade.setMaxunits_per_run(maxunits_per_run);
-                        trade.setProfit(profit);
-                        trade.setProfit_per_jump(profit_per_jump);
-                        trade.setRuns(runs);
-                        trade.setSell_order_value(sellordervalue);
-                        trade.setSinglerun_profit_per_jump(singlerun_profit_per_jump);
-                        trade.setTotal_jumps(totaljumps);
-                        trade.setTotal_volume(totalvolume);
-                        bltrade.trans_insertTrade(trade);
-                        count++;
-                        if(count==100) {
-                            toutput = bltrade.Commit2DB_returnSQL();
-                            if(toutput.getHaserror()) {
-                                marketstatus.addMessage(toutput.getErrormessage());
-                            }
-                        }
-                    }
-                }
-            }
-            toutput = bltrade.Commit2DB_returnSQL();
-            if(toutput.getHaserror()) {
-                marketstatus.addMessage(toutput.getErrormessage());
-            }
-        }
-        
-    }
-
     private void processView_tradeorders() throws DataException, DBException {
         RouteHash routehash = new RouteHash(new RoutetypePK(1));
         BLorders blorders = new BLorders();
@@ -490,6 +395,121 @@ public class Market implements Runnable {
                 marketstatus.addMessage(toutput.getErrormessage());
             }
         }
+    }
+
+    private void processView_systemtradeorders() throws DataException, DBException {
+        float max_cargo = 33980.4f;
+        long min_profit = 2000000;
+        long min_profit_per_jump = 100000;
+        float perc_tax = 0.05f;
+        float perc_net = 1 - perc_tax;
+        Security_islandPK security_islandPK = new Security_islandPK(1);
+        TransactionOutput toutput;
+        BLsystemtrade blsystemtrade = new BLsystemtrade();
+        BLsystemtrade_order blsystemtrade_order = new BLsystemtrade_order();
+        marketstatus.addMessage("Construct system trade orders");
+        blsystemtrade.deletesystemtrade();
+        BLorders blorders = new BLorders();
+        BLevetype blevetype = new BLevetype();
+        Iterator<Orders> sellordersI;
+        Evetype evetype = new Evetype(-1);
+        Orders sellorder;
+        ArrayList sellorders = new ArrayList();
+        Iterator<Orders> buyordersI = sellorders.iterator();
+        Orders buyorder;
+        long prev_sellsystemid = -1;
+        Iterator<Systemtrade> systemtradeI = blsystemtrade.getSystemtradeorders(security_islandPK, max_cargo, perc_net, min_profit).iterator();
+        Systemtrade systemtrade;
+        Systemtrade_orderPK systemtrade_orderPK;
+        Systemtrade_order systemtradeorder;
+        long amount = 0;
+        long sellvolume = 0;
+        long buyvolume = 0;
+        double sellprice;
+        double buyprice;
+        double profit;
+        double cargovolume;
+        double totalprofit;
+        double totalcargovolume;
+        int count = 0;
+        //loop all found system combinations
+        while(systemtradeI.hasNext()) {
+            count++;
+            System.out.println("" + count);
+            systemtrade = systemtradeI.next();
+            totalprofit = 0;
+            totalcargovolume = 0;
+            buyordersI = blorders.load_buyorders4system(systemtrade.getPrimaryKey().getSystembuy_systemPK(), max_cargo, perc_net).iterator();
+            //systemtradeI is sorted by sekk_system to minimize sql execution, sell order list is always biggest to load
+            if(systemtrade.getPrimaryKey().getSell_system()!=prev_sellsystemid) {
+                prev_sellsystemid = systemtrade.getPrimaryKey().getSell_system();
+                sellorders = blorders.load_sellorders4system(systemtrade.getPrimaryKey().getSystemsell_systemPK(), max_cargo, perc_net);
+            }
+            sellordersI = sellorders.iterator();
+            //initialize first sellorder from new list
+            sellorder = sellordersI.next();
+            //loop all buy orders, look for matching sell orders which make a profit
+            while(buyordersI.hasNext()) {
+                buyorder = buyordersI.next();
+                buyvolume = buyorder.getVolume_remain();
+                //find matching evetype
+                while(sellorder.getEvetypePK().getId()<buyorder.getEvetypePK().getId() && sellordersI.hasNext()) {
+                    sellorder = sellordersI.next();
+                    sellvolume = sellorder.getVolume_remain();
+                }
+                //find available quantities with profit
+                if(sellorder.getEvetypePK().getId()==buyorder.getEvetypePK().getId()) {
+                    if(!evetype.getPrimaryKey().equals(sellorder.getEvetypePK())) {
+                        evetype = blevetype.getEvetype(sellorder.getEvetypePK());
+                    }
+                    while(evetype.getPrimaryKey().equals(sellorder.getEvetypePK()) 
+                            && buyvolume>0 && sellvolume>0 
+                            && buyorder.getPrice()*perc_net>sellorder.getPrice()) {
+                        amount = Math.min(sellvolume, buyvolume);
+                        sellprice = amount * sellorder.getPrice();
+                        buyprice = amount * buyorder.getPrice();
+                        profit = buyprice * perc_net - sellprice;
+                        cargovolume = amount * evetype.getPackaged_volume();
+                        sellvolume -= amount;
+                        buyvolume -= amount;
+                        totalprofit += profit;
+                        totalcargovolume += cargovolume;
+                        systemtrade_orderPK = new Systemtrade_orderPK();
+                        systemtrade_orderPK.setSystemtradePK(systemtrade.getPrimaryKey());
+                        systemtrade_orderPK.setOrderssell_orderPK(sellorder.getPrimaryKey());
+                        systemtrade_orderPK.setOrdersbuy_orderPK(buyorder.getPrimaryKey());
+                        systemtradeorder = new Systemtrade_order(systemtrade_orderPK);
+                        systemtradeorder.setAmount(amount);
+                        systemtradeorder.setBuyprice(buyprice);
+                        systemtradeorder.setCargovolume(cargovolume);
+                        systemtradeorder.setProfit(profit);
+                        systemtradeorder.setSellprice(sellprice);
+                        blsystemtrade_order.trans_insertSystemtrade_order(systemtradeorder);
+                        if((buyvolume>0 || sellvolume==0) && sellordersI.hasNext()) {
+                            sellorder = sellordersI.next();
+                            sellvolume = sellorder.getVolume_remain();
+                        }
+                    }
+                }
+            }
+            if(totalprofit>=min_profit) {
+                systemtrade.setProfit(totalprofit);
+                systemtrade.setTotal_cargo_volume(totalcargovolume);
+                systemtrade.setJumps(systemtrade.getJumps());
+                blsystemtrade.trans_insertSystemtrade(systemtrade);
+                toutput = blsystemtrade.Commit2DB_returnSQL();
+                if(toutput.getHaserror()) {
+                    marketstatus.addMessage(toutput.getErrormessage());
+                }
+                toutput = blsystemtrade_order.Commit2DB_returnSQL();
+                if(toutput.getHaserror()) {
+                    marketstatus.addMessage(toutput.getErrormessage());
+                }
+            } else {
+                blsystemtrade_order.getTransactionqueue().clear();
+            }
+        }
         marketstatus.setDone();
     }
+
 }

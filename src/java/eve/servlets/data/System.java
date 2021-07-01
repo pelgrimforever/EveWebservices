@@ -2,7 +2,7 @@
  * DataServlet.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 23.5.2021 16:2
+ * Generated on 30.5.2021 15:39
  *
  */
 
@@ -81,6 +81,14 @@ public class System extends SecurityDataServlet {
                         case ISystemOperation.SELECT_Route:
                             IRoutePK routePK = (IRoutePK)parser.getJavaObject("routepk");
                             dataobject = blsystem.getRoute(routePK);
+                            break;
+                        case ISystemOperation.SELECT_Systemtradesell_system:
+                            ISystemtradePK systemtradeSell_systemPK = (ISystemtradePK)parser.getJavaObject("systemtradepk");
+                            dataobject = blsystem.getSystemtradesell_system(systemtradeSell_systemPK);
+                            break;
+                        case ISystemOperation.SELECT_Systemtradebuy_system:
+                            ISystemtradePK systemtradeBuy_systemPK = (ISystemtradePK)parser.getJavaObject("systemtradepk");
+                            dataobject = blsystem.getSystemtradebuy_system(systemtradeBuy_systemPK);
                             break;
                         case ISystemOperation.SELECT_SEARCH:
                             ISystemsearch search = (ISystemsearch)parser.getJavaObject("search");

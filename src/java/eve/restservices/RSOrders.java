@@ -121,6 +121,14 @@ public class RSOrders {
                             ISystemPK systemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
                             result = JSONOrders.toJSONArray(blorders.getOrderss4system(systemPK)).toJSONString();
                             break;
+                        case IOrdersOperation.SELECT_Systemtrade_orderbuy_order:
+                            ISystemtrade_orderPK systemtrade_orderBuy_orderPK = (ISystemtrade_orderPK)JSONSystemtrade_order.toSystemtrade_orderPK((JSONObject)json.get("systemtrade_orderpk"));
+                            result = JSONOrders.toJSON(blorders.getSystemtrade_orderbuy_order(systemtrade_orderBuy_orderPK)).toJSONString();
+                            break;
+                        case IOrdersOperation.SELECT_Systemtrade_ordersell_order:
+                            ISystemtrade_orderPK systemtrade_orderSell_orderPK = (ISystemtrade_orderPK)JSONSystemtrade_order.toSystemtrade_orderPK((JSONObject)json.get("systemtrade_orderpk"));
+                            result = JSONOrders.toJSON(blorders.getSystemtrade_ordersell_order(systemtrade_orderSell_orderPK)).toJSONString();
+                            break;
                         case IOrdersOperation.SELECT_Tradesell_order_id:
                             ITradePK tradeSell_order_idPK = (ITradePK)JSONTrade.toTradePK((JSONObject)json.get("tradepk"));
                             result = JSONOrders.toJSON(blorders.getTradesell_order_id(tradeSell_order_idPK)).toJSONString();
@@ -204,6 +212,14 @@ public class RSOrders {
                         case IOrdersOperation.SELECT_System:
                             ISystemPK systemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
                             result = JSONOrders.toJSONArray(blorders.getOrderss4system(systemPK)).toJSONString();
+                            break;
+                        case IOrdersOperation.SELECT_Systemtrade_orderbuy_order:
+                            ISystemtrade_orderPK systemtrade_orderBuy_orderPK = (ISystemtrade_orderPK)JSONSystemtrade_order.toSystemtrade_orderPK((JSONObject)json.get("systemtrade_orderpk"));
+                            result = JSONOrders.toJSON(blorders.getSystemtrade_orderbuy_order(systemtrade_orderBuy_orderPK)).toJSONString();
+                            break;
+                        case IOrdersOperation.SELECT_Systemtrade_ordersell_order:
+                            ISystemtrade_orderPK systemtrade_orderSell_orderPK = (ISystemtrade_orderPK)JSONSystemtrade_order.toSystemtrade_orderPK((JSONObject)json.get("systemtrade_orderpk"));
+                            result = JSONOrders.toJSON(blorders.getSystemtrade_ordersell_order(systemtrade_orderSell_orderPK)).toJSONString();
                             break;
                         case IOrdersOperation.SELECT_Tradesell_order_id:
                             ITradePK tradeSell_order_idPK = (ITradePK)JSONTrade.toTradePK((JSONObject)json.get("tradepk"));

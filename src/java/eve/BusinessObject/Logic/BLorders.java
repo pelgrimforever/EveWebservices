@@ -18,10 +18,11 @@ import db.AbstractSQLMapper;
 import eve.BusinessObject.table.Borders;
 import eve.data.Swagger;
 import eve.entity.pk.EvetypePK;
-import eve.entity.pk.Security_islandPK;
 import eve.entity.pk.SystemPK;
 import general.exception.DataException;
 import eve.interfaces.BusinessObject.IBLorders;
+import eve.interfaces.entity.pk.IEvetypePK;
+import eve.interfaces.entity.pk.ISystemPK;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -81,6 +82,8 @@ public class BLorders extends Borders implements IBLorders {
     public void deleteorders() throws DBException, DataException {
         BLtrade bltrade = new BLtrade(this);
         bltrade.deletetrade();
+        BLsystemtrade blsystemtrade = new BLsystemtrade(this);
+        blsystemtrade.deletesystemtrade();
         this.transactionqueue.addStatement(this.getClass().getSimpleName(), Orders.SQLdeleteall, null);
         this.Commit2DB();
     }
@@ -113,6 +116,49 @@ public class BLorders extends Borders implements IBLorders {
     }
 
     /**
+     * load all sell orders from view_systemtradeorders in system, ordered by evetype and price
+     * @param systemPK: system primary key
+     * @param max_cargovolume: max allowed cargo volume
+     * @param net_perc: net percentage of buy order price
+     * @return
+     * @throws DBException 
+     */
+    public ArrayList load_sellorders4system(ISystemPK systemPK, double max_cargovolume, double net_perc) throws DBException {
+        Object[][] parameter = { { "max_cargovolume", max_cargovolume }, { "net_perc", net_perc } };
+        parameter = AbstractSQLMapper.addKeyArrays(parameter, systemPK.getKeyFields());
+        return getMapper().loadEntityVector(this, Orders.SQLgetSellorders4system2, parameter);
+    }
+
+    /**
+     * load all sell orders from view_systemtradeorders in system for evetype, ordered by evetype and price
+     * @param systemPK: system primary key
+     * @param evetypePK: evetype primary key
+     * @param max_price: max price
+     * @return
+     * @throws DBException 
+     */
+    public ArrayList load_sellorders4systemevetype(ISystemPK systemPK, IEvetypePK evetypePK, double max_price) throws DBException {
+        Object[][] parameter = { { "max_price", max_price } };
+        parameter = AbstractSQLMapper.addKeyArrays(parameter, systemPK.getKeyFields());
+        parameter = AbstractSQLMapper.addKeyArrays(parameter, evetypePK.getKeyFields());
+        return getMapper().loadEntityVector(this, Orders.SQLgetSellorders4systemevetype, parameter);
+    }
+
+    /**
+     * load all buy orders from view_systemtradeorders in system, ordered by evetype and price desc
+     * @param systemPK: system primary key
+     * @param max_cargovolume: max allowed cargo volume
+     * @param net_perc: net percentage of buy order price
+     * @return
+     * @throws DBException 
+     */
+    public ArrayList load_buyorders4system(ISystemPK systemPK, double max_cargovolume, double net_perc) throws DBException {
+        Object[][] parameter = { { "max_cargovolume", max_cargovolume }, { "net_perc", net_perc } };
+        parameter = AbstractSQLMapper.addKeyArrays(parameter, systemPK.getKeyFields());
+        return getMapper().loadEntityVector(this, Orders.SQLgetBuyorders4system2, parameter);
+    }    
+
+    /**
      * load all buy orders with
      * - price > min sel order price
      * - unit volume <= max_volume
@@ -121,12 +167,12 @@ public class BLorders extends Borders implements IBLorders {
      * @return
      * @throws DBException 
      */
-    public ArrayList load_buy_orders(double max_volume, Security_islandPK security_islandPK) throws DBException {
+/*    public ArrayList load_buy_orders(double max_volume, Security_islandPK security_islandPK) throws DBException {
         Object[][] parameter = { { "maxvolume", max_volume } };
         parameter = AbstractSQLMapper.addKeyArrays(parameter, security_islandPK.getKeyFields());
         return getMapper().loadEntityVector(this, Orders.SQLbuy_orders, parameter);
     }
-    
+*/    
     /**
      * load all buy orders for evetype with
      * - price > min sel order price
@@ -136,13 +182,13 @@ public class BLorders extends Borders implements IBLorders {
      * @return
      * @throws DBException 
      */
-    public ArrayList load_buy_orders_4evetype(double max_volume, Security_islandPK security_islandPK, EvetypePK evetypePK) throws DBException {
+/*    public ArrayList load_buy_orders_4evetype(double max_volume, Security_islandPK security_islandPK, EvetypePK evetypePK) throws DBException {
         Object[][] parameter = { { "maxvolume", max_volume } };
         parameter = AbstractSQLMapper.addKeyArrays(parameter, evetypePK.getKeyFields());
         parameter = AbstractSQLMapper.addKeyArrays(parameter, security_islandPK.getKeyFields());
         return getMapper().loadEntityVector(this, Orders.SQLbuy_orders4evetype, parameter);
     }
-    
+  */  
     /**
      * load all sell orders with
      * - price < max buy order price
@@ -152,12 +198,12 @@ public class BLorders extends Borders implements IBLorders {
      * @return
      * @throws DBException 
      */
-    public ArrayList load_sell_orders(double max_volume, Security_islandPK security_islandPK) throws DBException {
+/*    public ArrayList load_sell_orders(double max_volume, Security_islandPK security_islandPK) throws DBException {
         Object[][] parameter = { { "maxvolume", max_volume } };
         parameter = AbstractSQLMapper.addKeyArrays(parameter, security_islandPK.getKeyFields());
         return getMapper().loadEntityVector(this, Orders.SQLsell_orders, parameter);
     }
-    
+*/    
     /**
      * try to insert Orders object in database
      * commit transaction

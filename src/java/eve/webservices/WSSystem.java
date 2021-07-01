@@ -297,6 +297,58 @@ public class WSSystem implements WSISystem {
         }
     }
 
+    //@WebMethod(operationName = "getSystems4systemtradeSell_system")
+    @Override
+    public String getSystems4systemtradeSell_system(String json) {
+        BLsystem blsystem = new BLsystem();
+        JSONParser parser = new JSONParser();
+        System system;
+        try {
+            String result = null;
+            ISystemtradePK systemtradeSell_systemPK = JSONSystemtrade.toSystemtradePK((JSONObject)parser.parse(json));
+            system = (System)blsystem.getSystemtradesell_system(systemtradeSell_systemPK);
+            if(system!=null) {
+                result = JSONSystem.toJSON(system).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getSystems4systemtradeBuy_system")
+    @Override
+    public String getSystems4systemtradeBuy_system(String json) {
+        BLsystem blsystem = new BLsystem();
+        JSONParser parser = new JSONParser();
+        System system;
+        try {
+            String result = null;
+            ISystemtradePK systemtradeBuy_systemPK = JSONSystemtrade.toSystemtradePK((JSONObject)parser.parse(json));
+            system = (System)blsystem.getSystemtradebuy_system(systemtradeBuy_systemPK);
+            if(system!=null) {
+                result = JSONSystem.toJSON(system).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
 
 }
 

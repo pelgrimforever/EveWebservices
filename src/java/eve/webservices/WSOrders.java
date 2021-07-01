@@ -219,6 +219,58 @@ public class WSOrders implements WSIOrders {
         }
     }
 
+    //@WebMethod(operationName = "getOrderss4systemtrade_orderBuy_order")
+    @Override
+    public String getOrderss4systemtrade_orderBuy_order(String json) {
+        BLorders blorders = new BLorders();
+        JSONParser parser = new JSONParser();
+        Orders orders;
+        try {
+            String result = null;
+            ISystemtrade_orderPK systemtrade_orderBuy_orderPK = JSONSystemtrade_order.toSystemtrade_orderPK((JSONObject)parser.parse(json));
+            orders = (Orders)blorders.getSystemtrade_orderbuy_order(systemtrade_orderBuy_orderPK);
+            if(orders!=null) {
+                result = JSONOrders.toJSON(orders).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getOrderss4systemtrade_orderSell_order")
+    @Override
+    public String getOrderss4systemtrade_orderSell_order(String json) {
+        BLorders blorders = new BLorders();
+        JSONParser parser = new JSONParser();
+        Orders orders;
+        try {
+            String result = null;
+            ISystemtrade_orderPK systemtrade_orderSell_orderPK = JSONSystemtrade_order.toSystemtrade_orderPK((JSONObject)parser.parse(json));
+            orders = (Orders)blorders.getSystemtrade_ordersell_order(systemtrade_orderSell_orderPK);
+            if(orders!=null) {
+                result = JSONOrders.toJSON(orders).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
     //@WebMethod(operationName = "getOrderss4tradeSell_order_id")
     @Override
     public String getOrderss4tradeSell_order_id(String json) {

@@ -2,7 +2,7 @@
  * Borders.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 23.5.2021 16:2
+ * Generated on 30.5.2021 15:39
  *
  */
 
@@ -270,6 +270,10 @@ public abstract class Borders extends GeneralEntityObject implements ProjectCons
      * @param ordersPK: Orders primary key
      */
     public void cascadedeleteOrders(String senderobject, IOrdersPK ordersPK) {
+        BLsystemtrade_order blsystemtrade_orderBuy_order = new BLsystemtrade_order(this);
+        blsystemtrade_orderBuy_order.delete4ordersBuy_order(senderobject, ordersPK);
+        BLsystemtrade_order blsystemtrade_orderSell_order = new BLsystemtrade_order(this);
+        blsystemtrade_orderSell_order.delete4ordersSell_order(senderobject, ordersPK);
         BLtrade bltradeSell_order_id = new BLtrade(this);
         bltradeSell_order_id.delete4ordersSell_order_id(senderobject, ordersPK);
         BLtrade bltradeBuy_order_id = new BLtrade(this);
@@ -318,6 +322,30 @@ public abstract class Borders extends GeneralEntityObject implements ProjectCons
             return getMapper().loadEntityVector(this, Orders.SQLSelect4system, systemPK.getKeyFields());
         } else return new ArrayList();
     }
+    /**
+     * @param systemtrade_orderPK: parent Systemtrade_order for child object Orders Entity
+     * @return child Orders Entity object
+     * @throws eve.general.exception.CustomException
+     */
+    public IOrders getSystemtrade_orderbuy_order(ISystemtrade_orderPK systemtrade_orderPK) throws CustomException {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            OrdersPK ordersPK = new OrdersPK(systemtrade_orderPK.getBuy_order());
+            return this.getOrders(ordersPK);
+        } else return null;
+    }
+
+    /**
+     * @param systemtrade_orderPK: parent Systemtrade_order for child object Orders Entity
+     * @return child Orders Entity object
+     * @throws eve.general.exception.CustomException
+     */
+    public IOrders getSystemtrade_ordersell_order(ISystemtrade_orderPK systemtrade_orderPK) throws CustomException {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            OrdersPK ordersPK = new OrdersPK(systemtrade_orderPK.getSell_order());
+            return this.getOrders(ordersPK);
+        } else return null;
+    }
+
     /**
      * @param tradePK: parent Trade for child object Orders Entity
      * @return child Orders Entity object

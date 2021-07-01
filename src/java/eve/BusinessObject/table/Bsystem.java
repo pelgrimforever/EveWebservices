@@ -2,7 +2,7 @@
  * Bsystem.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 23.5.2021 16:2
+ * Generated on 30.5.2021 15:39
  *
  */
 
@@ -271,6 +271,10 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
         blsystemjumpsSystem_start.delete4systemSystem_start(senderobject, systemPK);
         BLroute blroute = new BLroute(this);
         blroute.delete4system(senderobject, systemPK);
+        BLsystemtrade blsystemtradeSell_system = new BLsystemtrade(this);
+        blsystemtradeSell_system.delete4systemSell_system(senderobject, systemPK);
+        BLsystemtrade blsystemtradeBuy_system = new BLsystemtrade(this);
+        blsystemtradeBuy_system.delete4systemBuy_system(senderobject, systemPK);
     }
 
     /**
@@ -347,6 +351,30 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
     public ISystem getRoute(IRoutePK routePK) throws CustomException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             SystemPK systemPK = new SystemPK(routePK.getSystem());
+            return this.getSystem(systemPK);
+        } else return null;
+    }
+
+    /**
+     * @param systemtradePK: parent Systemtrade for child object System Entity
+     * @return child System Entity object
+     * @throws eve.general.exception.CustomException
+     */
+    public ISystem getSystemtradesell_system(ISystemtradePK systemtradePK) throws CustomException {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            SystemPK systemPK = new SystemPK(systemtradePK.getSell_system());
+            return this.getSystem(systemPK);
+        } else return null;
+    }
+
+    /**
+     * @param systemtradePK: parent Systemtrade for child object System Entity
+     * @return child System Entity object
+     * @throws eve.general.exception.CustomException
+     */
+    public ISystem getSystemtradebuy_system(ISystemtradePK systemtradePK) throws CustomException {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            SystemPK systemPK = new SystemPK(systemtradePK.getBuy_system());
             return this.getSystem(systemPK);
         } else return null;
     }
