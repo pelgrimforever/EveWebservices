@@ -58,9 +58,11 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSTmp_system_jumps.class);
         resources.add(eve.restservices.RSTrade.class);
         resources.add(eve.restservices.RSTypegroup.class);
+        resources.add(eve.restservices.RSView_combinedtrade.class);
         resources.add(eve.restservices.RSView_order_region_evetype.class);
         resources.add(eve.restservices.RSView_security_island_systemcount.class);
         resources.add(eve.restservices.RSView_systemtrade.class);
+        resources.add(eve.restservices.RSView_systemtrade_order.class);
         resources.add(eve.restservices.RSView_systemtradeorders.class);
         resources.add(eve.restservices.RSView_trade.class);
         resources.add(eve.restservices.RSView_tradeorders.class);

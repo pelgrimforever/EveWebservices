@@ -98,6 +98,10 @@ public class RSView_systemtrade {
                             break;
 //Custom code, do not change this line
 //add here custom operations
+                        case IView_systemtradeOperation.SELECT_ALL_STARTSYSTEM:
+                            eve.entity.pk.SystemPK systemPK = (eve.entity.pk.SystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+                            result = JSONView_systemtrade.toJSONArray(blview_systemtrade.getView_systemtrades_Startsystem(systemPK)).toJSONString();
+                            break;
 //Custom code, do not change this line   
                     }
             }

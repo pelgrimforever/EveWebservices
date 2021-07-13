@@ -99,7 +99,11 @@ public class BLtrade extends Btrade implements IBLtrade {
                 }
             }
             recalculateTrade(trade, trade_sellorder, trade_buyorder);
-            trans_updateTrade(trade);
+            if(trade.getTotal_volume()==0) {
+                trans_deleteTrade(trade);
+            } else {
+                trans_updateTrade(trade);
+            }
         }
         Commit2DB();
     }

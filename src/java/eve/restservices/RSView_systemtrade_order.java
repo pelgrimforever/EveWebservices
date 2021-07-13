@@ -1,24 +1,15 @@
 package eve.restservices;
 
-import base.servlets.Securitycheck;
 import data.conversion.JSONConversion;
-import data.gis.shape.GISConversion;
-import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
-import eve.interfaces.logicview.IView_trade;
-import eve.interfaces.servlet.IView_tradeOperation;
-import eve.logicview.View_trade;
+import eve.entity.pk.SystemtradePK;
+import eve.interfaces.logicview.IView_systemtrade_order;
+import eve.interfaces.servlet.IView_systemtrade_orderOperation;
 import eve.servlets.DataServlet;
 import general.exception.CustomException;
-import general.exception.DataException;
 import general.exception.DBException;
-import java.sql.Date;
-import java.sql.Time;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
@@ -39,20 +30,20 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-@Path("rsview_trade")
-public class RSView_trade {
+@Path("rsview_systemtrade_order")
+public class RSView_systemtrade_order {
 
     @Context
     private UriInfo context;
 
     /**
-     * Creates a new instance of RSView_trade
+     * Creates a new instance of RSView_systemtrade_order
      */
-    public RSView_trade() {
+    public RSView_systemtrade_order() {
     }
 
     /**
-     * Retrieves representation of an instance of view_trade.restservices.RSView_trade
+     * Retrieves representation of an instance of view_systemtrade_order.restservices.RSView_systemtrade_order
      * @return an instance of java.lang.String
      */
     @GET
@@ -60,10 +51,10 @@ public class RSView_trade {
     @Produces(MediaType.APPLICATION_JSON)
     public String get(@PathParam("json") String jsonstring) {
         try {
-            BLview_trade blview_trade = new BLview_trade();
-            ArrayList view_trades = blview_trade.getAll();
-            JSONArray jsonview_trades = JSONView_trade.toJSONArray(view_trades);
-            return jsonview_trades.toJSONString();
+            BLview_systemtrade_order blview_systemtrade_order = new BLview_systemtrade_order();
+            ArrayList view_systemtrade_orders = blview_systemtrade_order.getAll();
+            JSONArray jsonview_systemtrade_orders = JSONView_systemtrade_order.toJSONArray(view_systemtrade_orders);
+            return jsonview_systemtrade_orders.toJSONString();
         }
         catch(DBException e) {
             return "{ \"status\": \"error\"}";
@@ -71,7 +62,7 @@ public class RSView_trade {
     }
 
     /**
-     * Retrieves representation of an instance of view_trade.restservices.RSView_trade
+     * Retrieves representation of an instance of view_systemtrade_order.restservices.RSView_systemtrade_order
      * @return an instance of java.lang.String
      */
     @POST
@@ -79,33 +70,28 @@ public class RSView_trade {
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         String result = "";
-        BLview_trade blview_trade = new BLview_trade();
+        BLview_systemtrade_order blview_systemtrade_order = new BLview_systemtrade_order();
         JSONParser parser = new JSONParser();
         try {
             JSONObject json = (JSONObject)parser.parse(jsonstring);
             JSONObject jsonoperation = (JSONObject)json.get("operation");
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
-            IView_trade view_trade;
+            IView_systemtrade_order view_systemtrade_order;
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operationtype) {
                 case DataServlet.OPERATIONTYPE_SELECT:
                     switch(operation) {
-                        case IView_tradeOperation.SELECT_ALL:
-                            result = JSONView_trade.toJSONArray(blview_trade.getView_trades()).toJSONString();
+                        case IView_systemtrade_orderOperation.SELECT_ALL:
+                            result = JSONView_systemtrade_order.toJSONArray(blview_systemtrade_order.getView_systemtrade_orders()).toJSONString();
                             break;
 //Custom code, do not change this line
 //add here custom operations
-                        case IView_tradeOperation.SELECT_ALL_STARTSYSTEM:
-                            eve.entity.pk.SystemPK systemPK = (eve.entity.pk.SystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
-                            result = JSONView_trade.toJSONArray(blview_trade.getView_trades_Startsystem(systemPK)).toJSONString();
-                            break;
-                        case IView_tradeOperation.SELECT_STARTENDSYSTEM:
-                            eve.entity.pk.SystemPK startsystemPK = (eve.entity.pk.SystemPK)JSONSystem.toSystemPK((JSONObject)json.get("startsystempk"));
-                            eve.entity.pk.SystemPK endsystemPK = (eve.entity.pk.SystemPK)JSONSystem.toSystemPK((JSONObject)json.get("endsystempk"));
-                            result = JSONView_trade.toJSONArray(blview_trade.getView_trades_Startendsystem(startsystemPK, endsystemPK)).toJSONString();
+                        case IView_systemtrade_orderOperation.SELECT_ALL4SYSTEMTRADE:
+                            SystemtradePK systemtradePK = (SystemtradePK)JSONSystemtrade.toSystemtradePK((JSONObject)json.get("systemtradepk"));
+                            result = JSONView_systemtrade_order.toJSONArray(blview_systemtrade_order.getView_all4systemtrade(systemtradePK)).toJSONString();
                             break;
 //Custom code, do not change this line   
                     }
@@ -127,7 +113,7 @@ public class RSView_trade {
     }
 
     /**
-     * PUT method for updating or creating an instance of RSView_trade
+     * PUT method for updating or creating an instance of RSView_systemtrade_order
      * @param content representation for the resource
      * @return an HTTP response with content of the updated or created resource.
      */

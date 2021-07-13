@@ -2,7 +2,7 @@
  * Bview_systemtrade.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 30.5.2021 15:39
+ * Generated on 12.6.2021 13:57
  *
  */
 
@@ -53,6 +53,9 @@ public abstract class Bview_systemtrade extends GeneralViewObject implements Pro
             try {
                 view_systemtrade.setSell_system(dbresult.getLong("sell_system"));
                 view_systemtrade.setBuy_system(dbresult.getLong("buy_system"));
+                view_systemtrade.setOrdercount(dbresult.getLong("ordercount"));
+                view_systemtrade.setTotalsell(dbresult.getDouble("totalsell"));
+                view_systemtrade.setTotalbuy(dbresult.getDouble("totalbuy"));
                 view_systemtrade.setProfit(dbresult.getDouble("profit"));
                 view_systemtrade.setTotal_cargo_volume(dbresult.getDouble("total_cargo_volume"));
                 view_systemtrade.setJumps(dbresult.getInt("jumps"));

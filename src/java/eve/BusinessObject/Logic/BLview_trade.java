@@ -49,11 +49,24 @@ public class BLview_trade extends Bview_trade implements IBLview_trade {
     }
     
     /**
-     * get all View_trade objects from database
+     * get all View_trade lines starting on systemPK
+     * @param startsystemPK: start system primary key
      * @return ArrayList of View_trade objects
      * @throws DBException
      */
     public ArrayList getView_trades_Startsystem(SystemPK systemPK) throws DBException {
         return getMapper().loadViewVector(this, View_trade.SQLSelectAll4Startingsystem, systemPK.getKeyFields());
+    }
+
+    /**
+     * get all Vie_trade lines starting at startsystem, ending at endsystem
+     * @param startsystemPK: start system primary key
+     * @param endsystemPK: end system primary key
+     * @return
+     * @throws DBException 
+     */
+    public ArrayList getView_trades_Startendsystem(SystemPK startsystemPK, SystemPK endsystemPK) throws DBException {
+        Object[][] parameter = {{ "startsystemid", startsystemPK.getId() }, { "endsystemid", endsystemPK.getId() }};
+        return getMapper().loadViewVector(this, View_trade.SQLSelectAll4Startendsystem, parameter);
     }
 }

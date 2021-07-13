@@ -6,9 +6,9 @@ import data.gis.shape.GISConversion;
 import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
-import eve.interfaces.logicview.IView_trade;
-import eve.interfaces.servlet.IView_tradeOperation;
-import eve.logicview.View_trade;
+import eve.interfaces.logicview.IView_combinedtrade;
+import eve.interfaces.servlet.IView_combinedtradeOperation;
+import eve.logicview.View_combinedtrade;
 import eve.servlets.DataServlet;
 import general.exception.CustomException;
 import general.exception.DataException;
@@ -39,20 +39,20 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-@Path("rsview_trade")
-public class RSView_trade {
+@Path("rsview_combinedtrade")
+public class RSView_combinedtrade {
 
     @Context
     private UriInfo context;
 
     /**
-     * Creates a new instance of RSView_trade
+     * Creates a new instance of RSView_combinedtrade
      */
-    public RSView_trade() {
+    public RSView_combinedtrade() {
     }
 
     /**
-     * Retrieves representation of an instance of view_trade.restservices.RSView_trade
+     * Retrieves representation of an instance of view_combinedtrade.restservices.RSView_combinedtrade
      * @return an instance of java.lang.String
      */
     @GET
@@ -60,10 +60,10 @@ public class RSView_trade {
     @Produces(MediaType.APPLICATION_JSON)
     public String get(@PathParam("json") String jsonstring) {
         try {
-            BLview_trade blview_trade = new BLview_trade();
-            ArrayList view_trades = blview_trade.getAll();
-            JSONArray jsonview_trades = JSONView_trade.toJSONArray(view_trades);
-            return jsonview_trades.toJSONString();
+            BLview_combinedtrade blview_combinedtrade = new BLview_combinedtrade();
+            ArrayList view_combinedtrades = blview_combinedtrade.getAll();
+            JSONArray jsonview_combinedtrades = JSONView_combinedtrade.toJSONArray(view_combinedtrades);
+            return jsonview_combinedtrades.toJSONString();
         }
         catch(DBException e) {
             return "{ \"status\": \"error\"}";
@@ -71,7 +71,7 @@ public class RSView_trade {
     }
 
     /**
-     * Retrieves representation of an instance of view_trade.restservices.RSView_trade
+     * Retrieves representation of an instance of view_combinedtrade.restservices.RSView_combinedtrade
      * @return an instance of java.lang.String
      */
     @POST
@@ -79,33 +79,34 @@ public class RSView_trade {
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         String result = "";
-        BLview_trade blview_trade = new BLview_trade();
+        BLview_combinedtrade blview_combinedtrade = new BLview_combinedtrade();
         JSONParser parser = new JSONParser();
         try {
             JSONObject json = (JSONObject)parser.parse(jsonstring);
             JSONObject jsonoperation = (JSONObject)json.get("operation");
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
-            IView_trade view_trade;
+            IView_combinedtrade view_combinedtrade;
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operationtype) {
                 case DataServlet.OPERATIONTYPE_SELECT:
                     switch(operation) {
-                        case IView_tradeOperation.SELECT_ALL:
-                            result = JSONView_trade.toJSONArray(blview_trade.getView_trades()).toJSONString();
+                        case IView_combinedtradeOperation.SELECT_ALL:
+                            result = JSONView_combinedtrade.toJSONArray(blview_combinedtrade.getView_combinedtrades()).toJSONString();
                             break;
 //Custom code, do not change this line
 //add here custom operations
-                        case IView_tradeOperation.SELECT_ALL_STARTSYSTEM:
+                        case IView_combinedtradeOperation.SELECT_ALL_STARTSYSTEM:
                             eve.entity.pk.SystemPK systemPK = (eve.entity.pk.SystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
-                            result = JSONView_trade.toJSONArray(blview_trade.getView_trades_Startsystem(systemPK)).toJSONString();
+                            result = JSONView_combinedtrade.toJSONArray(blview_combinedtrade.getView_combinedtrades_Startsystem(systemPK)).toJSONString();
                             break;
-                        case IView_tradeOperation.SELECT_STARTENDSYSTEM:
+                        case IView_combinedtradeOperation.SELECT_STARTENDSYSTEM:
+                            eve.entity.pk.SystemPK jumpsystemPK = (eve.entity.pk.SystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
                             eve.entity.pk.SystemPK startsystemPK = (eve.entity.pk.SystemPK)JSONSystem.toSystemPK((JSONObject)json.get("startsystempk"));
                             eve.entity.pk.SystemPK endsystemPK = (eve.entity.pk.SystemPK)JSONSystem.toSystemPK((JSONObject)json.get("endsystempk"));
-                            result = JSONView_trade.toJSONArray(blview_trade.getView_trades_Startendsystem(startsystemPK, endsystemPK)).toJSONString();
+                            result = JSONView_combinedtrade.toJSON(blview_combinedtrade.getView_combinedtrade_Startendsystem(jumpsystemPK, startsystemPK, endsystemPK)).toJSONString();
                             break;
 //Custom code, do not change this line   
                     }
@@ -127,7 +128,7 @@ public class RSView_trade {
     }
 
     /**
-     * PUT method for updating or creating an instance of RSView_trade
+     * PUT method for updating or creating an instance of RSView_combinedtrade
      * @param content representation for the resource
      * @return an HTTP response with content of the updated or created resource.
      */

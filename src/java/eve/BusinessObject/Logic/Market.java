@@ -134,12 +134,12 @@ public class Market implements Runnable {
         try {
             this.keeprunning = true;
             //download orders from game server
-//            downloadOrders();
+            downloadOrders();
             //process order data locally
             //trade orders from station to station, seperate types
-//            processView_tradeorders();
+            processView_tradeorders();
             //trade grouped by system, type
-            processView_systemtradeorders();
+            //processView_systemtradeorders();
         }
         catch(DataException e) {
             marketstatus.addMessage(e.getMessage());
@@ -150,6 +150,7 @@ public class Market implements Runnable {
         catch(Exception e) {
             marketstatus.addMessage(e.getMessage());
         }        
+        marketstatus.setDone();
     }
     
     private void downloadOrders() throws DataException, DBException {
@@ -509,7 +510,6 @@ public class Market implements Runnable {
                 blsystemtrade_order.getTransactionqueue().clear();
             }
         }
-        marketstatus.setDone();
     }
 
 }
