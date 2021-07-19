@@ -208,8 +208,9 @@ public class Market implements Runnable {
                     sqlb.append(JSONConversion.getint(jsonorderdetails, "min_volume")).append(",");
                     sqlb.append(JSONConversion.getLong(jsonorderdetails, "location_id")).append(",");
                     sqlb.append(JSONConversion.getboolean(jsonorderdetails, "is_buy_order")).append(",");
-                    sqlb.append("'").append(AbstractSQLMapper.datetimeformat.format(Swagger.datetimestring2Timestamp(JSONConversion.getString(jsonorderdetails, "issued")))).append("',");
-                    sqlb.append(JSONConversion.getint(jsonorderdetails, "duration"));
+                    sqlb.append("'").append(AbstractSQLMapper.datetimeformat.format(Swagger.datetimestring2Timestamp(JSONConversion.getString(jsonorderdetails, "issued"))));
+                    sqlb.append("',").append(JSONConversion.getint(jsonorderdetails, "duration"));
+                    sqlb.append(",").append(pagenr);
                     sqlb.append(")");
 
                     blorders.addStatement(sqlb.toString(), null);

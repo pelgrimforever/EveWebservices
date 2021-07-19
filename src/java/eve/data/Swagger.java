@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Locale;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -34,8 +35,10 @@ public class Swagger {
     //general REST parts
     private static final String REST_page = "&page=";
     private static final String REST_type = "&type_id=";
+    private static final String REST_avoid = "&avoid=";
+    private static final String REST_flag = "&flag=";
     
-    //static data
+    //universe
     private static final String URL_universe_graphics = URL_server + "universe/graphics/";
     private static final String URL_universe_categories = URL_server + "universe/categories/";
     private static final String URL_universe_groups = URL_server + "universe/groups/";
@@ -52,13 +55,18 @@ public class Swagger {
     private static final String URL_corporations_npccorps = URL_server + "corporations/npccorps/";
     private static final String URL_corporations_corporations = URL_server + "corporations/";
     private static final String URL_alliances_alliances = URL_server + "alliances/";
+    private static final String URL_universe_systemkills = URL_server + "system_kills/";
     
     //market data
     private static final String URL_markets = URL_server + "markets/";
     private static final String REST_market_orders = "/orders/";
     private static final String REST_market_history = "/history/";
     
+    //market data
+    private static final String URL_routes = URL_server + "route/";
+    
     //static data
+    private static final String URL_flag_shortest = "shortest";
 
     public static JSONArray getGraphics() {
         return jsonrequest.requestJSONArray(URL_universe_graphics + URL_Datasource);
@@ -180,6 +188,32 @@ public class Swagger {
         return history;
     }
     
+    public static JSONArray getRoute(long origin, long destination, ArrayList<Long> avoidsystems) {
+        JSONArray route;
+        try {
+            String avoid = "";
+            int l = avoidsystems.size();
+            if(avoidsystems!=null && avoidsystems.size()>0) {
+                avoid = REST_avoid;
+                for(int i=0; i<l; i++) {
+                    if(i>0) {
+                        avoid += ",";
+                    }
+                    avoid += avoidsystems.get(i);
+                }
+            }
+            route = jsonrequest.requestJSONArray(URL_routes + origin + "/" + destination + URL_Datasource + avoid + REST_flag + URL_flag_shortest);
+        }
+        catch(Exception e) {
+            route = new JSONArray();
+        }
+        return route;
+    }
+    
+    public static JSONArray getSystemkills() {
+        return jsonrequest.requestJSONArray(URL_universe_systemkills + URL_Datasource);
+    }
+
     //data conversion
     private static final DateTimeFormatter datetimeinputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
     private static final SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd");
@@ -191,7 +225,7 @@ public class Swagger {
      */
     public static Timestamp datetimestring2Timestamp(String datetimestring) {
         LocalDateTime date = LocalDateTime.parse(datetimestring, datetimeinputFormatter);      
-        return new Timestamp(date.atZone(ZoneId.systemDefault()).toEpochSecond());
+        return Timestamp.valueOf(date.atZone(ZoneId.systemDefault()).toLocalDateTime());
     }
 
     /**

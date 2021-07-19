@@ -7,9 +7,10 @@ import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
-import eve.interfaces.logicview.IView_tradeorders;
-import eve.interfaces.servlet.IView_tradeordersOperation;
-import eve.logicview.View_tradeorders;
+import eve.interfaces.entity.pk.IOrdersPK;
+import eve.interfaces.logicview.IView_order;
+import eve.interfaces.servlet.IView_orderOperation;
+import eve.logicview.View_order;
 import eve.servlets.DataServlet;
 import general.exception.CustomException;
 import general.exception.DataException;
@@ -40,20 +41,20 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-@Path("rsview_tradeorders")
-public class RSView_tradeorders {
+@Path("rsview_order")
+public class RSView_order {
 
     @Context
     private UriInfo context;
 
     /**
-     * Creates a new instance of RSView_tradeorders
+     * Creates a new instance of RSView_order
      */
-    public RSView_tradeorders() {
+    public RSView_order() {
     }
 
     /**
-     * Retrieves representation of an instance of view_tradeorders.restservices.RSView_tradeorders
+     * Retrieves representation of an instance of view_order.restservices.RSView_order
      * @return an instance of java.lang.String
      */
     @GET
@@ -61,10 +62,10 @@ public class RSView_tradeorders {
     @Produces(MediaType.APPLICATION_JSON)
     public String get(@PathParam("json") String jsonstring) {
         try {
-            BLview_tradeorders blview_tradeorders = new BLview_tradeorders();
-            ArrayList view_tradeorderss = blview_tradeorders.getAll();
-            JSONArray jsonview_tradeorderss = JSONView_tradeorders.toJSONArray(view_tradeorderss);
-            return jsonview_tradeorderss.toJSONString();
+            BLview_order blview_order = new BLview_order();
+            ArrayList view_orders = blview_order.getAll();
+            JSONArray jsonview_orders = JSONView_order.toJSONArray(view_orders);
+            return jsonview_orders.toJSONString();
         }
         catch(DBException e) {
             return "{ \"status\": \"error\"}";
@@ -72,7 +73,7 @@ public class RSView_tradeorders {
     }
 
     /**
-     * Retrieves representation of an instance of view_tradeorders.restservices.RSView_tradeorders
+     * Retrieves representation of an instance of view_order.restservices.RSView_order
      * @return an instance of java.lang.String
      */
     @POST
@@ -80,25 +81,29 @@ public class RSView_tradeorders {
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         String result = "";
-        BLview_tradeorders blview_tradeorders = new BLview_tradeorders();
+        BLview_order blview_order = new BLview_order();
         JSONParser parser = new JSONParser();
         try {
             JSONObject json = (JSONObject)parser.parse(jsonstring);
             JSONObject jsonoperation = (JSONObject)json.get("operation");
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
-            IView_tradeorders view_tradeorders;
+            IView_order view_order;
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operationtype) {
                 case DataServlet.OPERATIONTYPE_SELECT:
                     switch(operation) {
-                        case IView_tradeordersOperation.SELECT_ALL:
-                            result = JSONView_tradeorders.toJSONArray(blview_tradeorders.getView_tradeorderss()).toJSONString();
+                        case IView_orderOperation.SELECT_ALL:
+                            result = JSONView_order.toJSONArray(blview_order.getView_orders()).toJSONString();
                             break;
 //Custom code, do not change this line
 //add here custom operations
+                        case IView_orderOperation.SELECT_ONE:
+                            OrdersPK orderPK = (OrdersPK)JSONOrders.toOrdersPK((JSONObject)json.get("orderpk"));
+                            result = JSONView_order.toJSON(blview_order.getView_order(orderPK)).toJSONString();
+                            break;
 //Custom code, do not change this line   
                     }
             }
@@ -119,7 +124,7 @@ public class RSView_tradeorders {
     }
 
     /**
-     * PUT method for updating or creating an instance of RSView_tradeorders
+     * PUT method for updating or creating an instance of RSView_order
      * @param content representation for the resource
      * @return an HTTP response with content of the updated or created resource.
      */

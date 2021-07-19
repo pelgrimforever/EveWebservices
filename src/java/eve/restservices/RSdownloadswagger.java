@@ -3,9 +3,8 @@
  */
 package eve.restservices;
 
-import eve.BusinessObject.Logic.Market;
-import eve.BusinessObject.Logic.Market.MarketStatus;
-import general.exception.DBException;
+import eve.BusinessObject.service.MarketService;
+import eve.BusinessObject.service.MarketService.MarketStatus;
 import java.util.Iterator;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -31,7 +30,7 @@ public class RSdownloadswagger {
     private UriInfo context;
     
     private static Thread swaggerdownloader = null;
-    private static Market market = null;
+    private static MarketService market = null;
     private static boolean keeprunning = false;
     private static int count = 0;
 
@@ -71,7 +70,7 @@ public class RSdownloadswagger {
                 }
                 //check if no market upload is running before starting one
                 if(swaggerdownloader==null) {
-                    market = new Market();
+                    market = new MarketService();
                     swaggerdownloader = new Thread(market); 
                     swaggerdownloader.setPriority(Thread.MIN_PRIORITY);
                     swaggerdownloader.start();
@@ -107,9 +106,9 @@ public class RSdownloadswagger {
             jsonstatus.put("status", "OK");
             result = jsonstatus.toJSONString();
         }
-        catch(DBException e) {
+/*        catch(DBException e) {
             result = returnstatus(e.getMessage());
-        }
+        }*/
         catch(ParseException e) {
             result = returnstatus(e.getMessage());
         }
