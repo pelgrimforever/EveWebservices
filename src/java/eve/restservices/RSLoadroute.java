@@ -74,17 +74,25 @@ public class RSLoadroute {
             JSONObject json = (JSONObject)parser.parse(jsonstring);
             long origin = JSONConversion.getlong(json, "origin");
             long destination = JSONConversion.getlong(json, "destination");
-            JSONArray viasystems = (JSONArray)json.get("viasystems");
-            Iterator<String> viasystemsI = viasystems.iterator();
+            JSONArray jsonviasystems = (JSONArray)json.get("viasystems");
+            JSONArray jsonavoidsystems = (JSONArray)json.get("avoidsystems");
+            boolean secure = JSONConversion.getboolean(json, "secure");
+            ArrayList<Long> avoidsystems = new ArrayList<>();
+            Iterator<String> jsonavoidsystemsI = jsonavoidsystems.iterator();
+            //build avoidlist
+            while(jsonavoidsystemsI.hasNext()) {
+                avoidsystems.add(Long.valueOf(jsonavoidsystemsI.next()));
+            }
+            
+            Iterator<String> jsonviasystemsI = jsonviasystems.iterator();
             //build routelist
             ArrayList<Long> routelist = new ArrayList();
             routelist.add(origin);
-            while(viasystemsI.hasNext()) {
-                routelist.add(Long.valueOf(viasystemsI.next()));
+            while(jsonviasystemsI.hasNext()) {
+                routelist.add(Long.valueOf(jsonviasystemsI.next()));
             }
             routelist.add(destination);
             
-            ArrayList avoidsystems = new ArrayList();
             JSONArray jsonroute;
             JSONArray jsonsystemkills;
             JSONObject jsongatechecks;
@@ -99,7 +107,7 @@ public class RSLoadroute {
             gatechecksystems.add(origin);
             while(routelistI.hasNext()) {
                 systemend = routelistI.next();
-                jsonroute = Swagger.getRoute(systemstart, systemend, avoidsystems);
+                jsonroute = Swagger.getRoute(systemstart, systemend, avoidsystems, secure);
                 Iterator<Long> jsonrouteI = jsonroute.iterator();
                 //ignore first result
                 jsonrouteI.next();

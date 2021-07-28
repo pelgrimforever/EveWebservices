@@ -67,6 +67,7 @@ public class Swagger {
     
     //static data
     private static final String URL_flag_shortest = "shortest";
+    private static final String URL_flag_secure = "secure";
     
     //external sites
     private static final String URL_eve_gatecheck = "https://eve-gatecheck.space/eve/get_kills.php?systems=";
@@ -191,7 +192,7 @@ public class Swagger {
         return history;
     }
     
-    public static JSONArray getRoute(long origin, long destination, ArrayList<Long> avoidsystems) {
+    public static JSONArray getRoute(long origin, long destination, ArrayList<Long> avoidsystems, boolean secure) {
         JSONArray route;
         try {
             String avoid = "";
@@ -205,7 +206,11 @@ public class Swagger {
                     avoid += avoidsystems.get(i);
                 }
             }
-            route = jsonrequest.requestJSONArray(URL_routes + origin + "/" + destination + URL_Datasource + avoid + REST_flag + URL_flag_shortest);
+            String flagtype = URL_flag_shortest;
+            if(secure) {
+                flagtype = URL_flag_secure;
+            }
+            route = jsonrequest.requestJSONArray(URL_routes + origin + "/" + destination + URL_Datasource + avoid + REST_flag + flagtype);
         }
         catch(Exception e) {
             route = new JSONArray();
