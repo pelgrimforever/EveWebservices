@@ -55,7 +55,7 @@ public class Swagger {
     private static final String URL_corporations_npccorps = URL_server + "corporations/npccorps/";
     private static final String URL_corporations_corporations = URL_server + "corporations/";
     private static final String URL_alliances_alliances = URL_server + "alliances/";
-    private static final String URL_universe_systemkills = URL_server + "system_kills/";
+    private static final String URL_universe_systemkills = URL_server + "universe/system_kills/";
     
     //market data
     private static final String URL_markets = URL_server + "markets/";
@@ -67,6 +67,9 @@ public class Swagger {
     
     //static data
     private static final String URL_flag_shortest = "shortest";
+    
+    //external sites
+    private static final String URL_eve_gatecheck = "https://eve-gatecheck.space/eve/get_kills.php?systems=";
 
     public static JSONArray getGraphics() {
         return jsonrequest.requestJSONArray(URL_universe_graphics + URL_Datasource);
@@ -192,9 +195,9 @@ public class Swagger {
         JSONArray route;
         try {
             String avoid = "";
-            int l = avoidsystems.size();
             if(avoidsystems!=null && avoidsystems.size()>0) {
                 avoid = REST_avoid;
+                int l = avoidsystems.size();
                 for(int i=0; i<l; i++) {
                     if(i>0) {
                         avoid += ",";
@@ -212,6 +215,20 @@ public class Swagger {
     
     public static JSONArray getSystemkills() {
         return jsonrequest.requestJSONArray(URL_universe_systemkills + URL_Datasource);
+    }
+
+    public static JSONObject getEveGatecheck(ArrayList systems) {
+        String systemlist = "";
+        if(systems!=null && systems.size()>0) {
+            int l = systems.size();
+            for(int i=0; i<l; i++) {
+                if(i>0) {
+                    systemlist += ",";
+                }
+                systemlist += systems.get(i);
+            }
+        }
+        return jsonrequest.requestJSONObject(URL_eve_gatecheck + systemlist);
     }
 
     //data conversion
