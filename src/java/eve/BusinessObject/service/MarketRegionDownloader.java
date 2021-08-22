@@ -64,12 +64,10 @@ public class MarketRegionDownloader implements Runnable {
         try {
             Region region = data.getNextregion();
             while(keeprunning && region!=null) {
-                //System.out.print(id + " Region " + region.getName());
                 pagenr = 1;
                 errorcounter = 0;
                 orderids.clear();
                 do {
-                    //System.out.print("Page " + pagenr + " * ");
                     jsonorders = Swagger.getMarket_region_orders(region.getPrimaryKey().getId(), pagenr);
                     jsonordersI = jsonorders.iterator();
                     ordercounter = 0;
@@ -89,7 +87,6 @@ public class MarketRegionDownloader implements Runnable {
                             if(toutput.getHaserror()) {
                                 errorcounter++;
                                 marketstatus.addMessage(toutput.getErrormessage());
-                                System.out.print(id + " " + region.getPrimaryKey().getId() + " " + region.getName() + " " + toutput.getErrormessage());
                             }
                         }
                     }
@@ -97,7 +94,6 @@ public class MarketRegionDownloader implements Runnable {
                     if(toutput.getHaserror()) {
                         errorcounter++;
                         marketstatus.addMessage(toutput.getErrormessage());
-                        System.out.print(id + " " + region.getPrimaryKey().getId() + " " + region.getName() + " " + toutput.getErrormessage());
                     }
                     pagenr++;
                     marketstatus.updateStatus(region.getPrimaryKey().getId(), pagenr);

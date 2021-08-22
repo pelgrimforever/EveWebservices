@@ -69,7 +69,6 @@ public class BLalliance extends Balliance implements IBLalliance {
     }
     
     public void updateAlliance(JSONObject jsonalliancedetails) throws DBException, DataException {
-        System.out.println("Alliance " + JSONConversion.getLong(jsonalliancedetails, "alliance_id"));
         Alliance alliance = new Alliance(JSONConversion.getLong(jsonalliancedetails, "alliance_id"));
         alliance.setName(JSONConversion.getString(jsonalliancedetails, "name"));
         alliance.setTicker(JSONConversion.getString(jsonalliancedetails, "ticker"));
@@ -79,7 +78,6 @@ public class BLalliance extends Balliance implements IBLalliance {
         alliance.setDate_founded(Swagger.datetimestring2Timestamp(stringdatefounded));
         if(jsonalliancedetails.containsKey("executor_corporation_id")) alliance.setCorporationexecutor_corporationPK(new CorporationPK(JSONConversion.getLong(jsonalliancedetails, "executor_corporation_id")));
         if(jsonalliancedetails.containsKey("faction_id")) alliance.setFaction_id(JSONConversion.getLong(jsonalliancedetails, "faction_id"));
-        System.out.println("       " + alliance.getName());
         this.insertupdateAlliance(alliance);
     }
 

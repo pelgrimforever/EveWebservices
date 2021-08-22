@@ -71,7 +71,6 @@ public class BLcorporation extends Bcorporation implements IBLcorporation {
     }
     
     public void updateCorporation(JSONObject jsoncorporationdetails) throws DBException, DataException {
-        System.out.println("Corporation " + JSONConversion.getLong(jsoncorporationdetails, "corporation_id"));
         Corporation corporation = new Corporation(JSONConversion.getLong(jsoncorporationdetails, "corporation_id"));
         corporation.setName(JSONConversion.getString(jsoncorporationdetails, "name"));
         corporation.setTicker(JSONConversion.getString(jsoncorporationdetails, "ticker"));
@@ -90,7 +89,6 @@ public class BLcorporation extends Bcorporation implements IBLcorporation {
         if(jsoncorporationdetails.containsKey("shares")) corporation.setMember_count(JSONConversion.getint(jsoncorporationdetails, "shares"));
         if(jsoncorporationdetails.containsKey("url")) corporation.setUrl(JSONConversion.getString(jsoncorporationdetails, "url"));
         if(jsoncorporationdetails.containsKey("war_eligible")) corporation.setWar_eligible(JSONConversion.getboolean(jsoncorporationdetails, "war_eligible"));
-        System.out.println("       " + corporation.getName());
         this.insertupdateCorporation(corporation);
     }
 

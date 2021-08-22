@@ -68,14 +68,12 @@ public class BLsystem extends Bsystem implements IBLsystem {
     }
     
     public void updateSystem(JSONObject jsonsystemdetails) throws DBException, DataException {
-        java.lang.System.out.println("System " + JSONConversion.getLong(jsonsystemdetails, "system_id"));
         System system = new System(JSONConversion.getLong(jsonsystemdetails, "system_id"));
         system.setName(JSONConversion.getString(jsonsystemdetails, "name"));
         system.setConstellationPK(new ConstellationPK(JSONConversion.getLong(jsonsystemdetails, "constellation_id")));
         if(jsonsystemdetails.containsKey("security_class")) system.setSecurity_class(JSONConversion.getString(jsonsystemdetails, "security_class"));
         system.setSecurity_status(JSONConversion.getDouble(jsonsystemdetails, "security_status"));
         if(jsonsystemdetails.containsKey("star_id")) system.setStar_id(JSONConversion.getLong(jsonsystemdetails, "star_id"));
-        java.lang.System.out.println("       " + system.getName());
         this.insertupdateSystem(system);
     }
 

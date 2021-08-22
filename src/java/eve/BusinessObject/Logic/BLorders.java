@@ -80,16 +80,11 @@ public class BLorders extends Borders implements IBLorders {
     }
     
     public void deleteorders() throws DBException, DataException {
-        BLtrade bltrade = new BLtrade(this);
-        bltrade.deletetrade();
-        BLsystemtrade blsystemtrade = new BLsystemtrade(this);
-        blsystemtrade.deletesystemtrade();
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Orders.SQLdeleteall, null);
+        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Orders.Truncate, null);
         this.Commit2DB();
     }
     
     public void updateOrder(JSONObject jsonorderdetails) throws DBException, DataException {
-        System.out.println("Order " + JSONConversion.getLong(jsonorderdetails, "order_id"));
         Orders order = new Orders(JSONConversion.getLong(jsonorderdetails, "order_id"));
         order.setDuration(JSONConversion.getint(jsonorderdetails, "duration"));
         order.setEvetypePK(new EvetypePK(JSONConversion.getLong(jsonorderdetails, "type_id")));

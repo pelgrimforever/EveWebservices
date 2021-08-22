@@ -64,7 +64,6 @@ public class BLgraphic extends Bgraphic implements IBLgraphic {
     }
     
     public void updateGraphic(JSONObject jsongraphicdetails) throws DBException, DataException {
-        System.out.println("Graphic " + JSONConversion.getLong(jsongraphicdetails, "graphic_id"));
         Graphic graphic = new Graphic(JSONConversion.getLong(jsongraphicdetails, "graphic_id"));
         if(jsongraphicdetails.containsKey("collision_file")) graphic.setCollision_file(JSONConversion.getString(jsongraphicdetails, "collision_file"));
         if(jsongraphicdetails.containsKey("graphic_file")) graphic.setCollision_file(JSONConversion.getString(jsongraphicdetails, "graphic_file"));

@@ -104,6 +104,14 @@ public class RSView_order {
                             OrdersPK orderPK = (OrdersPK)JSONOrders.toOrdersPK((JSONObject)json.get("orderpk"));
                             result = JSONView_order.toJSON(blview_order.getView_order(orderPK)).toJSONString();
                             break;
+                        case IView_orderOperation.SELECT_EVETYPE_SELL:
+                            EvetypePK evetypePKsell = (EvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+                            result = JSONView_order.toJSONArray(blview_order.getView_orders4evetype_sell(evetypePKsell)).toJSONString();
+                            break;
+                        case IView_orderOperation.SELECT_EVETYPE_BUY:
+                            EvetypePK evetypePKbuy = (EvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+                            result = JSONView_order.toJSONArray(blview_order.getView_orders4evetype_buy(evetypePKbuy)).toJSONString();
+                            break;
 //Custom code, do not change this line   
                     }
             }

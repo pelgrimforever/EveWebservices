@@ -64,11 +64,9 @@ public class BLcategory extends Bcategory implements IBLcategory {
     }
     
     public void updateCategory(JSONObject jsoncategorydetails) throws DBException, DataException {
-        java.lang.System.out.println("Category " + JSONConversion.getLong(jsoncategorydetails, "category_id"));
         Category category = new Category(JSONConversion.getLong(jsoncategorydetails, "category_id"));
         category.setName(JSONConversion.getString(jsoncategorydetails, "name"));
         category.setPublished(JSONConversion.getboolean(jsoncategorydetails, "published"));
-        java.lang.System.out.println("       " + category.getName());
         insertupdateCategory(category);
     }
 

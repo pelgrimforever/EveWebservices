@@ -63,7 +63,6 @@ public class BLfaction extends Bfaction implements IBLfaction {
     }
     
     public void updateFaction(JSONObject jsonfactiondetails) throws DBException, DataException {
-        System.out.println("Faction " + JSONConversion.getLong(jsonfactiondetails, "faction_id"));
         Faction faction = new Faction(JSONConversion.getLong(jsonfactiondetails, "faction_id"));
         faction.setName(JSONConversion.getString(jsonfactiondetails, "name"));
         faction.setDescription(JSONConversion.getString(jsonfactiondetails, "description"));
@@ -74,7 +73,6 @@ public class BLfaction extends Bfaction implements IBLfaction {
         if(jsonfactiondetails.containsKey("corporation_id")) faction.setCorporation(JSONConversion.getLong(jsonfactiondetails, "corporation_id"));
         if(jsonfactiondetails.containsKey("militia_corporation_id")) faction.setMilitia_corporation(JSONConversion.getLong(jsonfactiondetails, "militia_corporation_id"));
         if(jsonfactiondetails.containsKey("solar_system_id")) faction.setSystemPK(new SystemPK(JSONConversion.getLong(jsonfactiondetails, "solar_system_id")));
-        System.out.println("       " + faction.getName());
         this.insertupdateFaction(faction);
     }
 

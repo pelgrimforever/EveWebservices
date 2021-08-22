@@ -74,7 +74,6 @@ public class BLevetype extends Bevetype implements IBLevetype {
     }
     
     public void updateEvetype(JSONObject jsontypedetails) throws DBException, DataException {
-        System.out.println("Type " + JSONConversion.getLong(jsontypedetails, "type_id"));
         Evetype evetype = new Evetype(JSONConversion.getLong(jsontypedetails, "type_id"));
         evetype.setName(JSONConversion.getString(jsontypedetails, "name"));
         evetype.setDescription(JSONConversion.getString(jsontypedetails, "description"));

@@ -63,11 +63,9 @@ public class BLmarket_group extends Bmarket_group implements IBLmarket_group {
     }
     
     public Market_group updateMarket_group(JSONObject jsonmarketgroupdetails) throws DBException, DataException {
-        System.out.println("Market group " + JSONConversion.getLong(jsonmarketgroupdetails, "market_group_id"));
         Market_group marketgroup = new Market_group(JSONConversion.getLong(jsonmarketgroupdetails, "market_group_id"));
         marketgroup.setName(JSONConversion.getString(jsonmarketgroupdetails, "name"));
         marketgroup.setDescription(JSONConversion.getString(jsonmarketgroupdetails, "description"));
-        java.lang.System.out.println("       " + marketgroup.getName());
         this.insertupdateMarket_group(marketgroup);
         return marketgroup;
     }

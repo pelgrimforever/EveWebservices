@@ -63,7 +63,6 @@ public class BLrace extends Brace implements IBLrace {
     }
     
     public void updateRace(JSONObject jsonracedetails) throws DBException, DataException {
-        System.out.println("Race " + JSONConversion.getLong(jsonracedetails, "race_id"));
         Race race = new Race(JSONConversion.getLong(jsonracedetails, "race_id"));
         race.setName(JSONConversion.getString(jsonracedetails, "name"));
         race.setDescription(JSONConversion.getString(jsonracedetails, "description"));

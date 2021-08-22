@@ -9,20 +9,14 @@
 package eve.BusinessObject.view;
 
 import BusinessObject.GeneralViewObject;
-import data.gis.shape.*;
 import db.SQLMapper_pgsql;
 import eve.data.ProjectConstants;
-import db.ArchiveViewMapper;
-import db.ViewMapper;
-import db.ViewMapperInterface;
+import eve.entity.pk.EvetypePK;
 import general.exception.*;
 import java.util.ArrayList;
 import eve.logicview.View_order;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
-import org.postgresql.geometric.PGpoint;
-import org.postgis.PGgeometry;
 
 /**
  * Business View class Bview_order
@@ -94,4 +88,5 @@ public abstract class Bview_order extends GeneralViewObject implements ProjectCo
     public ArrayList getView_orders() throws DBException {
         return getMapper().loadViewVector(this, View_order.SQLSelectAll);
     }
+
 }

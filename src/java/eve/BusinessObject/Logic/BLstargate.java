@@ -70,7 +70,6 @@ public class BLstargate extends Bstargate implements IBLstargate {
     }
     
     public void updateStargate(JSONObject jsonstargatedetails) throws DBException, DataException {
-        System.out.print("Stargate " + JSONConversion.getLong(jsonstargatedetails, "stargate_id"));
         if(jsonstargatedetails==null) {
             System.out.print("stargate data null");
         }
@@ -90,7 +89,6 @@ public class BLstargate extends Bstargate implements IBLstargate {
         stargate.setX(JSONConversion.getDouble(jsonposition, "x"));
         stargate.setY(JSONConversion.getDouble(jsonposition, "y"));
         stargate.setZ(JSONConversion.getDouble(jsonposition, "z"));
-        java.lang.System.out.println("       " + stargate.getName());
         this.insertupdateStargate(stargate);
     }
 

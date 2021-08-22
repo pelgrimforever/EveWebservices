@@ -106,9 +106,6 @@ public class RSdownloadswagger {
             jsonstatus.put("status", "OK");
             result = jsonstatus.toJSONString();
         }
-/*        catch(DBException e) {
-            result = returnstatus(e.getMessage());
-        }*/
         catch(ParseException e) {
             result = returnstatus(e.getMessage());
         }

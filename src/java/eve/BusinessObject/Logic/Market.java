@@ -188,7 +188,6 @@ public class Market implements Runnable {
             pagenr = 1;
             errorcounter = 0;
             do {
-                //System.out.print("Page " + pagenr + " * ");
                 jsonorders = Swagger.getMarket_region_orders(region.getPrimaryKey().getId(), pagenr);
                 jsonordersI = jsonorders.iterator();
                 ordercounter = 0;
@@ -249,14 +248,11 @@ public class Market implements Runnable {
         BLregion blregion = new BLregion();
 
         //more orders to order_hist
-        System.out.print("Start downloadJsonorders");
         if(blorders.count()>0) {
             //blorderhist.deleteorders();
             //blorderhist.copyorders();
             blorders.deleteorders();
         }
-        System.out.print("Orders deleted");
-        System.out.print("Starting json_orders");
         long start = System.currentTimeMillis();
         //add market orders for each region
         int pagenr;
@@ -275,10 +271,8 @@ public class Market implements Runnable {
         TransactionOutput toutput;
         while(regionsI.hasNext()) {
             region = regionsI.next();
-            System.out.println("Region " + region.getPrimaryKey().getId() + " " + region.getName());
             pagenr = 1;
             do {
-                //System.out.print("Page " + pagenr + " * ");
                 jsonorders = Swagger.getMarket_region_orders(region.getPrimaryKey().getId(), pagenr);
                 jsonordersI = jsonorders.iterator();
                 ordercounter = 0;
@@ -307,7 +301,6 @@ public class Market implements Runnable {
             } while(jsonorders.size()>0);
         }         
         long end = System.currentTimeMillis();
-        System.out.println("Download time Swagger -> orders " + ((end - start)/1000));
     }
     
     private void processView_tradeorders() throws DataException, DBException {
@@ -437,7 +430,6 @@ public class Market implements Runnable {
         //loop all found system combinations
         while(systemtradeI.hasNext()) {
             count++;
-            System.out.println("" + count);
             systemtrade = systemtradeI.next();
             totalprofit = 0;
             totalcargovolume = 0;

@@ -72,7 +72,6 @@ public class BLstation extends Bstation implements IBLstation {
     }
     
     public void updateStation(JSONObject jsonstationdetails) throws DBException, DataException {
-        System.out.println("Station " + JSONConversion.getLong(jsonstationdetails, "station_id"));
         Station station = new Station(JSONConversion.getLong(jsonstationdetails, "station_id"));
         station.setName(JSONConversion.getString(jsonstationdetails, "name"));
         station.setEvetypePK(new EvetypePK(JSONConversion.getLong(jsonstationdetails, "type_id")));
@@ -83,7 +82,6 @@ public class BLstation extends Bstation implements IBLstation {
         station.setReprocessing_stations_take(JSONConversion.getDouble(jsonstationdetails, "reprocessing_stations_take"));
         station.setSystemPK(new SystemPK(JSONConversion.getLong(jsonstationdetails, "system_id")));
         station.setMax_dockable_ship_volume(JSONConversion.getDouble(jsonstationdetails, "max_dockable_ship_volume"));
-        java.lang.System.out.println("       " + station.getName());
         this.insertupdateStation(station);
     }
 

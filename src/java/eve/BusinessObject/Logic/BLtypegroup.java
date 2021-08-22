@@ -70,12 +70,10 @@ public class BLtypegroup extends Btypegroup implements IBLtypegroup {
     }
     
     public void updateTypegroup(JSONObject jsongroupdetails) throws DBException, DataException {
-        System.out.println("Group " + JSONConversion.getLong(jsongroupdetails, "group_id"));
         Typegroup typegroup = new Typegroup(JSONConversion.getLong(jsongroupdetails, "group_id"));
         typegroup.setName(JSONConversion.getString(jsongroupdetails, "name"));
         typegroup.setCategoryPK(new CategoryPK(JSONConversion.getLong(jsongroupdetails, "category_id")));
         typegroup.setPublished(JSONConversion.getboolean(jsongroupdetails, "published"));
-        System.out.println("       " + typegroup.getName());
         this.insertupdateTypegroup(typegroup);
     }
 
