@@ -256,6 +256,32 @@ public class WSEvetype implements WSIEvetype {
         }
     }
 
+    //@WebMethod(operationName = "getEvetypes4stock")
+    @Override
+    public String getEvetypes4stock(String json) {
+        BLevetype blevetype = new BLevetype();
+        JSONParser parser = new JSONParser();
+        Evetype evetype;
+        try {
+            String result = null;
+            IStockPK stockPK = JSONStock.toStockPK((JSONObject)parser.parse(json));
+            evetype = (Evetype)blevetype.getStock(stockPK);
+            if(evetype!=null) {
+                result = JSONEvetype.toJSON(evetype).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
     //@WebMethod(operationName = "getEvetypes4order_history")
     @Override
     public String getEvetypes4order_history(String json) {

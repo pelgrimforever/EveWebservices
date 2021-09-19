@@ -26,12 +26,9 @@ public class ApplicationConfig extends Application {
         Set<Class<?>> resources = new java.util.HashSet<Class<?>>();
 //Custom code, do not change this line
 //add here custom operations
-        resources.add(eve.restservices.RSdownloadswagger.class);
-        resources.add(eve.restservices.RSdownloadmarkettypes.class);
-        resources.add(eve.restservices.RStest.class);
-//Custom code, do not change this line   
         resources.add(eve.restservices.RSAlliance.class);
         resources.add(eve.restservices.RSCategory.class);
+//Custom code, do not change this line   
         resources.add(eve.restservices.RSConstellation.class);
         resources.add(eve.restservices.RSConstellation_neighbour.class);
         resources.add(eve.restservices.RSCorporation.class);
@@ -55,6 +52,8 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSStargate.class);
         resources.add(eve.restservices.RSStation.class);
         resources.add(eve.restservices.RSStation_service.class);
+        resources.add(eve.restservices.RSStock.class);
+        resources.add(eve.restservices.RSStocktrade.class);
         resources.add(eve.restservices.RSSystem.class);
         resources.add(eve.restservices.RSSystemjumps.class);
         resources.add(eve.restservices.RSSystemtrade.class);
@@ -66,11 +65,17 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSView_order.class);
         resources.add(eve.restservices.RSView_order_region_evetype.class);
         resources.add(eve.restservices.RSView_security_island_systemcount.class);
+        resources.add(eve.restservices.RSView_stock.class);
+        resources.add(eve.restservices.RSView_stocktrade_orders.class);
+        resources.add(eve.restservices.RSView_stocktrade_system.class);
         resources.add(eve.restservices.RSView_systemtrade.class);
         resources.add(eve.restservices.RSView_systemtrade_order.class);
         resources.add(eve.restservices.RSView_systemtradeorders.class);
         resources.add(eve.restservices.RSView_trade.class);
         resources.add(eve.restservices.RSView_tradeorders.class);
+        resources.add(eve.restservices.RSdownloadmarkettypes.class);
+        resources.add(eve.restservices.RSdownloadswagger.class);
+        resources.add(eve.restservices.RStest.class);
         return resources;
     }
 }

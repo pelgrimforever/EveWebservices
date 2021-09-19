@@ -11,25 +11,27 @@ import eve.BusinessObject.Logic.BLorder_hist;
 import eve.BusinessObject.Logic.BLorders;
 import eve.BusinessObject.Logic.BLregion;
 import eve.BusinessObject.Logic.BLroute;
+import eve.BusinessObject.Logic.BLstock;
+import eve.BusinessObject.Logic.BLstocktrade;
 import eve.BusinessObject.Logic.BLsystem;
 import eve.BusinessObject.Logic.BLtrade;
 import eve.BusinessObject.Logic.BLview_tradeorders;
 import eve.BusinessObject.Logic.RouteHash;
 import eve.entity.pk.RoutetypePK;
 import eve.entity.pk.Security_islandPK;
+import eve.entity.pk.StocktradePK;
+import eve.logicentity.Orders;
 import eve.logicentity.Region;
+import eve.logicentity.Stock;
+import eve.logicentity.Stocktrade;
 import eve.logicentity.Trade;
 import eve.logicview.View_tradeorders;
+import general.exception.CustomException;
 import general.exception.DBException;
 import general.exception.DataException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 /**
  * Market loader service
@@ -253,7 +255,14 @@ public class MarketService implements Runnable {
         marketthreads = new ArrayList<>();
     }
 
-    private void processView_tradeorders() throws DataException, DBException {
+    /**
+     * calculate current average prices
+     * search trade opportunities and store in table Trade
+     * search the best prices for items in stock and store in table Stocktrade
+     * @throws DataException
+     * @throws DBException 
+     */
+    private void processView_tradeorders() throws DataException, DBException, CustomException {
         RouteHash routehash = new RouteHash(new RoutetypePK(1));
         BLorders blorders = new BLorders();
         BLorder_hist blorderhist = new BLorder_hist();
@@ -263,6 +272,8 @@ public class MarketService implements Runnable {
         BLroute blroute = new BLroute();
         BLtrade bltrade = new BLtrade();
         BLview_tradeorders blviewtradeorders = new BLview_tradeorders();
+        BLstock blstock = new BLstock();
+        BLstocktrade blstocktrade = new BLstocktrade();
 
         //calculate average, min and max price for buy/sell orders for each evetype
         marketstatus.addMessage("Update average prices");
@@ -295,6 +306,7 @@ public class MarketService implements Runnable {
         TransactionOutput toutput;
         
         //loop all orders from view
+        //add trade opportunities in Trade
         while(tradeordersI.hasNext()) {
             tradeorder = tradeordersI.next();
             totalvolume = tradeorder.getTradevolume();
@@ -340,5 +352,36 @@ public class MarketService implements Runnable {
                 marketstatus.addMessage(toutput.getErrormessage());
             }
         }
+        
+        //search highest bidding prices for stock itesm
+        //save in stocktrade
+        marketstatus.addMessage("Construct stocktrade table");
+        Iterator<Stock> stockI = blstock.getAll().iterator();
+        Stock stock;
+        Iterator<Orders> ordersI;
+        Orders order;
+        StocktradePK stocktradePK;
+        Stocktrade stocktrade;
+        long stockamount;
+        long tradeamount;
+        while(stockI.hasNext()) {
+            stock = stockI.next();
+            stockamount = stock.getAmount();
+            ordersI = blorders.load_buyorders4evetype(security_islandPK, stock.getPrimaryKey().getEvetypePK()).iterator();
+            while(ordersI.hasNext() && stockamount>0) {
+                order = ordersI.next();
+                tradeamount = Math.min(order.getVolume_remain(), stockamount);
+                if(tradeamount>=order.getMin_volume()) {
+                    stocktradePK = new StocktradePK();
+                    stocktradePK.setStockPK(stock.getPrimaryKey());
+                    stocktradePK.setOrderid(order.getPrimaryKey().getId());
+                    stocktrade = new Stocktrade(stocktradePK);
+                    stocktrade.setSellamount(tradeamount);
+                    blstocktrade.trans_insertStocktrade(stocktrade);
+                    stockamount -= tradeamount;
+                }
+            }
+        }
+        blstocktrade.Commit2DB();
     }
 }

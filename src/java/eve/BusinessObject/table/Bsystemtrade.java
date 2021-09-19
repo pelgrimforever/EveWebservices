@@ -2,7 +2,7 @@
  * Bsystemtrade.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.6.2021 14:35
+ * Generated on 18.8.2021 11:31
  *
  */
 
@@ -300,7 +300,7 @@ public abstract class Bsystemtrade extends GeneralEntityObject implements Projec
      */
     public ISystemtrade getSystemtrade_order(ISystemtrade_orderPK systemtrade_orderPK) throws CustomException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            SystemtradePK systemtradePK = new SystemtradePK(systemtrade_orderPK.getSell_system(), systemtrade_orderPK.getBuy_system());
+            SystemtradePK systemtradePK = new SystemtradePK(systemtrade_orderPK.getBuy_system(), systemtrade_orderPK.getSell_system());
             return this.getSystemtrade(systemtradePK);
         } else return null;
     }

@@ -18,6 +18,7 @@ import db.AbstractSQLMapper;
 import eve.BusinessObject.table.Borders;
 import eve.data.Swagger;
 import eve.entity.pk.EvetypePK;
+import eve.entity.pk.Security_islandPK;
 import eve.entity.pk.SystemPK;
 import general.exception.DataException;
 import eve.interfaces.BusinessObject.IBLorders;
@@ -151,6 +152,17 @@ public class BLorders extends Borders implements IBLorders {
         Object[][] parameter = { { "max_cargovolume", max_cargovolume }, { "net_perc", net_perc } };
         parameter = AbstractSQLMapper.addKeyArrays(parameter, systemPK.getKeyFields());
         return getMapper().loadEntityVector(this, Orders.SQLgetBuyorders4system2, parameter);
+    }    
+
+    /**
+     * Search buy orders for eve type, ordered by descending price
+     * @param evetypePK: evetype primary key
+     * @return orders
+     * @throws DBException 
+     */
+    public ArrayList load_buyorders4evetype(Security_islandPK security_islandPK, IEvetypePK evetypePK) throws DBException {
+        Object[][] parameter = AbstractSQLMapper.addKeyArrays(security_islandPK.getKeyFields(), evetypePK.getKeyFields());
+        return getMapper().loadEntityVector(this, Orders.SQLgetBuyorders4evetype, parameter);
     }    
 
     /**

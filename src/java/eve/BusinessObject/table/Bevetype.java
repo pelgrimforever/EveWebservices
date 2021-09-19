@@ -2,7 +2,7 @@
  * Bevetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.6.2021 14:35
+ * Generated on 18.8.2021 11:31
  *
  */
 
@@ -277,6 +277,8 @@ public abstract class Bevetype extends GeneralEntityObject implements ProjectCon
      * @param evetypePK: Evetype primary key
      */
     public void cascadedeleteEvetype(String senderobject, IEvetypePK evetypePK) {
+        BLstock blstock = new BLstock(this);
+        blstock.delete4evetype(senderobject, evetypePK);
         BLorder_history blorder_history = new BLorder_history(this);
         blorder_history.delete4evetype(senderobject, evetypePK);
     }
@@ -344,6 +346,18 @@ public abstract class Bevetype extends GeneralEntityObject implements ProjectCon
             return getMapper().loadEntityVector(this, Evetype.SQLSelect4graphic, graphicPK.getKeyFields());
         } else return new ArrayList();
     }
+    /**
+     * @param stockPK: parent Stock for child object Evetype Entity
+     * @return child Evetype Entity object
+     * @throws eve.general.exception.CustomException
+     */
+    public IEvetype getStock(IStockPK stockPK) throws CustomException {
+        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
+            EvetypePK evetypePK = new EvetypePK(stockPK.getEvetype());
+            return this.getEvetype(evetypePK);
+        } else return null;
+    }
+
     /**
      * @param order_historyPK: parent Order_history for child object Evetype Entity
      * @return child Evetype Entity object

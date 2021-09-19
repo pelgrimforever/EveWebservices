@@ -2,21 +2,27 @@
  * Bview_order.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.6.2021 14:35
+ * Generated on 18.8.2021 11:31
  *
  */
 
 package eve.BusinessObject.view;
 
 import BusinessObject.GeneralViewObject;
+import data.gis.shape.*;
 import db.SQLMapper_pgsql;
 import eve.data.ProjectConstants;
-import eve.entity.pk.EvetypePK;
+import db.ArchiveViewMapper;
+import db.ViewMapper;
+import db.ViewMapperInterface;
 import general.exception.*;
 import java.util.ArrayList;
 import eve.logicview.View_order;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
+import org.postgresql.geometric.PGpoint;
+import org.postgis.PGgeometry;
 
 /**
  * Business View class Bview_order
@@ -88,5 +94,4 @@ public abstract class Bview_order extends GeneralViewObject implements ProjectCo
     public ArrayList getView_orders() throws DBException {
         return getMapper().loadViewVector(this, View_order.SQLSelectAll);
     }
-
 }
