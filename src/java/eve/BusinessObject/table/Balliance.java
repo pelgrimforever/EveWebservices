@@ -2,7 +2,7 @@
  * Balliance.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -192,6 +192,14 @@ public abstract class Balliance extends GeneralEntityObject implements ProjectCo
     public void insertAlliance(IAlliance alliance) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(alliance);
+
+
+
+
+
+
+
+
         }
     }
 
@@ -218,6 +226,14 @@ public abstract class Balliance extends GeneralEntityObject implements ProjectCo
     public void updateAlliance(IAlliance alliance) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(alliance);
+
+
+
+
+
+
+
+
         }
     }
 
@@ -244,21 +260,28 @@ public abstract class Balliance extends GeneralEntityObject implements ProjectCo
         //Primary key
 
 
+
+
         if(alliance.getName()!=null && alliance.getName().length()>IAlliance.SIZE_NAME) {
             message.append("Name is langer dan toegestaan. Max aantal karakters: " + IAlliance.SIZE_NAME + "\n");
         }
+
         if(alliance.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
+
+
         if(alliance.getDate_founded()==null) {
             message.append("Date_founded mag niet leeg zijn.\n");
         }
         if(alliance.getTicker()!=null && alliance.getTicker().length()>IAlliance.SIZE_TICKER) {
             message.append("Ticker is langer dan toegestaan. Max aantal karakters: " + IAlliance.SIZE_TICKER + "\n");
         }
+
         if(alliance.getTicker()==null) {
             message.append("Ticker mag niet leeg zijn.\n");
         }
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

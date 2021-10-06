@@ -2,7 +2,7 @@
  * Bstation_service.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -183,6 +183,8 @@ public abstract class Bstation_service extends GeneralEntityObject implements Pr
     public void insertStation_service(IStation_service station_service) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(station_service);
+
+
         }
     }
 
@@ -209,6 +211,8 @@ public abstract class Bstation_service extends GeneralEntityObject implements Pr
     public void updateStation_service(IStation_service station_service) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(station_service);
+
+
         }
     }
 

@@ -2,7 +2,7 @@
  * Bstock.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -184,6 +184,9 @@ public abstract class Bstock extends GeneralEntityObject implements ProjectConst
     public void insertStock(IStock stock) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(stock);
+
+
+
         }
     }
 
@@ -210,6 +213,9 @@ public abstract class Bstock extends GeneralEntityObject implements ProjectConst
     public void updateStock(IStock stock) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(stock);
+
+
+
         }
     }
 
@@ -235,6 +241,7 @@ public abstract class Bstock extends GeneralEntityObject implements ProjectConst
         StringBuffer message = new StringBuffer();
         //foreign key Stock.Evetype - Evetype.Id
         //Primary key
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

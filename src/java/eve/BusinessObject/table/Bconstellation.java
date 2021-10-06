@@ -2,7 +2,7 @@
  * Bconstellation.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -187,6 +187,10 @@ public abstract class Bconstellation extends GeneralEntityObject implements Proj
     public void insertConstellation(IConstellation constellation) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(constellation);
+
+
+
+
         }
     }
 
@@ -213,6 +217,10 @@ public abstract class Bconstellation extends GeneralEntityObject implements Proj
     public void updateConstellation(IConstellation constellation) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(constellation);
+
+
+
+
         }
     }
 
@@ -238,12 +246,15 @@ public abstract class Bconstellation extends GeneralEntityObject implements Proj
         StringBuffer message = new StringBuffer();
         //Primary key
 
+
         if(constellation.getName()!=null && constellation.getName().length()>IConstellation.SIZE_NAME) {
             message.append("Name is langer dan toegestaan. Max aantal karakters: " + IConstellation.SIZE_NAME + "\n");
         }
+
         if(constellation.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

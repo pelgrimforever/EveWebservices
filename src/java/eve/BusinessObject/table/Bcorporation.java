@@ -2,7 +2,7 @@
  * Bcorporation.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -200,6 +200,21 @@ public abstract class Bcorporation extends GeneralEntityObject implements Projec
     public void insertCorporation(ICorporation corporation) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(corporation);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -226,6 +241,21 @@ public abstract class Bcorporation extends GeneralEntityObject implements Projec
     public void updateCorporation(ICorporation corporation) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(corporation);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -253,24 +283,38 @@ public abstract class Bcorporation extends GeneralEntityObject implements Projec
 
 
 
+
+
+
         if(corporation.getName()!=null && corporation.getName().length()>ICorporation.SIZE_NAME) {
             message.append("Name is langer dan toegestaan. Max aantal karakters: " + ICorporation.SIZE_NAME + "\n");
         }
+
         if(corporation.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
+
+
+
+
         if(corporation.getTicker()!=null && corporation.getTicker().length()>ICorporation.SIZE_TICKER) {
             message.append("Ticker is langer dan toegestaan. Max aantal karakters: " + ICorporation.SIZE_TICKER + "\n");
         }
+
         if(corporation.getTicker()==null) {
             message.append("Ticker mag niet leeg zijn.\n");
         }
+
         if(corporation.getDescription()!=null && corporation.getDescription().length()>ICorporation.SIZE_DESCRIPTION) {
             message.append("Description is langer dan toegestaan. Max aantal karakters: " + ICorporation.SIZE_DESCRIPTION + "\n");
         }
+
+
         if(corporation.getUrl()!=null && corporation.getUrl().length()>ICorporation.SIZE_URL) {
             message.append("Url is langer dan toegestaan. Max aantal karakters: " + ICorporation.SIZE_URL + "\n");
         }
+
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

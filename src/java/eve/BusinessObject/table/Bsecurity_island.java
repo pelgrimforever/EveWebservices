@@ -2,7 +2,7 @@
  * Bsecurity_island.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -185,6 +185,9 @@ public abstract class Bsecurity_island extends GeneralEntityObject implements Pr
     public void insertSecurity_island(ISecurity_island security_island) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(security_island);
+
+
+
         }
     }
 
@@ -211,6 +214,9 @@ public abstract class Bsecurity_island extends GeneralEntityObject implements Pr
     public void updateSecurity_island(ISecurity_island security_island) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(security_island);
+
+
+
         }
     }
 
@@ -238,6 +244,8 @@ public abstract class Bsecurity_island extends GeneralEntityObject implements Pr
         if(security_island.getName()!=null && security_island.getName().length()>ISecurity_island.SIZE_NAME) {
             message.append("Name is langer dan toegestaan. Max aantal karakters: " + ISecurity_island.SIZE_NAME + "\n");
         }
+
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

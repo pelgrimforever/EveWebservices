@@ -2,7 +2,7 @@
  * Bsystemtrade_order.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -188,6 +188,15 @@ public abstract class Bsystemtrade_order extends GeneralEntityObject implements 
     public void insertSystemtrade_order(ISystemtrade_order systemtrade_order) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(systemtrade_order);
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -214,6 +223,15 @@ public abstract class Bsystemtrade_order extends GeneralEntityObject implements 
     public void updateSystemtrade_order(ISystemtrade_order systemtrade_order) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(systemtrade_order);
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -241,6 +259,11 @@ public abstract class Bsystemtrade_order extends GeneralEntityObject implements 
         //foreign key Systemtrade_order.Buy_system - Systemtrade.Buy_system
         //foreign key Systemtrade_order.Sell_order - Orders.Id
         //foreign key Systemtrade_order.Buy_order - Orders.Id
+
+
+
+
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

@@ -2,7 +2,7 @@
  * Blocation.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -188,6 +188,11 @@ public abstract class Blocation extends GeneralEntityObject implements ProjectCo
     public void insertLocation(ILocation location) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(location);
+
+
+
+
+
         }
     }
 
@@ -214,6 +219,11 @@ public abstract class Blocation extends GeneralEntityObject implements ProjectCo
     public void updateLocation(ILocation location) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(location);
+
+
+
+
+
         }
     }
 
@@ -239,9 +249,13 @@ public abstract class Blocation extends GeneralEntityObject implements ProjectCo
         StringBuffer message = new StringBuffer();
         //Primary key
 
+
         if(location.getName()!=null && location.getName().length()>ILocation.SIZE_NAME) {
             message.append("Name is langer dan toegestaan. Max aantal karakters: " + ILocation.SIZE_NAME + "\n");
         }
+
+
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

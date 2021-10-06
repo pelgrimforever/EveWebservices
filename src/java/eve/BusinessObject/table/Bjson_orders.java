@@ -2,7 +2,7 @@
  * Bjson_orders.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -192,6 +192,8 @@ public abstract class Bjson_orders extends GeneralEntityObject implements Projec
     public void insertJson_orders(IJson_orders json_orders) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(json_orders);
+
+
         }
     }
 
@@ -218,6 +220,8 @@ public abstract class Bjson_orders extends GeneralEntityObject implements Projec
     public void updateJson_orders(IJson_orders json_orders) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(json_orders);
+
+
         }
     }
 
@@ -242,6 +246,7 @@ public abstract class Bjson_orders extends GeneralEntityObject implements Projec
     public void checkDATA(IJson_orders json_orders) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
+
         if(json_orders.getJson()==null) {
             message.append("Json mag niet leeg zijn.\n");
         }

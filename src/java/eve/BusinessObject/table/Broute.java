@@ -2,7 +2,7 @@
  * Broute.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -192,6 +192,9 @@ public abstract class Broute extends GeneralEntityObject implements ProjectConst
     public void insertRoute(IRoute route) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(route);
+
+
+
         }
     }
 
@@ -218,6 +221,9 @@ public abstract class Broute extends GeneralEntityObject implements ProjectConst
     public void updateRoute(IRoute route) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(route);
+
+
+
         }
     }
 
@@ -243,6 +249,7 @@ public abstract class Broute extends GeneralEntityObject implements ProjectConst
         StringBuffer message = new StringBuffer();
         //foreign key Route.Routetype - Routetype.Id
         //foreign key Route.System - System.Id
+
         if(route.getJsonroutes()==null) {
             message.append("Jsonroutes mag niet leeg zijn.\n");
         }

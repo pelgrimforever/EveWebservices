@@ -2,7 +2,7 @@
  * Bconstellation_neighbour.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -183,6 +183,8 @@ public abstract class Bconstellation_neighbour extends GeneralEntityObject imple
     public void insertConstellation_neighbour(IConstellation_neighbour constellation_neighbour) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(constellation_neighbour);
+
+
         }
     }
 
@@ -209,6 +211,8 @@ public abstract class Bconstellation_neighbour extends GeneralEntityObject imple
     public void updateConstellation_neighbour(IConstellation_neighbour constellation_neighbour) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(constellation_neighbour);
+
+
         }
     }
 

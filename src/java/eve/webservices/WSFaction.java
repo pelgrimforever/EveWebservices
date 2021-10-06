@@ -1,3 +1,11 @@
+/*
+ * WSFaction.java
+ *
+ * Created on Dec 23, 2012, 7:24 PM
+ * Generated on 6.9.2021 16:29
+ *
+ */
+
 package eve.webservices;
 
 import eve.BusinessObject.Logic.*;

@@ -2,7 +2,7 @@
  * Bsystemtrade.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -186,6 +186,11 @@ public abstract class Bsystemtrade extends GeneralEntityObject implements Projec
     public void insertSystemtrade(ISystemtrade systemtrade) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(systemtrade);
+
+
+
+
+
         }
     }
 
@@ -212,6 +217,11 @@ public abstract class Bsystemtrade extends GeneralEntityObject implements Projec
     public void updateSystemtrade(ISystemtrade systemtrade) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(systemtrade);
+
+
+
+
+
         }
     }
 
@@ -237,6 +247,9 @@ public abstract class Bsystemtrade extends GeneralEntityObject implements Projec
         StringBuffer message = new StringBuffer();
         //foreign key Systemtrade.Sell_system - System.Id
         //foreign key Systemtrade.Buy_system - System.Id
+
+
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

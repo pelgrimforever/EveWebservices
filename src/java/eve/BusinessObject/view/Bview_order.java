@@ -2,7 +2,7 @@
  * Bview_order.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -71,6 +71,7 @@ public abstract class Bview_order extends GeneralViewObject implements ProjectCo
                 view_order.setLocationid(dbresult.getLong("locationid"));
                 view_order.setLocationname(dbresult.getString("locationname"));
                 view_order.setSystemname(dbresult.getString("systemname"));
+                view_order.setSecurity_status(dbresult.getDouble("security_status"));
                 view_order.setConstellation(dbresult.getLong("constellation"));
                 view_order.setConstellationname(dbresult.getString("constellationname"));
                 view_order.setRegion(dbresult.getLong("region"));

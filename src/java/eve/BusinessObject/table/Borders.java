@@ -2,7 +2,7 @@
  * Borders.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -199,6 +199,21 @@ public abstract class Borders extends GeneralEntityObject implements ProjectCons
     public void insertOrders(IOrders orders) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(orders);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -225,6 +240,21 @@ public abstract class Borders extends GeneralEntityObject implements ProjectCons
     public void updateOrders(IOrders orders) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(orders);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -251,15 +281,29 @@ public abstract class Borders extends GeneralEntityObject implements ProjectCons
         //Primary key
 
 
+
+
+
+
+
         if(orders.getRange()!=null && orders.getRange().length()>IOrders.SIZE_RANGE) {
             message.append("Range is langer dan toegestaan. Max aantal karakters: " + IOrders.SIZE_RANGE + "\n");
         }
+
         if(orders.getRange()==null) {
             message.append("Range mag niet leeg zijn.\n");
         }
+
+
+
+
+
+
         if(orders.getIssued()==null) {
             message.append("Issued mag niet leeg zijn.\n");
         }
+
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

@@ -2,7 +2,7 @@
  * Bevetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -205,6 +205,26 @@ public abstract class Bevetype extends GeneralEntityObject implements ProjectCon
     public void insertEvetype(IEvetype evetype) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(evetype);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -231,6 +251,26 @@ public abstract class Bevetype extends GeneralEntityObject implements ProjectCon
     public void updateEvetype(IEvetype evetype) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(evetype);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -258,15 +298,34 @@ public abstract class Bevetype extends GeneralEntityObject implements ProjectCon
 
 
 
+
+
+
         if(evetype.getName()!=null && evetype.getName().length()>IEvetype.SIZE_NAME) {
             message.append("Name is langer dan toegestaan. Max aantal karakters: " + IEvetype.SIZE_NAME + "\n");
         }
+
         if(evetype.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
+
         if(evetype.getDescription()!=null && evetype.getDescription().length()>IEvetype.SIZE_DESCRIPTION) {
             message.append("Description is langer dan toegestaan. Max aantal karakters: " + IEvetype.SIZE_DESCRIPTION + "\n");
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

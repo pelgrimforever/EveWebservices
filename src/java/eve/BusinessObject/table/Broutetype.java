@@ -2,7 +2,7 @@
  * Broutetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -186,6 +186,9 @@ public abstract class Broutetype extends GeneralEntityObject implements ProjectC
     public void insertRoutetype(IRoutetype routetype) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(routetype);
+
+
+
         }
     }
 
@@ -212,6 +215,9 @@ public abstract class Broutetype extends GeneralEntityObject implements ProjectC
     public void updateRoutetype(IRoutetype routetype) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(routetype);
+
+
+
         }
     }
 
@@ -237,9 +243,11 @@ public abstract class Broutetype extends GeneralEntityObject implements ProjectC
         StringBuffer message = new StringBuffer();
         //Primary key
 
+
         if(routetype.getName()!=null && routetype.getName().length()>IRoutetype.SIZE_NAME) {
             message.append("Name is langer dan toegestaan. Max aantal karakters: " + IRoutetype.SIZE_NAME + "\n");
         }
+
         if(routetype.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }

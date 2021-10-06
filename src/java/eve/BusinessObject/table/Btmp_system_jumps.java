@@ -2,7 +2,7 @@
  * Btmp_system_jumps.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -186,6 +186,10 @@ public abstract class Btmp_system_jumps extends GeneralEntityObject implements P
     public void insertTmp_system_jumps(ITmp_system_jumps tmp_system_jumps) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(tmp_system_jumps);
+
+
+
+
         }
     }
 
@@ -212,6 +216,10 @@ public abstract class Btmp_system_jumps extends GeneralEntityObject implements P
     public void updateTmp_system_jumps(ITmp_system_jumps tmp_system_jumps) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(tmp_system_jumps);
+
+
+
+
         }
     }
 
@@ -236,6 +244,9 @@ public abstract class Btmp_system_jumps extends GeneralEntityObject implements P
     public void checkDATA(ITmp_system_jumps tmp_system_jumps) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
+
+
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

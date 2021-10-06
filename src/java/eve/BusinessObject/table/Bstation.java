@@ -2,7 +2,7 @@
  * Bstation.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -195,6 +195,16 @@ public abstract class Bstation extends GeneralEntityObject implements ProjectCon
     public void insertStation(IStation station) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(station);
+
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -221,6 +231,16 @@ public abstract class Bstation extends GeneralEntityObject implements ProjectCon
     public void updateStation(IStation station) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(station);
+
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -248,12 +268,21 @@ public abstract class Bstation extends GeneralEntityObject implements ProjectCon
 
 
 
+
+
+
         if(station.getName()!=null && station.getName().length()>IStation.SIZE_NAME) {
             message.append("Name is langer dan toegestaan. Max aantal karakters: " + IStation.SIZE_NAME + "\n");
         }
+
         if(station.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
+
+
+
+
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

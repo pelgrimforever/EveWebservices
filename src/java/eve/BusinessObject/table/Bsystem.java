@@ -2,7 +2,7 @@
  * Bsystem.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -194,6 +194,16 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
     public void insertSystem(ISystem system) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(system);
+
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -220,6 +230,16 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
     public void updateSystem(ISystem system) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(system);
+
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -246,15 +266,24 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
         //Primary key
 
 
+
+
         if(system.getName()!=null && system.getName().length()>ISystem.SIZE_NAME) {
             message.append("Name is langer dan toegestaan. Max aantal karakters: " + ISystem.SIZE_NAME + "\n");
         }
+
         if(system.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
         if(system.getSecurity_class()!=null && system.getSecurity_class().length()>ISystem.SIZE_SECURITY_CLASS) {
             message.append("Security_class is langer dan toegestaan. Max aantal karakters: " + ISystem.SIZE_SECURITY_CLASS + "\n");
         }
+
+
+
+
+
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

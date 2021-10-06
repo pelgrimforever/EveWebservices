@@ -2,7 +2,7 @@
  * Bcategory.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -185,6 +185,9 @@ public abstract class Bcategory extends GeneralEntityObject implements ProjectCo
     public void insertCategory(ICategory category) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(category);
+
+
+
         }
     }
 
@@ -211,6 +214,9 @@ public abstract class Bcategory extends GeneralEntityObject implements ProjectCo
     public void updateCategory(ICategory category) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(category);
+
+
+
         }
     }
 
@@ -238,9 +244,11 @@ public abstract class Bcategory extends GeneralEntityObject implements ProjectCo
         if(category.getName()!=null && category.getName().length()>ICategory.SIZE_NAME) {
             message.append("Name is langer dan toegestaan. Max aantal karakters: " + ICategory.SIZE_NAME + "\n");
         }
+
         if(category.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

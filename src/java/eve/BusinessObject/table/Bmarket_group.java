@@ -2,7 +2,7 @@
  * Bmarket_group.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -187,6 +187,10 @@ public abstract class Bmarket_group extends GeneralEntityObject implements Proje
     public void insertMarket_group(IMarket_group market_group) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(market_group);
+
+
+
+
         }
     }
 
@@ -213,6 +217,10 @@ public abstract class Bmarket_group extends GeneralEntityObject implements Proje
     public void updateMarket_group(IMarket_group market_group) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(market_group);
+
+
+
+
         }
     }
 
@@ -238,15 +246,18 @@ public abstract class Bmarket_group extends GeneralEntityObject implements Proje
         StringBuffer message = new StringBuffer();
         //Primary key
 
+
         if(market_group.getName()!=null && market_group.getName().length()>IMarket_group.SIZE_NAME) {
             message.append("Name is langer dan toegestaan. Max aantal karakters: " + IMarket_group.SIZE_NAME + "\n");
         }
+
         if(market_group.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
         if(market_group.getDescription()!=null && market_group.getDescription().length()>IMarket_group.SIZE_DESCRIPTION) {
             message.append("Description is langer dan toegestaan. Max aantal karakters: " + IMarket_group.SIZE_DESCRIPTION + "\n");
         }
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

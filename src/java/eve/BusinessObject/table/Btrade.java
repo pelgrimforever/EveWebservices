@@ -2,7 +2,7 @@
  * Btrade.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -193,6 +193,18 @@ public abstract class Btrade extends GeneralEntityObject implements ProjectConst
     public void insertTrade(ITrade trade) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(trade);
+
+
+
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -219,6 +231,18 @@ public abstract class Btrade extends GeneralEntityObject implements ProjectConst
     public void updateTrade(ITrade trade) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(trade);
+
+
+
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -244,6 +268,16 @@ public abstract class Btrade extends GeneralEntityObject implements ProjectConst
         StringBuffer message = new StringBuffer();
         //foreign key Trade.Sell_order_id - Orders.Id
         //foreign key Trade.Buy_order_id - Orders.Id
+
+
+
+
+
+
+
+
+
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

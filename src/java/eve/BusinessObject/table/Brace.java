@@ -2,7 +2,7 @@
  * Brace.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -187,6 +187,10 @@ public abstract class Brace extends GeneralEntityObject implements ProjectConsta
     public void insertRace(IRace race) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(race);
+
+
+
+
         }
     }
 
@@ -213,6 +217,10 @@ public abstract class Brace extends GeneralEntityObject implements ProjectConsta
     public void updateRace(IRace race) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(race);
+
+
+
+
         }
     }
 
@@ -238,15 +246,18 @@ public abstract class Brace extends GeneralEntityObject implements ProjectConsta
         StringBuffer message = new StringBuffer();
         //Primary key
 
+
         if(race.getName()!=null && race.getName().length()>IRace.SIZE_NAME) {
             message.append("Name is langer dan toegestaan. Max aantal karakters: " + IRace.SIZE_NAME + "\n");
         }
+
         if(race.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
         if(race.getDescription()!=null && race.getDescription().length()>IRace.SIZE_DESCRIPTION) {
             message.append("Description is langer dan toegestaan. Max aantal karakters: " + IRace.SIZE_DESCRIPTION + "\n");
         }
+
         if(race.getDescription()==null) {
             message.append("Description mag niet leeg zijn.\n");
         }

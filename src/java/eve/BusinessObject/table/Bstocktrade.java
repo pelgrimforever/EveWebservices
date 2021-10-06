@@ -2,7 +2,7 @@
  * Bstocktrade.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -184,6 +184,10 @@ public abstract class Bstocktrade extends GeneralEntityObject implements Project
     public void insertStocktrade(IStocktrade stocktrade) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(stocktrade);
+
+
+
+
         }
     }
 
@@ -210,6 +214,10 @@ public abstract class Bstocktrade extends GeneralEntityObject implements Project
     public void updateStocktrade(IStocktrade stocktrade) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(stocktrade);
+
+
+
+
         }
     }
 
@@ -236,6 +244,7 @@ public abstract class Bstocktrade extends GeneralEntityObject implements Project
         //foreign key Stocktrade.Username - Stock.Username
         //foreign key Stocktrade.Evetype - Stock.Evetype
         //Primary key
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

@@ -2,7 +2,7 @@
  * Btypegroup.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -187,6 +187,10 @@ public abstract class Btypegroup extends GeneralEntityObject implements ProjectC
     public void insertTypegroup(ITypegroup typegroup) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(typegroup);
+
+
+
+
         }
     }
 
@@ -213,6 +217,10 @@ public abstract class Btypegroup extends GeneralEntityObject implements ProjectC
     public void updateTypegroup(ITypegroup typegroup) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(typegroup);
+
+
+
+
         }
     }
 
@@ -238,12 +246,15 @@ public abstract class Btypegroup extends GeneralEntityObject implements ProjectC
         StringBuffer message = new StringBuffer();
         //Primary key
 
+
         if(typegroup.getName()!=null && typegroup.getName().length()>ITypegroup.SIZE_NAME) {
             message.append("Name is langer dan toegestaan. Max aantal karakters: " + ITypegroup.SIZE_NAME + "\n");
         }
+
         if(typegroup.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

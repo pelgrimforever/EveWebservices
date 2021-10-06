@@ -2,7 +2,7 @@
  * Bgraphic.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -190,6 +190,14 @@ public abstract class Bgraphic extends GeneralEntityObject implements ProjectCon
     public void insertGraphic(IGraphic graphic) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(graphic);
+
+
+
+
+
+
+
+
         }
     }
 
@@ -216,6 +224,14 @@ public abstract class Bgraphic extends GeneralEntityObject implements ProjectCon
     public void updateGraphic(IGraphic graphic) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(graphic);
+
+
+
+
+
+
+
+
         }
     }
 
@@ -243,24 +259,31 @@ public abstract class Bgraphic extends GeneralEntityObject implements ProjectCon
         if(graphic.getCollision_file()!=null && graphic.getCollision_file().length()>IGraphic.SIZE_COLLISION_FILE) {
             message.append("Collision_file is langer dan toegestaan. Max aantal karakters: " + IGraphic.SIZE_COLLISION_FILE + "\n");
         }
+
         if(graphic.getGraphic_file()!=null && graphic.getGraphic_file().length()>IGraphic.SIZE_GRAPHIC_FILE) {
             message.append("Graphic_file is langer dan toegestaan. Max aantal karakters: " + IGraphic.SIZE_GRAPHIC_FILE + "\n");
         }
+
         if(graphic.getIcon_folder()!=null && graphic.getIcon_folder().length()>IGraphic.SIZE_ICON_FOLDER) {
             message.append("Icon_folder is langer dan toegestaan. Max aantal karakters: " + IGraphic.SIZE_ICON_FOLDER + "\n");
         }
+
         if(graphic.getSof_dna()!=null && graphic.getSof_dna().length()>IGraphic.SIZE_SOF_DNA) {
             message.append("Sof_dna is langer dan toegestaan. Max aantal karakters: " + IGraphic.SIZE_SOF_DNA + "\n");
         }
+
         if(graphic.getSof_fation_name()!=null && graphic.getSof_fation_name().length()>IGraphic.SIZE_SOF_FATION_NAME) {
             message.append("Sof_fation_name is langer dan toegestaan. Max aantal karakters: " + IGraphic.SIZE_SOF_FATION_NAME + "\n");
         }
+
         if(graphic.getSof_hull_name()!=null && graphic.getSof_hull_name().length()>IGraphic.SIZE_SOF_HULL_NAME) {
             message.append("Sof_hull_name is langer dan toegestaan. Max aantal karakters: " + IGraphic.SIZE_SOF_HULL_NAME + "\n");
         }
+
         if(graphic.getSof_race_name()!=null && graphic.getSof_race_name().length()>IGraphic.SIZE_SOF_RACE_NAME) {
             message.append("Sof_race_name is langer dan toegestaan. Max aantal karakters: " + IGraphic.SIZE_SOF_RACE_NAME + "\n");
         }
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

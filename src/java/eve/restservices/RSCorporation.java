@@ -1,3 +1,10 @@
+/*
+ * RSCorporation.java
+ *
+ * Generated on 6.9.2021 16:29
+ *
+ */
+
 package eve.restservices;
 
 import base.servlets.Securitycheck;

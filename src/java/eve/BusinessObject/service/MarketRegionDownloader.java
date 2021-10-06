@@ -90,20 +90,26 @@ public class MarketRegionDownloader implements Runnable {
                             }
                         }
                     }
-                    toutput = blorders.Commit2DB_returnSQL();
-                    if(toutput.getHaserror()) {
-                        errorcounter++;
-                        marketstatus.addMessage(toutput.getErrormessage());
+                    //don't attempt to commit to database if keeprunning flag is off
+                    if(keeprunning) {
+                        toutput = blorders.Commit2DB_returnSQL();
+                        if(toutput.getHaserror()) {
+                            errorcounter++;
+                            marketstatus.addMessage(toutput.getErrormessage());
+                        }
+                        pagenr++;
+                        marketstatus.updateStatus(region.getPrimaryKey().getId(), pagenr);
                     }
-                    pagenr++;
-                    marketstatus.updateStatus(region.getPrimaryKey().getId(), pagenr);
                 } while(keeprunning && jsonorders.size()>0);
                 marketstatus.setDone(region.getPrimaryKey().getId());
-                region.setOrderpages(pagenr);
-                region.setOrdererrors(errorcounter);
-                blregion.updateRegion(region);
+                //don't attempt to commit to database if keeprunning flag is off
+                if(keeprunning) {
+                    region.setOrderpages(pagenr);
+                    region.setOrdererrors(errorcounter);
+                    blregion.updateRegion(region);
 
-                region = data.getNextregion();
+                    region = data.getNextregion();
+                }
             }         
         }
         catch(DBException e) {

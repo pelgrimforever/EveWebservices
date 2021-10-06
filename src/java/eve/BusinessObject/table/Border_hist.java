@@ -2,7 +2,7 @@
  * Border_hist.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -198,6 +198,20 @@ public abstract class Border_hist extends GeneralEntityObject implements Project
     public void insertOrder_hist(IOrder_hist order_hist) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(order_hist);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -224,6 +238,20 @@ public abstract class Border_hist extends GeneralEntityObject implements Project
     public void updateOrder_hist(IOrder_hist order_hist) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(order_hist);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -250,15 +278,28 @@ public abstract class Border_hist extends GeneralEntityObject implements Project
         //Primary key
 
 
+
+
+
+
+
         if(order_hist.getRange()!=null && order_hist.getRange().length()>IOrder_hist.SIZE_RANGE) {
             message.append("Range is langer dan toegestaan. Max aantal karakters: " + IOrder_hist.SIZE_RANGE + "\n");
         }
+
         if(order_hist.getRange()==null) {
             message.append("Range mag niet leeg zijn.\n");
         }
+
+
+
+
+
+
         if(order_hist.getIssued()==null) {
             message.append("Issued mag niet leeg zijn.\n");
         }
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

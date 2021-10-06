@@ -199,9 +199,6 @@ public class CategoryService implements Runnable {
         catch(DataException e) {
             categorystatus.addMessage(e.getMessage());
         }
-        catch(CustomException e) {
-            categorystatus.addMessage(e.getMessage());
-        }
 
         long end = System.currentTimeMillis();
         categorystatus.addMessage("Download time Categories/Type groups/Types " + ((end - start)/1000) + "sec.");

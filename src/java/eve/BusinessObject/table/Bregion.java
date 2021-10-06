@@ -2,7 +2,7 @@
  * Bregion.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.8.2021 11:31
+ * Generated on 6.9.2021 16:29
  *
  */
 
@@ -187,6 +187,11 @@ public abstract class Bregion extends GeneralEntityObject implements ProjectCons
     public void insertRegion(IRegion region) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.insertEntity(region);
+
+
+
+
+
         }
     }
 
@@ -213,6 +218,11 @@ public abstract class Bregion extends GeneralEntityObject implements ProjectCons
     public void updateRegion(IRegion region) throws DBException, DataException {
         if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
             super.updateEntity(region);
+
+
+
+
+
         }
     }
 
@@ -240,9 +250,13 @@ public abstract class Bregion extends GeneralEntityObject implements ProjectCons
         if(region.getName()!=null && region.getName().length()>IRegion.SIZE_NAME) {
             message.append("Name is langer dan toegestaan. Max aantal karakters: " + IRegion.SIZE_NAME + "\n");
         }
+
         if(region.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
+
+
+
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
