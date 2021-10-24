@@ -9,16 +9,11 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import general.exception.DataException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IRoutetype;
 import eve.logicentity.Routetype;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import eve.BusinessObject.table.Broutetype;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLroutetype;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * Business Logic Entity class BLroutetype
@@ -30,7 +25,7 @@ import java.sql.SQLException;
  *
  * @author Franky Laseure
  */
-public class BLroutetype extends Broutetype implements IBLroutetype {
+public class BLroutetype extends Broutetype {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -47,19 +42,11 @@ public class BLroutetype extends Broutetype implements IBLroutetype {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLroutetype(GeneralEntityObject transactionobject) {
+    public BLroutetype(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity routetype) throws SQLException {
-        
-    }
-    
     /**
      * try to insert Routetype object in database
      * commit transaction

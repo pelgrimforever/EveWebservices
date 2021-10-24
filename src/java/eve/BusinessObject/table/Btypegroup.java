@@ -2,17 +2,17 @@
  * Btypegroup.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONTypegroup;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMtypegroup;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Btypegroup extends GeneralEntityObject implements ProjectConstants {
+public abstract class Btypegroup extends BLtable {
 
     /**
      * Constructor, sets Typegroup as default Entity
      */
     public Btypegroup() {
-        super(new SQLMapper_pgsql(connectionpool, "Typegroup"), new Typegroup());
+        super(new Typegroup(), new EMtypegroup());
     }
 
     /**
@@ -60,34 +60,8 @@ public abstract class Btypegroup extends GeneralEntityObject implements ProjectC
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Btypegroup(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Typegroup());
-    }
-
-    /**
-     * Map ResultSet Field values to Typegroup
-     * @param dbresult: Database ResultSet
-     */
-    public Typegroup mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        TypegroupPK typegroupPK = null;
-        Typegroup typegroup;
-        if(dbresult==null) {
-            typegroup = new Typegroup(typegroupPK);
-        } else {
-            try {
-                typegroupPK = new TypegroupPK(dbresult.getLong("id"));
-                typegroup = new Typegroup(typegroupPK);
-                typegroup.initCategoryPK(new CategoryPK(dbresult.getLong("category")));
-                if(dbresult.wasNull()) typegroup.setCategoryPK(null);                
-                typegroup.initName(dbresult.getString("name"));
-                typegroup.initPublished(dbresult.getBoolean("published"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, typegroup);
-        return typegroup;
+    public Btypegroup(BLtable transactionobject) {
+        super(transactionobject, new Typegroup(), new EMtypegroup());
     }
 
     /**
@@ -101,6 +75,7 @@ public abstract class Btypegroup extends GeneralEntityObject implements ProjectC
     /**
      * create new empty Typegroup object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return ITypegroup with primary key
      */
     public ITypegroup newTypegroup(long id) {
@@ -126,6 +101,7 @@ public abstract class Btypegroup extends GeneralEntityObject implements ProjectC
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new ITypegroupPK
      */
     public ITypegroupPK newTypegroupPK(long id) {
@@ -137,10 +113,8 @@ public abstract class Btypegroup extends GeneralEntityObject implements ProjectC
      * @return ArrayList of Typegroup objects
      * @throws DBException
      */
-    public ArrayList getTypegroups() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Typegroup.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Typegroup> getTypegroups() throws DBException {
+        return (ArrayList<Typegroup>)super.getEntities(EMtypegroup.SQLSelectAll);
     }
 
     /**
@@ -150,21 +124,28 @@ public abstract class Btypegroup extends GeneralEntityObject implements ProjectC
      * @throws DBException
      */
     public Typegroup getTypegroup(ITypegroupPK typegroupPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Typegroup)super.getEntity((TypegroupPK)typegroupPK);
-        } else return null;
+        return (Typegroup)super.getEntity((TypegroupPK)typegroupPK);
     }
 
-    public ArrayList searchtypegroups(ITypegroupsearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search typegroup with ITypegroupsearch parameters
+     * @param search ITypegroupsearch
+     * @return ArrayList of Typegroup
+     * @throws DBException 
+     */
+    public ArrayList<Typegroup> searchtypegroups(ITypegroupsearch search) throws DBException {
+        return (ArrayList<Typegroup>)this.search(search);
     }
 
-    public ArrayList searchtypegroups(ITypegroupsearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search typegroup with ITypegroupsearch parameters, order by orderby sql clause
+     * @param search ITypegroupsearch
+     * @param orderby sql order by string
+     * @return ArrayList of Typegroup
+     * @throws DBException 
+     */
+    public ArrayList<Typegroup> searchtypegroups(ITypegroupsearch search, String orderby) throws DBException {
+        return (ArrayList<Typegroup>)this.search(search, orderby);
     }
 
     /**
@@ -174,32 +155,26 @@ public abstract class Btypegroup extends GeneralEntityObject implements ProjectC
      * @throws DBException
      */
     public boolean getTypegroupExists(ITypegroupPK typegroupPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((TypegroupPK)typegroupPK);
-        } else return false;
+        return super.getEntityExists((TypegroupPK)typegroupPK);
     }
 
     /**
      * try to insert Typegroup in database
-     * @param film: Typegroup object
+     * @param typegroup Typegroup object
      * @throws DBException
+     * @throws DataException
      */
     public void insertTypegroup(ITypegroup typegroup) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(typegroup);
-
-
-
-
-        }
+        super.insertEntity(typegroup);
     }
 
     /**
      * check if TypegroupPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Typegroup object
+     * @param typegroup Typegroup object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateTypegroup(ITypegroup typegroup) throws DBException, DataException {
         if(this.getTypegroupExists(typegroup.getPrimaryKey())) {
@@ -211,50 +186,39 @@ public abstract class Btypegroup extends GeneralEntityObject implements ProjectC
 
     /**
      * try to update Typegroup in database
-     * @param film: Typegroup object
+     * @param typegroup Typegroup object
      * @throws DBException
+     * @throws DataException
      */
     public void updateTypegroup(ITypegroup typegroup) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(typegroup);
-
-
-
-
-        }
+        super.updateEntity(typegroup);
     }
 
     /**
      * try to delete Typegroup in database
-     * @param film: Typegroup object
+     * @param typegroup Typegroup object
      * @throws DBException
      */
     public void deleteTypegroup(ITypegroup typegroup) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteTypegroup(typegroup.getOwnerobject(), typegroup.getPrimaryKey());
-            super.deleteEntity(typegroup);
-        }
+        cascadedeleteTypegroup(typegroup.getPrimaryKey());
+        super.deleteEntity(typegroup);
     }
 
     /**
      * check data rules in Typegroup, throw DataException with customized message if rules do not apply
-     * @param film: Typegroup object
+     * @param typegroup Typegroup object
      * @throws DataException
      * @throws DBException
      */
     public void checkDATA(ITypegroup typegroup) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
-
-
         if(typegroup.getName()!=null && typegroup.getName().length()>ITypegroup.SIZE_NAME) {
-            message.append("Name is langer dan toegestaan. Max aantal karakters: " + ITypegroup.SIZE_NAME + "\n");
+            message.append("Name is langer dan toegestaan. Max aantal karakters: ").append(ITypegroup.SIZE_NAME).append("\n");
         }
-
         if(typegroup.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -264,67 +228,70 @@ public abstract class Btypegroup extends GeneralEntityObject implements ProjectC
      * delete all records in tables where typegroupPK is used in a primary key
      * @param typegroupPK: Typegroup primary key
      */
-    public void cascadedeleteTypegroup(String senderobject, ITypegroupPK typegroupPK) {
+    public void cascadedeleteTypegroup(ITypegroupPK typegroupPK) {
     }
 
     /**
      * @param categoryPK: foreign key for Category
      * @delete all Typegroup Entity objects for Category in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4category(String senderobject, ICategoryPK categoryPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Typegroup.SQLDelete4category, categoryPK.getKeyFields());
-        }
+    public void delete4category(ICategoryPK categoryPK) {
+        super.addStatement(EMtypegroup.SQLDelete4category, categoryPK.getSQLprimarykey());
     }
 
     /**
      * @param categoryPK: foreign key for Category
      * @return all Typegroup Entity objects for Category
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getTypegroups4category(ICategoryPK categoryPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Typegroup.SQLSelect4category, categoryPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Typegroup> getTypegroups4category(ICategoryPK categoryPK) throws CustomException {
+        return super.getEntities(EMtypegroup.SQLSelect4category, categoryPK.getSQLprimarykey());
     }
 
     /**
      * get all Typegroup objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Typegroup objects
      * @throws DBException
      */
-    public ArrayList getTypegroups(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Typegroup.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Typegroup> getTypegroups(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMtypegroup.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Typegroup>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Typegroup objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delTypegroup(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Typegroup.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delTypegroup(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Typegroup.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

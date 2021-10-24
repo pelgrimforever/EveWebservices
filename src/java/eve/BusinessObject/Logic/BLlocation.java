@@ -9,16 +9,11 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import general.exception.DataException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.ILocation;
 import eve.logicentity.Location;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import eve.BusinessObject.table.Blocation;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLlocation;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * Business Logic Entity class BLlocation
@@ -30,7 +25,7 @@ import java.sql.SQLException;
  *
  * @author Franky Laseure
  */
-public class BLlocation extends Blocation implements IBLlocation {
+public class BLlocation extends Blocation {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -47,19 +42,11 @@ public class BLlocation extends Blocation implements IBLlocation {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLlocation(GeneralEntityObject transactionobject) {
+    public BLlocation(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity location) throws SQLException {
-        
-    }
-    
     /**
      * try to insert Location object in database
      * commit transaction

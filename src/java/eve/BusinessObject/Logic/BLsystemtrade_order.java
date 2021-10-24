@@ -9,15 +9,12 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.ISystemtrade_order;
 import eve.logicentity.Systemtrade_order;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import eve.BusinessObject.table.Bsystemtrade_order;
+import eve.conversion.entity.EMsystemtrade_order;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLsystemtrade_order;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * Business Logic Entity class BLsystemtrade_order
@@ -29,7 +26,7 @@ import java.sql.SQLException;
  *
  * @author Franky Laseure
  */
-public class BLsystemtrade_order extends Bsystemtrade_order implements IBLsystemtrade_order {
+public class BLsystemtrade_order extends Bsystemtrade_order {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -46,7 +43,7 @@ public class BLsystemtrade_order extends Bsystemtrade_order implements IBLsystem
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLsystemtrade_order(GeneralEntityObject transactionobject) {
+    public BLsystemtrade_order(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
@@ -57,24 +54,16 @@ public class BLsystemtrade_order extends Bsystemtrade_order implements IBLsystem
      * @throws DataException 
      */
     public void deletesystemtrade_order() throws DBException, DataException {
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Systemtrade_order.SQLdeleteall, null);
+        this.addStatement(EMsystemtrade_order.SQLdeleteall);
         this.Commit2DB();
-    }
-    
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity systemtrade_order) throws SQLException {
-        
     }
     
     /**
      * try to insert Systemtrade_order object in database
      * commit transaction
      * @param systemtrade_order: Systemtrade_order Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void insertSystemtrade_order(ISystemtrade_order systemtrade_order) throws DBException, DataException {
@@ -87,8 +76,8 @@ public class BLsystemtrade_order extends Bsystemtrade_order implements IBLsystem
      * an alternative to insertSystemtrade_order, which can be made an empty function
      * commit transaction
      * @param systemtrade_order: Systemtrade_order Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureinsertSystemtrade_order(ISystemtrade_order systemtrade_order) throws DBException, DataException {
         trans_insertSystemtrade_order(systemtrade_order);
@@ -99,8 +88,8 @@ public class BLsystemtrade_order extends Bsystemtrade_order implements IBLsystem
      * try to update Systemtrade_order object in database
      * commit transaction
      * @param systemtrade_order: Systemtrade_order Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void updateSystemtrade_order(ISystemtrade_order systemtrade_order) throws DBException, DataException {
@@ -113,8 +102,8 @@ public class BLsystemtrade_order extends Bsystemtrade_order implements IBLsystem
      * an alternative to updateSystemtrade_order, which can be made an empty function
      * commit transaction
      * @param systemtrade_order: Systemtrade_order Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureupdateSystemtrade_order(ISystemtrade_order systemtrade_order) throws DBException, DataException {
         trans_updateSystemtrade_order(systemtrade_order);
@@ -125,7 +114,7 @@ public class BLsystemtrade_order extends Bsystemtrade_order implements IBLsystem
      * try to delete Systemtrade_order object in database
      * commit transaction
      * @param systemtrade_order: Systemtrade_order Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     @Override
     public void deleteSystemtrade_order(ISystemtrade_order systemtrade_order) throws DBException {
@@ -138,7 +127,7 @@ public class BLsystemtrade_order extends Bsystemtrade_order implements IBLsystem
      * an alternative to deleteSystemtrade_order, which can be made an empty function
      * commit transaction
      * @param systemtrade_order: Systemtrade_order Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void securedeleteSystemtrade_order(ISystemtrade_order systemtrade_order) throws DBException {
         trans_deleteSystemtrade_order(systemtrade_order);
@@ -149,8 +138,8 @@ public class BLsystemtrade_order extends Bsystemtrade_order implements IBLsystem
      * try to insert Systemtrade_order object in database
      * do not commit transaction
      * @param systemtrade_order: Systemtrade_order Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_insertSystemtrade_order(ISystemtrade_order systemtrade_order) throws DBException, DataException {
         super.checkDATA(systemtrade_order);
@@ -161,8 +150,8 @@ public class BLsystemtrade_order extends Bsystemtrade_order implements IBLsystem
      * try to update Systemtrade_order object in database
      * do not commit transaction
      * @param systemtrade_order: Systemtrade_order Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_updateSystemtrade_order(ISystemtrade_order systemtrade_order) throws DBException, DataException {
         super.checkDATA(systemtrade_order);
@@ -173,7 +162,7 @@ public class BLsystemtrade_order extends Bsystemtrade_order implements IBLsystem
      * try to delete Systemtrade_order object in database
      * do not commit transaction
      * @param systemtrade_order: Systemtrade_order Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void trans_deleteSystemtrade_order(ISystemtrade_order systemtrade_order) throws DBException {
         super.deleteSystemtrade_order((Systemtrade_order)systemtrade_order);

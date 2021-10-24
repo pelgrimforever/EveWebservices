@@ -2,7 +2,7 @@
  * WSCorporation.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSCorporation implements WSICorporation {
         Corporation corporation;
         try {
             IStationPK stationPK = JSONStation.toStationPK((JSONObject)parser.parse(json));
-            blcorporation.delete4station(this.getClass().getName(), stationPK);
+            blcorporation.delete4station(stationPK);
         }
         catch(ParseException e) {
         }
@@ -221,7 +221,7 @@ public class WSCorporation implements WSICorporation {
         Corporation corporation;
         try {
             IFactionPK factionPK = JSONFaction.toFactionPK((JSONObject)parser.parse(json));
-            blcorporation.delete4faction(this.getClass().getName(), factionPK);
+            blcorporation.delete4faction(factionPK);
         }
         catch(ParseException e) {
         }
@@ -258,7 +258,7 @@ public class WSCorporation implements WSICorporation {
         Corporation corporation;
         try {
             IAlliancePK alliancePK = JSONAlliance.toAlliancePK((JSONObject)parser.parse(json));
-            blcorporation.delete4alliance(this.getClass().getName(), alliancePK);
+            blcorporation.delete4alliance(alliancePK);
         }
         catch(ParseException e) {
         }

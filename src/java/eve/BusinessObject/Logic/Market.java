@@ -6,9 +6,10 @@
 package eve.BusinessObject.Logic;
 
 import data.conversion.JSONConversion;
-import db.AbstractSQLMapper;
+import db.SQLMapper;
 import db.TransactionOutput;
 import eve.data.Swagger;
+import eve.entity.pk.EvetypePK;
 import eve.entity.pk.RoutetypePK;
 import eve.entity.pk.Security_islandPK;
 import eve.entity.pk.Systemtrade_orderPK;
@@ -157,6 +158,7 @@ public class Market implements Runnable {
         BLorders blorders = new BLorders();
         BLorder_hist blorderhist = new BLorder_hist();
         BLregion blregion = new BLregion();
+        BLevetype blevetype = new BLevetype();
 
         //more orders to order_hist
         marketstatus.addMessage("Delete orders");
@@ -183,6 +185,8 @@ public class Market implements Runnable {
         StringBuilder sqlb = new StringBuilder();
         JSONObject jsonorderdetails;
         TransactionOutput toutput;
+        ArrayList<String> sqlstatements = new ArrayList<>();
+        ArrayList<Long> type_statements = new ArrayList<>();
         while(keeprunning && regionsI.hasNext()) {
             region = regionsI.next();
             pagenr = 1;
@@ -207,25 +211,51 @@ public class Market implements Runnable {
                     sqlb.append(JSONConversion.getint(jsonorderdetails, "min_volume")).append(",");
                     sqlb.append(JSONConversion.getLong(jsonorderdetails, "location_id")).append(",");
                     sqlb.append(JSONConversion.getboolean(jsonorderdetails, "is_buy_order")).append(",");
-                    sqlb.append("'").append(AbstractSQLMapper.datetimeformat.format(Swagger.datetimestring2Timestamp(JSONConversion.getString(jsonorderdetails, "issued"))));
+                    sqlb.append("'").append(SQLMapper.DATETIMEFORMATTER.format(Swagger.datetimestring2Timestamp(JSONConversion.getString(jsonorderdetails, "issued"))));
                     sqlb.append("',").append(JSONConversion.getint(jsonorderdetails, "duration"));
                     sqlb.append(",").append(pagenr);
                     sqlb.append(")");
 
-                    blorders.addStatement(sqlb.toString(), null);
+                    sqlstatements.add(sqlb.toString());
+                    type_statements.add(JSONConversion.getLong(jsonorderdetails, "type_id"));
+                    
+                    blorders.addStatement(sqlb.toString());
 
                     ordercounter++;
                     if(ordercounter==100) {
                         orderbatch = ordercounter;
                         ordercounter = 0;
-                        toutput = blorders.Commit2DB_returnSQL();
+                        toutput = blorders.Commit2DB();
                         if(toutput.getHaserror()) {
+                            int l = sqlstatements.size();
+                            HashMap<Long, Boolean> evetypehash = new HashMap<>();
+                            for(int s=0; s<l; s++) {
+                                if(blevetype.getEntity(new EvetypePK(type_statements.get(s)))==null) {
+                                    if(!evetypehash.containsKey(type_statements.get(s))) {
+                                        Evetype evetype = new Evetype(type_statements.get(s));
+                                        evetype.setName("UNKNOWN");
+                                        blevetype.insertEntity(evetype);
+                                        TransactionOutput toutput2 = blevetype.Commit2DB();
+                                        if(toutput2.getHaserror()) {
+                                            marketstatus.addMessage("Type " + type_statements.get(s) + " could not be added");
+                                        }
+                                    }                                    
+                                }
+                                blorders.addStatement(sqlstatements.get(s));
+                                blorders.Commit2DB();
+                                TransactionOutput toutput2 = blorders.Commit2DB();
+                                if(toutput2.getHaserror()) {
+                                    marketstatus.addMessage(toutput.getErrormessage());
+                                }
+                            }
                             errorcounter++;
-                            marketstatus.addMessage(toutput.getErrormessage());
+                            //marketstatus.addMessage(toutput.getErrormessage());
                         }
+                        sqlstatements.clear();
+                        type_statements.clear();
                     }
                 }
-                toutput = blorders.Commit2DB_returnSQL();
+                toutput = blorders.Commit2DB();
                 if(toutput.getHaserror()) {
                     errorcounter++;
                     marketstatus.addMessage(toutput.getErrormessage());
@@ -280,20 +310,20 @@ public class Market implements Runnable {
                     jsonorderdetails = jsonordersI.next();
                     sqlb.delete(0, sqlb.length());
                     sqlb.append("insert into json_orders (json) values ('").append(jsonorderdetails.toJSONString()).append("')");
-                    blorders.addStatement(sqlb.toString(), null);
+                    blorders.addStatement(sqlb.toString());
 
                     ordercounter++;
                     if(ordercounter==100) {
                         orderbatch = ordercounter;
                         ordercounter = 0;
-                        toutput = blorders.Commit2DB_returnSQL();
+                        toutput = blorders.Commit2DB();
                         if(toutput.getHaserror()) {
                             marketstatus.addMessage(toutput.getErrormessage());                    
                         }
                         blorders.Commit2DB();
                     }
                 }
-                toutput = blorders.Commit2DB_returnSQL();
+                toutput = blorders.Commit2DB();
                 if(toutput.getHaserror()) {
                     marketstatus.addMessage(toutput.getErrormessage());
                 }
@@ -378,14 +408,14 @@ public class Market implements Runnable {
                     bltrade.trans_insertTrade(trade);
                     count++;
                     if(count==100) {
-                        toutput = bltrade.Commit2DB_returnSQL();
+                        toutput = bltrade.Commit2DB();
                         if(toutput.getHaserror()) {
                             marketstatus.addMessage(toutput.getErrormessage());
                         }
                     }
                 }
             }
-            toutput = bltrade.Commit2DB_returnSQL();
+            toutput = bltrade.Commit2DB();
             if(toutput.getHaserror()) {
                 marketstatus.addMessage(toutput.getErrormessage());
             }
@@ -491,16 +521,16 @@ public class Market implements Runnable {
                 systemtrade.setTotal_cargo_volume(totalcargovolume);
                 systemtrade.setJumps(systemtrade.getJumps());
                 blsystemtrade.trans_insertSystemtrade(systemtrade);
-                toutput = blsystemtrade.Commit2DB_returnSQL();
+                toutput = blsystemtrade.Commit2DB();
                 if(toutput.getHaserror()) {
                     marketstatus.addMessage(toutput.getErrormessage());
                 }
-                toutput = blsystemtrade_order.Commit2DB_returnSQL();
+                toutput = blsystemtrade_order.Commit2DB();
                 if(toutput.getHaserror()) {
                     marketstatus.addMessage(toutput.getErrormessage());
                 }
             } else {
-                blsystemtrade_order.getTransactionqueue().clear();
+                blsystemtrade_order.clearTransactions();
             }
         }
     }

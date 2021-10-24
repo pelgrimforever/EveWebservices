@@ -2,17 +2,17 @@
  * Btrade.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONTrade;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMtrade;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Btrade extends GeneralEntityObject implements ProjectConstants {
+public abstract class Btrade extends BLtable {
 
     /**
      * Constructor, sets Trade as default Entity
      */
     public Btrade() {
-        super(new SQLMapper_pgsql(connectionpool, "Trade"), new Trade());
+        super(new Trade(), new EMtrade());
     }
 
     /**
@@ -60,40 +60,8 @@ public abstract class Btrade extends GeneralEntityObject implements ProjectConst
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Btrade(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Trade());
-    }
-
-    /**
-     * Map ResultSet Field values to Trade
-     * @param dbresult: Database ResultSet
-     */
-    public Trade mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        TradePK tradePK = null;
-        Trade trade;
-        if(dbresult==null) {
-            trade = new Trade(tradePK);
-        } else {
-            try {
-                tradePK = new TradePK(dbresult.getLong("sell_order_id"), dbresult.getLong("buy_order_id"));
-                trade = new Trade(tradePK);
-                trade.initTotal_volume(dbresult.getDouble("total_volume"));
-                trade.initBuy_order_value(dbresult.getDouble("buy_order_value"));
-                trade.initSell_order_value(dbresult.getDouble("sell_order_value"));
-                trade.initProfit(dbresult.getDouble("profit"));
-                trade.initJumps(dbresult.getInt("jumps"));
-                trade.initRuns(dbresult.getInt("runs"));
-                trade.initTotal_jumps(dbresult.getInt("total_jumps"));
-                trade.initProfit_per_jump(dbresult.getDouble("profit_per_jump"));
-                trade.initSinglerun_profit_per_jump(dbresult.getDouble("singlerun_profit_per_jump"));
-                trade.initMaxunits_per_run(dbresult.getInt("maxunits_per_run"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, trade);
-        return trade;
+    public Btrade(BLtable transactionobject) {
+        super(transactionobject, new Trade(), new EMtrade());
     }
 
     /**
@@ -107,6 +75,8 @@ public abstract class Btrade extends GeneralEntityObject implements ProjectConst
     /**
      * create new empty Trade object
      * create new primary key with given parameters
+     * @param sell_order_id primary key field
+     * @param buy_order_id primary key field
      * @return ITrade with primary key
      */
     public ITrade newTrade(long sell_order_id, long buy_order_id) {
@@ -132,6 +102,8 @@ public abstract class Btrade extends GeneralEntityObject implements ProjectConst
 
     /**
      * create new primary key with given parameters
+     * @param sell_order_id primary key field
+     * @param buy_order_id primary key field
      * @return new ITradePK
      */
     public ITradePK newTradePK(long sell_order_id, long buy_order_id) {
@@ -143,10 +115,8 @@ public abstract class Btrade extends GeneralEntityObject implements ProjectConst
      * @return ArrayList of Trade objects
      * @throws DBException
      */
-    public ArrayList getTrades() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Trade.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Trade> getTrades() throws DBException {
+        return (ArrayList<Trade>)super.getEntities(EMtrade.SQLSelectAll);
     }
 
     /**
@@ -156,21 +126,28 @@ public abstract class Btrade extends GeneralEntityObject implements ProjectConst
      * @throws DBException
      */
     public Trade getTrade(ITradePK tradePK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Trade)super.getEntity((TradePK)tradePK);
-        } else return null;
+        return (Trade)super.getEntity((TradePK)tradePK);
     }
 
-    public ArrayList searchtrades(ITradesearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search trade with ITradesearch parameters
+     * @param search ITradesearch
+     * @return ArrayList of Trade
+     * @throws DBException 
+     */
+    public ArrayList<Trade> searchtrades(ITradesearch search) throws DBException {
+        return (ArrayList<Trade>)this.search(search);
     }
 
-    public ArrayList searchtrades(ITradesearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search trade with ITradesearch parameters, order by orderby sql clause
+     * @param search ITradesearch
+     * @param orderby sql order by string
+     * @return ArrayList of Trade
+     * @throws DBException 
+     */
+    public ArrayList<Trade> searchtrades(ITradesearch search, String orderby) throws DBException {
+        return (ArrayList<Trade>)this.search(search, orderby);
     }
 
     /**
@@ -180,40 +157,26 @@ public abstract class Btrade extends GeneralEntityObject implements ProjectConst
      * @throws DBException
      */
     public boolean getTradeExists(ITradePK tradePK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((TradePK)tradePK);
-        } else return false;
+        return super.getEntityExists((TradePK)tradePK);
     }
 
     /**
      * try to insert Trade in database
-     * @param film: Trade object
+     * @param trade Trade object
      * @throws DBException
+     * @throws DataException
      */
     public void insertTrade(ITrade trade) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(trade);
-
-
-
-
-
-
-
-
-
-
-
-
-        }
+        super.insertEntity(trade);
     }
 
     /**
      * check if TradePK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Trade object
+     * @param trade Trade object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateTrade(ITrade trade) throws DBException, DataException {
         if(this.getTradeExists(trade.getPrimaryKey())) {
@@ -225,42 +188,27 @@ public abstract class Btrade extends GeneralEntityObject implements ProjectConst
 
     /**
      * try to update Trade in database
-     * @param film: Trade object
+     * @param trade Trade object
      * @throws DBException
+     * @throws DataException
      */
     public void updateTrade(ITrade trade) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(trade);
-
-
-
-
-
-
-
-
-
-
-
-
-        }
+        super.updateEntity(trade);
     }
 
     /**
      * try to delete Trade in database
-     * @param film: Trade object
+     * @param trade Trade object
      * @throws DBException
      */
     public void deleteTrade(ITrade trade) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteTrade(trade.getOwnerobject(), trade.getPrimaryKey());
-            super.deleteEntity(trade);
-        }
+        cascadedeleteTrade(trade.getPrimaryKey());
+        super.deleteEntity(trade);
     }
 
     /**
      * check data rules in Trade, throw DataException with customized message if rules do not apply
-     * @param film: Trade object
+     * @param trade Trade object
      * @throws DataException
      * @throws DBException
      */
@@ -268,16 +216,6 @@ public abstract class Btrade extends GeneralEntityObject implements ProjectConst
         StringBuffer message = new StringBuffer();
         //foreign key Trade.Sell_order_id - Orders.Id
         //foreign key Trade.Buy_order_id - Orders.Id
-
-
-
-
-
-
-
-
-
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -287,88 +225,86 @@ public abstract class Btrade extends GeneralEntityObject implements ProjectConst
      * delete all records in tables where tradePK is used in a primary key
      * @param tradePK: Trade primary key
      */
-    public void cascadedeleteTrade(String senderobject, ITradePK tradePK) {
+    public void cascadedeleteTrade(ITradePK tradePK) {
     }
 
     /**
      * @param ordersPK: foreign key for Orders
      * @delete all Trade Entity objects for Orders in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4ordersSell_order_id(String senderobject, IOrdersPK ordersPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Trade.SQLDelete4ordersSell_order_id, ordersPK.getKeyFields());
-        }
+    public void delete4ordersSell_order_id(IOrdersPK ordersPK) {
+        super.addStatement(EMtrade.SQLDelete4ordersSell_order_id, ordersPK.getSQLprimarykey());
     }
 
     /**
      * @param ordersPK: foreign key for Orders
      * @return all Trade Entity objects for Orders
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getTrades4ordersSell_order_id(IOrdersPK ordersPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Trade.SQLSelect4ordersSell_order_id, ordersPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Trade> getTrades4ordersSell_order_id(IOrdersPK ordersPK) throws CustomException {
+        return super.getEntities(EMtrade.SQLSelect4ordersSell_order_id, ordersPK.getSQLprimarykey());
     }
     /**
      * @param ordersPK: foreign key for Orders
      * @delete all Trade Entity objects for Orders in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4ordersBuy_order_id(String senderobject, IOrdersPK ordersPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Trade.SQLDelete4ordersBuy_order_id, ordersPK.getKeyFields());
-        }
+    public void delete4ordersBuy_order_id(IOrdersPK ordersPK) {
+        super.addStatement(EMtrade.SQLDelete4ordersBuy_order_id, ordersPK.getSQLprimarykey());
     }
 
     /**
      * @param ordersPK: foreign key for Orders
      * @return all Trade Entity objects for Orders
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getTrades4ordersBuy_order_id(IOrdersPK ordersPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Trade.SQLSelect4ordersBuy_order_id, ordersPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Trade> getTrades4ordersBuy_order_id(IOrdersPK ordersPK) throws CustomException {
+        return super.getEntities(EMtrade.SQLSelect4ordersBuy_order_id, ordersPK.getSQLprimarykey());
     }
 
     /**
      * get all Trade objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Trade objects
      * @throws DBException
      */
-    public ArrayList getTrades(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Trade.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Trade> getTrades(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMtrade.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Trade>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Trade objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delTrade(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Trade.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delTrade(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Trade.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

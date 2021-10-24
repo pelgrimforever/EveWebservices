@@ -2,7 +2,7 @@
  * WSStargate.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSStargate implements WSIStargate {
         Stargate stargate;
         try {
             ISystemPK systemSystemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blstargate.delete4systemSystem(this.getClass().getName(), systemSystemPK);
+            blstargate.delete4systemSystem(systemSystemPK);
         }
         catch(ParseException e) {
         }
@@ -221,7 +221,7 @@ public class WSStargate implements WSIStargate {
         Stargate stargate;
         try {
             ISystemPK systemTo_systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blstargate.delete4systemTo_system(this.getClass().getName(), systemTo_systemPK);
+            blstargate.delete4systemTo_system(systemTo_systemPK);
         }
         catch(ParseException e) {
         }

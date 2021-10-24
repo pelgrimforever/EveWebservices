@@ -2,17 +2,17 @@
  * Balliance.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONAlliance;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMalliance;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Balliance extends GeneralEntityObject implements ProjectConstants {
+public abstract class Balliance extends BLtable {
 
     /**
      * Constructor, sets Alliance as default Entity
      */
     public Balliance() {
-        super(new SQLMapper_pgsql(connectionpool, "Alliance"), new Alliance());
+        super(new Alliance(), new EMalliance());
     }
 
     /**
@@ -60,39 +60,8 @@ public abstract class Balliance extends GeneralEntityObject implements ProjectCo
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Balliance(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Alliance());
-    }
-
-    /**
-     * Map ResultSet Field values to Alliance
-     * @param dbresult: Database ResultSet
-     */
-    public Alliance mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        AlliancePK alliancePK = null;
-        Alliance alliance;
-        if(dbresult==null) {
-            alliance = new Alliance(alliancePK);
-        } else {
-            try {
-                alliancePK = new AlliancePK(dbresult.getLong("id"));
-                alliance = new Alliance(alliancePK);
-                alliance.initCorporationcreator_corporationPK(new CorporationPK(dbresult.getLong("creator_corporation")));
-                if(dbresult.wasNull()) alliance.setCorporationcreator_corporationPK(null);                
-                alliance.initCorporationexecutor_corporationPK(new CorporationPK(dbresult.getLong("executor_corporation")));
-                if(dbresult.wasNull()) alliance.setCorporationexecutor_corporationPK(null);                
-                alliance.initName(dbresult.getString("name"));
-                alliance.initCreator(dbresult.getLong("creator"));
-                alliance.initDate_founded(dbresult.getTimestamp("date_founded"));
-                alliance.initTicker(dbresult.getString("ticker"));
-                alliance.initFaction_id(dbresult.getLong("faction_id"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, alliance);
-        return alliance;
+    public Balliance(BLtable transactionobject) {
+        super(transactionobject, new Alliance(), new EMalliance());
     }
 
     /**
@@ -106,6 +75,7 @@ public abstract class Balliance extends GeneralEntityObject implements ProjectCo
     /**
      * create new empty Alliance object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return IAlliance with primary key
      */
     public IAlliance newAlliance(long id) {
@@ -131,6 +101,7 @@ public abstract class Balliance extends GeneralEntityObject implements ProjectCo
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new IAlliancePK
      */
     public IAlliancePK newAlliancePK(long id) {
@@ -142,10 +113,8 @@ public abstract class Balliance extends GeneralEntityObject implements ProjectCo
      * @return ArrayList of Alliance objects
      * @throws DBException
      */
-    public ArrayList getAlliances() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Alliance.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Alliance> getAlliances() throws DBException {
+        return (ArrayList<Alliance>)super.getEntities(EMalliance.SQLSelectAll);
     }
 
     /**
@@ -155,21 +124,28 @@ public abstract class Balliance extends GeneralEntityObject implements ProjectCo
      * @throws DBException
      */
     public Alliance getAlliance(IAlliancePK alliancePK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Alliance)super.getEntity((AlliancePK)alliancePK);
-        } else return null;
+        return (Alliance)super.getEntity((AlliancePK)alliancePK);
     }
 
-    public ArrayList searchalliances(IAlliancesearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search alliance with IAlliancesearch parameters
+     * @param search IAlliancesearch
+     * @return ArrayList of Alliance
+     * @throws DBException 
+     */
+    public ArrayList<Alliance> searchalliances(IAlliancesearch search) throws DBException {
+        return (ArrayList<Alliance>)this.search(search);
     }
 
-    public ArrayList searchalliances(IAlliancesearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search alliance with IAlliancesearch parameters, order by orderby sql clause
+     * @param search IAlliancesearch
+     * @param orderby sql order by string
+     * @return ArrayList of Alliance
+     * @throws DBException 
+     */
+    public ArrayList<Alliance> searchalliances(IAlliancesearch search, String orderby) throws DBException {
+        return (ArrayList<Alliance>)this.search(search, orderby);
     }
 
     /**
@@ -179,36 +155,26 @@ public abstract class Balliance extends GeneralEntityObject implements ProjectCo
      * @throws DBException
      */
     public boolean getAllianceExists(IAlliancePK alliancePK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((AlliancePK)alliancePK);
-        } else return false;
+        return super.getEntityExists((AlliancePK)alliancePK);
     }
 
     /**
      * try to insert Alliance in database
-     * @param film: Alliance object
+     * @param alliance Alliance object
      * @throws DBException
+     * @throws DataException
      */
     public void insertAlliance(IAlliance alliance) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(alliance);
-
-
-
-
-
-
-
-
-        }
+        super.insertEntity(alliance);
     }
 
     /**
      * check if AlliancePK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Alliance object
+     * @param alliance Alliance object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateAlliance(IAlliance alliance) throws DBException, DataException {
         if(this.getAllianceExists(alliance.getPrimaryKey())) {
@@ -220,68 +186,48 @@ public abstract class Balliance extends GeneralEntityObject implements ProjectCo
 
     /**
      * try to update Alliance in database
-     * @param film: Alliance object
+     * @param alliance Alliance object
      * @throws DBException
+     * @throws DataException
      */
     public void updateAlliance(IAlliance alliance) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(alliance);
-
-
-
-
-
-
-
-
-        }
+        super.updateEntity(alliance);
     }
 
     /**
      * try to delete Alliance in database
-     * @param film: Alliance object
+     * @param alliance Alliance object
      * @throws DBException
      */
     public void deleteAlliance(IAlliance alliance) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteAlliance(alliance.getOwnerobject(), alliance.getPrimaryKey());
-            super.deleteEntity(alliance);
-        }
+        cascadedeleteAlliance(alliance.getPrimaryKey());
+        super.deleteEntity(alliance);
     }
 
     /**
      * check data rules in Alliance, throw DataException with customized message if rules do not apply
-     * @param film: Alliance object
+     * @param alliance Alliance object
      * @throws DataException
      * @throws DBException
      */
     public void checkDATA(IAlliance alliance) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
-
-
-
-
         if(alliance.getName()!=null && alliance.getName().length()>IAlliance.SIZE_NAME) {
-            message.append("Name is langer dan toegestaan. Max aantal karakters: " + IAlliance.SIZE_NAME + "\n");
+            message.append("Name is langer dan toegestaan. Max aantal karakters: ").append(IAlliance.SIZE_NAME).append("\n");
         }
-
         if(alliance.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
-
-
         if(alliance.getDate_founded()==null) {
             message.append("Date_founded mag niet leeg zijn.\n");
         }
         if(alliance.getTicker()!=null && alliance.getTicker().length()>IAlliance.SIZE_TICKER) {
-            message.append("Ticker is langer dan toegestaan. Max aantal karakters: " + IAlliance.SIZE_TICKER + "\n");
+            message.append("Ticker is langer dan toegestaan. Max aantal karakters: ").append(IAlliance.SIZE_TICKER).append("\n");
         }
-
         if(alliance.getTicker()==null) {
             message.append("Ticker mag niet leeg zijn.\n");
         }
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -291,88 +237,86 @@ public abstract class Balliance extends GeneralEntityObject implements ProjectCo
      * delete all records in tables where alliancePK is used in a primary key
      * @param alliancePK: Alliance primary key
      */
-    public void cascadedeleteAlliance(String senderobject, IAlliancePK alliancePK) {
+    public void cascadedeleteAlliance(IAlliancePK alliancePK) {
     }
 
     /**
      * @param corporationPK: foreign key for Corporation
      * @delete all Alliance Entity objects for Corporation in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4corporationCreator_corporation(String senderobject, ICorporationPK corporationPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Alliance.SQLDelete4corporationCreator_corporation, corporationPK.getKeyFields());
-        }
+    public void delete4corporationCreator_corporation(ICorporationPK corporationPK) {
+        super.addStatement(EMalliance.SQLDelete4corporationCreator_corporation, corporationPK.getSQLprimarykey());
     }
 
     /**
      * @param corporationPK: foreign key for Corporation
      * @return all Alliance Entity objects for Corporation
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getAlliances4corporationCreator_corporation(ICorporationPK corporationPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Alliance.SQLSelect4corporationCreator_corporation, corporationPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Alliance> getAlliances4corporationCreator_corporation(ICorporationPK corporationPK) throws CustomException {
+        return super.getEntities(EMalliance.SQLSelect4corporationCreator_corporation, corporationPK.getSQLprimarykey());
     }
     /**
      * @param corporationPK: foreign key for Corporation
      * @delete all Alliance Entity objects for Corporation in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4corporationExecutor_corporation(String senderobject, ICorporationPK corporationPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Alliance.SQLDelete4corporationExecutor_corporation, corporationPK.getKeyFields());
-        }
+    public void delete4corporationExecutor_corporation(ICorporationPK corporationPK) {
+        super.addStatement(EMalliance.SQLDelete4corporationExecutor_corporation, corporationPK.getSQLprimarykey());
     }
 
     /**
      * @param corporationPK: foreign key for Corporation
      * @return all Alliance Entity objects for Corporation
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getAlliances4corporationExecutor_corporation(ICorporationPK corporationPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Alliance.SQLSelect4corporationExecutor_corporation, corporationPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Alliance> getAlliances4corporationExecutor_corporation(ICorporationPK corporationPK) throws CustomException {
+        return super.getEntities(EMalliance.SQLSelect4corporationExecutor_corporation, corporationPK.getSQLprimarykey());
     }
 
     /**
      * get all Alliance objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Alliance objects
      * @throws DBException
      */
-    public ArrayList getAlliances(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Alliance.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Alliance> getAlliances(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMalliance.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Alliance>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Alliance objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delAlliance(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Alliance.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delAlliance(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Alliance.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

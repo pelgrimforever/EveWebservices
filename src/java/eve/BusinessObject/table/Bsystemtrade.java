@@ -2,17 +2,17 @@
  * Bsystemtrade.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONSystemtrade;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMsystemtrade;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bsystemtrade extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bsystemtrade extends BLtable {
 
     /**
      * Constructor, sets Systemtrade as default Entity
      */
     public Bsystemtrade() {
-        super(new SQLMapper_pgsql(connectionpool, "Systemtrade"), new Systemtrade());
+        super(new Systemtrade(), new EMsystemtrade());
     }
 
     /**
@@ -60,33 +60,8 @@ public abstract class Bsystemtrade extends GeneralEntityObject implements Projec
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bsystemtrade(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Systemtrade());
-    }
-
-    /**
-     * Map ResultSet Field values to Systemtrade
-     * @param dbresult: Database ResultSet
-     */
-    public Systemtrade mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        SystemtradePK systemtradePK = null;
-        Systemtrade systemtrade;
-        if(dbresult==null) {
-            systemtrade = new Systemtrade(systemtradePK);
-        } else {
-            try {
-                systemtradePK = new SystemtradePK(dbresult.getLong("sell_system"), dbresult.getLong("buy_system"));
-                systemtrade = new Systemtrade(systemtradePK);
-                systemtrade.initProfit(dbresult.getDouble("profit"));
-                systemtrade.initTotal_cargo_volume(dbresult.getDouble("total_cargo_volume"));
-                systemtrade.initJumps(dbresult.getInt("jumps"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, systemtrade);
-        return systemtrade;
+    public Bsystemtrade(BLtable transactionobject) {
+        super(transactionobject, new Systemtrade(), new EMsystemtrade());
     }
 
     /**
@@ -100,6 +75,8 @@ public abstract class Bsystemtrade extends GeneralEntityObject implements Projec
     /**
      * create new empty Systemtrade object
      * create new primary key with given parameters
+     * @param sell_system primary key field
+     * @param buy_system primary key field
      * @return ISystemtrade with primary key
      */
     public ISystemtrade newSystemtrade(long sell_system, long buy_system) {
@@ -125,6 +102,8 @@ public abstract class Bsystemtrade extends GeneralEntityObject implements Projec
 
     /**
      * create new primary key with given parameters
+     * @param sell_system primary key field
+     * @param buy_system primary key field
      * @return new ISystemtradePK
      */
     public ISystemtradePK newSystemtradePK(long sell_system, long buy_system) {
@@ -136,10 +115,8 @@ public abstract class Bsystemtrade extends GeneralEntityObject implements Projec
      * @return ArrayList of Systemtrade objects
      * @throws DBException
      */
-    public ArrayList getSystemtrades() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Systemtrade.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Systemtrade> getSystemtrades() throws DBException {
+        return (ArrayList<Systemtrade>)super.getEntities(EMsystemtrade.SQLSelectAll);
     }
 
     /**
@@ -149,21 +126,28 @@ public abstract class Bsystemtrade extends GeneralEntityObject implements Projec
      * @throws DBException
      */
     public Systemtrade getSystemtrade(ISystemtradePK systemtradePK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Systemtrade)super.getEntity((SystemtradePK)systemtradePK);
-        } else return null;
+        return (Systemtrade)super.getEntity((SystemtradePK)systemtradePK);
     }
 
-    public ArrayList searchsystemtrades(ISystemtradesearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search systemtrade with ISystemtradesearch parameters
+     * @param search ISystemtradesearch
+     * @return ArrayList of Systemtrade
+     * @throws DBException 
+     */
+    public ArrayList<Systemtrade> searchsystemtrades(ISystemtradesearch search) throws DBException {
+        return (ArrayList<Systemtrade>)this.search(search);
     }
 
-    public ArrayList searchsystemtrades(ISystemtradesearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search systemtrade with ISystemtradesearch parameters, order by orderby sql clause
+     * @param search ISystemtradesearch
+     * @param orderby sql order by string
+     * @return ArrayList of Systemtrade
+     * @throws DBException 
+     */
+    public ArrayList<Systemtrade> searchsystemtrades(ISystemtradesearch search, String orderby) throws DBException {
+        return (ArrayList<Systemtrade>)this.search(search, orderby);
     }
 
     /**
@@ -173,33 +157,26 @@ public abstract class Bsystemtrade extends GeneralEntityObject implements Projec
      * @throws DBException
      */
     public boolean getSystemtradeExists(ISystemtradePK systemtradePK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((SystemtradePK)systemtradePK);
-        } else return false;
+        return super.getEntityExists((SystemtradePK)systemtradePK);
     }
 
     /**
      * try to insert Systemtrade in database
-     * @param film: Systemtrade object
+     * @param systemtrade Systemtrade object
      * @throws DBException
+     * @throws DataException
      */
     public void insertSystemtrade(ISystemtrade systemtrade) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(systemtrade);
-
-
-
-
-
-        }
+        super.insertEntity(systemtrade);
     }
 
     /**
      * check if SystemtradePK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Systemtrade object
+     * @param systemtrade Systemtrade object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateSystemtrade(ISystemtrade systemtrade) throws DBException, DataException {
         if(this.getSystemtradeExists(systemtrade.getPrimaryKey())) {
@@ -211,35 +188,27 @@ public abstract class Bsystemtrade extends GeneralEntityObject implements Projec
 
     /**
      * try to update Systemtrade in database
-     * @param film: Systemtrade object
+     * @param systemtrade Systemtrade object
      * @throws DBException
+     * @throws DataException
      */
     public void updateSystemtrade(ISystemtrade systemtrade) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(systemtrade);
-
-
-
-
-
-        }
+        super.updateEntity(systemtrade);
     }
 
     /**
      * try to delete Systemtrade in database
-     * @param film: Systemtrade object
+     * @param systemtrade Systemtrade object
      * @throws DBException
      */
     public void deleteSystemtrade(ISystemtrade systemtrade) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteSystemtrade(systemtrade.getOwnerobject(), systemtrade.getPrimaryKey());
-            super.deleteEntity(systemtrade);
-        }
+        cascadedeleteSystemtrade(systemtrade.getPrimaryKey());
+        super.deleteEntity(systemtrade);
     }
 
     /**
      * check data rules in Systemtrade, throw DataException with customized message if rules do not apply
-     * @param film: Systemtrade object
+     * @param systemtrade Systemtrade object
      * @throws DataException
      * @throws DBException
      */
@@ -247,9 +216,6 @@ public abstract class Bsystemtrade extends GeneralEntityObject implements Projec
         StringBuffer message = new StringBuffer();
         //foreign key Systemtrade.Sell_system - System.Id
         //foreign key Systemtrade.Buy_system - System.Id
-
-
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -259,102 +225,98 @@ public abstract class Bsystemtrade extends GeneralEntityObject implements Projec
      * delete all records in tables where systemtradePK is used in a primary key
      * @param systemtradePK: Systemtrade primary key
      */
-    public void cascadedeleteSystemtrade(String senderobject, ISystemtradePK systemtradePK) {
+    public void cascadedeleteSystemtrade(ISystemtradePK systemtradePK) {
         BLsystemtrade_order blsystemtrade_order = new BLsystemtrade_order(this);
-        blsystemtrade_order.delete4systemtrade(senderobject, systemtradePK);
+        blsystemtrade_order.delete4systemtrade(systemtradePK);
     }
 
     /**
      * @param systemPK: foreign key for System
      * @delete all Systemtrade Entity objects for System in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4systemSell_system(String senderobject, ISystemPK systemPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Systemtrade.SQLDelete4systemSell_system, systemPK.getKeyFields());
-        }
+    public void delete4systemSell_system(ISystemPK systemPK) {
+        super.addStatement(EMsystemtrade.SQLDelete4systemSell_system, systemPK.getSQLprimarykey());
     }
 
     /**
      * @param systemPK: foreign key for System
      * @return all Systemtrade Entity objects for System
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getSystemtrades4systemSell_system(ISystemPK systemPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Systemtrade.SQLSelect4systemSell_system, systemPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Systemtrade> getSystemtrades4systemSell_system(ISystemPK systemPK) throws CustomException {
+        return super.getEntities(EMsystemtrade.SQLSelect4systemSell_system, systemPK.getSQLprimarykey());
     }
     /**
      * @param systemPK: foreign key for System
      * @delete all Systemtrade Entity objects for System in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4systemBuy_system(String senderobject, ISystemPK systemPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Systemtrade.SQLDelete4systemBuy_system, systemPK.getKeyFields());
-        }
+    public void delete4systemBuy_system(ISystemPK systemPK) {
+        super.addStatement(EMsystemtrade.SQLDelete4systemBuy_system, systemPK.getSQLprimarykey());
     }
 
     /**
      * @param systemPK: foreign key for System
      * @return all Systemtrade Entity objects for System
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getSystemtrades4systemBuy_system(ISystemPK systemPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Systemtrade.SQLSelect4systemBuy_system, systemPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Systemtrade> getSystemtrades4systemBuy_system(ISystemPK systemPK) throws CustomException {
+        return super.getEntities(EMsystemtrade.SQLSelect4systemBuy_system, systemPK.getSQLprimarykey());
     }
     /**
      * @param systemtrade_orderPK: parent Systemtrade_order for child object Systemtrade Entity
      * @return child Systemtrade Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ISystemtrade getSystemtrade_order(ISystemtrade_orderPK systemtrade_orderPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            SystemtradePK systemtradePK = new SystemtradePK(systemtrade_orderPK.getBuy_system(), systemtrade_orderPK.getSell_system());
-            return this.getSystemtrade(systemtradePK);
-        } else return null;
+    public Systemtrade getSystemtrade_order(ISystemtrade_orderPK systemtrade_orderPK) throws CustomException {
+        SystemtradePK systemtradePK = new SystemtradePK(systemtrade_orderPK.getBuy_system(), systemtrade_orderPK.getSell_system());
+        return this.getSystemtrade(systemtradePK);
     }
 
 
     /**
      * get all Systemtrade objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Systemtrade objects
      * @throws DBException
      */
-    public ArrayList getSystemtrades(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Systemtrade.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Systemtrade> getSystemtrades(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMsystemtrade.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Systemtrade>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Systemtrade objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delSystemtrade(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Systemtrade.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delSystemtrade(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Systemtrade.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

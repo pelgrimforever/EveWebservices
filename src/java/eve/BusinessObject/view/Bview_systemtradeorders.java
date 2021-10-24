@@ -2,19 +2,17 @@
  * Bview_systemtradeorders.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.view;
 
-import BusinessObject.GeneralViewObject;
+import BusinessObject.BLview;
+import db.SQLMapperFactory;
 import data.gis.shape.*;
 import db.SQLMapper_pgsql;
-import eve.data.ProjectConstants;
-import db.ArchiveViewMapper;
-import db.ViewMapper;
-import db.ViewMapperInterface;
+import eve.conversion.entity.EMview_systemtradeorders;
 import general.exception.*;
 import java.util.ArrayList;
 import eve.logicview.View_systemtradeorders;
@@ -34,41 +32,13 @@ import org.postgis.PGgeometry;
  *
  * @author Franky Laseure
  */
-public abstract class Bview_systemtradeorders extends GeneralViewObject implements ProjectConstants {
+public abstract class Bview_systemtradeorders extends BLview {
 
     /**
      * Constructor, sets View_systemtradeorders as default Entity
      */
     public Bview_systemtradeorders() {
-        super(new SQLMapper_pgsql(connectionpool, "View_systemtradeorders"), new View_systemtradeorders());
-    }
-
-    /**
-     * Map ResultSet Field values to View_systemtradeorders
-     * @param dbresult: Database ResultSet
-     */
-    public View_systemtradeorders mapResultSet2View(ResultSet dbresult) throws SQLException {
-        View_systemtradeorders view_systemtradeorders = new View_systemtradeorders();
-        if(dbresult!=null) {
-            try {
-                view_systemtradeorders.setBuy_totalprice(dbresult.getDouble("buy_totalprice"));
-                view_systemtradeorders.setSell_totalprice(dbresult.getDouble("sell_totalprice"));
-                view_systemtradeorders.setCargo_volume(dbresult.getDouble("cargo_volume"));
-                view_systemtradeorders.setSellorderid(dbresult.getLong("sellorderid"));
-                view_systemtradeorders.setBuyorderid(dbresult.getLong("buyorderid"));
-                view_systemtradeorders.setEvetype(dbresult.getLong("evetype"));
-                view_systemtradeorders.setPackaged_volume(dbresult.getDouble("packaged_volume"));
-                view_systemtradeorders.setSecurity_island(dbresult.getLong("security_island"));
-                view_systemtradeorders.setSell_system(dbresult.getLong("sell_system"));
-                view_systemtradeorders.setBuy_system(dbresult.getLong("buy_system"));
-                view_systemtradeorders.setJumps(dbresult.getInt("jumps"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, view_systemtradeorders);
-        return view_systemtradeorders;
+        super(new View_systemtradeorders(), new EMview_systemtradeorders());
     }
 
     /**
@@ -76,7 +46,7 @@ public abstract class Bview_systemtradeorders extends GeneralViewObject implemen
      * @return ArrayList of View_systemtradeorders objects
      * @throws DBException
      */
-    public ArrayList getView_systemtradeorderss() throws DBException {
-        return getMapper().loadViewVector(this, View_systemtradeorders.SQLSelectAll);
+    public ArrayList<View_systemtradeorders> getView_systemtradeorderss() throws DBException {
+        return getEntities(EMview_systemtradeorders.SQLSelectAll);
     }
 }

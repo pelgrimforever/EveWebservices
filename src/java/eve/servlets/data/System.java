@@ -2,7 +2,7 @@
  * System.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -134,11 +134,11 @@ public class System extends SecurityDataServlet {
                             break;
                         case ISystemOperation.DELETE_Security_island:
                             ISecurity_islandPK security_islandPK = (ISecurity_islandPK)parser.getJavaObject("security_islandpk");
-                            blsystem.delete4security_island(this.getServletName(), security_islandPK);
+                            blsystem.delete4security_island(security_islandPK);
                             break;
                         case ISystemOperation.DELETE_Constellation:
                             IConstellationPK constellationPK = (IConstellationPK)parser.getJavaObject("constellationpk");
-                            blsystem.delete4constellation(this.getServletName(), constellationPK);
+                            blsystem.delete4constellation(constellationPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

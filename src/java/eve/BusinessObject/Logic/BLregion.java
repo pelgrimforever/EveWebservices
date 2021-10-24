@@ -9,17 +9,13 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IRegion;
 import eve.logicentity.Region;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import data.conversion.JSONConversion;
 import eve.BusinessObject.table.Bregion;
+import eve.conversion.entity.EMregion;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLregion;
-import eve.logicentity.Constellation;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.json.simple.JSONArray;
@@ -35,7 +31,7 @@ import org.json.simple.JSONObject;
  *
  * @author Franky Laseure
  */
-public class BLregion extends Bregion implements IBLregion {
+public class BLregion extends Bregion {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -52,19 +48,11 @@ public class BLregion extends Bregion implements IBLregion {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLregion(GeneralEntityObject transactionobject) {
+    public BLregion(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity region) throws SQLException {
-        
-    }
-    
     /**
      * save all regions from Swagger into database
      * @param jsonregionnames; JSONArray with region data
@@ -93,9 +81,9 @@ public class BLregion extends Bregion implements IBLregion {
      */
     public void postprocess() throws DBException, DataException {
         Object[][] parameter1 = {{ "noaccess", true }, { "constellationnoaccess", false }};
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Region.updateNoaccess1, parameter1);
+        this.addStatement(sqlmapper.insertParameters(EMregion.updateNoaccess1, parameter1));
         Object[][] parameter2 = {{ "noaccess", false }, { "constellationnoaccess", false }};
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Region.updateNoaccess2, parameter2);
+        this.addStatement(sqlmapper.insertParameters(EMregion.updateNoaccess2, parameter2));
         this.Commit2DB();
     }
     
@@ -106,15 +94,15 @@ public class BLregion extends Bregion implements IBLregion {
      */
     @Override
     public ArrayList getAll() throws DBException {
-        return entitymapper.loadEntityVector(this, Region.SQLSelectAllaccess);
+        return getEntities(EMregion.SQLSelectAllaccess);
     }
     
     /**
      * try to insert Region object in database
      * commit transaction
      * @param region: Region Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void insertRegion(IRegion region) throws DBException, DataException {
@@ -127,8 +115,8 @@ public class BLregion extends Bregion implements IBLregion {
      * an alternative to insertRegion, which can be made an empty function
      * commit transaction
      * @param region: Region Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureinsertRegion(IRegion region) throws DBException, DataException {
         trans_insertRegion(region);
@@ -139,8 +127,8 @@ public class BLregion extends Bregion implements IBLregion {
      * try to update Region object in database
      * commit transaction
      * @param region: Region Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void updateRegion(IRegion region) throws DBException, DataException {
@@ -153,8 +141,8 @@ public class BLregion extends Bregion implements IBLregion {
      * an alternative to updateRegion, which can be made an empty function
      * commit transaction
      * @param region: Region Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureupdateRegion(IRegion region) throws DBException, DataException {
         trans_updateRegion(region);
@@ -165,7 +153,7 @@ public class BLregion extends Bregion implements IBLregion {
      * try to delete Region object in database
      * commit transaction
      * @param region: Region Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     @Override
     public void deleteRegion(IRegion region) throws DBException {
@@ -178,7 +166,7 @@ public class BLregion extends Bregion implements IBLregion {
      * an alternative to deleteRegion, which can be made an empty function
      * commit transaction
      * @param region: Region Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void securedeleteRegion(IRegion region) throws DBException {
         trans_deleteRegion(region);
@@ -189,8 +177,8 @@ public class BLregion extends Bregion implements IBLregion {
      * try to insert Region object in database
      * do not commit transaction
      * @param region: Region Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_insertRegion(IRegion region) throws DBException, DataException {
         super.checkDATA(region);
@@ -201,8 +189,8 @@ public class BLregion extends Bregion implements IBLregion {
      * try to update Region object in database
      * do not commit transaction
      * @param region: Region Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_updateRegion(IRegion region) throws DBException, DataException {
         super.checkDATA(region);
@@ -213,7 +201,7 @@ public class BLregion extends Bregion implements IBLregion {
      * try to delete Region object in database
      * do not commit transaction
      * @param region: Region Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void trans_deleteRegion(IRegion region) throws DBException {
         super.deleteRegion((Region)region);

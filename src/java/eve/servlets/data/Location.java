@@ -2,7 +2,7 @@
  * Location.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -110,7 +110,7 @@ public class Location extends SecurityDataServlet {
                             break;
                         case ILocationOperation.DELETE_System:
                             ISystemPK systemPK = (ISystemPK)parser.getJavaObject("systempk");
-                            bllocation.delete4system(this.getServletName(), systemPK);
+                            bllocation.delete4system(systemPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

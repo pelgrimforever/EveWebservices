@@ -2,17 +2,17 @@
  * Bstargate.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONStargate;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMstargate;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bstargate extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bstargate extends BLtable {
 
     /**
      * Constructor, sets Stargate as default Entity
      */
     public Bstargate() {
-        super(new SQLMapper_pgsql(connectionpool, "Stargate"), new Stargate());
+        super(new Stargate(), new EMstargate());
     }
 
     /**
@@ -60,41 +60,8 @@ public abstract class Bstargate extends GeneralEntityObject implements ProjectCo
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bstargate(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Stargate());
-    }
-
-    /**
-     * Map ResultSet Field values to Stargate
-     * @param dbresult: Database ResultSet
-     */
-    public Stargate mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        StargatePK stargatePK = null;
-        Stargate stargate;
-        if(dbresult==null) {
-            stargate = new Stargate(stargatePK);
-        } else {
-            try {
-                stargatePK = new StargatePK(dbresult.getLong("id"));
-                stargate = new Stargate(stargatePK);
-                stargate.initSystemsystemPK(new SystemPK(dbresult.getLong("system")));
-                if(dbresult.wasNull()) stargate.setSystemsystemPK(null);                
-                stargate.initSystemto_systemPK(new SystemPK(dbresult.getLong("to_system")));
-                if(dbresult.wasNull()) stargate.setSystemto_systemPK(null);                
-                stargate.initTo_stargate(dbresult.getLong("to_stargate"));
-                stargate.initName(dbresult.getString("name"));
-                stargate.initX(dbresult.getDouble("x"));
-                stargate.initY(dbresult.getDouble("y"));
-                stargate.initZ(dbresult.getDouble("z"));
-                stargate.initIsconstellationborder(dbresult.getBoolean("isconstellationborder"));
-                stargate.initIsregionborder(dbresult.getBoolean("isregionborder"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, stargate);
-        return stargate;
+    public Bstargate(BLtable transactionobject) {
+        super(transactionobject, new Stargate(), new EMstargate());
     }
 
     /**
@@ -108,6 +75,7 @@ public abstract class Bstargate extends GeneralEntityObject implements ProjectCo
     /**
      * create new empty Stargate object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return IStargate with primary key
      */
     public IStargate newStargate(long id) {
@@ -133,6 +101,7 @@ public abstract class Bstargate extends GeneralEntityObject implements ProjectCo
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new IStargatePK
      */
     public IStargatePK newStargatePK(long id) {
@@ -144,10 +113,8 @@ public abstract class Bstargate extends GeneralEntityObject implements ProjectCo
      * @return ArrayList of Stargate objects
      * @throws DBException
      */
-    public ArrayList getStargates() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Stargate.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Stargate> getStargates() throws DBException {
+        return (ArrayList<Stargate>)super.getEntities(EMstargate.SQLSelectAll);
     }
 
     /**
@@ -157,21 +124,28 @@ public abstract class Bstargate extends GeneralEntityObject implements ProjectCo
      * @throws DBException
      */
     public Stargate getStargate(IStargatePK stargatePK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Stargate)super.getEntity((StargatePK)stargatePK);
-        } else return null;
+        return (Stargate)super.getEntity((StargatePK)stargatePK);
     }
 
-    public ArrayList searchstargates(IStargatesearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search stargate with IStargatesearch parameters
+     * @param search IStargatesearch
+     * @return ArrayList of Stargate
+     * @throws DBException 
+     */
+    public ArrayList<Stargate> searchstargates(IStargatesearch search) throws DBException {
+        return (ArrayList<Stargate>)this.search(search);
     }
 
-    public ArrayList searchstargates(IStargatesearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search stargate with IStargatesearch parameters, order by orderby sql clause
+     * @param search IStargatesearch
+     * @param orderby sql order by string
+     * @return ArrayList of Stargate
+     * @throws DBException 
+     */
+    public ArrayList<Stargate> searchstargates(IStargatesearch search, String orderby) throws DBException {
+        return (ArrayList<Stargate>)this.search(search, orderby);
     }
 
     /**
@@ -181,38 +155,26 @@ public abstract class Bstargate extends GeneralEntityObject implements ProjectCo
      * @throws DBException
      */
     public boolean getStargateExists(IStargatePK stargatePK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((StargatePK)stargatePK);
-        } else return false;
+        return super.getEntityExists((StargatePK)stargatePK);
     }
 
     /**
      * try to insert Stargate in database
-     * @param film: Stargate object
+     * @param stargate Stargate object
      * @throws DBException
+     * @throws DataException
      */
     public void insertStargate(IStargate stargate) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(stargate);
-
-
-
-
-
-
-
-
-
-
-        }
+        super.insertEntity(stargate);
     }
 
     /**
      * check if StargatePK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Stargate object
+     * @param stargate Stargate object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateStargate(IStargate stargate) throws DBException, DataException {
         if(this.getStargateExists(stargate.getPrimaryKey())) {
@@ -224,63 +186,39 @@ public abstract class Bstargate extends GeneralEntityObject implements ProjectCo
 
     /**
      * try to update Stargate in database
-     * @param film: Stargate object
+     * @param stargate Stargate object
      * @throws DBException
+     * @throws DataException
      */
     public void updateStargate(IStargate stargate) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(stargate);
-
-
-
-
-
-
-
-
-
-
-        }
+        super.updateEntity(stargate);
     }
 
     /**
      * try to delete Stargate in database
-     * @param film: Stargate object
+     * @param stargate Stargate object
      * @throws DBException
      */
     public void deleteStargate(IStargate stargate) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteStargate(stargate.getOwnerobject(), stargate.getPrimaryKey());
-            super.deleteEntity(stargate);
-        }
+        cascadedeleteStargate(stargate.getPrimaryKey());
+        super.deleteEntity(stargate);
     }
 
     /**
      * check data rules in Stargate, throw DataException with customized message if rules do not apply
-     * @param film: Stargate object
+     * @param stargate Stargate object
      * @throws DataException
      * @throws DBException
      */
     public void checkDATA(IStargate stargate) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
-
-
-
-
-
         if(stargate.getName()!=null && stargate.getName().length()>IStargate.SIZE_NAME) {
-            message.append("Name is langer dan toegestaan. Max aantal karakters: " + IStargate.SIZE_NAME + "\n");
+            message.append("Name is langer dan toegestaan. Max aantal karakters: ").append(IStargate.SIZE_NAME).append("\n");
         }
-
         if(stargate.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
-
-
-
-
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -290,88 +228,86 @@ public abstract class Bstargate extends GeneralEntityObject implements ProjectCo
      * delete all records in tables where stargatePK is used in a primary key
      * @param stargatePK: Stargate primary key
      */
-    public void cascadedeleteStargate(String senderobject, IStargatePK stargatePK) {
+    public void cascadedeleteStargate(IStargatePK stargatePK) {
     }
 
     /**
      * @param systemPK: foreign key for System
      * @delete all Stargate Entity objects for System in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4systemSystem(String senderobject, ISystemPK systemPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Stargate.SQLDelete4systemSystem, systemPK.getKeyFields());
-        }
+    public void delete4systemSystem(ISystemPK systemPK) {
+        super.addStatement(EMstargate.SQLDelete4systemSystem, systemPK.getSQLprimarykey());
     }
 
     /**
      * @param systemPK: foreign key for System
      * @return all Stargate Entity objects for System
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getStargates4systemSystem(ISystemPK systemPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Stargate.SQLSelect4systemSystem, systemPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Stargate> getStargates4systemSystem(ISystemPK systemPK) throws CustomException {
+        return super.getEntities(EMstargate.SQLSelect4systemSystem, systemPK.getSQLprimarykey());
     }
     /**
      * @param systemPK: foreign key for System
      * @delete all Stargate Entity objects for System in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4systemTo_system(String senderobject, ISystemPK systemPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Stargate.SQLDelete4systemTo_system, systemPK.getKeyFields());
-        }
+    public void delete4systemTo_system(ISystemPK systemPK) {
+        super.addStatement(EMstargate.SQLDelete4systemTo_system, systemPK.getSQLprimarykey());
     }
 
     /**
      * @param systemPK: foreign key for System
      * @return all Stargate Entity objects for System
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getStargates4systemTo_system(ISystemPK systemPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Stargate.SQLSelect4systemTo_system, systemPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Stargate> getStargates4systemTo_system(ISystemPK systemPK) throws CustomException {
+        return super.getEntities(EMstargate.SQLSelect4systemTo_system, systemPK.getSQLprimarykey());
     }
 
     /**
      * get all Stargate objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Stargate objects
      * @throws DBException
      */
-    public ArrayList getStargates(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Stargate.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Stargate> getStargates(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMstargate.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Stargate>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Stargate objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delStargate(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Stargate.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delStargate(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Stargate.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

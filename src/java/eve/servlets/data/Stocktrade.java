@@ -2,7 +2,7 @@
  * Stocktrade.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -110,7 +110,7 @@ public class Stocktrade extends SecurityDataServlet {
                             break;
                         case IStocktradeOperation.DELETE_Stock:
                             IStockPK stockPK = (IStockPK)parser.getJavaObject("stockpk");
-                            blstocktrade.delete4stock(this.getServletName(), stockPK);
+                            blstocktrade.delete4stock(stockPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

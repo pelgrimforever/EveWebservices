@@ -8,17 +8,14 @@
 
 package eve.BusinessObject.Logic;
 
-import data.interfaces.db.LogicEntity;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
+import db.SQLparameters;
 import eve.BusinessObject.table.Bsystemjumps;
-import eve.entity.pk.SystemPK;
-import eve.interfaces.BusinessObject.IBLsystemjumps;
+import eve.conversion.entity.EMsystemjumps;
 import eve.interfaces.logicentity.ISystemjumps;
 import eve.logicentity.Systemjumps;
 import general.exception.DBException;
 import general.exception.DataException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * Business Logic Entity class BLsystemjumps
@@ -30,7 +27,7 @@ import java.sql.SQLException;
  *
  * @author Franky Laseure
  */
-public class BLsystemjumps extends Bsystemjumps implements IBLsystemjumps {
+public class BLsystemjumps extends Bsystemjumps {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -47,44 +44,38 @@ public class BLsystemjumps extends Bsystemjumps implements IBLsystemjumps {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLsystemjumps(GeneralEntityObject transactionobject) {
+    public BLsystemjumps(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
     /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity systemjumps) throws SQLException {
-        
-    }
-    
-    /**
+     * @throws general.exception.DBException
      * @delete all systemjumps
-     * @throws eve.general.exception.CustomException
      */
     public void deleteall() throws DBException {
-        super.addStatement(this.getClass().getName(), Systemjumps.SQLDeleteall, null);
+        super.addStatement(EMsystemjumps.SQLDeleteall);
         super.Commit2DB();
     }
 
     /**
+     * @param systemid
+     * @throws general.exception.DBException
      * @copy all results in tmp_system_jumps to Systemjumps with given system as starting point
-     * @throws eve.general.exception.CustomException
      */
     public void copy_Tmp_system_jumps(long systemid) throws DBException {
         Object[][] parameter = { { "system.id", systemid } };
-        super.addStatement(this.getClass().getName(), Systemjumps.SQLcopy_from_tmpjups, parameter);
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        super.addStatement(EMsystemjumps.SQLcopy_from_tmpjups, sqlparameters);
         super.Commit2DB();
     }
 
     /**
      * @set all starting points to 1 jump
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void set0jumpsto1() throws DBException {
-        super.addStatement(this.getClass().getName(), Systemjumps.SQLset0jumpsto1, null);
+        super.addStatement(EMsystemjumps.SQLset0jumpsto1);
         super.Commit2DB();
     }
 
@@ -92,8 +83,8 @@ public class BLsystemjumps extends Bsystemjumps implements IBLsystemjumps {
      * try to insert Systemjumps object in database
      * commit transaction
      * @param systemjumps: Systemjumps Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void insertSystemjumps(ISystemjumps systemjumps) throws DBException, DataException {
@@ -106,8 +97,8 @@ public class BLsystemjumps extends Bsystemjumps implements IBLsystemjumps {
      * an alternative to insertSystemjumps, which can be made an empty function
      * commit transaction
      * @param systemjumps: Systemjumps Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureinsertSystemjumps(ISystemjumps systemjumps) throws DBException, DataException {
         trans_insertSystemjumps(systemjumps);
@@ -118,8 +109,8 @@ public class BLsystemjumps extends Bsystemjumps implements IBLsystemjumps {
      * try to update Systemjumps object in database
      * commit transaction
      * @param systemjumps: Systemjumps Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void updateSystemjumps(ISystemjumps systemjumps) throws DBException, DataException {
@@ -132,8 +123,8 @@ public class BLsystemjumps extends Bsystemjumps implements IBLsystemjumps {
      * an alternative to updateSystemjumps, which can be made an empty function
      * commit transaction
      * @param systemjumps: Systemjumps Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureupdateSystemjumps(ISystemjumps systemjumps) throws DBException, DataException {
         trans_updateSystemjumps(systemjumps);
@@ -144,7 +135,7 @@ public class BLsystemjumps extends Bsystemjumps implements IBLsystemjumps {
      * try to delete Systemjumps object in database
      * commit transaction
      * @param systemjumps: Systemjumps Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     @Override
     public void deleteSystemjumps(ISystemjumps systemjumps) throws DBException {
@@ -157,7 +148,7 @@ public class BLsystemjumps extends Bsystemjumps implements IBLsystemjumps {
      * an alternative to deleteSystemjumps, which can be made an empty function
      * commit transaction
      * @param systemjumps: Systemjumps Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void securedeleteSystemjumps(ISystemjumps systemjumps) throws DBException {
         trans_deleteSystemjumps(systemjumps);
@@ -168,8 +159,8 @@ public class BLsystemjumps extends Bsystemjumps implements IBLsystemjumps {
      * try to insert Systemjumps object in database
      * do not commit transaction
      * @param systemjumps: Systemjumps Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_insertSystemjumps(ISystemjumps systemjumps) throws DBException, DataException {
         super.checkDATA(systemjumps);
@@ -180,8 +171,8 @@ public class BLsystemjumps extends Bsystemjumps implements IBLsystemjumps {
      * try to update Systemjumps object in database
      * do not commit transaction
      * @param systemjumps: Systemjumps Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_updateSystemjumps(ISystemjumps systemjumps) throws DBException, DataException {
         super.checkDATA(systemjumps);
@@ -192,7 +183,7 @@ public class BLsystemjumps extends Bsystemjumps implements IBLsystemjumps {
      * try to delete Systemjumps object in database
      * do not commit transaction
      * @param systemjumps: Systemjumps Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void trans_deleteSystemjumps(ISystemjumps systemjumps) throws DBException {
         super.deleteSystemjumps((Systemjumps)systemjumps);

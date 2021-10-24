@@ -2,7 +2,7 @@
  * WSConstellation_neighbour.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSConstellation_neighbour implements WSIConstellation_neighbour {
         Constellation_neighbour constellation_neighbour;
         try {
             IConstellationPK constellationNeighbourPK = JSONConstellation.toConstellationPK((JSONObject)parser.parse(json));
-            blconstellation_neighbour.delete4constellationNeighbour(this.getClass().getName(), constellationNeighbourPK);
+            blconstellation_neighbour.delete4constellationNeighbour(constellationNeighbourPK);
         }
         catch(ParseException e) {
         }
@@ -221,7 +221,7 @@ public class WSConstellation_neighbour implements WSIConstellation_neighbour {
         Constellation_neighbour constellation_neighbour;
         try {
             IConstellationPK constellationConstellationPK = JSONConstellation.toConstellationPK((JSONObject)parser.parse(json));
-            blconstellation_neighbour.delete4constellationConstellation(this.getClass().getName(), constellationConstellationPK);
+            blconstellation_neighbour.delete4constellationConstellation(constellationConstellationPK);
         }
         catch(ParseException e) {
         }

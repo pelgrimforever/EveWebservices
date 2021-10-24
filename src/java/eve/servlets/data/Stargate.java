@@ -2,7 +2,7 @@
  * Stargate.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -114,11 +114,11 @@ public class Stargate extends SecurityDataServlet {
                             break;
                         case IStargateOperation.DELETE_Systemsystem:
                             ISystemPK systemSystemPK = (ISystemPK)parser.getJavaObject("systempk");
-                            blstargate.delete4systemSystem(this.getServletName(), systemSystemPK);
+                            blstargate.delete4systemSystem(systemSystemPK);
                             break;
                         case IStargateOperation.DELETE_Systemto_system:
                             ISystemPK systemTo_systemPK = (ISystemPK)parser.getJavaObject("systempk");
-                            blstargate.delete4systemTo_system(this.getServletName(), systemTo_systemPK);
+                            blstargate.delete4systemTo_system(systemTo_systemPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

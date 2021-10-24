@@ -2,17 +2,17 @@
  * Bstock.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONStock;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMstock;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bstock extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bstock extends BLtable {
 
     /**
      * Constructor, sets Stock as default Entity
      */
     public Bstock() {
-        super(new SQLMapper_pgsql(connectionpool, "Stock"), new Stock());
+        super(new Stock(), new EMstock());
     }
 
     /**
@@ -60,31 +60,8 @@ public abstract class Bstock extends GeneralEntityObject implements ProjectConst
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bstock(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Stock());
-    }
-
-    /**
-     * Map ResultSet Field values to Stock
-     * @param dbresult: Database ResultSet
-     */
-    public Stock mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        StockPK stockPK = null;
-        Stock stock;
-        if(dbresult==null) {
-            stock = new Stock(stockPK);
-        } else {
-            try {
-                stockPK = new StockPK(dbresult.getString("username"), dbresult.getLong("evetype"));
-                stock = new Stock(stockPK);
-                stock.initAmount(dbresult.getLong("amount"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, stock);
-        return stock;
+    public Bstock(BLtable transactionobject) {
+        super(transactionobject, new Stock(), new EMstock());
     }
 
     /**
@@ -98,6 +75,8 @@ public abstract class Bstock extends GeneralEntityObject implements ProjectConst
     /**
      * create new empty Stock object
      * create new primary key with given parameters
+     * @param username primary key field
+     * @param evetype primary key field
      * @return IStock with primary key
      */
     public IStock newStock(java.lang.String username, long evetype) {
@@ -123,6 +102,8 @@ public abstract class Bstock extends GeneralEntityObject implements ProjectConst
 
     /**
      * create new primary key with given parameters
+     * @param username primary key field
+     * @param evetype primary key field
      * @return new IStockPK
      */
     public IStockPK newStockPK(java.lang.String username, long evetype) {
@@ -134,10 +115,8 @@ public abstract class Bstock extends GeneralEntityObject implements ProjectConst
      * @return ArrayList of Stock objects
      * @throws DBException
      */
-    public ArrayList getStocks() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Stock.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Stock> getStocks() throws DBException {
+        return (ArrayList<Stock>)super.getEntities(EMstock.SQLSelectAll);
     }
 
     /**
@@ -147,21 +126,28 @@ public abstract class Bstock extends GeneralEntityObject implements ProjectConst
      * @throws DBException
      */
     public Stock getStock(IStockPK stockPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Stock)super.getEntity((StockPK)stockPK);
-        } else return null;
+        return (Stock)super.getEntity((StockPK)stockPK);
     }
 
-    public ArrayList searchstocks(IStocksearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search stock with IStocksearch parameters
+     * @param search IStocksearch
+     * @return ArrayList of Stock
+     * @throws DBException 
+     */
+    public ArrayList<Stock> searchstocks(IStocksearch search) throws DBException {
+        return (ArrayList<Stock>)this.search(search);
     }
 
-    public ArrayList searchstocks(IStocksearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search stock with IStocksearch parameters, order by orderby sql clause
+     * @param search IStocksearch
+     * @param orderby sql order by string
+     * @return ArrayList of Stock
+     * @throws DBException 
+     */
+    public ArrayList<Stock> searchstocks(IStocksearch search, String orderby) throws DBException {
+        return (ArrayList<Stock>)this.search(search, orderby);
     }
 
     /**
@@ -171,31 +157,26 @@ public abstract class Bstock extends GeneralEntityObject implements ProjectConst
      * @throws DBException
      */
     public boolean getStockExists(IStockPK stockPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((StockPK)stockPK);
-        } else return false;
+        return super.getEntityExists((StockPK)stockPK);
     }
 
     /**
      * try to insert Stock in database
-     * @param film: Stock object
+     * @param stock Stock object
      * @throws DBException
+     * @throws DataException
      */
     public void insertStock(IStock stock) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(stock);
-
-
-
-        }
+        super.insertEntity(stock);
     }
 
     /**
      * check if StockPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Stock object
+     * @param stock Stock object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateStock(IStock stock) throws DBException, DataException {
         if(this.getStockExists(stock.getPrimaryKey())) {
@@ -207,33 +188,27 @@ public abstract class Bstock extends GeneralEntityObject implements ProjectConst
 
     /**
      * try to update Stock in database
-     * @param film: Stock object
+     * @param stock Stock object
      * @throws DBException
+     * @throws DataException
      */
     public void updateStock(IStock stock) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(stock);
-
-
-
-        }
+        super.updateEntity(stock);
     }
 
     /**
      * try to delete Stock in database
-     * @param film: Stock object
+     * @param stock Stock object
      * @throws DBException
      */
     public void deleteStock(IStock stock) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteStock(stock.getOwnerobject(), stock.getPrimaryKey());
-            super.deleteEntity(stock);
-        }
+        cascadedeleteStock(stock.getPrimaryKey());
+        super.deleteEntity(stock);
     }
 
     /**
      * check data rules in Stock, throw DataException with customized message if rules do not apply
-     * @param film: Stock object
+     * @param stock Stock object
      * @throws DataException
      * @throws DBException
      */
@@ -241,7 +216,6 @@ public abstract class Bstock extends GeneralEntityObject implements ProjectConst
         StringBuffer message = new StringBuffer();
         //foreign key Stock.Evetype - Evetype.Id
         //Primary key
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -251,81 +225,82 @@ public abstract class Bstock extends GeneralEntityObject implements ProjectConst
      * delete all records in tables where stockPK is used in a primary key
      * @param stockPK: Stock primary key
      */
-    public void cascadedeleteStock(String senderobject, IStockPK stockPK) {
+    public void cascadedeleteStock(IStockPK stockPK) {
         BLstocktrade blstocktrade = new BLstocktrade(this);
-        blstocktrade.delete4stock(senderobject, stockPK);
+        blstocktrade.delete4stock(stockPK);
     }
 
     /**
      * @param evetypePK: foreign key for Evetype
      * @delete all Stock Entity objects for Evetype in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4evetype(String senderobject, IEvetypePK evetypePK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Stock.SQLDelete4evetype, evetypePK.getKeyFields());
-        }
+    public void delete4evetype(IEvetypePK evetypePK) {
+        super.addStatement(EMstock.SQLDelete4evetype, evetypePK.getSQLprimarykey());
     }
 
     /**
      * @param evetypePK: foreign key for Evetype
      * @return all Stock Entity objects for Evetype
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getStocks4evetype(IEvetypePK evetypePK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Stock.SQLSelect4evetype, evetypePK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Stock> getStocks4evetype(IEvetypePK evetypePK) throws CustomException {
+        return super.getEntities(EMstock.SQLSelect4evetype, evetypePK.getSQLprimarykey());
     }
     /**
      * @param stocktradePK: parent Stocktrade for child object Stock Entity
      * @return child Stock Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public IStock getStocktrade(IStocktradePK stocktradePK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            StockPK stockPK = new StockPK(stocktradePK.getUsername(), stocktradePK.getEvetype());
-            return this.getStock(stockPK);
-        } else return null;
+    public Stock getStocktrade(IStocktradePK stocktradePK) throws CustomException {
+        StockPK stockPK = new StockPK(stocktradePK.getUsername(), stocktradePK.getEvetype());
+        return this.getStock(stockPK);
     }
 
 
     /**
      * get all Stock objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Stock objects
      * @throws DBException
      */
-    public ArrayList getStocks(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Stock.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Stock> getStocks(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMstock.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Stock>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Stock objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delStock(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Stock.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delStock(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Stock.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

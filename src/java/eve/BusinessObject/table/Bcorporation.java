@@ -2,17 +2,17 @@
  * Bcorporation.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONCorporation;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMcorporation;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bcorporation extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bcorporation extends BLtable {
 
     /**
      * Constructor, sets Corporation as default Entity
      */
     public Bcorporation() {
-        super(new SQLMapper_pgsql(connectionpool, "Corporation"), new Corporation());
+        super(new Corporation(), new EMcorporation());
     }
 
     /**
@@ -60,47 +60,8 @@ public abstract class Bcorporation extends GeneralEntityObject implements Projec
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bcorporation(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Corporation());
-    }
-
-    /**
-     * Map ResultSet Field values to Corporation
-     * @param dbresult: Database ResultSet
-     */
-    public Corporation mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        CorporationPK corporationPK = null;
-        Corporation corporation;
-        if(dbresult==null) {
-            corporation = new Corporation(corporationPK);
-        } else {
-            try {
-                corporationPK = new CorporationPK(dbresult.getLong("id"));
-                corporation = new Corporation(corporationPK);
-                corporation.initStationPK(new StationPK(dbresult.getLong("home_station")));
-                if(dbresult.wasNull()) corporation.setStationPK(null);                
-                corporation.initFactionPK(new FactionPK(dbresult.getLong("faction")));
-                if(dbresult.wasNull()) corporation.setFactionPK(null);                
-                corporation.initAlliancePK(new AlliancePK(dbresult.getLong("alliance")));
-                if(dbresult.wasNull()) corporation.setAlliancePK(null);                
-                corporation.initName(dbresult.getString("name"));
-                corporation.initCeo(dbresult.getLong("ceo"));
-                corporation.initCreator(dbresult.getLong("creator"));
-                corporation.initMember_count(dbresult.getInt("member_count"));
-                corporation.initTax_rate(dbresult.getDouble("tax_rate"));
-                corporation.initTicker(dbresult.getString("ticker"));
-                corporation.initDate_founded(dbresult.getTimestamp("date_founded"));
-                corporation.initDescription(dbresult.getString("description"));
-                corporation.initShares(dbresult.getInt("shares"));
-                corporation.initUrl(dbresult.getString("url"));
-                corporation.initWar_eligible(dbresult.getBoolean("war_eligible"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, corporation);
-        return corporation;
+    public Bcorporation(BLtable transactionobject) {
+        super(transactionobject, new Corporation(), new EMcorporation());
     }
 
     /**
@@ -114,6 +75,7 @@ public abstract class Bcorporation extends GeneralEntityObject implements Projec
     /**
      * create new empty Corporation object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return ICorporation with primary key
      */
     public ICorporation newCorporation(long id) {
@@ -139,6 +101,7 @@ public abstract class Bcorporation extends GeneralEntityObject implements Projec
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new ICorporationPK
      */
     public ICorporationPK newCorporationPK(long id) {
@@ -150,10 +113,8 @@ public abstract class Bcorporation extends GeneralEntityObject implements Projec
      * @return ArrayList of Corporation objects
      * @throws DBException
      */
-    public ArrayList getCorporations() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Corporation.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Corporation> getCorporations() throws DBException {
+        return (ArrayList<Corporation>)super.getEntities(EMcorporation.SQLSelectAll);
     }
 
     /**
@@ -163,21 +124,28 @@ public abstract class Bcorporation extends GeneralEntityObject implements Projec
      * @throws DBException
      */
     public Corporation getCorporation(ICorporationPK corporationPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Corporation)super.getEntity((CorporationPK)corporationPK);
-        } else return null;
+        return (Corporation)super.getEntity((CorporationPK)corporationPK);
     }
 
-    public ArrayList searchcorporations(ICorporationsearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search corporation with ICorporationsearch parameters
+     * @param search ICorporationsearch
+     * @return ArrayList of Corporation
+     * @throws DBException 
+     */
+    public ArrayList<Corporation> searchcorporations(ICorporationsearch search) throws DBException {
+        return (ArrayList<Corporation>)this.search(search);
     }
 
-    public ArrayList searchcorporations(ICorporationsearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search corporation with ICorporationsearch parameters, order by orderby sql clause
+     * @param search ICorporationsearch
+     * @param orderby sql order by string
+     * @return ArrayList of Corporation
+     * @throws DBException 
+     */
+    public ArrayList<Corporation> searchcorporations(ICorporationsearch search, String orderby) throws DBException {
+        return (ArrayList<Corporation>)this.search(search, orderby);
     }
 
     /**
@@ -187,43 +155,26 @@ public abstract class Bcorporation extends GeneralEntityObject implements Projec
      * @throws DBException
      */
     public boolean getCorporationExists(ICorporationPK corporationPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((CorporationPK)corporationPK);
-        } else return false;
+        return super.getEntityExists((CorporationPK)corporationPK);
     }
 
     /**
      * try to insert Corporation in database
-     * @param film: Corporation object
+     * @param corporation Corporation object
      * @throws DBException
+     * @throws DataException
      */
     public void insertCorporation(ICorporation corporation) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(corporation);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        }
+        super.insertEntity(corporation);
     }
 
     /**
      * check if CorporationPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Corporation object
+     * @param corporation Corporation object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateCorporation(ICorporation corporation) throws DBException, DataException {
         if(this.getCorporationExists(corporation.getPrimaryKey())) {
@@ -235,86 +186,51 @@ public abstract class Bcorporation extends GeneralEntityObject implements Projec
 
     /**
      * try to update Corporation in database
-     * @param film: Corporation object
+     * @param corporation Corporation object
      * @throws DBException
+     * @throws DataException
      */
     public void updateCorporation(ICorporation corporation) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(corporation);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        }
+        super.updateEntity(corporation);
     }
 
     /**
      * try to delete Corporation in database
-     * @param film: Corporation object
+     * @param corporation Corporation object
      * @throws DBException
      */
     public void deleteCorporation(ICorporation corporation) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteCorporation(corporation.getOwnerobject(), corporation.getPrimaryKey());
-            super.deleteEntity(corporation);
-        }
+        cascadedeleteCorporation(corporation.getPrimaryKey());
+        super.deleteEntity(corporation);
     }
 
     /**
      * check data rules in Corporation, throw DataException with customized message if rules do not apply
-     * @param film: Corporation object
+     * @param corporation Corporation object
      * @throws DataException
      * @throws DBException
      */
     public void checkDATA(ICorporation corporation) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
-
-
-
-
-
-
         if(corporation.getName()!=null && corporation.getName().length()>ICorporation.SIZE_NAME) {
-            message.append("Name is langer dan toegestaan. Max aantal karakters: " + ICorporation.SIZE_NAME + "\n");
+            message.append("Name is langer dan toegestaan. Max aantal karakters: ").append(ICorporation.SIZE_NAME).append("\n");
         }
-
         if(corporation.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
-
-
-
-
         if(corporation.getTicker()!=null && corporation.getTicker().length()>ICorporation.SIZE_TICKER) {
-            message.append("Ticker is langer dan toegestaan. Max aantal karakters: " + ICorporation.SIZE_TICKER + "\n");
+            message.append("Ticker is langer dan toegestaan. Max aantal karakters: ").append(ICorporation.SIZE_TICKER).append("\n");
         }
-
         if(corporation.getTicker()==null) {
             message.append("Ticker mag niet leeg zijn.\n");
         }
-
         if(corporation.getDescription()!=null && corporation.getDescription().length()>ICorporation.SIZE_DESCRIPTION) {
-            message.append("Description is langer dan toegestaan. Max aantal karakters: " + ICorporation.SIZE_DESCRIPTION + "\n");
+            message.append("Description is langer dan toegestaan. Max aantal karakters: ").append(ICorporation.SIZE_DESCRIPTION).append("\n");
         }
-
-
         if(corporation.getUrl()!=null && corporation.getUrl().length()>ICorporation.SIZE_URL) {
-            message.append("Url is langer dan toegestaan. Max aantal karakters: " + ICorporation.SIZE_URL + "\n");
+            message.append("Url is langer dan toegestaan. Max aantal karakters: ").append(ICorporation.SIZE_URL).append("\n");
         }
-
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -324,109 +240,102 @@ public abstract class Bcorporation extends GeneralEntityObject implements Projec
      * delete all records in tables where corporationPK is used in a primary key
      * @param corporationPK: Corporation primary key
      */
-    public void cascadedeleteCorporation(String senderobject, ICorporationPK corporationPK) {
+    public void cascadedeleteCorporation(ICorporationPK corporationPK) {
     }
 
     /**
      * @param stationPK: foreign key for Station
      * @delete all Corporation Entity objects for Station in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4station(String senderobject, IStationPK stationPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Corporation.SQLDelete4station, stationPK.getKeyFields());
-        }
+    public void delete4station(IStationPK stationPK) {
+        super.addStatement(EMcorporation.SQLDelete4station, stationPK.getSQLprimarykey());
     }
 
     /**
      * @param stationPK: foreign key for Station
      * @return all Corporation Entity objects for Station
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getCorporations4station(IStationPK stationPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Corporation.SQLSelect4station, stationPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Corporation> getCorporations4station(IStationPK stationPK) throws CustomException {
+        return super.getEntities(EMcorporation.SQLSelect4station, stationPK.getSQLprimarykey());
     }
     /**
      * @param factionPK: foreign key for Faction
      * @delete all Corporation Entity objects for Faction in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4faction(String senderobject, IFactionPK factionPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Corporation.SQLDelete4faction, factionPK.getKeyFields());
-        }
+    public void delete4faction(IFactionPK factionPK) {
+        super.addStatement(EMcorporation.SQLDelete4faction, factionPK.getSQLprimarykey());
     }
 
     /**
      * @param factionPK: foreign key for Faction
      * @return all Corporation Entity objects for Faction
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getCorporations4faction(IFactionPK factionPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Corporation.SQLSelect4faction, factionPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Corporation> getCorporations4faction(IFactionPK factionPK) throws CustomException {
+        return super.getEntities(EMcorporation.SQLSelect4faction, factionPK.getSQLprimarykey());
     }
     /**
      * @param alliancePK: foreign key for Alliance
      * @delete all Corporation Entity objects for Alliance in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4alliance(String senderobject, IAlliancePK alliancePK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Corporation.SQLDelete4alliance, alliancePK.getKeyFields());
-        }
+    public void delete4alliance(IAlliancePK alliancePK) {
+        super.addStatement(EMcorporation.SQLDelete4alliance, alliancePK.getSQLprimarykey());
     }
 
     /**
      * @param alliancePK: foreign key for Alliance
      * @return all Corporation Entity objects for Alliance
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getCorporations4alliance(IAlliancePK alliancePK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Corporation.SQLSelect4alliance, alliancePK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Corporation> getCorporations4alliance(IAlliancePK alliancePK) throws CustomException {
+        return super.getEntities(EMcorporation.SQLSelect4alliance, alliancePK.getSQLprimarykey());
     }
 
     /**
      * get all Corporation objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Corporation objects
      * @throws DBException
      */
-    public ArrayList getCorporations(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Corporation.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Corporation> getCorporations(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMcorporation.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Corporation>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Corporation objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delCorporation(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Corporation.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delCorporation(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Corporation.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

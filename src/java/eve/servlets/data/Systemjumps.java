@@ -2,7 +2,7 @@
  * Systemjumps.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -114,11 +114,11 @@ public class Systemjumps extends SecurityDataServlet {
                             break;
                         case ISystemjumpsOperation.DELETE_Systemsystem_end:
                             ISystemPK systemSystem_endPK = (ISystemPK)parser.getJavaObject("systempk");
-                            blsystemjumps.delete4systemSystem_end(this.getServletName(), systemSystem_endPK);
+                            blsystemjumps.delete4systemSystem_end(systemSystem_endPK);
                             break;
                         case ISystemjumpsOperation.DELETE_Systemsystem_start:
                             ISystemPK systemSystem_startPK = (ISystemPK)parser.getJavaObject("systempk");
-                            blsystemjumps.delete4systemSystem_start(this.getServletName(), systemSystem_startPK);
+                            blsystemjumps.delete4systemSystem_start(systemSystem_startPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

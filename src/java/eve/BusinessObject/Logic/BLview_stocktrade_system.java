@@ -9,14 +9,9 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.View;
-import eve.interfaces.logicview.IView_stocktrade_system;
-import eve.logicview.View_stocktrade_system;
+import db.SQLparameters;
 import eve.BusinessObject.view.Bview_stocktrade_system;
-import eve.interfaces.BusinessObject.IBLview_stocktrade_system;
-import eve.logicview.View_stock;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import eve.conversion.entity.EMview_stocktrade_system;
 import java.util.ArrayList;
 
 /**
@@ -29,7 +24,7 @@ import java.util.ArrayList;
  *
  * @author Franky Laseure
  */
-public class BLview_stocktrade_system extends Bview_stocktrade_system implements IBLview_stocktrade_system {
+public class BLview_stocktrade_system extends Bview_stocktrade_system {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
 	
     /**
@@ -38,13 +33,9 @@ public class BLview_stocktrade_system extends Bview_stocktrade_system implements
     public BLview_stocktrade_system() {
     }
 
-    @Override
-    public void loadExtra(ResultSet dbresult, View view_stocktrade_system) throws SQLException {
-        
-    }
-    
     public ArrayList getView_stocktrade_system4username(String username) throws DBException {
         Object[][] parameter = { { "username", username } };
-        return getMapper().loadViewVector(this, View_stocktrade_system.SQLSelect4username, parameter);
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        return getEntities(EMview_stocktrade_system.SQLSelect4username, sqlparameters);
     }
 }

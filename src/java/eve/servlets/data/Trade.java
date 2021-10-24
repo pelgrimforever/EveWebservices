@@ -2,7 +2,7 @@
  * Trade.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -114,11 +114,11 @@ public class Trade extends SecurityDataServlet {
                             break;
                         case ITradeOperation.DELETE_Orderssell_order_id:
                             IOrdersPK ordersSell_order_idPK = (IOrdersPK)parser.getJavaObject("orderspk");
-                            bltrade.delete4ordersSell_order_id(this.getServletName(), ordersSell_order_idPK);
+                            bltrade.delete4ordersSell_order_id(ordersSell_order_idPK);
                             break;
                         case ITradeOperation.DELETE_Ordersbuy_order_id:
                             IOrdersPK ordersBuy_order_idPK = (IOrdersPK)parser.getJavaObject("orderspk");
-                            bltrade.delete4ordersBuy_order_id(this.getServletName(), ordersBuy_order_idPK);
+                            bltrade.delete4ordersBuy_order_id(ordersBuy_order_idPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

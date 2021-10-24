@@ -2,17 +2,17 @@
  * Bsystemtrade_order.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONSystemtrade_order;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMsystemtrade_order;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bsystemtrade_order extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bsystemtrade_order extends BLtable {
 
     /**
      * Constructor, sets Systemtrade_order as default Entity
      */
     public Bsystemtrade_order() {
-        super(new SQLMapper_pgsql(connectionpool, "Systemtrade_order"), new Systemtrade_order());
+        super(new Systemtrade_order(), new EMsystemtrade_order());
     }
 
     /**
@@ -60,35 +60,8 @@ public abstract class Bsystemtrade_order extends GeneralEntityObject implements 
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bsystemtrade_order(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Systemtrade_order());
-    }
-
-    /**
-     * Map ResultSet Field values to Systemtrade_order
-     * @param dbresult: Database ResultSet
-     */
-    public Systemtrade_order mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        Systemtrade_orderPK systemtrade_orderPK = null;
-        Systemtrade_order systemtrade_order;
-        if(dbresult==null) {
-            systemtrade_order = new Systemtrade_order(systemtrade_orderPK);
-        } else {
-            try {
-                systemtrade_orderPK = new Systemtrade_orderPK(dbresult.getLong("sell_system"), dbresult.getLong("buy_system"), dbresult.getLong("sell_order"), dbresult.getLong("buy_order"));
-                systemtrade_order = new Systemtrade_order(systemtrade_orderPK);
-                systemtrade_order.initAmount(dbresult.getLong("amount"));
-                systemtrade_order.initSellprice(dbresult.getDouble("sellprice"));
-                systemtrade_order.initBuyprice(dbresult.getDouble("buyprice"));
-                systemtrade_order.initProfit(dbresult.getDouble("profit"));
-                systemtrade_order.initCargovolume(dbresult.getDouble("cargovolume"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, systemtrade_order);
-        return systemtrade_order;
+    public Bsystemtrade_order(BLtable transactionobject) {
+        super(transactionobject, new Systemtrade_order(), new EMsystemtrade_order());
     }
 
     /**
@@ -102,6 +75,10 @@ public abstract class Bsystemtrade_order extends GeneralEntityObject implements 
     /**
      * create new empty Systemtrade_order object
      * create new primary key with given parameters
+     * @param sell_system primary key field
+     * @param buy_system primary key field
+     * @param sell_order primary key field
+     * @param buy_order primary key field
      * @return ISystemtrade_order with primary key
      */
     public ISystemtrade_order newSystemtrade_order(long sell_system, long buy_system, long sell_order, long buy_order) {
@@ -127,6 +104,10 @@ public abstract class Bsystemtrade_order extends GeneralEntityObject implements 
 
     /**
      * create new primary key with given parameters
+     * @param sell_system primary key field
+     * @param buy_system primary key field
+     * @param sell_order primary key field
+     * @param buy_order primary key field
      * @return new ISystemtrade_orderPK
      */
     public ISystemtrade_orderPK newSystemtrade_orderPK(long sell_system, long buy_system, long sell_order, long buy_order) {
@@ -138,10 +119,8 @@ public abstract class Bsystemtrade_order extends GeneralEntityObject implements 
      * @return ArrayList of Systemtrade_order objects
      * @throws DBException
      */
-    public ArrayList getSystemtrade_orders() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Systemtrade_order.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Systemtrade_order> getSystemtrade_orders() throws DBException {
+        return (ArrayList<Systemtrade_order>)super.getEntities(EMsystemtrade_order.SQLSelectAll);
     }
 
     /**
@@ -151,21 +130,28 @@ public abstract class Bsystemtrade_order extends GeneralEntityObject implements 
      * @throws DBException
      */
     public Systemtrade_order getSystemtrade_order(ISystemtrade_orderPK systemtrade_orderPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Systemtrade_order)super.getEntity((Systemtrade_orderPK)systemtrade_orderPK);
-        } else return null;
+        return (Systemtrade_order)super.getEntity((Systemtrade_orderPK)systemtrade_orderPK);
     }
 
-    public ArrayList searchsystemtrade_orders(ISystemtrade_ordersearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search systemtrade_order with ISystemtrade_ordersearch parameters
+     * @param search ISystemtrade_ordersearch
+     * @return ArrayList of Systemtrade_order
+     * @throws DBException 
+     */
+    public ArrayList<Systemtrade_order> searchsystemtrade_orders(ISystemtrade_ordersearch search) throws DBException {
+        return (ArrayList<Systemtrade_order>)this.search(search);
     }
 
-    public ArrayList searchsystemtrade_orders(ISystemtrade_ordersearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search systemtrade_order with ISystemtrade_ordersearch parameters, order by orderby sql clause
+     * @param search ISystemtrade_ordersearch
+     * @param orderby sql order by string
+     * @return ArrayList of Systemtrade_order
+     * @throws DBException 
+     */
+    public ArrayList<Systemtrade_order> searchsystemtrade_orders(ISystemtrade_ordersearch search, String orderby) throws DBException {
+        return (ArrayList<Systemtrade_order>)this.search(search, orderby);
     }
 
     /**
@@ -175,37 +161,26 @@ public abstract class Bsystemtrade_order extends GeneralEntityObject implements 
      * @throws DBException
      */
     public boolean getSystemtrade_orderExists(ISystemtrade_orderPK systemtrade_orderPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((Systemtrade_orderPK)systemtrade_orderPK);
-        } else return false;
+        return super.getEntityExists((Systemtrade_orderPK)systemtrade_orderPK);
     }
 
     /**
      * try to insert Systemtrade_order in database
-     * @param film: Systemtrade_order object
+     * @param systemtrade_order Systemtrade_order object
      * @throws DBException
+     * @throws DataException
      */
     public void insertSystemtrade_order(ISystemtrade_order systemtrade_order) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(systemtrade_order);
-
-
-
-
-
-
-
-
-
-        }
+        super.insertEntity(systemtrade_order);
     }
 
     /**
      * check if Systemtrade_orderPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Systemtrade_order object
+     * @param systemtrade_order Systemtrade_order object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateSystemtrade_order(ISystemtrade_order systemtrade_order) throws DBException, DataException {
         if(this.getSystemtrade_orderExists(systemtrade_order.getPrimaryKey())) {
@@ -217,39 +192,27 @@ public abstract class Bsystemtrade_order extends GeneralEntityObject implements 
 
     /**
      * try to update Systemtrade_order in database
-     * @param film: Systemtrade_order object
+     * @param systemtrade_order Systemtrade_order object
      * @throws DBException
+     * @throws DataException
      */
     public void updateSystemtrade_order(ISystemtrade_order systemtrade_order) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(systemtrade_order);
-
-
-
-
-
-
-
-
-
-        }
+        super.updateEntity(systemtrade_order);
     }
 
     /**
      * try to delete Systemtrade_order in database
-     * @param film: Systemtrade_order object
+     * @param systemtrade_order Systemtrade_order object
      * @throws DBException
      */
     public void deleteSystemtrade_order(ISystemtrade_order systemtrade_order) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteSystemtrade_order(systemtrade_order.getOwnerobject(), systemtrade_order.getPrimaryKey());
-            super.deleteEntity(systemtrade_order);
-        }
+        cascadedeleteSystemtrade_order(systemtrade_order.getPrimaryKey());
+        super.deleteEntity(systemtrade_order);
     }
 
     /**
      * check data rules in Systemtrade_order, throw DataException with customized message if rules do not apply
-     * @param film: Systemtrade_order object
+     * @param systemtrade_order Systemtrade_order object
      * @throws DataException
      * @throws DBException
      */
@@ -259,11 +222,6 @@ public abstract class Bsystemtrade_order extends GeneralEntityObject implements 
         //foreign key Systemtrade_order.Buy_system - Systemtrade.Buy_system
         //foreign key Systemtrade_order.Sell_order - Orders.Id
         //foreign key Systemtrade_order.Buy_order - Orders.Id
-
-
-
-
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -273,109 +231,102 @@ public abstract class Bsystemtrade_order extends GeneralEntityObject implements 
      * delete all records in tables where systemtrade_orderPK is used in a primary key
      * @param systemtrade_orderPK: Systemtrade_order primary key
      */
-    public void cascadedeleteSystemtrade_order(String senderobject, ISystemtrade_orderPK systemtrade_orderPK) {
+    public void cascadedeleteSystemtrade_order(ISystemtrade_orderPK systemtrade_orderPK) {
     }
 
     /**
      * @param ordersPK: foreign key for Orders
      * @delete all Systemtrade_order Entity objects for Orders in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4ordersBuy_order(String senderobject, IOrdersPK ordersPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Systemtrade_order.SQLDelete4ordersBuy_order, ordersPK.getKeyFields());
-        }
+    public void delete4ordersBuy_order(IOrdersPK ordersPK) {
+        super.addStatement(EMsystemtrade_order.SQLDelete4ordersBuy_order, ordersPK.getSQLprimarykey());
     }
 
     /**
      * @param ordersPK: foreign key for Orders
      * @return all Systemtrade_order Entity objects for Orders
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getSystemtrade_orders4ordersBuy_order(IOrdersPK ordersPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Systemtrade_order.SQLSelect4ordersBuy_order, ordersPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Systemtrade_order> getSystemtrade_orders4ordersBuy_order(IOrdersPK ordersPK) throws CustomException {
+        return super.getEntities(EMsystemtrade_order.SQLSelect4ordersBuy_order, ordersPK.getSQLprimarykey());
     }
     /**
      * @param ordersPK: foreign key for Orders
      * @delete all Systemtrade_order Entity objects for Orders in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4ordersSell_order(String senderobject, IOrdersPK ordersPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Systemtrade_order.SQLDelete4ordersSell_order, ordersPK.getKeyFields());
-        }
+    public void delete4ordersSell_order(IOrdersPK ordersPK) {
+        super.addStatement(EMsystemtrade_order.SQLDelete4ordersSell_order, ordersPK.getSQLprimarykey());
     }
 
     /**
      * @param ordersPK: foreign key for Orders
      * @return all Systemtrade_order Entity objects for Orders
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getSystemtrade_orders4ordersSell_order(IOrdersPK ordersPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Systemtrade_order.SQLSelect4ordersSell_order, ordersPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Systemtrade_order> getSystemtrade_orders4ordersSell_order(IOrdersPK ordersPK) throws CustomException {
+        return super.getEntities(EMsystemtrade_order.SQLSelect4ordersSell_order, ordersPK.getSQLprimarykey());
     }
     /**
      * @param systemtradePK: foreign key for Systemtrade
      * @delete all Systemtrade_order Entity objects for Systemtrade in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4systemtrade(String senderobject, ISystemtradePK systemtradePK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Systemtrade_order.SQLDelete4systemtrade, systemtradePK.getKeyFields());
-        }
+    public void delete4systemtrade(ISystemtradePK systemtradePK) {
+        super.addStatement(EMsystemtrade_order.SQLDelete4systemtrade, systemtradePK.getSQLprimarykey());
     }
 
     /**
      * @param systemtradePK: foreign key for Systemtrade
      * @return all Systemtrade_order Entity objects for Systemtrade
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getSystemtrade_orders4systemtrade(ISystemtradePK systemtradePK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Systemtrade_order.SQLSelect4systemtrade, systemtradePK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Systemtrade_order> getSystemtrade_orders4systemtrade(ISystemtradePK systemtradePK) throws CustomException {
+        return super.getEntities(EMsystemtrade_order.SQLSelect4systemtrade, systemtradePK.getSQLprimarykey());
     }
 
     /**
      * get all Systemtrade_order objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Systemtrade_order objects
      * @throws DBException
      */
-    public ArrayList getSystemtrade_orders(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Systemtrade_order.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Systemtrade_order> getSystemtrade_orders(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMsystemtrade_order.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Systemtrade_order>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Systemtrade_order objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delSystemtrade_order(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Systemtrade_order.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delSystemtrade_order(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Systemtrade_order.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

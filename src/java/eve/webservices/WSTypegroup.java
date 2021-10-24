@@ -2,7 +2,7 @@
  * WSTypegroup.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSTypegroup implements WSITypegroup {
         Typegroup typegroup;
         try {
             ICategoryPK categoryPK = JSONCategory.toCategoryPK((JSONObject)parser.parse(json));
-            bltypegroup.delete4category(this.getClass().getName(), categoryPK);
+            bltypegroup.delete4category(categoryPK);
         }
         catch(ParseException e) {
         }

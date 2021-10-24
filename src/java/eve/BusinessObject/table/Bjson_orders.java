@@ -2,17 +2,17 @@
  * Bjson_orders.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONJson_orders;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMjson_orders;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bjson_orders extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bjson_orders extends BLtable {
 
     /**
      * Constructor, sets Json_orders as default Entity
      */
     public Bjson_orders() {
-        super(new SQLMapper_pgsql(connectionpool, "Json_orders"), new Json_orders());
+        super(new Json_orders(), new EMjson_orders());
     }
 
     /**
@@ -60,39 +60,8 @@ public abstract class Bjson_orders extends GeneralEntityObject implements Projec
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bjson_orders(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Json_orders());
-    }
-
-    /**
-     * Map ResultSet Field values to Json_orders
-     * @param dbresult: Database ResultSet
-     */
-    public Json_orders mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        Json_ordersPK json_ordersPK = null;
-        Json_orders json_orders;
-        if(dbresult==null) {
-            json_orders = new Json_orders(json_ordersPK);
-        } else {
-            try {
-                json_ordersPK = new Json_ordersPK(dbresult.getInt("id"));
-                json_orders = new Json_orders(json_ordersPK);
-                String o_json = dbresult.getString("json");
-                if(o_json!=null) {
-                    try {
-                        Object json_o_a = (new JSONParser()).parse(o_json);
-                        json_orders.initJson(piJson.parse(json_o_a));
-                    }
-                    catch(ParseException e) {
-                    }                    
-                }
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, json_orders);
-        return json_orders;
+    public Bjson_orders(BLtable transactionobject) {
+        super(transactionobject, new Json_orders(), new EMjson_orders());
     }
 
     /**
@@ -106,6 +75,7 @@ public abstract class Bjson_orders extends GeneralEntityObject implements Projec
     /**
      * create new empty Json_orders object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return IJson_orders with primary key
      */
     public IJson_orders newJson_orders(int id) {
@@ -131,6 +101,7 @@ public abstract class Bjson_orders extends GeneralEntityObject implements Projec
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new IJson_ordersPK
      */
     public IJson_ordersPK newJson_ordersPK(int id) {
@@ -142,10 +113,8 @@ public abstract class Bjson_orders extends GeneralEntityObject implements Projec
      * @return ArrayList of Json_orders objects
      * @throws DBException
      */
-    public ArrayList getJson_orderss() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Json_orders.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Json_orders> getJson_orderss() throws DBException {
+        return (ArrayList<Json_orders>)super.getEntities(EMjson_orders.SQLSelectAll);
     }
 
     /**
@@ -155,21 +124,28 @@ public abstract class Bjson_orders extends GeneralEntityObject implements Projec
      * @throws DBException
      */
     public Json_orders getJson_orders(IJson_ordersPK json_ordersPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Json_orders)super.getEntity((Json_ordersPK)json_ordersPK);
-        } else return null;
+        return (Json_orders)super.getEntity((Json_ordersPK)json_ordersPK);
     }
 
-    public ArrayList searchjson_orderss(IJson_orderssearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search json_orders with IJson_orderssearch parameters
+     * @param search IJson_orderssearch
+     * @return ArrayList of Json_orders
+     * @throws DBException 
+     */
+    public ArrayList<Json_orders> searchjson_orderss(IJson_orderssearch search) throws DBException {
+        return (ArrayList<Json_orders>)this.search(search);
     }
 
-    public ArrayList searchjson_orderss(IJson_orderssearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search json_orders with IJson_orderssearch parameters, order by orderby sql clause
+     * @param search IJson_orderssearch
+     * @param orderby sql order by string
+     * @return ArrayList of Json_orders
+     * @throws DBException 
+     */
+    public ArrayList<Json_orders> searchjson_orderss(IJson_orderssearch search, String orderby) throws DBException {
+        return (ArrayList<Json_orders>)this.search(search, orderby);
     }
 
     /**
@@ -179,30 +155,26 @@ public abstract class Bjson_orders extends GeneralEntityObject implements Projec
      * @throws DBException
      */
     public boolean getJson_ordersExists(IJson_ordersPK json_ordersPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((Json_ordersPK)json_ordersPK);
-        } else return false;
+        return super.getEntityExists((Json_ordersPK)json_ordersPK);
     }
 
     /**
      * try to insert Json_orders in database
-     * @param film: Json_orders object
+     * @param json_orders Json_orders object
      * @throws DBException
+     * @throws DataException
      */
     public void insertJson_orders(IJson_orders json_orders) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(json_orders);
-
-
-        }
+        super.insertEntity(json_orders);
     }
 
     /**
      * check if Json_ordersPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Json_orders object
+     * @param json_orders Json_orders object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateJson_orders(IJson_orders json_orders) throws DBException, DataException {
         if(this.getJson_ordersExists(json_orders.getPrimaryKey())) {
@@ -214,39 +186,33 @@ public abstract class Bjson_orders extends GeneralEntityObject implements Projec
 
     /**
      * try to update Json_orders in database
-     * @param film: Json_orders object
+     * @param json_orders Json_orders object
      * @throws DBException
+     * @throws DataException
      */
     public void updateJson_orders(IJson_orders json_orders) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(json_orders);
-
-
-        }
+        super.updateEntity(json_orders);
     }
 
     /**
      * try to delete Json_orders in database
-     * @param film: Json_orders object
+     * @param json_orders Json_orders object
      * @throws DBException
      */
     public void deleteJson_orders(IJson_orders json_orders) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteJson_orders(json_orders.getOwnerobject(), json_orders.getPrimaryKey());
-            super.deleteEntity(json_orders);
-        }
+        cascadedeleteJson_orders(json_orders.getPrimaryKey());
+        super.deleteEntity(json_orders);
     }
 
     /**
      * check data rules in Json_orders, throw DataException with customized message if rules do not apply
-     * @param film: Json_orders object
+     * @param json_orders Json_orders object
      * @throws DataException
      * @throws DBException
      */
     public void checkDATA(IJson_orders json_orders) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
-
         if(json_orders.getJson()==null) {
             message.append("Json mag niet leeg zijn.\n");
         }
@@ -259,46 +225,54 @@ public abstract class Bjson_orders extends GeneralEntityObject implements Projec
      * delete all records in tables where json_ordersPK is used in a primary key
      * @param json_ordersPK: Json_orders primary key
      */
-    public void cascadedeleteJson_orders(String senderobject, IJson_ordersPK json_ordersPK) {
+    public void cascadedeleteJson_orders(IJson_ordersPK json_ordersPK) {
     }
 
 
     /**
      * get all Json_orders objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Json_orders objects
      * @throws DBException
      */
-    public ArrayList getJson_orderss(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Json_orders.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Json_orders> getJson_orderss(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMjson_orders.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Json_orders>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Json_orders objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delJson_orders(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Json_orders.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delJson_orders(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Json_orders.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

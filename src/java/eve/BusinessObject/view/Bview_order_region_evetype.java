@@ -2,19 +2,17 @@
  * Bview_order_region_evetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.view;
 
-import BusinessObject.GeneralViewObject;
+import BusinessObject.BLview;
+import db.SQLMapperFactory;
 import data.gis.shape.*;
 import db.SQLMapper_pgsql;
-import eve.data.ProjectConstants;
-import db.ArchiveViewMapper;
-import db.ViewMapper;
-import db.ViewMapperInterface;
+import eve.conversion.entity.EMview_order_region_evetype;
 import general.exception.*;
 import java.util.ArrayList;
 import eve.logicview.View_order_region_evetype;
@@ -34,32 +32,13 @@ import org.postgis.PGgeometry;
  *
  * @author Franky Laseure
  */
-public abstract class Bview_order_region_evetype extends GeneralViewObject implements ProjectConstants {
+public abstract class Bview_order_region_evetype extends BLview {
 
     /**
      * Constructor, sets View_order_region_evetype as default Entity
      */
     public Bview_order_region_evetype() {
-        super(new SQLMapper_pgsql(connectionpool, "View_order_region_evetype"), new View_order_region_evetype());
-    }
-
-    /**
-     * Map ResultSet Field values to View_order_region_evetype
-     * @param dbresult: Database ResultSet
-     */
-    public View_order_region_evetype mapResultSet2View(ResultSet dbresult) throws SQLException {
-        View_order_region_evetype view_order_region_evetype = new View_order_region_evetype();
-        if(dbresult!=null) {
-            try {
-                view_order_region_evetype.setRegion(dbresult.getLong("region"));
-                view_order_region_evetype.setEvetype(dbresult.getLong("evetype"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, view_order_region_evetype);
-        return view_order_region_evetype;
+        super(new View_order_region_evetype(), new EMview_order_region_evetype());
     }
 
     /**
@@ -67,7 +46,7 @@ public abstract class Bview_order_region_evetype extends GeneralViewObject imple
      * @return ArrayList of View_order_region_evetype objects
      * @throws DBException
      */
-    public ArrayList getView_order_region_evetypes() throws DBException {
-        return getMapper().loadViewVector(this, View_order_region_evetype.SQLSelectAll);
+    public ArrayList<View_order_region_evetype> getView_order_region_evetypes() throws DBException {
+        return getEntities(EMview_order_region_evetype.SQLSelectAll);
     }
 }

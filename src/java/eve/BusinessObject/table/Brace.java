@@ -2,17 +2,17 @@
  * Brace.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONRace;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMrace;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Brace extends GeneralEntityObject implements ProjectConstants {
+public abstract class Brace extends BLtable {
 
     /**
      * Constructor, sets Race as default Entity
      */
     public Brace() {
-        super(new SQLMapper_pgsql(connectionpool, "Race"), new Race());
+        super(new Race(), new EMrace());
     }
 
     /**
@@ -60,34 +60,8 @@ public abstract class Brace extends GeneralEntityObject implements ProjectConsta
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Brace(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Race());
-    }
-
-    /**
-     * Map ResultSet Field values to Race
-     * @param dbresult: Database ResultSet
-     */
-    public Race mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        RacePK racePK = null;
-        Race race;
-        if(dbresult==null) {
-            race = new Race(racePK);
-        } else {
-            try {
-                racePK = new RacePK(dbresult.getLong("id"));
-                race = new Race(racePK);
-                race.initFactionPK(new FactionPK(dbresult.getLong("faction")));
-                if(dbresult.wasNull()) race.setFactionPK(null);                
-                race.initName(dbresult.getString("name"));
-                race.initDescription(dbresult.getString("description"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, race);
-        return race;
+    public Brace(BLtable transactionobject) {
+        super(transactionobject, new Race(), new EMrace());
     }
 
     /**
@@ -101,6 +75,7 @@ public abstract class Brace extends GeneralEntityObject implements ProjectConsta
     /**
      * create new empty Race object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return IRace with primary key
      */
     public IRace newRace(long id) {
@@ -126,6 +101,7 @@ public abstract class Brace extends GeneralEntityObject implements ProjectConsta
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new IRacePK
      */
     public IRacePK newRacePK(long id) {
@@ -137,10 +113,8 @@ public abstract class Brace extends GeneralEntityObject implements ProjectConsta
      * @return ArrayList of Race objects
      * @throws DBException
      */
-    public ArrayList getRaces() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Race.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Race> getRaces() throws DBException {
+        return (ArrayList<Race>)super.getEntities(EMrace.SQLSelectAll);
     }
 
     /**
@@ -150,21 +124,28 @@ public abstract class Brace extends GeneralEntityObject implements ProjectConsta
      * @throws DBException
      */
     public Race getRace(IRacePK racePK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Race)super.getEntity((RacePK)racePK);
-        } else return null;
+        return (Race)super.getEntity((RacePK)racePK);
     }
 
-    public ArrayList searchraces(IRacesearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search race with IRacesearch parameters
+     * @param search IRacesearch
+     * @return ArrayList of Race
+     * @throws DBException 
+     */
+    public ArrayList<Race> searchraces(IRacesearch search) throws DBException {
+        return (ArrayList<Race>)this.search(search);
     }
 
-    public ArrayList searchraces(IRacesearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search race with IRacesearch parameters, order by orderby sql clause
+     * @param search IRacesearch
+     * @param orderby sql order by string
+     * @return ArrayList of Race
+     * @throws DBException 
+     */
+    public ArrayList<Race> searchraces(IRacesearch search, String orderby) throws DBException {
+        return (ArrayList<Race>)this.search(search, orderby);
     }
 
     /**
@@ -174,32 +155,26 @@ public abstract class Brace extends GeneralEntityObject implements ProjectConsta
      * @throws DBException
      */
     public boolean getRaceExists(IRacePK racePK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((RacePK)racePK);
-        } else return false;
+        return super.getEntityExists((RacePK)racePK);
     }
 
     /**
      * try to insert Race in database
-     * @param film: Race object
+     * @param race Race object
      * @throws DBException
+     * @throws DataException
      */
     public void insertRace(IRace race) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(race);
-
-
-
-
-        }
+        super.insertEntity(race);
     }
 
     /**
      * check if RacePK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Race object
+     * @param race Race object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateRace(IRace race) throws DBException, DataException {
         if(this.getRaceExists(race.getPrimaryKey())) {
@@ -211,53 +186,42 @@ public abstract class Brace extends GeneralEntityObject implements ProjectConsta
 
     /**
      * try to update Race in database
-     * @param film: Race object
+     * @param race Race object
      * @throws DBException
+     * @throws DataException
      */
     public void updateRace(IRace race) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(race);
-
-
-
-
-        }
+        super.updateEntity(race);
     }
 
     /**
      * try to delete Race in database
-     * @param film: Race object
+     * @param race Race object
      * @throws DBException
      */
     public void deleteRace(IRace race) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteRace(race.getOwnerobject(), race.getPrimaryKey());
-            super.deleteEntity(race);
-        }
+        cascadedeleteRace(race.getPrimaryKey());
+        super.deleteEntity(race);
     }
 
     /**
      * check data rules in Race, throw DataException with customized message if rules do not apply
-     * @param film: Race object
+     * @param race Race object
      * @throws DataException
      * @throws DBException
      */
     public void checkDATA(IRace race) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
-
-
         if(race.getName()!=null && race.getName().length()>IRace.SIZE_NAME) {
-            message.append("Name is langer dan toegestaan. Max aantal karakters: " + IRace.SIZE_NAME + "\n");
+            message.append("Name is langer dan toegestaan. Max aantal karakters: ").append(IRace.SIZE_NAME).append("\n");
         }
-
         if(race.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
         if(race.getDescription()!=null && race.getDescription().length()>IRace.SIZE_DESCRIPTION) {
-            message.append("Description is langer dan toegestaan. Max aantal karakters: " + IRace.SIZE_DESCRIPTION + "\n");
+            message.append("Description is langer dan toegestaan. Max aantal karakters: ").append(IRace.SIZE_DESCRIPTION).append("\n");
         }
-
         if(race.getDescription()==null) {
             message.append("Description mag niet leeg zijn.\n");
         }
@@ -270,67 +234,70 @@ public abstract class Brace extends GeneralEntityObject implements ProjectConsta
      * delete all records in tables where racePK is used in a primary key
      * @param racePK: Race primary key
      */
-    public void cascadedeleteRace(String senderobject, IRacePK racePK) {
+    public void cascadedeleteRace(IRacePK racePK) {
     }
 
     /**
      * @param factionPK: foreign key for Faction
      * @delete all Race Entity objects for Faction in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4faction(String senderobject, IFactionPK factionPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Race.SQLDelete4faction, factionPK.getKeyFields());
-        }
+    public void delete4faction(IFactionPK factionPK) {
+        super.addStatement(EMrace.SQLDelete4faction, factionPK.getSQLprimarykey());
     }
 
     /**
      * @param factionPK: foreign key for Faction
      * @return all Race Entity objects for Faction
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getRaces4faction(IFactionPK factionPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Race.SQLSelect4faction, factionPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Race> getRaces4faction(IFactionPK factionPK) throws CustomException {
+        return super.getEntities(EMrace.SQLSelect4faction, factionPK.getSQLprimarykey());
     }
 
     /**
      * get all Race objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Race objects
      * @throws DBException
      */
-    public ArrayList getRaces(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Race.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Race> getRaces(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMrace.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Race>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Race objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delRace(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Race.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delRace(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Race.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

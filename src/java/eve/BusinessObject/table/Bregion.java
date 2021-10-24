@@ -2,17 +2,17 @@
  * Bregion.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONRegion;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMregion;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bregion extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bregion extends BLtable {
 
     /**
      * Constructor, sets Region as default Entity
      */
     public Bregion() {
-        super(new SQLMapper_pgsql(connectionpool, "Region"), new Region());
+        super(new Region(), new EMregion());
     }
 
     /**
@@ -60,34 +60,8 @@ public abstract class Bregion extends GeneralEntityObject implements ProjectCons
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bregion(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Region());
-    }
-
-    /**
-     * Map ResultSet Field values to Region
-     * @param dbresult: Database ResultSet
-     */
-    public Region mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        RegionPK regionPK = null;
-        Region region;
-        if(dbresult==null) {
-            region = new Region(regionPK);
-        } else {
-            try {
-                regionPK = new RegionPK(dbresult.getLong("id"));
-                region = new Region(regionPK);
-                region.initName(dbresult.getString("name"));
-                region.initNoaccess(dbresult.getBoolean("noaccess"));
-                region.initOrderpages(dbresult.getInt("orderpages"));
-                region.initOrdererrors(dbresult.getInt("ordererrors"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, region);
-        return region;
+    public Bregion(BLtable transactionobject) {
+        super(transactionobject, new Region(), new EMregion());
     }
 
     /**
@@ -101,6 +75,7 @@ public abstract class Bregion extends GeneralEntityObject implements ProjectCons
     /**
      * create new empty Region object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return IRegion with primary key
      */
     public IRegion newRegion(long id) {
@@ -126,6 +101,7 @@ public abstract class Bregion extends GeneralEntityObject implements ProjectCons
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new IRegionPK
      */
     public IRegionPK newRegionPK(long id) {
@@ -137,10 +113,8 @@ public abstract class Bregion extends GeneralEntityObject implements ProjectCons
      * @return ArrayList of Region objects
      * @throws DBException
      */
-    public ArrayList getRegions() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Region.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Region> getRegions() throws DBException {
+        return (ArrayList<Region>)super.getEntities(EMregion.SQLSelectAll);
     }
 
     /**
@@ -150,21 +124,28 @@ public abstract class Bregion extends GeneralEntityObject implements ProjectCons
      * @throws DBException
      */
     public Region getRegion(IRegionPK regionPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Region)super.getEntity((RegionPK)regionPK);
-        } else return null;
+        return (Region)super.getEntity((RegionPK)regionPK);
     }
 
-    public ArrayList searchregions(IRegionsearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search region with IRegionsearch parameters
+     * @param search IRegionsearch
+     * @return ArrayList of Region
+     * @throws DBException 
+     */
+    public ArrayList<Region> searchregions(IRegionsearch search) throws DBException {
+        return (ArrayList<Region>)this.search(search);
     }
 
-    public ArrayList searchregions(IRegionsearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search region with IRegionsearch parameters, order by orderby sql clause
+     * @param search IRegionsearch
+     * @param orderby sql order by string
+     * @return ArrayList of Region
+     * @throws DBException 
+     */
+    public ArrayList<Region> searchregions(IRegionsearch search, String orderby) throws DBException {
+        return (ArrayList<Region>)this.search(search, orderby);
     }
 
     /**
@@ -174,33 +155,26 @@ public abstract class Bregion extends GeneralEntityObject implements ProjectCons
      * @throws DBException
      */
     public boolean getRegionExists(IRegionPK regionPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((RegionPK)regionPK);
-        } else return false;
+        return super.getEntityExists((RegionPK)regionPK);
     }
 
     /**
      * try to insert Region in database
-     * @param film: Region object
+     * @param region Region object
      * @throws DBException
+     * @throws DataException
      */
     public void insertRegion(IRegion region) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(region);
-
-
-
-
-
-        }
+        super.insertEntity(region);
     }
 
     /**
      * check if RegionPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Region object
+     * @param region Region object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateRegion(IRegion region) throws DBException, DataException {
         if(this.getRegionExists(region.getPrimaryKey())) {
@@ -212,35 +186,27 @@ public abstract class Bregion extends GeneralEntityObject implements ProjectCons
 
     /**
      * try to update Region in database
-     * @param film: Region object
+     * @param region Region object
      * @throws DBException
+     * @throws DataException
      */
     public void updateRegion(IRegion region) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(region);
-
-
-
-
-
-        }
+        super.updateEntity(region);
     }
 
     /**
      * try to delete Region in database
-     * @param film: Region object
+     * @param region Region object
      * @throws DBException
      */
     public void deleteRegion(IRegion region) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteRegion(region.getOwnerobject(), region.getPrimaryKey());
-            super.deleteEntity(region);
-        }
+        cascadedeleteRegion(region.getPrimaryKey());
+        super.deleteEntity(region);
     }
 
     /**
      * check data rules in Region, throw DataException with customized message if rules do not apply
-     * @param film: Region object
+     * @param region Region object
      * @throws DataException
      * @throws DBException
      */
@@ -248,15 +214,11 @@ public abstract class Bregion extends GeneralEntityObject implements ProjectCons
         StringBuffer message = new StringBuffer();
         //Primary key
         if(region.getName()!=null && region.getName().length()>IRegion.SIZE_NAME) {
-            message.append("Name is langer dan toegestaan. Max aantal karakters: " + IRegion.SIZE_NAME + "\n");
+            message.append("Name is langer dan toegestaan. Max aantal karakters: ").append(IRegion.SIZE_NAME).append("\n");
         }
-
         if(region.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
-
-
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -266,88 +228,90 @@ public abstract class Bregion extends GeneralEntityObject implements ProjectCons
      * delete all records in tables where regionPK is used in a primary key
      * @param regionPK: Region primary key
      */
-    public void cascadedeleteRegion(String senderobject, IRegionPK regionPK) {
+    public void cascadedeleteRegion(IRegionPK regionPK) {
         BLorder_history blorder_history = new BLorder_history(this);
-        blorder_history.delete4region(senderobject, regionPK);
+        blorder_history.delete4region(regionPK);
         BLregion_neighbour blregion_neighbourRegion = new BLregion_neighbour(this);
-        blregion_neighbourRegion.delete4regionRegion(senderobject, regionPK);
+        blregion_neighbourRegion.delete4regionRegion(regionPK);
         BLregion_neighbour blregion_neighbourNeighbour = new BLregion_neighbour(this);
-        blregion_neighbourNeighbour.delete4regionNeighbour(senderobject, regionPK);
+        blregion_neighbourNeighbour.delete4regionNeighbour(regionPK);
     }
 
     /**
      * @param order_historyPK: parent Order_history for child object Region Entity
      * @return child Region Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public IRegion getOrder_history(IOrder_historyPK order_historyPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            RegionPK regionPK = new RegionPK(order_historyPK.getRegion());
-            return this.getRegion(regionPK);
-        } else return null;
+    public Region getOrder_history(IOrder_historyPK order_historyPK) throws CustomException {
+        RegionPK regionPK = new RegionPK(order_historyPK.getRegion());
+        return this.getRegion(regionPK);
     }
 
     /**
      * @param region_neighbourPK: parent Region_neighbour for child object Region Entity
      * @return child Region Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public IRegion getRegion_neighbourregion(IRegion_neighbourPK region_neighbourPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            RegionPK regionPK = new RegionPK(region_neighbourPK.getRegion());
-            return this.getRegion(regionPK);
-        } else return null;
+    public Region getRegion_neighbourregion(IRegion_neighbourPK region_neighbourPK) throws CustomException {
+        RegionPK regionPK = new RegionPK(region_neighbourPK.getRegion());
+        return this.getRegion(regionPK);
     }
 
     /**
      * @param region_neighbourPK: parent Region_neighbour for child object Region Entity
      * @return child Region Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public IRegion getRegion_neighbourneighbour(IRegion_neighbourPK region_neighbourPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            RegionPK regionPK = new RegionPK(region_neighbourPK.getNeighbour());
-            return this.getRegion(regionPK);
-        } else return null;
+    public Region getRegion_neighbourneighbour(IRegion_neighbourPK region_neighbourPK) throws CustomException {
+        RegionPK regionPK = new RegionPK(region_neighbourPK.getNeighbour());
+        return this.getRegion(regionPK);
     }
 
 
     /**
      * get all Region objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Region objects
      * @throws DBException
      */
-    public ArrayList getRegions(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Region.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Region> getRegions(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMregion.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Region>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Region objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delRegion(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Region.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delRegion(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Region.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

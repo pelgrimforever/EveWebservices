@@ -9,17 +9,13 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IStation_service;
 import eve.logicentity.Station_service;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import eve.BusinessObject.table.Bstation_service;
 import eve.entity.pk.StationPK;
 import eve.entity.pk.Station_servicePK;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLstation_service;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * Business Logic Entity class BLstation_service
@@ -31,7 +27,7 @@ import java.sql.SQLException;
  *
  * @author Franky Laseure
  */
-public class BLstation_service extends Bstation_service implements IBLstation_service {
+public class BLstation_service extends Bstation_service {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -48,19 +44,11 @@ public class BLstation_service extends Bstation_service implements IBLstation_se
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLstation_service(GeneralEntityObject transactionobject) {
+    public BLstation_service(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity station_service) throws SQLException {
-        
-    }
-    
     public void updateStation_service(StationPK stationpk, String service) throws DBException, DataException {
         Station_servicePK stationservicepk = new Station_servicePK();
         stationservicepk.setStationPK(stationpk);

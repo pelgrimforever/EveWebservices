@@ -9,18 +9,12 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import general.exception.DataException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.ICategory;
 import eve.logicentity.Category;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import data.conversion.JSONConversion;
 import eve.BusinessObject.table.Bcategory;
-import eve.entity.pk.ConstellationPK;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLcategory;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import org.json.simple.JSONObject;
 
 /**
@@ -33,7 +27,7 @@ import org.json.simple.JSONObject;
  *
  * @author Franky Laseure
  */
-public class BLcategory extends Bcategory implements IBLcategory {
+public class BLcategory extends Bcategory {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -50,19 +44,11 @@ public class BLcategory extends Bcategory implements IBLcategory {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLcategory(GeneralEntityObject transactionobject) {
+    public BLcategory(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity category) throws SQLException {
-        
-    }
-    
     public void updateCategory(JSONObject jsoncategorydetails) throws DBException, DataException {
         Category category = new Category(JSONConversion.getLong(jsoncategorydetails, "category_id"));
         category.setName(JSONConversion.getString(jsoncategorydetails, "name"));

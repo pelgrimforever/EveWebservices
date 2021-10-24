@@ -2,19 +2,17 @@
  * Bview_stocktrade_orders.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.view;
 
-import BusinessObject.GeneralViewObject;
+import BusinessObject.BLview;
+import db.SQLMapperFactory;
 import data.gis.shape.*;
 import db.SQLMapper_pgsql;
-import eve.data.ProjectConstants;
-import db.ArchiveViewMapper;
-import db.ViewMapper;
-import db.ViewMapperInterface;
+import eve.conversion.entity.EMview_stocktrade_orders;
 import general.exception.*;
 import java.util.ArrayList;
 import eve.logicview.View_stocktrade_orders;
@@ -34,40 +32,13 @@ import org.postgis.PGgeometry;
  *
  * @author Franky Laseure
  */
-public abstract class Bview_stocktrade_orders extends GeneralViewObject implements ProjectConstants {
+public abstract class Bview_stocktrade_orders extends BLview {
 
     /**
      * Constructor, sets View_stocktrade_orders as default Entity
      */
     public Bview_stocktrade_orders() {
-        super(new SQLMapper_pgsql(connectionpool, "View_stocktrade_orders"), new View_stocktrade_orders());
-    }
-
-    /**
-     * Map ResultSet Field values to View_stocktrade_orders
-     * @param dbresult: Database ResultSet
-     */
-    public View_stocktrade_orders mapResultSet2View(ResultSet dbresult) throws SQLException {
-        View_stocktrade_orders view_stocktrade_orders = new View_stocktrade_orders();
-        if(dbresult!=null) {
-            try {
-                view_stocktrade_orders.setUsername(dbresult.getString("username"));
-                view_stocktrade_orders.setSystem(dbresult.getLong("system"));
-                view_stocktrade_orders.setLocationid(dbresult.getLong("locationid"));
-                view_stocktrade_orders.setStationname(dbresult.getString("stationname"));
-                view_stocktrade_orders.setLocationname(dbresult.getString("locationname"));
-                view_stocktrade_orders.setEvetypeid(dbresult.getLong("evetypeid"));
-                view_stocktrade_orders.setEvetypename(dbresult.getString("evetypename"));
-                view_stocktrade_orders.setPackaged_volume(dbresult.getDouble("packaged_volume"));
-                view_stocktrade_orders.setMin_volume(dbresult.getInt("min_volume"));
-                view_stocktrade_orders.setSellamount(dbresult.getLong("sellamount"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, view_stocktrade_orders);
-        return view_stocktrade_orders;
+        super(new View_stocktrade_orders(), new EMview_stocktrade_orders());
     }
 
     /**
@@ -75,7 +46,7 @@ public abstract class Bview_stocktrade_orders extends GeneralViewObject implemen
      * @return ArrayList of View_stocktrade_orders objects
      * @throws DBException
      */
-    public ArrayList getView_stocktrade_orderss() throws DBException {
-        return getMapper().loadViewVector(this, View_stocktrade_orders.SQLSelectAll);
+    public ArrayList<View_stocktrade_orders> getView_stocktrade_orderss() throws DBException {
+        return getEntities(EMview_stocktrade_orders.SQLSelectAll);
     }
 }

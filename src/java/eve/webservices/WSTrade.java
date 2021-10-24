@@ -2,7 +2,7 @@
  * WSTrade.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSTrade implements WSITrade {
         Trade trade;
         try {
             IOrdersPK ordersSell_order_idPK = JSONOrders.toOrdersPK((JSONObject)parser.parse(json));
-            bltrade.delete4ordersSell_order_id(this.getClass().getName(), ordersSell_order_idPK);
+            bltrade.delete4ordersSell_order_id(ordersSell_order_idPK);
         }
         catch(ParseException e) {
         }
@@ -221,7 +221,7 @@ public class WSTrade implements WSITrade {
         Trade trade;
         try {
             IOrdersPK ordersBuy_order_idPK = JSONOrders.toOrdersPK((JSONObject)parser.parse(json));
-            bltrade.delete4ordersBuy_order_id(this.getClass().getName(), ordersBuy_order_idPK);
+            bltrade.delete4ordersBuy_order_id(ordersBuy_order_idPK);
         }
         catch(ParseException e) {
         }

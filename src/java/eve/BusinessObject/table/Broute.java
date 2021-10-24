@@ -2,17 +2,17 @@
  * Broute.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONRoute;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMroute;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Broute extends GeneralEntityObject implements ProjectConstants {
+public abstract class Broute extends BLtable {
 
     /**
      * Constructor, sets Route as default Entity
      */
     public Broute() {
-        super(new SQLMapper_pgsql(connectionpool, "Route"), new Route());
+        super(new Route(), new EMroute());
     }
 
     /**
@@ -60,39 +60,8 @@ public abstract class Broute extends GeneralEntityObject implements ProjectConst
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Broute(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Route());
-    }
-
-    /**
-     * Map ResultSet Field values to Route
-     * @param dbresult: Database ResultSet
-     */
-    public Route mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        RoutePK routePK = null;
-        Route route;
-        if(dbresult==null) {
-            route = new Route(routePK);
-        } else {
-            try {
-                routePK = new RoutePK(dbresult.getLong("routetype"), dbresult.getLong("system"));
-                route = new Route(routePK);
-                String o_jsonroutes = dbresult.getString("jsonroutes");
-                if(o_jsonroutes!=null) {
-                    try {
-                        Object jsonroutes_o_a = (new JSONParser()).parse(o_jsonroutes);
-                        route.initJsonroutes(piJson.parse(jsonroutes_o_a));
-                    }
-                    catch(ParseException e) {
-                    }                    
-                }
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, route);
-        return route;
+    public Broute(BLtable transactionobject) {
+        super(transactionobject, new Route(), new EMroute());
     }
 
     /**
@@ -106,6 +75,8 @@ public abstract class Broute extends GeneralEntityObject implements ProjectConst
     /**
      * create new empty Route object
      * create new primary key with given parameters
+     * @param routetype primary key field
+     * @param system primary key field
      * @return IRoute with primary key
      */
     public IRoute newRoute(long routetype, long system) {
@@ -131,6 +102,8 @@ public abstract class Broute extends GeneralEntityObject implements ProjectConst
 
     /**
      * create new primary key with given parameters
+     * @param routetype primary key field
+     * @param system primary key field
      * @return new IRoutePK
      */
     public IRoutePK newRoutePK(long routetype, long system) {
@@ -142,10 +115,8 @@ public abstract class Broute extends GeneralEntityObject implements ProjectConst
      * @return ArrayList of Route objects
      * @throws DBException
      */
-    public ArrayList getRoutes() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Route.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Route> getRoutes() throws DBException {
+        return (ArrayList<Route>)super.getEntities(EMroute.SQLSelectAll);
     }
 
     /**
@@ -155,21 +126,28 @@ public abstract class Broute extends GeneralEntityObject implements ProjectConst
      * @throws DBException
      */
     public Route getRoute(IRoutePK routePK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Route)super.getEntity((RoutePK)routePK);
-        } else return null;
+        return (Route)super.getEntity((RoutePK)routePK);
     }
 
-    public ArrayList searchroutes(IRoutesearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search route with IRoutesearch parameters
+     * @param search IRoutesearch
+     * @return ArrayList of Route
+     * @throws DBException 
+     */
+    public ArrayList<Route> searchroutes(IRoutesearch search) throws DBException {
+        return (ArrayList<Route>)this.search(search);
     }
 
-    public ArrayList searchroutes(IRoutesearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search route with IRoutesearch parameters, order by orderby sql clause
+     * @param search IRoutesearch
+     * @param orderby sql order by string
+     * @return ArrayList of Route
+     * @throws DBException 
+     */
+    public ArrayList<Route> searchroutes(IRoutesearch search, String orderby) throws DBException {
+        return (ArrayList<Route>)this.search(search, orderby);
     }
 
     /**
@@ -179,31 +157,26 @@ public abstract class Broute extends GeneralEntityObject implements ProjectConst
      * @throws DBException
      */
     public boolean getRouteExists(IRoutePK routePK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((RoutePK)routePK);
-        } else return false;
+        return super.getEntityExists((RoutePK)routePK);
     }
 
     /**
      * try to insert Route in database
-     * @param film: Route object
+     * @param route Route object
      * @throws DBException
+     * @throws DataException
      */
     public void insertRoute(IRoute route) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(route);
-
-
-
-        }
+        super.insertEntity(route);
     }
 
     /**
      * check if RoutePK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Route object
+     * @param route Route object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateRoute(IRoute route) throws DBException, DataException {
         if(this.getRouteExists(route.getPrimaryKey())) {
@@ -215,33 +188,27 @@ public abstract class Broute extends GeneralEntityObject implements ProjectConst
 
     /**
      * try to update Route in database
-     * @param film: Route object
+     * @param route Route object
      * @throws DBException
+     * @throws DataException
      */
     public void updateRoute(IRoute route) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(route);
-
-
-
-        }
+        super.updateEntity(route);
     }
 
     /**
      * try to delete Route in database
-     * @param film: Route object
+     * @param route Route object
      * @throws DBException
      */
     public void deleteRoute(IRoute route) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteRoute(route.getOwnerobject(), route.getPrimaryKey());
-            super.deleteEntity(route);
-        }
+        cascadedeleteRoute(route.getPrimaryKey());
+        super.deleteEntity(route);
     }
 
     /**
      * check data rules in Route, throw DataException with customized message if rules do not apply
-     * @param film: Route object
+     * @param route Route object
      * @throws DataException
      * @throws DBException
      */
@@ -249,7 +216,6 @@ public abstract class Broute extends GeneralEntityObject implements ProjectConst
         StringBuffer message = new StringBuffer();
         //foreign key Route.Routetype - Routetype.Id
         //foreign key Route.System - System.Id
-
         if(route.getJsonroutes()==null) {
             message.append("Jsonroutes mag niet leeg zijn.\n");
         }
@@ -262,88 +228,86 @@ public abstract class Broute extends GeneralEntityObject implements ProjectConst
      * delete all records in tables where routePK is used in a primary key
      * @param routePK: Route primary key
      */
-    public void cascadedeleteRoute(String senderobject, IRoutePK routePK) {
+    public void cascadedeleteRoute(IRoutePK routePK) {
     }
 
     /**
      * @param routetypePK: foreign key for Routetype
      * @delete all Route Entity objects for Routetype in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4routetype(String senderobject, IRoutetypePK routetypePK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Route.SQLDelete4routetype, routetypePK.getKeyFields());
-        }
+    public void delete4routetype(IRoutetypePK routetypePK) {
+        super.addStatement(EMroute.SQLDelete4routetype, routetypePK.getSQLprimarykey());
     }
 
     /**
      * @param routetypePK: foreign key for Routetype
      * @return all Route Entity objects for Routetype
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getRoutes4routetype(IRoutetypePK routetypePK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Route.SQLSelect4routetype, routetypePK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Route> getRoutes4routetype(IRoutetypePK routetypePK) throws CustomException {
+        return super.getEntities(EMroute.SQLSelect4routetype, routetypePK.getSQLprimarykey());
     }
     /**
      * @param systemPK: foreign key for System
      * @delete all Route Entity objects for System in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4system(String senderobject, ISystemPK systemPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Route.SQLDelete4system, systemPK.getKeyFields());
-        }
+    public void delete4system(ISystemPK systemPK) {
+        super.addStatement(EMroute.SQLDelete4system, systemPK.getSQLprimarykey());
     }
 
     /**
      * @param systemPK: foreign key for System
      * @return all Route Entity objects for System
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getRoutes4system(ISystemPK systemPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Route.SQLSelect4system, systemPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Route> getRoutes4system(ISystemPK systemPK) throws CustomException {
+        return super.getEntities(EMroute.SQLSelect4system, systemPK.getSQLprimarykey());
     }
 
     /**
      * get all Route objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Route objects
      * @throws DBException
      */
-    public ArrayList getRoutes(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Route.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Route> getRoutes(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMroute.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Route>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Route objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delRoute(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Route.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delRoute(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Route.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

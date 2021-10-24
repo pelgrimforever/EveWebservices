@@ -2,17 +2,17 @@
  * Bregion_neighbour.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONRegion_neighbour;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMregion_neighbour;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bregion_neighbour extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bregion_neighbour extends BLtable {
 
     /**
      * Constructor, sets Region_neighbour as default Entity
      */
     public Bregion_neighbour() {
-        super(new SQLMapper_pgsql(connectionpool, "Region_neighbour"), new Region_neighbour());
+        super(new Region_neighbour(), new EMregion_neighbour());
     }
 
     /**
@@ -60,30 +60,8 @@ public abstract class Bregion_neighbour extends GeneralEntityObject implements P
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bregion_neighbour(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Region_neighbour());
-    }
-
-    /**
-     * Map ResultSet Field values to Region_neighbour
-     * @param dbresult: Database ResultSet
-     */
-    public Region_neighbour mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        Region_neighbourPK region_neighbourPK = null;
-        Region_neighbour region_neighbour;
-        if(dbresult==null) {
-            region_neighbour = new Region_neighbour(region_neighbourPK);
-        } else {
-            try {
-                region_neighbourPK = new Region_neighbourPK(dbresult.getLong("region"), dbresult.getLong("neighbour"));
-                region_neighbour = new Region_neighbour(region_neighbourPK);
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, region_neighbour);
-        return region_neighbour;
+    public Bregion_neighbour(BLtable transactionobject) {
+        super(transactionobject, new Region_neighbour(), new EMregion_neighbour());
     }
 
     /**
@@ -97,6 +75,8 @@ public abstract class Bregion_neighbour extends GeneralEntityObject implements P
     /**
      * create new empty Region_neighbour object
      * create new primary key with given parameters
+     * @param region primary key field
+     * @param neighbour primary key field
      * @return IRegion_neighbour with primary key
      */
     public IRegion_neighbour newRegion_neighbour(long region, long neighbour) {
@@ -122,6 +102,8 @@ public abstract class Bregion_neighbour extends GeneralEntityObject implements P
 
     /**
      * create new primary key with given parameters
+     * @param region primary key field
+     * @param neighbour primary key field
      * @return new IRegion_neighbourPK
      */
     public IRegion_neighbourPK newRegion_neighbourPK(long region, long neighbour) {
@@ -133,10 +115,8 @@ public abstract class Bregion_neighbour extends GeneralEntityObject implements P
      * @return ArrayList of Region_neighbour objects
      * @throws DBException
      */
-    public ArrayList getRegion_neighbours() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Region_neighbour.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Region_neighbour> getRegion_neighbours() throws DBException {
+        return (ArrayList<Region_neighbour>)super.getEntities(EMregion_neighbour.SQLSelectAll);
     }
 
     /**
@@ -146,21 +126,28 @@ public abstract class Bregion_neighbour extends GeneralEntityObject implements P
      * @throws DBException
      */
     public Region_neighbour getRegion_neighbour(IRegion_neighbourPK region_neighbourPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Region_neighbour)super.getEntity((Region_neighbourPK)region_neighbourPK);
-        } else return null;
+        return (Region_neighbour)super.getEntity((Region_neighbourPK)region_neighbourPK);
     }
 
-    public ArrayList searchregion_neighbours(IRegion_neighboursearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search region_neighbour with IRegion_neighboursearch parameters
+     * @param search IRegion_neighboursearch
+     * @return ArrayList of Region_neighbour
+     * @throws DBException 
+     */
+    public ArrayList<Region_neighbour> searchregion_neighbours(IRegion_neighboursearch search) throws DBException {
+        return (ArrayList<Region_neighbour>)this.search(search);
     }
 
-    public ArrayList searchregion_neighbours(IRegion_neighboursearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search region_neighbour with IRegion_neighboursearch parameters, order by orderby sql clause
+     * @param search IRegion_neighboursearch
+     * @param orderby sql order by string
+     * @return ArrayList of Region_neighbour
+     * @throws DBException 
+     */
+    public ArrayList<Region_neighbour> searchregion_neighbours(IRegion_neighboursearch search, String orderby) throws DBException {
+        return (ArrayList<Region_neighbour>)this.search(search, orderby);
     }
 
     /**
@@ -170,30 +157,26 @@ public abstract class Bregion_neighbour extends GeneralEntityObject implements P
      * @throws DBException
      */
     public boolean getRegion_neighbourExists(IRegion_neighbourPK region_neighbourPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((Region_neighbourPK)region_neighbourPK);
-        } else return false;
+        return super.getEntityExists((Region_neighbourPK)region_neighbourPK);
     }
 
     /**
      * try to insert Region_neighbour in database
-     * @param film: Region_neighbour object
+     * @param region_neighbour Region_neighbour object
      * @throws DBException
+     * @throws DataException
      */
     public void insertRegion_neighbour(IRegion_neighbour region_neighbour) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(region_neighbour);
-
-
-        }
+        super.insertEntity(region_neighbour);
     }
 
     /**
      * check if Region_neighbourPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Region_neighbour object
+     * @param region_neighbour Region_neighbour object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateRegion_neighbour(IRegion_neighbour region_neighbour) throws DBException, DataException {
         if(this.getRegion_neighbourExists(region_neighbour.getPrimaryKey())) {
@@ -205,32 +188,27 @@ public abstract class Bregion_neighbour extends GeneralEntityObject implements P
 
     /**
      * try to update Region_neighbour in database
-     * @param film: Region_neighbour object
+     * @param region_neighbour Region_neighbour object
      * @throws DBException
+     * @throws DataException
      */
     public void updateRegion_neighbour(IRegion_neighbour region_neighbour) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(region_neighbour);
-
-
-        }
+        super.updateEntity(region_neighbour);
     }
 
     /**
      * try to delete Region_neighbour in database
-     * @param film: Region_neighbour object
+     * @param region_neighbour Region_neighbour object
      * @throws DBException
      */
     public void deleteRegion_neighbour(IRegion_neighbour region_neighbour) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteRegion_neighbour(region_neighbour.getOwnerobject(), region_neighbour.getPrimaryKey());
-            super.deleteEntity(region_neighbour);
-        }
+        cascadedeleteRegion_neighbour(region_neighbour.getPrimaryKey());
+        super.deleteEntity(region_neighbour);
     }
 
     /**
      * check data rules in Region_neighbour, throw DataException with customized message if rules do not apply
-     * @param film: Region_neighbour object
+     * @param region_neighbour Region_neighbour object
      * @throws DataException
      * @throws DBException
      */
@@ -247,88 +225,86 @@ public abstract class Bregion_neighbour extends GeneralEntityObject implements P
      * delete all records in tables where region_neighbourPK is used in a primary key
      * @param region_neighbourPK: Region_neighbour primary key
      */
-    public void cascadedeleteRegion_neighbour(String senderobject, IRegion_neighbourPK region_neighbourPK) {
+    public void cascadedeleteRegion_neighbour(IRegion_neighbourPK region_neighbourPK) {
     }
 
     /**
      * @param regionPK: foreign key for Region
      * @delete all Region_neighbour Entity objects for Region in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4regionRegion(String senderobject, IRegionPK regionPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Region_neighbour.SQLDelete4regionRegion, regionPK.getKeyFields());
-        }
+    public void delete4regionRegion(IRegionPK regionPK) {
+        super.addStatement(EMregion_neighbour.SQLDelete4regionRegion, regionPK.getSQLprimarykey());
     }
 
     /**
      * @param regionPK: foreign key for Region
      * @return all Region_neighbour Entity objects for Region
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getRegion_neighbours4regionRegion(IRegionPK regionPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Region_neighbour.SQLSelect4regionRegion, regionPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Region_neighbour> getRegion_neighbours4regionRegion(IRegionPK regionPK) throws CustomException {
+        return super.getEntities(EMregion_neighbour.SQLSelect4regionRegion, regionPK.getSQLprimarykey());
     }
     /**
      * @param regionPK: foreign key for Region
      * @delete all Region_neighbour Entity objects for Region in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4regionNeighbour(String senderobject, IRegionPK regionPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Region_neighbour.SQLDelete4regionNeighbour, regionPK.getKeyFields());
-        }
+    public void delete4regionNeighbour(IRegionPK regionPK) {
+        super.addStatement(EMregion_neighbour.SQLDelete4regionNeighbour, regionPK.getSQLprimarykey());
     }
 
     /**
      * @param regionPK: foreign key for Region
      * @return all Region_neighbour Entity objects for Region
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getRegion_neighbours4regionNeighbour(IRegionPK regionPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Region_neighbour.SQLSelect4regionNeighbour, regionPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Region_neighbour> getRegion_neighbours4regionNeighbour(IRegionPK regionPK) throws CustomException {
+        return super.getEntities(EMregion_neighbour.SQLSelect4regionNeighbour, regionPK.getSQLprimarykey());
     }
 
     /**
      * get all Region_neighbour objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Region_neighbour objects
      * @throws DBException
      */
-    public ArrayList getRegion_neighbours(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Region_neighbour.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Region_neighbour> getRegion_neighbours(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMregion_neighbour.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Region_neighbour>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Region_neighbour objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delRegion_neighbour(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Region_neighbour.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delRegion_neighbour(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Region_neighbour.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

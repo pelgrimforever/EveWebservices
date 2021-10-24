@@ -2,7 +2,7 @@
  * WSAlliance.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSAlliance implements WSIAlliance {
         Alliance alliance;
         try {
             ICorporationPK corporationCreator_corporationPK = JSONCorporation.toCorporationPK((JSONObject)parser.parse(json));
-            blalliance.delete4corporationCreator_corporation(this.getClass().getName(), corporationCreator_corporationPK);
+            blalliance.delete4corporationCreator_corporation(corporationCreator_corporationPK);
         }
         catch(ParseException e) {
         }
@@ -221,7 +221,7 @@ public class WSAlliance implements WSIAlliance {
         Alliance alliance;
         try {
             ICorporationPK corporationExecutor_corporationPK = JSONCorporation.toCorporationPK((JSONObject)parser.parse(json));
-            blalliance.delete4corporationExecutor_corporation(this.getClass().getName(), corporationExecutor_corporationPK);
+            blalliance.delete4corporationExecutor_corporation(corporationExecutor_corporationPK);
         }
         catch(ParseException e) {
         }

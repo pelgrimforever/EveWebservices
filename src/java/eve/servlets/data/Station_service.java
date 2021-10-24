@@ -2,7 +2,7 @@
  * Station_service.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -110,7 +110,7 @@ public class Station_service extends SecurityDataServlet {
                             break;
                         case IStation_serviceOperation.DELETE_Station:
                             IStationPK stationPK = (IStationPK)parser.getJavaObject("stationpk");
-                            blstation_service.delete4station(this.getServletName(), stationPK);
+                            blstation_service.delete4station(stationPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

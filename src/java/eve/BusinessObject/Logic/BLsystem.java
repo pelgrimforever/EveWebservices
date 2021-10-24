@@ -9,21 +9,18 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.ISystem;
 import eve.logicentity.System;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import data.conversion.JSONConversion;
-import db.AbstractSQLMapper;
+import db.SQLparameters;
 import eve.BusinessObject.table.Bsystem;
+import eve.conversion.entity.EMsystem;
 import eve.data.Swagger;
 import eve.entity.pk.ConstellationPK;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLsystem;
 import eve.interfaces.entity.pk.ISecurity_islandPK;
 import general.exception.CustomException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import org.json.simple.JSONObject;
 
@@ -37,7 +34,7 @@ import org.json.simple.JSONObject;
  *
  * @author Franky Laseure
  */
-public class BLsystem extends Bsystem implements IBLsystem {
+public class BLsystem extends Bsystem {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -54,19 +51,11 @@ public class BLsystem extends Bsystem implements IBLsystem {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLsystem(GeneralEntityObject transactionobject) {
+    public BLsystem(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity system) throws SQLException {
-        
-    }
-    
     public void updateSystem(JSONObject jsonsystemdetails) throws DBException, DataException {
         System system = new System(JSONConversion.getLong(jsonsystemdetails, "system_id"));
         system.setName(JSONConversion.getString(jsonsystemdetails, "name"));
@@ -79,8 +68,8 @@ public class BLsystem extends Bsystem implements IBLsystem {
 
     public void updateborders() throws DBException, DataException {
         Object[][] parameter = { { "isborder", true } };
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), System.SQLupdateconstellationborders, parameter);
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), System.SQLupdateregionborders, parameter);
+        this.addStatement(EMsystem.SQLupdateconstellationborders);
+        this.addStatement(EMsystem.SQLupdateregionborders);
         this.Commit2DB();
     }
 
@@ -93,7 +82,8 @@ public class BLsystem extends Bsystem implements IBLsystem {
      */
     public ArrayList GetSystems_HiSecNoislands() throws DBException {
         Object[][] parameter = { { "highsec", Swagger.EVE_HIGHSEC_LIMIT } };
-        return getMapper().loadEntityVector(this, System.SQLSelectHiSecNoIsland, parameter);
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        return getEntities(EMsystem.SQLSelectHiSecNoIsland, sqlparameters);
     }
     
     /**
@@ -105,9 +95,9 @@ public class BLsystem extends Bsystem implements IBLsystem {
      */
     public void postprocess() throws DBException, DataException {
         Object[][] parameter1 = {{ "noaccess", true }};
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), System.updateNoaccess1, parameter1);
+        this.addStatement(sqlmapper.insertParameters(EMsystem.updateNoaccess1, parameter1));
         Object[][] parameter2 = {{ "noaccess", false }};
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), System.updateNoaccess2, parameter2);
+        this.addStatement(sqlmapper.insertParameters(EMsystem.updateNoaccess2, parameter2));
         this.Commit2DB();
     }
     
@@ -115,20 +105,21 @@ public class BLsystem extends Bsystem implements IBLsystem {
      * Select connected systems to security_island not assigned to a security_island
      * @param security_islandPK: foreign key for Security_island
      * @return all System Entity objects for Security_island
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.CustomException
      */
     public ArrayList getHiSecConnectedSystems(ISecurity_islandPK security_islandPK) throws CustomException {
         Object[][] parameter = { { "highsec", Swagger.EVE_HIGHSEC_LIMIT } };
-        parameter = AbstractSQLMapper.addKeyArrays(parameter, security_islandPK.getKeyFields());
-        return getMapper().loadEntityVector(this, System.SQLSelectHiSecSystemsConnected, parameter);
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        sqlparameters.add(security_islandPK.getSQLprimarykey());
+        return getEntities(EMsystem.SQLSelectHiSecSystemsConnected, sqlparameters);
     }
 
     /**
      * try to insert System object in database
      * commit transaction
      * @param system: System Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void insertSystem(ISystem system) throws DBException, DataException {
@@ -141,8 +132,8 @@ public class BLsystem extends Bsystem implements IBLsystem {
      * an alternative to insertSystem, which can be made an empty function
      * commit transaction
      * @param system: System Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureinsertSystem(ISystem system) throws DBException, DataException {
         trans_insertSystem(system);
@@ -153,8 +144,8 @@ public class BLsystem extends Bsystem implements IBLsystem {
      * try to update System object in database
      * commit transaction
      * @param system: System Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void updateSystem(ISystem system) throws DBException, DataException {
@@ -167,8 +158,8 @@ public class BLsystem extends Bsystem implements IBLsystem {
      * an alternative to updateSystem, which can be made an empty function
      * commit transaction
      * @param system: System Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureupdateSystem(ISystem system) throws DBException, DataException {
         trans_updateSystem(system);
@@ -179,7 +170,7 @@ public class BLsystem extends Bsystem implements IBLsystem {
      * try to delete System object in database
      * commit transaction
      * @param system: System Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     @Override
     public void deleteSystem(ISystem system) throws DBException {
@@ -192,7 +183,7 @@ public class BLsystem extends Bsystem implements IBLsystem {
      * an alternative to deleteSystem, which can be made an empty function
      * commit transaction
      * @param system: System Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void securedeleteSystem(ISystem system) throws DBException {
         trans_deleteSystem(system);
@@ -203,8 +194,8 @@ public class BLsystem extends Bsystem implements IBLsystem {
      * try to insert System object in database
      * do not commit transaction
      * @param system: System Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_insertSystem(ISystem system) throws DBException, DataException {
         super.checkDATA(system);
@@ -215,8 +206,8 @@ public class BLsystem extends Bsystem implements IBLsystem {
      * try to update System object in database
      * do not commit transaction
      * @param system: System Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_updateSystem(ISystem system) throws DBException, DataException {
         super.checkDATA(system);
@@ -227,7 +218,7 @@ public class BLsystem extends Bsystem implements IBLsystem {
      * try to delete System object in database
      * do not commit transaction
      * @param system: System Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void trans_deleteSystem(ISystem system) throws DBException {
         super.deleteSystem((System)system);

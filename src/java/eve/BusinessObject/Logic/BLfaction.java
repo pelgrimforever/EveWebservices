@@ -9,17 +9,13 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IFaction;
 import eve.logicentity.Faction;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import data.conversion.JSONConversion;
 import eve.BusinessObject.table.Bfaction;
 import eve.entity.pk.SystemPK;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLfaction;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import org.json.simple.JSONObject;
 
 /**
@@ -32,7 +28,7 @@ import org.json.simple.JSONObject;
  *
  * @author Franky Laseure
  */
-public class BLfaction extends Bfaction implements IBLfaction {
+public class BLfaction extends Bfaction {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -49,19 +45,11 @@ public class BLfaction extends Bfaction implements IBLfaction {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLfaction(GeneralEntityObject transactionobject) {
+    public BLfaction(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity faction) throws SQLException {
-        
-    }
-    
     public void updateFaction(JSONObject jsonfactiondetails) throws DBException, DataException {
         Faction faction = new Faction(JSONConversion.getLong(jsonfactiondetails, "faction_id"));
         faction.setName(JSONConversion.getString(jsonfactiondetails, "name"));

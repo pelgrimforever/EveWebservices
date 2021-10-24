@@ -8,13 +8,10 @@
 
 package eve.BusinessObject.Logic;
 
-import data.interfaces.db.View;
-import eve.logicview.View_stock;
+import db.SQLparameters;
 import eve.BusinessObject.view.Bview_stock;
-import eve.interfaces.BusinessObject.IBLview_stock;
+import eve.conversion.entity.EMview_stock;
 import general.exception.DBException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -27,7 +24,7 @@ import java.util.ArrayList;
  *
  * @author Franky Laseure
  */
-public class BLview_stock extends Bview_stock implements IBLview_stock {
+public class BLview_stock extends Bview_stock {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
 	
     /**
@@ -36,14 +33,10 @@ public class BLview_stock extends Bview_stock implements IBLview_stock {
     public BLview_stock() {
     }
 
-    @Override
-    public void loadExtra(ResultSet dbresult, View view_stock) throws SQLException {
-        
-    }
-
     public ArrayList getView_stock4username(String username) throws DBException {
         Object[][] parameter = { { "username", username } };
-        return getMapper().loadViewVector(this, View_stock.SQLSelect4username, parameter);
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        return getEntities(EMview_stock.SQLSelect4username, sqlparameters);
     }
     
 }

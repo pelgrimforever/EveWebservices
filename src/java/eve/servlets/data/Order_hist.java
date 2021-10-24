@@ -2,7 +2,7 @@
  * Order_hist.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -114,11 +114,11 @@ public class Order_hist extends SecurityDataServlet {
                             break;
                         case IOrder_histOperation.DELETE_Evetype:
                             IEvetypePK evetypePK = (IEvetypePK)parser.getJavaObject("evetypepk");
-                            blorder_hist.delete4evetype(this.getServletName(), evetypePK);
+                            blorder_hist.delete4evetype(evetypePK);
                             break;
                         case IOrder_histOperation.DELETE_System:
                             ISystemPK systemPK = (ISystemPK)parser.getJavaObject("systempk");
-                            blorder_hist.delete4system(this.getServletName(), systemPK);
+                            blorder_hist.delete4system(systemPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

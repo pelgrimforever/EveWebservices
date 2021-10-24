@@ -8,29 +8,19 @@
 
 package eve.BusinessObject.Logic;
 
-import BusinessObject.BLRecordcount;
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IEvetype;
 import eve.logicentity.Evetype;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import data.conversion.JSONConversion;
-import data.interfaces.db.Recordcount;
-import db.AbstractSQLMapper;
-import db.ViewMapper;
 import eve.BusinessObject.table.Bevetype;
+import eve.conversion.entity.EMevetype;
 import eve.entity.pk.GraphicPK;
 import eve.entity.pk.Market_groupPK;
 import eve.entity.pk.TypegroupPK;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLevetype;
 import eve.interfaces.entity.pk.ITypegroupPK;
-import eve.logicentity.Orders;
-import eve.logicentity.Station;
-import eve.logicentity.Typegroup;
 import general.exception.CustomException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import org.json.simple.JSONObject;
 
 /**
@@ -43,7 +33,7 @@ import org.json.simple.JSONObject;
  *
  * @author Franky Laseure
  */
-public class BLevetype extends Bevetype implements IBLevetype {
+public class BLevetype extends Bevetype {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -60,20 +50,12 @@ public class BLevetype extends Bevetype implements IBLevetype {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLevetype(GeneralEntityObject transactionobject) {
+    public BLevetype(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity evetype) throws SQLException {
-        
-    }
-    
-    public void updateEvetype(JSONObject jsontypedetails) throws DBException, DataException {
+    public Evetype updateEvetype(JSONObject jsontypedetails) throws DBException, DataException {
         Evetype evetype = new Evetype(JSONConversion.getLong(jsontypedetails, "type_id"));
         evetype.setName(JSONConversion.getString(jsontypedetails, "name"));
         evetype.setDescription(JSONConversion.getString(jsontypedetails, "description"));
@@ -89,19 +71,16 @@ public class BLevetype extends Bevetype implements IBLevetype {
         if(jsontypedetails.containsKey("radius")) evetype.setRadius(JSONConversion.getDouble(jsontypedetails, "radius"));
         if(jsontypedetails.containsKey("volume")) evetype.setVolume(JSONConversion.getDouble(jsontypedetails, "volume"));
         this.insertupdateEvetype(evetype);
+        return evetype;
     }
 
     /**
      * @param typegroupPK: foreign key for typegroup
      * @return count of all evetypes linked to typegroup
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.CustomException
      */
     public long getEvetypes4typegroupcount(ITypegroupPK typegroupPK) throws CustomException {
-        AbstractSQLMapper sqlmapper = entitymapper.resetSQLMapper("");
-        BLRecordcount blrecordcount = new BLRecordcount(sqlmapper);
-        ViewMapper viewmapper = new ViewMapper(sqlmapper);
-        Recordcount recordcount = (Recordcount)viewmapper.loadView(blrecordcount, Evetype.SQLSelect4typegroupCount, typegroupPK.getKeyFields());
-        return recordcount.getCount();
+        return count(EMevetype.SQLSelect4typegroupCount, typegroupPK.getSQLprimarykey());
     }
 
     /**
@@ -110,9 +89,9 @@ public class BLevetype extends Bevetype implements IBLevetype {
      * @throws DataException 
      */
     public void updateaverageprices() throws DBException, DataException {
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Evetype.SQLUpdateBuyprices, null);
+        this.addStatement(EMevetype.SQLUpdateBuyprices);
         this.Commit2DB();
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Evetype.SQLUpdateSellprices, null);
+        this.addStatement(EMevetype.SQLUpdateSellprices);
         this.Commit2DB();
     }
 
@@ -120,8 +99,8 @@ public class BLevetype extends Bevetype implements IBLevetype {
      * try to insert Evetype object in database
      * commit transaction
      * @param evetype: Evetype Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void insertEvetype(IEvetype evetype) throws DBException, DataException {
@@ -134,8 +113,8 @@ public class BLevetype extends Bevetype implements IBLevetype {
      * an alternative to insertEvetype, which can be made an empty function
      * commit transaction
      * @param evetype: Evetype Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureinsertEvetype(IEvetype evetype) throws DBException, DataException {
         trans_insertEvetype(evetype);
@@ -146,8 +125,8 @@ public class BLevetype extends Bevetype implements IBLevetype {
      * try to update Evetype object in database
      * commit transaction
      * @param evetype: Evetype Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void updateEvetype(IEvetype evetype) throws DBException, DataException {
@@ -160,8 +139,8 @@ public class BLevetype extends Bevetype implements IBLevetype {
      * an alternative to updateEvetype, which can be made an empty function
      * commit transaction
      * @param evetype: Evetype Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureupdateEvetype(IEvetype evetype) throws DBException, DataException {
         trans_updateEvetype(evetype);
@@ -172,7 +151,7 @@ public class BLevetype extends Bevetype implements IBLevetype {
      * try to delete Evetype object in database
      * commit transaction
      * @param evetype: Evetype Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     @Override
     public void deleteEvetype(IEvetype evetype) throws DBException {
@@ -185,7 +164,7 @@ public class BLevetype extends Bevetype implements IBLevetype {
      * an alternative to deleteEvetype, which can be made an empty function
      * commit transaction
      * @param evetype: Evetype Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void securedeleteEvetype(IEvetype evetype) throws DBException {
         trans_deleteEvetype(evetype);
@@ -196,8 +175,8 @@ public class BLevetype extends Bevetype implements IBLevetype {
      * try to insert Evetype object in database
      * do not commit transaction
      * @param evetype: Evetype Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_insertEvetype(IEvetype evetype) throws DBException, DataException {
         super.checkDATA(evetype);
@@ -208,8 +187,8 @@ public class BLevetype extends Bevetype implements IBLevetype {
      * try to update Evetype object in database
      * do not commit transaction
      * @param evetype: Evetype Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_updateEvetype(IEvetype evetype) throws DBException, DataException {
         super.checkDATA(evetype);
@@ -220,7 +199,7 @@ public class BLevetype extends Bevetype implements IBLevetype {
      * try to delete Evetype object in database
      * do not commit transaction
      * @param evetype: Evetype Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void trans_deleteEvetype(IEvetype evetype) throws DBException {
         super.deleteEvetype((Evetype)evetype);

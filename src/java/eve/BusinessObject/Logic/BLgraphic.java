@@ -9,18 +9,12 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import general.exception.DataException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IGraphic;
 import eve.logicentity.Graphic;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import data.conversion.JSONConversion;
 import eve.BusinessObject.table.Bgraphic;
-import eve.entity.pk.ConstellationPK;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLgraphic;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import org.json.simple.JSONObject;
 
 /**
@@ -33,7 +27,7 @@ import org.json.simple.JSONObject;
  *
  * @author Franky Laseure
  */
-public class BLgraphic extends Bgraphic implements IBLgraphic {
+public class BLgraphic extends Bgraphic {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -50,20 +44,12 @@ public class BLgraphic extends Bgraphic implements IBLgraphic {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLgraphic(GeneralEntityObject transactionobject) {
+    public BLgraphic(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity graphic) throws SQLException {
-        
-    }
-    
-    public void updateGraphic(JSONObject jsongraphicdetails) throws DBException, DataException {
+    public Graphic updateGraphic(JSONObject jsongraphicdetails) throws DBException, DataException {
         Graphic graphic = new Graphic(JSONConversion.getLong(jsongraphicdetails, "graphic_id"));
         if(jsongraphicdetails.containsKey("collision_file")) graphic.setCollision_file(JSONConversion.getString(jsongraphicdetails, "collision_file"));
         if(jsongraphicdetails.containsKey("graphic_file")) graphic.setCollision_file(JSONConversion.getString(jsongraphicdetails, "graphic_file"));
@@ -73,6 +59,7 @@ public class BLgraphic extends Bgraphic implements IBLgraphic {
         if(jsongraphicdetails.containsKey("sof_hull_name")) graphic.setCollision_file(JSONConversion.getString(jsongraphicdetails, "sof_hull_name"));
         if(jsongraphicdetails.containsKey("sof_race_name")) graphic.setCollision_file(JSONConversion.getString(jsongraphicdetails, "sof_race_name"));
         this.insertupdateGraphic(graphic);
+        return graphic;
     }
 
     /**

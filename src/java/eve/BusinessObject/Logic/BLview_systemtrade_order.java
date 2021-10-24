@@ -9,13 +9,9 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.View;
-import eve.logicview.View_systemtrade_order;
 import eve.BusinessObject.view.Bview_systemtrade_order;
+import eve.conversion.entity.EMview_systemtrade_order;
 import eve.entity.pk.SystemtradePK;
-import eve.interfaces.BusinessObject.IBLview_systemtrade_order;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -28,7 +24,7 @@ import java.util.ArrayList;
  *
  * @author Franky Laseure
  */
-public class BLview_systemtrade_order extends Bview_systemtrade_order implements IBLview_systemtrade_order {
+public class BLview_systemtrade_order extends Bview_systemtrade_order {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
 	
     /**
@@ -37,11 +33,6 @@ public class BLview_systemtrade_order extends Bview_systemtrade_order implements
     public BLview_systemtrade_order() {
     }
 
-    @Override
-    public void loadExtra(ResultSet dbresult, View view_systemtrade_order) throws SQLException {
-        
-    }
-    
     /**
      * get all View_systemtrade_order for a systemtradePK
      * @param systemtradePK: systemtrade primary key
@@ -49,6 +40,6 @@ public class BLview_systemtrade_order extends Bview_systemtrade_order implements
      * @throws DBException
      */
     public ArrayList getView_all4systemtrade(SystemtradePK systemtradePK) throws DBException {
-        return getMapper().loadViewVector(this, View_systemtrade_order.SQLSelectAll4systemtrade, systemtradePK.getKeyFields());
+        return getEntities(EMview_systemtrade_order.SQLSelectAll4systemtrade, systemtradePK.getSQLprimarykey());
     }
 }

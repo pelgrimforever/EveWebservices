@@ -9,17 +9,13 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IMarket_group;
 import eve.logicentity.Market_group;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import data.conversion.JSONConversion;
 import eve.BusinessObject.table.Bmarket_group;
 import eve.entity.pk.Market_groupPK;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLmarket_group;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import org.json.simple.JSONObject;
 
 /**
@@ -32,7 +28,7 @@ import org.json.simple.JSONObject;
  *
  * @author Franky Laseure
  */
-public class BLmarket_group extends Bmarket_group implements IBLmarket_group {
+public class BLmarket_group extends Bmarket_group {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -49,19 +45,11 @@ public class BLmarket_group extends Bmarket_group implements IBLmarket_group {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLmarket_group(GeneralEntityObject transactionobject) {
+    public BLmarket_group(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity market_group) throws SQLException {
-        
-    }
-    
     public Market_group updateMarket_group(JSONObject jsonmarketgroupdetails) throws DBException, DataException {
         Market_group marketgroup = new Market_group(JSONConversion.getLong(jsonmarketgroupdetails, "market_group_id"));
         marketgroup.setName(JSONConversion.getString(jsonmarketgroupdetails, "name"));

@@ -2,17 +2,17 @@
  * Bfaction.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONFaction;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMfaction;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bfaction extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bfaction extends BLtable {
 
     /**
      * Constructor, sets Faction as default Entity
      */
     public Bfaction() {
-        super(new SQLMapper_pgsql(connectionpool, "Faction"), new Faction());
+        super(new Faction(), new EMfaction());
     }
 
     /**
@@ -60,40 +60,8 @@ public abstract class Bfaction extends GeneralEntityObject implements ProjectCon
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bfaction(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Faction());
-    }
-
-    /**
-     * Map ResultSet Field values to Faction
-     * @param dbresult: Database ResultSet
-     */
-    public Faction mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        FactionPK factionPK = null;
-        Faction faction;
-        if(dbresult==null) {
-            faction = new Faction(factionPK);
-        } else {
-            try {
-                factionPK = new FactionPK(dbresult.getLong("id"));
-                faction = new Faction(factionPK);
-                faction.initSystemPK(new SystemPK(dbresult.getLong("solar_system")));
-                if(dbresult.wasNull()) faction.setSystemPK(null);                
-                faction.initName(dbresult.getString("name"));
-                faction.initDescription(dbresult.getString("description"));
-                faction.initIs_unique(dbresult.getBoolean("is_unique"));
-                faction.initSize_factor(dbresult.getDouble("size_factor"));
-                faction.initStation_count(dbresult.getInt("station_count"));
-                faction.initStation_system_count(dbresult.getInt("station_system_count"));
-                faction.initCorporation(dbresult.getLong("corporation"));
-                faction.initMilitia_corporation(dbresult.getLong("militia_corporation"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, faction);
-        return faction;
+    public Bfaction(BLtable transactionobject) {
+        super(transactionobject, new Faction(), new EMfaction());
     }
 
     /**
@@ -107,6 +75,7 @@ public abstract class Bfaction extends GeneralEntityObject implements ProjectCon
     /**
      * create new empty Faction object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return IFaction with primary key
      */
     public IFaction newFaction(long id) {
@@ -132,6 +101,7 @@ public abstract class Bfaction extends GeneralEntityObject implements ProjectCon
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new IFactionPK
      */
     public IFactionPK newFactionPK(long id) {
@@ -143,10 +113,8 @@ public abstract class Bfaction extends GeneralEntityObject implements ProjectCon
      * @return ArrayList of Faction objects
      * @throws DBException
      */
-    public ArrayList getFactions() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Faction.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Faction> getFactions() throws DBException {
+        return (ArrayList<Faction>)super.getEntities(EMfaction.SQLSelectAll);
     }
 
     /**
@@ -156,21 +124,28 @@ public abstract class Bfaction extends GeneralEntityObject implements ProjectCon
      * @throws DBException
      */
     public Faction getFaction(IFactionPK factionPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Faction)super.getEntity((FactionPK)factionPK);
-        } else return null;
+        return (Faction)super.getEntity((FactionPK)factionPK);
     }
 
-    public ArrayList searchfactions(IFactionsearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search faction with IFactionsearch parameters
+     * @param search IFactionsearch
+     * @return ArrayList of Faction
+     * @throws DBException 
+     */
+    public ArrayList<Faction> searchfactions(IFactionsearch search) throws DBException {
+        return (ArrayList<Faction>)this.search(search);
     }
 
-    public ArrayList searchfactions(IFactionsearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search faction with IFactionsearch parameters, order by orderby sql clause
+     * @param search IFactionsearch
+     * @param orderby sql order by string
+     * @return ArrayList of Faction
+     * @throws DBException 
+     */
+    public ArrayList<Faction> searchfactions(IFactionsearch search, String orderby) throws DBException {
+        return (ArrayList<Faction>)this.search(search, orderby);
     }
 
     /**
@@ -180,38 +155,26 @@ public abstract class Bfaction extends GeneralEntityObject implements ProjectCon
      * @throws DBException
      */
     public boolean getFactionExists(IFactionPK factionPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((FactionPK)factionPK);
-        } else return false;
+        return super.getEntityExists((FactionPK)factionPK);
     }
 
     /**
      * try to insert Faction in database
-     * @param film: Faction object
+     * @param faction Faction object
      * @throws DBException
+     * @throws DataException
      */
     public void insertFaction(IFaction faction) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(faction);
-
-
-
-
-
-
-
-
-
-
-        }
+        super.insertEntity(faction);
     }
 
     /**
      * check if FactionPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Faction object
+     * @param faction Faction object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateFaction(IFaction faction) throws DBException, DataException {
         if(this.getFactionExists(faction.getPrimaryKey())) {
@@ -223,68 +186,45 @@ public abstract class Bfaction extends GeneralEntityObject implements ProjectCon
 
     /**
      * try to update Faction in database
-     * @param film: Faction object
+     * @param faction Faction object
      * @throws DBException
+     * @throws DataException
      */
     public void updateFaction(IFaction faction) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(faction);
-
-
-
-
-
-
-
-
-
-
-        }
+        super.updateEntity(faction);
     }
 
     /**
      * try to delete Faction in database
-     * @param film: Faction object
+     * @param faction Faction object
      * @throws DBException
      */
     public void deleteFaction(IFaction faction) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteFaction(faction.getOwnerobject(), faction.getPrimaryKey());
-            super.deleteEntity(faction);
-        }
+        cascadedeleteFaction(faction.getPrimaryKey());
+        super.deleteEntity(faction);
     }
 
     /**
      * check data rules in Faction, throw DataException with customized message if rules do not apply
-     * @param film: Faction object
+     * @param faction Faction object
      * @throws DataException
      * @throws DBException
      */
     public void checkDATA(IFaction faction) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
-
-
         if(faction.getName()!=null && faction.getName().length()>IFaction.SIZE_NAME) {
-            message.append("Name is langer dan toegestaan. Max aantal karakters: " + IFaction.SIZE_NAME + "\n");
+            message.append("Name is langer dan toegestaan. Max aantal karakters: ").append(IFaction.SIZE_NAME).append("\n");
         }
-
         if(faction.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
         if(faction.getDescription()!=null && faction.getDescription().length()>IFaction.SIZE_DESCRIPTION) {
-            message.append("Description is langer dan toegestaan. Max aantal karakters: " + IFaction.SIZE_DESCRIPTION + "\n");
+            message.append("Description is langer dan toegestaan. Max aantal karakters: ").append(IFaction.SIZE_DESCRIPTION).append("\n");
         }
-
         if(faction.getDescription()==null) {
             message.append("Description mag niet leeg zijn.\n");
         }
-
-
-
-
-
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -294,67 +234,70 @@ public abstract class Bfaction extends GeneralEntityObject implements ProjectCon
      * delete all records in tables where factionPK is used in a primary key
      * @param factionPK: Faction primary key
      */
-    public void cascadedeleteFaction(String senderobject, IFactionPK factionPK) {
+    public void cascadedeleteFaction(IFactionPK factionPK) {
     }
 
     /**
      * @param systemPK: foreign key for System
      * @delete all Faction Entity objects for System in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4system(String senderobject, ISystemPK systemPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Faction.SQLDelete4system, systemPK.getKeyFields());
-        }
+    public void delete4system(ISystemPK systemPK) {
+        super.addStatement(EMfaction.SQLDelete4system, systemPK.getSQLprimarykey());
     }
 
     /**
      * @param systemPK: foreign key for System
      * @return all Faction Entity objects for System
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getFactions4system(ISystemPK systemPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Faction.SQLSelect4system, systemPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Faction> getFactions4system(ISystemPK systemPK) throws CustomException {
+        return super.getEntities(EMfaction.SQLSelect4system, systemPK.getSQLprimarykey());
     }
 
     /**
      * get all Faction objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Faction objects
      * @throws DBException
      */
-    public ArrayList getFactions(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Faction.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Faction> getFactions(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMfaction.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Faction>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Faction objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delFaction(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Faction.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delFaction(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Faction.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

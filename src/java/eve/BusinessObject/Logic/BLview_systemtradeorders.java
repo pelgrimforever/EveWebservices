@@ -8,16 +8,7 @@
 
 package eve.BusinessObject.Logic;
 
-import general.exception.DBException;
-import data.interfaces.db.View;
-import db.AbstractSQLMapper;
-import eve.logicview.View_systemtradeorders;
 import eve.BusinessObject.view.Bview_systemtradeorders;
-import eve.entity.pk.Security_islandPK;
-import eve.interfaces.BusinessObject.IBLview_systemtradeorders;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 
 /**
  * Business Logic Entity class BLview_systemtradeorders
@@ -29,7 +20,7 @@ import java.util.ArrayList;
  *
  * @author Franky Laseure
  */
-public class BLview_systemtradeorders extends Bview_systemtradeorders implements IBLview_systemtradeorders {
+public class BLview_systemtradeorders extends Bview_systemtradeorders {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
 	
     /**
@@ -38,8 +29,4 @@ public class BLview_systemtradeorders extends Bview_systemtradeorders implements
     public BLview_systemtradeorders() {
     }
 
-    @Override
-    public void loadExtra(ResultSet dbresult, View view_systemtradeorders) throws SQLException {
-        
-    }
 }

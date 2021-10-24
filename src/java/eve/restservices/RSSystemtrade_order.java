@@ -1,7 +1,7 @@
 /*
  * RSSystemtrade_order.java
  *
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -53,9 +53,6 @@ import org.json.simple.parser.ParseException;
 @Path("rssystemtrade_order")
 public class RSSystemtrade_order {
 
-    @Context
-    private UriInfo context;
-
     /**
      * Creates a new instance of HelloWorld
      */
@@ -64,6 +61,7 @@ public class RSSystemtrade_order {
 
     /**
      * Retrieves representation of an instance of systemtrade_order.restservices.RSSystemtrade_order
+     * @param jsonstring
      * @return an instance of java.lang.String
      */
     @GET
@@ -83,6 +81,7 @@ public class RSSystemtrade_order {
 
     /**
      * Retrieves representation of an instance of systemtrade_order.restservices.RSSystemtrade_order
+     * @param jsonstring
      * @return an instance of java.lang.String
      */
     @POST
@@ -286,7 +285,6 @@ public class RSSystemtrade_order {
     /**
      * PUT method for updating or creating an instance of RSSystemtrade_order
      * @param content representation for the resource
-     * @return an HTTP response with content of the updated or created resource.
      */
     @PUT
     @Consumes("text/html")

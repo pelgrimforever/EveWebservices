@@ -8,15 +8,11 @@
 
 package eve.BusinessObject.Logic;
 
-import data.interfaces.db.View;
-import db.AbstractSQLMapper;
+import db.SQLparameters;
 import eve.BusinessObject.view.Bview_tradeorders;
+import eve.conversion.entity.EMview_tradeorders;
 import eve.entity.pk.Security_islandPK;
-import eve.interfaces.BusinessObject.IBLview_tradeorders;
-import eve.logicview.View_tradeorders;
 import general.exception.DBException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -29,14 +25,15 @@ import java.util.ArrayList;
  *
  * @author Franky Laseure
  */
-public class BLview_tradeorders extends Bview_tradeorders implements IBLview_tradeorders {
+public class BLview_tradeorders extends Bview_tradeorders {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
 	
     
     public ArrayList getTradeorders(Security_islandPK security_islandPK, float max_cargovolume, float net_perc, long min_profit) throws DBException {
         Object[][] parameter = { { "max_cargovolume", max_cargovolume }, { "net_perc", net_perc }, { "min_profit", min_profit } };
-        parameter = AbstractSQLMapper.addKeyArrays(parameter, security_islandPK.getKeyFields());
-        return getMapper().loadViewVector(this, View_tradeorders.SQLSelect4tradevalues, parameter);
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        sqlparameters.add(security_islandPK.getSQLprimarykey());
+        return getEntities(EMview_tradeorders.SQLSelect4tradevalues, sqlparameters);
     }
     
     /**
@@ -45,9 +42,4 @@ public class BLview_tradeorders extends Bview_tradeorders implements IBLview_tra
     public BLview_tradeorders() {
     }
 
-    @Override
-    public void loadExtra(ResultSet dbresult, View view_tradeorders) throws SQLException {
-        
-    }
-    
 }

@@ -340,14 +340,14 @@ public class MarketService implements Runnable {
                     bltrade.trans_insertTrade(trade);
                     count++;
                     if(count==100) {
-                        toutput = bltrade.Commit2DB_returnSQL();
+                        toutput = bltrade.Commit2DB();
                         if(toutput.getHaserror()) {
                             marketstatus.addMessage(toutput.getErrormessage());
                         }
                     }
                 }
             }
-            toutput = bltrade.Commit2DB_returnSQL();
+            toutput = bltrade.Commit2DB();
             if(toutput.getHaserror()) {
                 marketstatus.addMessage(toutput.getErrormessage());
             }

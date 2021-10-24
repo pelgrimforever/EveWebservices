@@ -2,17 +2,17 @@
  * Bsystem.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONSystem;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMsystem;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bsystem extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bsystem extends BLtable {
 
     /**
      * Constructor, sets System as default Entity
      */
     public Bsystem() {
-        super(new SQLMapper_pgsql(connectionpool, "System"), new System());
+        super(new System(), new EMsystem());
     }
 
     /**
@@ -60,41 +60,8 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bsystem(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new System());
-    }
-
-    /**
-     * Map ResultSet Field values to System
-     * @param dbresult: Database ResultSet
-     */
-    public System mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        SystemPK systemPK = null;
-        System system;
-        if(dbresult==null) {
-            system = new System(systemPK);
-        } else {
-            try {
-                systemPK = new SystemPK(dbresult.getLong("id"));
-                system = new System(systemPK);
-                system.initSecurity_islandPK(new Security_islandPK(dbresult.getLong("security_island")));
-                if(dbresult.wasNull()) system.setSecurity_islandPK(null);                
-                system.initConstellationPK(new ConstellationPK(dbresult.getLong("constellation")));
-                if(dbresult.wasNull()) system.setConstellationPK(null);                
-                system.initName(dbresult.getString("name"));
-                system.initSecurity_class(dbresult.getString("security_class"));
-                system.initSecurity_status(dbresult.getDouble("security_status"));
-                system.initStar_id(dbresult.getLong("star_id"));
-                system.initNoaccess(dbresult.getBoolean("noaccess"));
-                system.initIsconstellationborder(dbresult.getBoolean("isconstellationborder"));
-                system.initIsregionborder(dbresult.getBoolean("isregionborder"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, system);
-        return system;
+    public Bsystem(BLtable transactionobject) {
+        super(transactionobject, new System(), new EMsystem());
     }
 
     /**
@@ -108,6 +75,7 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
     /**
      * create new empty System object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return ISystem with primary key
      */
     public ISystem newSystem(long id) {
@@ -133,6 +101,7 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new ISystemPK
      */
     public ISystemPK newSystemPK(long id) {
@@ -144,10 +113,8 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
      * @return ArrayList of System objects
      * @throws DBException
      */
-    public ArrayList getSystems() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, System.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<System> getSystems() throws DBException {
+        return (ArrayList<System>)super.getEntities(EMsystem.SQLSelectAll);
     }
 
     /**
@@ -157,21 +124,28 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
      * @throws DBException
      */
     public System getSystem(ISystemPK systemPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (System)super.getEntity((SystemPK)systemPK);
-        } else return null;
+        return (System)super.getEntity((SystemPK)systemPK);
     }
 
-    public ArrayList searchsystems(ISystemsearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search system with ISystemsearch parameters
+     * @param search ISystemsearch
+     * @return ArrayList of System
+     * @throws DBException 
+     */
+    public ArrayList<System> searchsystems(ISystemsearch search) throws DBException {
+        return (ArrayList<System>)this.search(search);
     }
 
-    public ArrayList searchsystems(ISystemsearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search system with ISystemsearch parameters, order by orderby sql clause
+     * @param search ISystemsearch
+     * @param orderby sql order by string
+     * @return ArrayList of System
+     * @throws DBException 
+     */
+    public ArrayList<System> searchsystems(ISystemsearch search, String orderby) throws DBException {
+        return (ArrayList<System>)this.search(search, orderby);
     }
 
     /**
@@ -181,38 +155,26 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
      * @throws DBException
      */
     public boolean getSystemExists(ISystemPK systemPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((SystemPK)systemPK);
-        } else return false;
+        return super.getEntityExists((SystemPK)systemPK);
     }
 
     /**
      * try to insert System in database
-     * @param film: System object
+     * @param system System object
      * @throws DBException
+     * @throws DataException
      */
     public void insertSystem(ISystem system) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(system);
-
-
-
-
-
-
-
-
-
-
-        }
+        super.insertEntity(system);
     }
 
     /**
      * check if SystemPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: System object
+     * @param system System object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateSystem(ISystem system) throws DBException, DataException {
         if(this.getSystemExists(system.getPrimaryKey())) {
@@ -224,66 +186,42 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
 
     /**
      * try to update System in database
-     * @param film: System object
+     * @param system System object
      * @throws DBException
+     * @throws DataException
      */
     public void updateSystem(ISystem system) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(system);
-
-
-
-
-
-
-
-
-
-
-        }
+        super.updateEntity(system);
     }
 
     /**
      * try to delete System in database
-     * @param film: System object
+     * @param system System object
      * @throws DBException
      */
     public void deleteSystem(ISystem system) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteSystem(system.getOwnerobject(), system.getPrimaryKey());
-            super.deleteEntity(system);
-        }
+        cascadedeleteSystem(system.getPrimaryKey());
+        super.deleteEntity(system);
     }
 
     /**
      * check data rules in System, throw DataException with customized message if rules do not apply
-     * @param film: System object
+     * @param system System object
      * @throws DataException
      * @throws DBException
      */
     public void checkDATA(ISystem system) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
-
-
-
-
         if(system.getName()!=null && system.getName().length()>ISystem.SIZE_NAME) {
-            message.append("Name is langer dan toegestaan. Max aantal karakters: " + ISystem.SIZE_NAME + "\n");
+            message.append("Name is langer dan toegestaan. Max aantal karakters: ").append(ISystem.SIZE_NAME).append("\n");
         }
-
         if(system.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
         if(system.getSecurity_class()!=null && system.getSecurity_class().length()>ISystem.SIZE_SECURITY_CLASS) {
-            message.append("Security_class is langer dan toegestaan. Max aantal karakters: " + ISystem.SIZE_SECURITY_CLASS + "\n");
+            message.append("Security_class is langer dan toegestaan. Max aantal karakters: ").append(ISystem.SIZE_SECURITY_CLASS).append("\n");
         }
-
-
-
-
-
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -293,158 +231,146 @@ public abstract class Bsystem extends GeneralEntityObject implements ProjectCons
      * delete all records in tables where systemPK is used in a primary key
      * @param systemPK: System primary key
      */
-    public void cascadedeleteSystem(String senderobject, ISystemPK systemPK) {
+    public void cascadedeleteSystem(ISystemPK systemPK) {
         BLsystemjumps blsystemjumpsSystem_end = new BLsystemjumps(this);
-        blsystemjumpsSystem_end.delete4systemSystem_end(senderobject, systemPK);
+        blsystemjumpsSystem_end.delete4systemSystem_end(systemPK);
         BLsystemjumps blsystemjumpsSystem_start = new BLsystemjumps(this);
-        blsystemjumpsSystem_start.delete4systemSystem_start(senderobject, systemPK);
+        blsystemjumpsSystem_start.delete4systemSystem_start(systemPK);
         BLroute blroute = new BLroute(this);
-        blroute.delete4system(senderobject, systemPK);
+        blroute.delete4system(systemPK);
         BLsystemtrade blsystemtradeSell_system = new BLsystemtrade(this);
-        blsystemtradeSell_system.delete4systemSell_system(senderobject, systemPK);
+        blsystemtradeSell_system.delete4systemSell_system(systemPK);
         BLsystemtrade blsystemtradeBuy_system = new BLsystemtrade(this);
-        blsystemtradeBuy_system.delete4systemBuy_system(senderobject, systemPK);
+        blsystemtradeBuy_system.delete4systemBuy_system(systemPK);
     }
 
     /**
      * @param security_islandPK: foreign key for Security_island
      * @delete all System Entity objects for Security_island in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4security_island(String senderobject, ISecurity_islandPK security_islandPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, System.SQLDelete4security_island, security_islandPK.getKeyFields());
-        }
+    public void delete4security_island(ISecurity_islandPK security_islandPK) {
+        super.addStatement(EMsystem.SQLDelete4security_island, security_islandPK.getSQLprimarykey());
     }
 
     /**
      * @param security_islandPK: foreign key for Security_island
      * @return all System Entity objects for Security_island
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getSystems4security_island(ISecurity_islandPK security_islandPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, System.SQLSelect4security_island, security_islandPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<System> getSystems4security_island(ISecurity_islandPK security_islandPK) throws CustomException {
+        return super.getEntities(EMsystem.SQLSelect4security_island, security_islandPK.getSQLprimarykey());
     }
     /**
      * @param constellationPK: foreign key for Constellation
      * @delete all System Entity objects for Constellation in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4constellation(String senderobject, IConstellationPK constellationPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, System.SQLDelete4constellation, constellationPK.getKeyFields());
-        }
+    public void delete4constellation(IConstellationPK constellationPK) {
+        super.addStatement(EMsystem.SQLDelete4constellation, constellationPK.getSQLprimarykey());
     }
 
     /**
      * @param constellationPK: foreign key for Constellation
      * @return all System Entity objects for Constellation
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getSystems4constellation(IConstellationPK constellationPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, System.SQLSelect4constellation, constellationPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<System> getSystems4constellation(IConstellationPK constellationPK) throws CustomException {
+        return super.getEntities(EMsystem.SQLSelect4constellation, constellationPK.getSQLprimarykey());
     }
     /**
      * @param systemjumpsPK: parent Systemjumps for child object System Entity
      * @return child System Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ISystem getSystemjumpssystem_end(ISystemjumpsPK systemjumpsPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            SystemPK systemPK = new SystemPK(systemjumpsPK.getSystem_end());
-            return this.getSystem(systemPK);
-        } else return null;
+    public System getSystemjumpssystem_end(ISystemjumpsPK systemjumpsPK) throws CustomException {
+        SystemPK systemPK = new SystemPK(systemjumpsPK.getSystem_end());
+        return this.getSystem(systemPK);
     }
 
     /**
      * @param systemjumpsPK: parent Systemjumps for child object System Entity
      * @return child System Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ISystem getSystemjumpssystem_start(ISystemjumpsPK systemjumpsPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            SystemPK systemPK = new SystemPK(systemjumpsPK.getSystem_start());
-            return this.getSystem(systemPK);
-        } else return null;
+    public System getSystemjumpssystem_start(ISystemjumpsPK systemjumpsPK) throws CustomException {
+        SystemPK systemPK = new SystemPK(systemjumpsPK.getSystem_start());
+        return this.getSystem(systemPK);
     }
 
     /**
      * @param routePK: parent Route for child object System Entity
      * @return child System Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ISystem getRoute(IRoutePK routePK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            SystemPK systemPK = new SystemPK(routePK.getSystem());
-            return this.getSystem(systemPK);
-        } else return null;
+    public System getRoute(IRoutePK routePK) throws CustomException {
+        SystemPK systemPK = new SystemPK(routePK.getSystem());
+        return this.getSystem(systemPK);
     }
 
     /**
      * @param systemtradePK: parent Systemtrade for child object System Entity
      * @return child System Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ISystem getSystemtradesell_system(ISystemtradePK systemtradePK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            SystemPK systemPK = new SystemPK(systemtradePK.getSell_system());
-            return this.getSystem(systemPK);
-        } else return null;
+    public System getSystemtradesell_system(ISystemtradePK systemtradePK) throws CustomException {
+        SystemPK systemPK = new SystemPK(systemtradePK.getSell_system());
+        return this.getSystem(systemPK);
     }
 
     /**
      * @param systemtradePK: parent Systemtrade for child object System Entity
      * @return child System Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ISystem getSystemtradebuy_system(ISystemtradePK systemtradePK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            SystemPK systemPK = new SystemPK(systemtradePK.getBuy_system());
-            return this.getSystem(systemPK);
-        } else return null;
+    public System getSystemtradebuy_system(ISystemtradePK systemtradePK) throws CustomException {
+        SystemPK systemPK = new SystemPK(systemtradePK.getBuy_system());
+        return this.getSystem(systemPK);
     }
 
 
     /**
      * get all System objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of System objects
      * @throws DBException
      */
-    public ArrayList getSystems(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  System.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<System> getSystems(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMsystem.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<System>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all System objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delSystem(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + System.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delSystem(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(System.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

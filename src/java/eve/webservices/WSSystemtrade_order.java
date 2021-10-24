@@ -2,7 +2,7 @@
  * WSSystemtrade_order.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSSystemtrade_order implements WSISystemtrade_order {
         Systemtrade_order systemtrade_order;
         try {
             IOrdersPK ordersBuy_orderPK = JSONOrders.toOrdersPK((JSONObject)parser.parse(json));
-            blsystemtrade_order.delete4ordersBuy_order(this.getClass().getName(), ordersBuy_orderPK);
+            blsystemtrade_order.delete4ordersBuy_order(ordersBuy_orderPK);
         }
         catch(ParseException e) {
         }
@@ -221,7 +221,7 @@ public class WSSystemtrade_order implements WSISystemtrade_order {
         Systemtrade_order systemtrade_order;
         try {
             IOrdersPK ordersSell_orderPK = JSONOrders.toOrdersPK((JSONObject)parser.parse(json));
-            blsystemtrade_order.delete4ordersSell_order(this.getClass().getName(), ordersSell_orderPK);
+            blsystemtrade_order.delete4ordersSell_order(ordersSell_orderPK);
         }
         catch(ParseException e) {
         }
@@ -258,7 +258,7 @@ public class WSSystemtrade_order implements WSISystemtrade_order {
         Systemtrade_order systemtrade_order;
         try {
             ISystemtradePK systemtradePK = JSONSystemtrade.toSystemtradePK((JSONObject)parser.parse(json));
-            blsystemtrade_order.delete4systemtrade(this.getClass().getName(), systemtradePK);
+            blsystemtrade_order.delete4systemtrade(systemtradePK);
         }
         catch(ParseException e) {
         }

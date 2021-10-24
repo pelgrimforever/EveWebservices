@@ -2,7 +2,7 @@
  * Route.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -114,11 +114,11 @@ public class Route extends SecurityDataServlet {
                             break;
                         case IRouteOperation.DELETE_Routetype:
                             IRoutetypePK routetypePK = (IRoutetypePK)parser.getJavaObject("routetypepk");
-                            blroute.delete4routetype(this.getServletName(), routetypePK);
+                            blroute.delete4routetype(routetypePK);
                             break;
                         case IRouteOperation.DELETE_System:
                             ISystemPK systemPK = (ISystemPK)parser.getJavaObject("systempk");
-                            blroute.delete4system(this.getServletName(), systemPK);
+                            blroute.delete4system(systemPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

@@ -9,16 +9,11 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import general.exception.DataException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IJson_orders;
 import eve.logicentity.Json_orders;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import eve.BusinessObject.table.Bjson_orders;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLjson_orders;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * Business Logic Entity class BLjson_orders
@@ -30,7 +25,7 @@ import java.sql.SQLException;
  *
  * @author Franky Laseure
  */
-public class BLjson_orders extends Bjson_orders implements IBLjson_orders {
+public class BLjson_orders extends Bjson_orders {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -47,19 +42,11 @@ public class BLjson_orders extends Bjson_orders implements IBLjson_orders {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLjson_orders(GeneralEntityObject transactionobject) {
+    public BLjson_orders(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity json_orders) throws SQLException {
-        
-    }
-    
     /**
      * try to insert Json_orders object in database
      * commit transaction

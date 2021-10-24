@@ -1,7 +1,7 @@
 /*
  * RSJson_orders.java
  *
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -53,9 +53,6 @@ import org.json.simple.parser.ParseException;
 @Path("rsjson_orders")
 public class RSJson_orders {
 
-    @Context
-    private UriInfo context;
-
     /**
      * Creates a new instance of HelloWorld
      */
@@ -64,6 +61,7 @@ public class RSJson_orders {
 
     /**
      * Retrieves representation of an instance of json_orders.restservices.RSJson_orders
+     * @param jsonstring
      * @return an instance of java.lang.String
      */
     @GET
@@ -83,6 +81,7 @@ public class RSJson_orders {
 
     /**
      * Retrieves representation of an instance of json_orders.restservices.RSJson_orders
+     * @param jsonstring
      * @return an instance of java.lang.String
      */
     @POST
@@ -262,7 +261,6 @@ public class RSJson_orders {
     /**
      * PUT method for updating or creating an instance of RSJson_orders
      * @param content representation for the resource
-     * @return an HTTP response with content of the updated or created resource.
      */
     @PUT
     @Consumes("text/html")

@@ -2,17 +2,17 @@
  * Bstation.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONStation;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMstation;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bstation extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bstation extends BLtable {
 
     /**
      * Constructor, sets Station as default Entity
      */
     public Bstation() {
-        super(new SQLMapper_pgsql(connectionpool, "Station"), new Station());
+        super(new Station(), new EMstation());
     }
 
     /**
@@ -60,42 +60,8 @@ public abstract class Bstation extends GeneralEntityObject implements ProjectCon
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bstation(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Station());
-    }
-
-    /**
-     * Map ResultSet Field values to Station
-     * @param dbresult: Database ResultSet
-     */
-    public Station mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        StationPK stationPK = null;
-        Station station;
-        if(dbresult==null) {
-            station = new Station(stationPK);
-        } else {
-            try {
-                stationPK = new StationPK(dbresult.getLong("id"));
-                station = new Station(stationPK);
-                station.initRacePK(new RacePK(dbresult.getLong("race_id")));
-                if(dbresult.wasNull()) station.setRacePK(null);                
-                station.initEvetypePK(new EvetypePK(dbresult.getLong("type_id")));
-                if(dbresult.wasNull()) station.setEvetypePK(null);                
-                station.initSystemPK(new SystemPK(dbresult.getLong("system_id")));
-                if(dbresult.wasNull()) station.setSystemPK(null);                
-                station.initName(dbresult.getString("name"));
-                station.initOffice_rental_cost(dbresult.getDouble("office_rental_cost"));
-                station.initReprocessing_efficiency(dbresult.getDouble("reprocessing_efficiency"));
-                station.initReprocessing_stations_take(dbresult.getDouble("reprocessing_stations_take"));
-                station.initMax_dockable_ship_volume(dbresult.getDouble("max_dockable_ship_volume"));
-                station.initOwner(dbresult.getLong("owner"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, station);
-        return station;
+    public Bstation(BLtable transactionobject) {
+        super(transactionobject, new Station(), new EMstation());
     }
 
     /**
@@ -109,6 +75,7 @@ public abstract class Bstation extends GeneralEntityObject implements ProjectCon
     /**
      * create new empty Station object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return IStation with primary key
      */
     public IStation newStation(long id) {
@@ -134,6 +101,7 @@ public abstract class Bstation extends GeneralEntityObject implements ProjectCon
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new IStationPK
      */
     public IStationPK newStationPK(long id) {
@@ -145,10 +113,8 @@ public abstract class Bstation extends GeneralEntityObject implements ProjectCon
      * @return ArrayList of Station objects
      * @throws DBException
      */
-    public ArrayList getStations() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Station.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Station> getStations() throws DBException {
+        return (ArrayList<Station>)super.getEntities(EMstation.SQLSelectAll);
     }
 
     /**
@@ -158,21 +124,28 @@ public abstract class Bstation extends GeneralEntityObject implements ProjectCon
      * @throws DBException
      */
     public Station getStation(IStationPK stationPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Station)super.getEntity((StationPK)stationPK);
-        } else return null;
+        return (Station)super.getEntity((StationPK)stationPK);
     }
 
-    public ArrayList searchstations(IStationsearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search station with IStationsearch parameters
+     * @param search IStationsearch
+     * @return ArrayList of Station
+     * @throws DBException 
+     */
+    public ArrayList<Station> searchstations(IStationsearch search) throws DBException {
+        return (ArrayList<Station>)this.search(search);
     }
 
-    public ArrayList searchstations(IStationsearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search station with IStationsearch parameters, order by orderby sql clause
+     * @param search IStationsearch
+     * @param orderby sql order by string
+     * @return ArrayList of Station
+     * @throws DBException 
+     */
+    public ArrayList<Station> searchstations(IStationsearch search, String orderby) throws DBException {
+        return (ArrayList<Station>)this.search(search, orderby);
     }
 
     /**
@@ -182,38 +155,26 @@ public abstract class Bstation extends GeneralEntityObject implements ProjectCon
      * @throws DBException
      */
     public boolean getStationExists(IStationPK stationPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((StationPK)stationPK);
-        } else return false;
+        return super.getEntityExists((StationPK)stationPK);
     }
 
     /**
      * try to insert Station in database
-     * @param film: Station object
+     * @param station Station object
      * @throws DBException
+     * @throws DataException
      */
     public void insertStation(IStation station) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(station);
-
-
-
-
-
-
-
-
-
-
-        }
+        super.insertEntity(station);
     }
 
     /**
      * check if StationPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Station object
+     * @param station Station object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateStation(IStation station) throws DBException, DataException {
         if(this.getStationExists(station.getPrimaryKey())) {
@@ -225,64 +186,39 @@ public abstract class Bstation extends GeneralEntityObject implements ProjectCon
 
     /**
      * try to update Station in database
-     * @param film: Station object
+     * @param station Station object
      * @throws DBException
+     * @throws DataException
      */
     public void updateStation(IStation station) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(station);
-
-
-
-
-
-
-
-
-
-
-        }
+        super.updateEntity(station);
     }
 
     /**
      * try to delete Station in database
-     * @param film: Station object
+     * @param station Station object
      * @throws DBException
      */
     public void deleteStation(IStation station) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteStation(station.getOwnerobject(), station.getPrimaryKey());
-            super.deleteEntity(station);
-        }
+        cascadedeleteStation(station.getPrimaryKey());
+        super.deleteEntity(station);
     }
 
     /**
      * check data rules in Station, throw DataException with customized message if rules do not apply
-     * @param film: Station object
+     * @param station Station object
      * @throws DataException
      * @throws DBException
      */
     public void checkDATA(IStation station) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
-
-
-
-
-
-
         if(station.getName()!=null && station.getName().length()>IStation.SIZE_NAME) {
-            message.append("Name is langer dan toegestaan. Max aantal karakters: " + IStation.SIZE_NAME + "\n");
+            message.append("Name is langer dan toegestaan. Max aantal karakters: ").append(IStation.SIZE_NAME).append("\n");
         }
-
         if(station.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
-
-
-
-
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -292,123 +228,114 @@ public abstract class Bstation extends GeneralEntityObject implements ProjectCon
      * delete all records in tables where stationPK is used in a primary key
      * @param stationPK: Station primary key
      */
-    public void cascadedeleteStation(String senderobject, IStationPK stationPK) {
+    public void cascadedeleteStation(IStationPK stationPK) {
         BLstation_service blstation_service = new BLstation_service(this);
-        blstation_service.delete4station(senderobject, stationPK);
+        blstation_service.delete4station(stationPK);
     }
 
     /**
      * @param racePK: foreign key for Race
      * @delete all Station Entity objects for Race in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4race(String senderobject, IRacePK racePK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Station.SQLDelete4race, racePK.getKeyFields());
-        }
+    public void delete4race(IRacePK racePK) {
+        super.addStatement(EMstation.SQLDelete4race, racePK.getSQLprimarykey());
     }
 
     /**
      * @param racePK: foreign key for Race
      * @return all Station Entity objects for Race
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getStations4race(IRacePK racePK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Station.SQLSelect4race, racePK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Station> getStations4race(IRacePK racePK) throws CustomException {
+        return super.getEntities(EMstation.SQLSelect4race, racePK.getSQLprimarykey());
     }
     /**
      * @param evetypePK: foreign key for Evetype
      * @delete all Station Entity objects for Evetype in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4evetype(String senderobject, IEvetypePK evetypePK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Station.SQLDelete4evetype, evetypePK.getKeyFields());
-        }
+    public void delete4evetype(IEvetypePK evetypePK) {
+        super.addStatement(EMstation.SQLDelete4evetype, evetypePK.getSQLprimarykey());
     }
 
     /**
      * @param evetypePK: foreign key for Evetype
      * @return all Station Entity objects for Evetype
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getStations4evetype(IEvetypePK evetypePK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Station.SQLSelect4evetype, evetypePK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Station> getStations4evetype(IEvetypePK evetypePK) throws CustomException {
+        return super.getEntities(EMstation.SQLSelect4evetype, evetypePK.getSQLprimarykey());
     }
     /**
      * @param systemPK: foreign key for System
      * @delete all Station Entity objects for System in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4system(String senderobject, ISystemPK systemPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Station.SQLDelete4system, systemPK.getKeyFields());
-        }
+    public void delete4system(ISystemPK systemPK) {
+        super.addStatement(EMstation.SQLDelete4system, systemPK.getSQLprimarykey());
     }
 
     /**
      * @param systemPK: foreign key for System
      * @return all Station Entity objects for System
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getStations4system(ISystemPK systemPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Station.SQLSelect4system, systemPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Station> getStations4system(ISystemPK systemPK) throws CustomException {
+        return super.getEntities(EMstation.SQLSelect4system, systemPK.getSQLprimarykey());
     }
     /**
      * @param station_servicePK: parent Station_service for child object Station Entity
      * @return child Station Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public IStation getStation_service(IStation_servicePK station_servicePK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            StationPK stationPK = new StationPK(station_servicePK.getStation());
-            return this.getStation(stationPK);
-        } else return null;
+    public Station getStation_service(IStation_servicePK station_servicePK) throws CustomException {
+        StationPK stationPK = new StationPK(station_servicePK.getStation());
+        return this.getStation(stationPK);
     }
 
 
     /**
      * get all Station objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Station objects
      * @throws DBException
      */
-    public ArrayList getStations(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Station.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Station> getStations(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMstation.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Station>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Station objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delStation(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Station.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delStation(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Station.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

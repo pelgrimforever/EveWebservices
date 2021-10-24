@@ -2,7 +2,7 @@
  * Orders.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -130,11 +130,11 @@ public class Orders extends SecurityDataServlet {
                             break;
                         case IOrdersOperation.DELETE_Evetype:
                             IEvetypePK evetypePK = (IEvetypePK)parser.getJavaObject("evetypepk");
-                            blorders.delete4evetype(this.getServletName(), evetypePK);
+                            blorders.delete4evetype(evetypePK);
                             break;
                         case IOrdersOperation.DELETE_System:
                             ISystemPK systemPK = (ISystemPK)parser.getJavaObject("systempk");
-                            blorders.delete4system(this.getServletName(), systemPK);
+                            blorders.delete4system(systemPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

@@ -3,6 +3,7 @@
  */
 package eve.restservices;
 
+import eve.BusinessObject.Logic.BLorders;
 import eve.BusinessObject.service.MarketService;
 import eve.BusinessObject.service.MarketService.MarketStatus;
 import java.util.Iterator;
@@ -60,7 +61,6 @@ public class RSdownloadswagger {
             jsonstatus.put("regions", jsonregions);
             jsonstatus.put("messages", jsonmessages);
             jsonstatus.put("done", true);
-            
             JSONObject json = (JSONObject)parser.parse(jsonstring);
             if(json.containsKey("start") && (Boolean)json.get("start")) {
                 keeprunning = true;

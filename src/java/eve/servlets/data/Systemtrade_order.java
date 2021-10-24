@@ -2,7 +2,7 @@
  * Systemtrade_order.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -118,15 +118,15 @@ public class Systemtrade_order extends SecurityDataServlet {
                             break;
                         case ISystemtrade_orderOperation.DELETE_Ordersbuy_order:
                             IOrdersPK ordersBuy_orderPK = (IOrdersPK)parser.getJavaObject("orderspk");
-                            blsystemtrade_order.delete4ordersBuy_order(this.getServletName(), ordersBuy_orderPK);
+                            blsystemtrade_order.delete4ordersBuy_order(ordersBuy_orderPK);
                             break;
                         case ISystemtrade_orderOperation.DELETE_Orderssell_order:
                             IOrdersPK ordersSell_orderPK = (IOrdersPK)parser.getJavaObject("orderspk");
-                            blsystemtrade_order.delete4ordersSell_order(this.getServletName(), ordersSell_orderPK);
+                            blsystemtrade_order.delete4ordersSell_order(ordersSell_orderPK);
                             break;
                         case ISystemtrade_orderOperation.DELETE_Systemtrade:
                             ISystemtradePK systemtradePK = (ISystemtradePK)parser.getJavaObject("systemtradepk");
-                            blsystemtrade_order.delete4systemtrade(this.getServletName(), systemtradePK);
+                            blsystemtrade_order.delete4systemtrade(systemtradePK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

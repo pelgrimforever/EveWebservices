@@ -9,23 +9,20 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IOrders;
 import eve.logicentity.Orders;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import data.conversion.JSONConversion;
-import db.AbstractSQLMapper;
+import db.SQLparameters;
 import eve.BusinessObject.table.Borders;
+import eve.conversion.entity.EMorders;
 import eve.data.Swagger;
 import eve.entity.pk.EvetypePK;
 import eve.entity.pk.Security_islandPK;
 import eve.entity.pk.SystemPK;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLorders;
 import eve.interfaces.entity.pk.IEvetypePK;
 import eve.interfaces.entity.pk.ISystemPK;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import org.json.simple.JSONObject;
 
@@ -39,7 +36,7 @@ import org.json.simple.JSONObject;
  *
  * @author Franky Laseure
  */
-public class BLorders extends Borders implements IBLorders {
+public class BLorders extends Borders {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -56,32 +53,19 @@ public class BLorders extends Borders implements IBLorders {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLorders(GeneralEntityObject transactionobject) {
+    public BLorders(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity orders) throws SQLException {
-        Orders order = (Orders)orders;
-        try {
-            order.setPackaged_volume(dbresult.getDouble("packaged_volume"));
-        }
-        catch(SQLException e) {
-        }
-    }
-    
     public void resetorders() throws DBException, DataException {
         Object[][] parameter = {{ "isopen", false }};
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Orders.SQLreset, parameter);
+        this.addStatement(sqlmapper.insertParameters(EMorders.SQLreset, parameter));
         this.Commit2DB();
     }
     
     public void deleteorders() throws DBException, DataException {
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Orders.Truncate, null);
+        this.addStatement(EMorders.Truncate);
         this.Commit2DB();
     }
     
@@ -119,10 +103,11 @@ public class BLorders extends Borders implements IBLorders {
      * @return
      * @throws DBException 
      */
-    public ArrayList load_sellorders4system(ISystemPK systemPK, double max_cargovolume, double net_perc) throws DBException {
+    public ArrayList<Orders> load_sellorders4system(ISystemPK systemPK, double max_cargovolume, double net_perc) throws DBException {
         Object[][] parameter = { { "max_cargovolume", max_cargovolume }, { "net_perc", net_perc } };
-        parameter = AbstractSQLMapper.addKeyArrays(parameter, systemPK.getKeyFields());
-        return getMapper().loadEntityVector(this, Orders.SQLgetSellorders4system2, parameter);
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        sqlparameters.add(systemPK.getSQLprimarykey());
+        return getEntities(EMorders.SQLgetSellorders4system2, sqlparameters);
     }
 
     /**
@@ -133,11 +118,11 @@ public class BLorders extends Borders implements IBLorders {
      * @return
      * @throws DBException 
      */
-    public ArrayList load_sellorders4systemevetype(ISystemPK systemPK, IEvetypePK evetypePK, double max_price) throws DBException {
+    public ArrayList<Orders> load_sellorders4systemevetype(ISystemPK systemPK, IEvetypePK evetypePK, double max_price) throws DBException {
         Object[][] parameter = { { "max_price", max_price } };
-        parameter = AbstractSQLMapper.addKeyArrays(parameter, systemPK.getKeyFields());
-        parameter = AbstractSQLMapper.addKeyArrays(parameter, evetypePK.getKeyFields());
-        return getMapper().loadEntityVector(this, Orders.SQLgetSellorders4systemevetype, parameter);
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        sqlparameters.add(systemPK.getSQLprimarykey(), evetypePK.getSQLprimarykey());
+        return getEntities(EMorders.SQLgetSellorders4systemevetype, sqlparameters);
     }
 
     /**
@@ -148,75 +133,31 @@ public class BLorders extends Borders implements IBLorders {
      * @return
      * @throws DBException 
      */
-    public ArrayList load_buyorders4system(ISystemPK systemPK, double max_cargovolume, double net_perc) throws DBException {
+    public ArrayList<Orders> load_buyorders4system(ISystemPK systemPK, double max_cargovolume, double net_perc) throws DBException {
         Object[][] parameter = { { "max_cargovolume", max_cargovolume }, { "net_perc", net_perc } };
-        parameter = AbstractSQLMapper.addKeyArrays(parameter, systemPK.getKeyFields());
-        return getMapper().loadEntityVector(this, Orders.SQLgetBuyorders4system2, parameter);
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        sqlparameters.add(systemPK.getSQLprimarykey(), systemPK.getSQLprimarykey());
+        return getEntities(EMorders.SQLgetBuyorders4system2, sqlparameters);
     }    
 
     /**
      * Search buy orders for eve type, ordered by descending price
+     * @param security_islandPK
      * @param evetypePK: evetype primary key
      * @return orders
      * @throws DBException 
      */
-    public ArrayList load_buyorders4evetype(Security_islandPK security_islandPK, IEvetypePK evetypePK) throws DBException {
-        Object[][] parameter = AbstractSQLMapper.addKeyArrays(security_islandPK.getKeyFields(), evetypePK.getKeyFields());
-        return getMapper().loadEntityVector(this, Orders.SQLgetBuyorders4evetype, parameter);
+    public ArrayList<Orders> load_buyorders4evetype(Security_islandPK security_islandPK, IEvetypePK evetypePK) throws DBException {
+        SQLparameters sqlparameters = new SQLparameters(security_islandPK.getSQLprimarykey(), evetypePK.getSQLprimarykey());
+        return getEntities(EMorders.SQLgetBuyorders4evetype, sqlparameters);
     }    
 
-    /**
-     * load all buy orders with
-     * - price > min sel order price
-     * - unit volume <= max_volume
-     * - ordered by evetype, system
-     * @param max_volume
-     * @return
-     * @throws DBException 
-     */
-/*    public ArrayList load_buy_orders(double max_volume, Security_islandPK security_islandPK) throws DBException {
-        Object[][] parameter = { { "maxvolume", max_volume } };
-        parameter = AbstractSQLMapper.addKeyArrays(parameter, security_islandPK.getKeyFields());
-        return getMapper().loadEntityVector(this, Orders.SQLbuy_orders, parameter);
-    }
-*/    
-    /**
-     * load all buy orders for evetype with
-     * - price > min sel order price
-     * - unit volume <= max_volume
-     * - ordered by evetype, system
-     * @param max_volume
-     * @return
-     * @throws DBException 
-     */
-/*    public ArrayList load_buy_orders_4evetype(double max_volume, Security_islandPK security_islandPK, EvetypePK evetypePK) throws DBException {
-        Object[][] parameter = { { "maxvolume", max_volume } };
-        parameter = AbstractSQLMapper.addKeyArrays(parameter, evetypePK.getKeyFields());
-        parameter = AbstractSQLMapper.addKeyArrays(parameter, security_islandPK.getKeyFields());
-        return getMapper().loadEntityVector(this, Orders.SQLbuy_orders4evetype, parameter);
-    }
-  */  
-    /**
-     * load all sell orders with
-     * - price < max buy order price
-     * - unit volume <= max_volume
-     * - ordered by evetype, system
-     * @param max_volume
-     * @return
-     * @throws DBException 
-     */
-/*    public ArrayList load_sell_orders(double max_volume, Security_islandPK security_islandPK) throws DBException {
-        Object[][] parameter = { { "maxvolume", max_volume } };
-        parameter = AbstractSQLMapper.addKeyArrays(parameter, security_islandPK.getKeyFields());
-        return getMapper().loadEntityVector(this, Orders.SQLsell_orders, parameter);
-    }
-*/    
     /**
      * try to insert Orders object in database
      * commit transaction
      * @param orders: Orders Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void insertOrders(IOrders orders) throws DBException, DataException {
@@ -229,8 +170,8 @@ public class BLorders extends Borders implements IBLorders {
      * an alternative to insertOrders, which can be made an empty function
      * commit transaction
      * @param orders: Orders Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureinsertOrders(IOrders orders) throws DBException, DataException {
         trans_insertOrders(orders);
@@ -241,8 +182,8 @@ public class BLorders extends Borders implements IBLorders {
      * try to update Orders object in database
      * commit transaction
      * @param orders: Orders Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void updateOrders(IOrders orders) throws DBException, DataException {
@@ -255,8 +196,8 @@ public class BLorders extends Borders implements IBLorders {
      * an alternative to updateOrders, which can be made an empty function
      * commit transaction
      * @param orders: Orders Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureupdateOrders(IOrders orders) throws DBException, DataException {
         trans_updateOrders(orders);
@@ -267,7 +208,7 @@ public class BLorders extends Borders implements IBLorders {
      * try to delete Orders object in database
      * commit transaction
      * @param orders: Orders Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     @Override
     public void deleteOrders(IOrders orders) throws DBException {
@@ -280,7 +221,7 @@ public class BLorders extends Borders implements IBLorders {
      * an alternative to deleteOrders, which can be made an empty function
      * commit transaction
      * @param orders: Orders Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void securedeleteOrders(IOrders orders) throws DBException {
         trans_deleteOrders(orders);
@@ -291,8 +232,8 @@ public class BLorders extends Borders implements IBLorders {
      * try to insert Orders object in database
      * do not commit transaction
      * @param orders: Orders Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_insertOrders(IOrders orders) throws DBException, DataException {
         super.checkDATA(orders);
@@ -303,8 +244,8 @@ public class BLorders extends Borders implements IBLorders {
      * try to update Orders object in database
      * do not commit transaction
      * @param orders: Orders Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_updateOrders(IOrders orders) throws DBException, DataException {
         super.checkDATA(orders);
@@ -315,7 +256,7 @@ public class BLorders extends Borders implements IBLorders {
      * try to delete Orders object in database
      * do not commit transaction
      * @param orders: Orders Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void trans_deleteOrders(IOrders orders) throws DBException {
         super.deleteOrders((Orders)orders);

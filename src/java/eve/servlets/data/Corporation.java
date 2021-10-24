@@ -2,7 +2,7 @@
  * Corporation.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -118,15 +118,15 @@ public class Corporation extends SecurityDataServlet {
                             break;
                         case ICorporationOperation.DELETE_Station:
                             IStationPK stationPK = (IStationPK)parser.getJavaObject("stationpk");
-                            blcorporation.delete4station(this.getServletName(), stationPK);
+                            blcorporation.delete4station(stationPK);
                             break;
                         case ICorporationOperation.DELETE_Faction:
                             IFactionPK factionPK = (IFactionPK)parser.getJavaObject("factionpk");
-                            blcorporation.delete4faction(this.getServletName(), factionPK);
+                            blcorporation.delete4faction(factionPK);
                             break;
                         case ICorporationOperation.DELETE_Alliance:
                             IAlliancePK alliancePK = (IAlliancePK)parser.getJavaObject("alliancepk");
-                            blcorporation.delete4alliance(this.getServletName(), alliancePK);
+                            blcorporation.delete4alliance(alliancePK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

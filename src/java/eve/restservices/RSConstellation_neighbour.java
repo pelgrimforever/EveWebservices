@@ -1,7 +1,7 @@
 /*
  * RSConstellation_neighbour.java
  *
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -53,9 +53,6 @@ import org.json.simple.parser.ParseException;
 @Path("rsconstellation_neighbour")
 public class RSConstellation_neighbour {
 
-    @Context
-    private UriInfo context;
-
     /**
      * Creates a new instance of HelloWorld
      */
@@ -64,6 +61,7 @@ public class RSConstellation_neighbour {
 
     /**
      * Retrieves representation of an instance of constellation_neighbour.restservices.RSConstellation_neighbour
+     * @param jsonstring
      * @return an instance of java.lang.String
      */
     @GET
@@ -83,6 +81,7 @@ public class RSConstellation_neighbour {
 
     /**
      * Retrieves representation of an instance of constellation_neighbour.restservices.RSConstellation_neighbour
+     * @param jsonstring
      * @return an instance of java.lang.String
      */
     @POST
@@ -278,7 +277,6 @@ public class RSConstellation_neighbour {
     /**
      * PUT method for updating or creating an instance of RSConstellation_neighbour
      * @param content representation for the resource
-     * @return an HTTP response with content of the updated or created resource.
      */
     @PUT
     @Consumes("text/html")

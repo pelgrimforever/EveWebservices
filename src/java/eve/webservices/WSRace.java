@@ -2,7 +2,7 @@
  * WSRace.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSRace implements WSIRace {
         Race race;
         try {
             IFactionPK factionPK = JSONFaction.toFactionPK((JSONObject)parser.parse(json));
-            blrace.delete4faction(this.getClass().getName(), factionPK);
+            blrace.delete4faction(factionPK);
         }
         catch(ParseException e) {
         }

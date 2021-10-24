@@ -9,17 +9,13 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IRace;
 import eve.logicentity.Race;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import data.conversion.JSONConversion;
 import eve.BusinessObject.table.Brace;
 import eve.entity.pk.FactionPK;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLrace;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import org.json.simple.JSONObject;
 
 /**
@@ -32,7 +28,7 @@ import org.json.simple.JSONObject;
  *
  * @author Franky Laseure
  */
-public class BLrace extends Brace implements IBLrace {
+public class BLrace extends Brace {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -49,19 +45,11 @@ public class BLrace extends Brace implements IBLrace {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLrace(GeneralEntityObject transactionobject) {
+    public BLrace(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity race) throws SQLException {
-        
-    }
-    
     public void updateRace(JSONObject jsonracedetails) throws DBException, DataException {
         Race race = new Race(JSONConversion.getLong(jsonracedetails, "race_id"));
         race.setName(JSONConversion.getString(jsonracedetails, "name"));

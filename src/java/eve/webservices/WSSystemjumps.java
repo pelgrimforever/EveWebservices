@@ -2,7 +2,7 @@
  * WSSystemjumps.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSSystemjumps implements WSISystemjumps {
         Systemjumps systemjumps;
         try {
             ISystemPK systemSystem_endPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blsystemjumps.delete4systemSystem_end(this.getClass().getName(), systemSystem_endPK);
+            blsystemjumps.delete4systemSystem_end(systemSystem_endPK);
         }
         catch(ParseException e) {
         }
@@ -221,7 +221,7 @@ public class WSSystemjumps implements WSISystemjumps {
         Systemjumps systemjumps;
         try {
             ISystemPK systemSystem_startPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blsystemjumps.delete4systemSystem_start(this.getClass().getName(), systemSystem_startPK);
+            blsystemjumps.delete4systemSystem_start(systemSystem_startPK);
         }
         catch(ParseException e) {
         }

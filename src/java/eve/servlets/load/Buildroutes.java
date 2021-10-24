@@ -130,7 +130,7 @@ public class Buildroutes extends HttpServlet {
                 routetype.setSecurity_islandPK(securityisland.getPrimaryKey());
                 blroutetype.insertupdateRoutetype(routetype);
                 blroutetype.Commit2DB();
-                blroute.delete4routetype(this.getServletName(), routetype.getPrimaryKey());
+                blroute.delete4routetype(routetype.getPrimaryKey());
 
                 //construct star pattern for each system in security island
                 

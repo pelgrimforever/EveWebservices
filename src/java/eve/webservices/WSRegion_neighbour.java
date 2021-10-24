@@ -2,7 +2,7 @@
  * WSRegion_neighbour.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSRegion_neighbour implements WSIRegion_neighbour {
         Region_neighbour region_neighbour;
         try {
             IRegionPK regionRegionPK = JSONRegion.toRegionPK((JSONObject)parser.parse(json));
-            blregion_neighbour.delete4regionRegion(this.getClass().getName(), regionRegionPK);
+            blregion_neighbour.delete4regionRegion(regionRegionPK);
         }
         catch(ParseException e) {
         }
@@ -221,7 +221,7 @@ public class WSRegion_neighbour implements WSIRegion_neighbour {
         Region_neighbour region_neighbour;
         try {
             IRegionPK regionNeighbourPK = JSONRegion.toRegionPK((JSONObject)parser.parse(json));
-            blregion_neighbour.delete4regionNeighbour(this.getClass().getName(), regionNeighbourPK);
+            blregion_neighbour.delete4regionNeighbour(regionNeighbourPK);
         }
         catch(ParseException e) {
         }

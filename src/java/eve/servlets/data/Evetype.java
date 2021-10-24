@@ -2,7 +2,7 @@
  * Evetype.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -126,15 +126,15 @@ public class Evetype extends SecurityDataServlet {
                             break;
                         case IEvetypeOperation.DELETE_Market_group:
                             IMarket_groupPK market_groupPK = (IMarket_groupPK)parser.getJavaObject("market_grouppk");
-                            blevetype.delete4market_group(this.getServletName(), market_groupPK);
+                            blevetype.delete4market_group(market_groupPK);
                             break;
                         case IEvetypeOperation.DELETE_Typegroup:
                             ITypegroupPK typegroupPK = (ITypegroupPK)parser.getJavaObject("typegrouppk");
-                            blevetype.delete4typegroup(this.getServletName(), typegroupPK);
+                            blevetype.delete4typegroup(typegroupPK);
                             break;
                         case IEvetypeOperation.DELETE_Graphic:
                             IGraphicPK graphicPK = (IGraphicPK)parser.getJavaObject("graphicpk");
-                            blevetype.delete4graphic(this.getServletName(), graphicPK);
+                            blevetype.delete4graphic(graphicPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

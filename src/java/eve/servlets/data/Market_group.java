@@ -2,7 +2,7 @@
  * Market_group.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -110,7 +110,7 @@ public class Market_group extends SecurityDataServlet {
                             break;
                         case IMarket_groupOperation.DELETE_Market_groupparent_id:
                             IMarket_groupPK market_groupParent_idPK = (IMarket_groupPK)parser.getJavaObject("market_grouppk");
-                            blmarket_group.delete4market_groupParent_id(this.getServletName(), market_groupParent_idPK);
+                            blmarket_group.delete4market_groupParent_id(market_groupParent_idPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

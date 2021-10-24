@@ -9,14 +9,11 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.View;
-import db.AbstractSQLMapper;
+import db.SQLparameters;
 import eve.logicview.View_combinedtrade;
 import eve.BusinessObject.view.Bview_combinedtrade;
+import eve.conversion.entity.EMview_combinedtrade;
 import eve.entity.pk.SystemPK;
-import eve.interfaces.BusinessObject.IBLview_combinedtrade;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -29,7 +26,7 @@ import java.util.ArrayList;
  *
  * @author Franky Laseure
  */
-public class BLview_combinedtrade extends Bview_combinedtrade implements IBLview_combinedtrade {
+public class BLview_combinedtrade extends Bview_combinedtrade {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
 	
     /**
@@ -38,24 +35,13 @@ public class BLview_combinedtrade extends Bview_combinedtrade implements IBLview
     public BLview_combinedtrade() {
     }
 
-    @Override
-    public void loadExtra(ResultSet dbresult, View view_combinedtrade) throws SQLException {
-        View_combinedtrade extra = (View_combinedtrade)view_combinedtrade;
-        try {
-            extra.setStart_system(dbresult.getLong("startsystem_id"));
-            extra.setStart_system_jumps(dbresult.getInt("startsystem_jumps"));
-        }
-        catch(SQLException e) {
-        }
-    }
-    
     /**
      * get all View_combinedtrade objects from database
      * @return ArrayList of View_trade objects
      * @throws DBException
      */
     public ArrayList getView_combinedtrades_Startsystem(SystemPK systemPK) throws DBException {
-        return getMapper().loadViewVector(this, View_combinedtrade.SQLSelectAll4Startingsystem, systemPK.getKeyFields());
+        return getEntities(EMview_combinedtrade.SQLSelectAll4Startingsystem, systemPK.getSQLprimarykey());
     }
 
     /**
@@ -66,7 +52,8 @@ public class BLview_combinedtrade extends Bview_combinedtrade implements IBLview
      */
     public View_combinedtrade getView_combinedtrade_Startendsystem(SystemPK systemPK, SystemPK startsystemPK, SystemPK endsystemPK) throws DBException {
         Object[][] parameter = {{ "startsystemid", startsystemPK.getId() }, { "endsystemid", endsystemPK.getId() }};
-        parameter = AbstractSQLMapper.addKeyArrays(parameter, systemPK.getKeyFields());
-        return (View_combinedtrade)getMapper().loadView(this, View_combinedtrade.SQLSelect4Startendsystem, parameter);
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        sqlparameters.add(systemPK.getSQLprimarykey());
+        return (View_combinedtrade)getEntity(EMview_combinedtrade.SQLSelect4Startendsystem, sqlparameters);
     }
 }

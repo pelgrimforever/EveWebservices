@@ -2,17 +2,17 @@
  * Bsystemjumps.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONSystemjumps;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMsystemjumps;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bsystemjumps extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bsystemjumps extends BLtable {
 
     /**
      * Constructor, sets Systemjumps as default Entity
      */
     public Bsystemjumps() {
-        super(new SQLMapper_pgsql(connectionpool, "Systemjumps"), new Systemjumps());
+        super(new Systemjumps(), new EMsystemjumps());
     }
 
     /**
@@ -60,31 +60,8 @@ public abstract class Bsystemjumps extends GeneralEntityObject implements Projec
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bsystemjumps(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Systemjumps());
-    }
-
-    /**
-     * Map ResultSet Field values to Systemjumps
-     * @param dbresult: Database ResultSet
-     */
-    public Systemjumps mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        SystemjumpsPK systemjumpsPK = null;
-        Systemjumps systemjumps;
-        if(dbresult==null) {
-            systemjumps = new Systemjumps(systemjumpsPK);
-        } else {
-            try {
-                systemjumpsPK = new SystemjumpsPK(dbresult.getLong("system_start"), dbresult.getLong("system_end"));
-                systemjumps = new Systemjumps(systemjumpsPK);
-                systemjumps.initJumps(dbresult.getInt("jumps"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, systemjumps);
-        return systemjumps;
+    public Bsystemjumps(BLtable transactionobject) {
+        super(transactionobject, new Systemjumps(), new EMsystemjumps());
     }
 
     /**
@@ -98,6 +75,8 @@ public abstract class Bsystemjumps extends GeneralEntityObject implements Projec
     /**
      * create new empty Systemjumps object
      * create new primary key with given parameters
+     * @param system_start primary key field
+     * @param system_end primary key field
      * @return ISystemjumps with primary key
      */
     public ISystemjumps newSystemjumps(long system_start, long system_end) {
@@ -123,6 +102,8 @@ public abstract class Bsystemjumps extends GeneralEntityObject implements Projec
 
     /**
      * create new primary key with given parameters
+     * @param system_start primary key field
+     * @param system_end primary key field
      * @return new ISystemjumpsPK
      */
     public ISystemjumpsPK newSystemjumpsPK(long system_start, long system_end) {
@@ -134,10 +115,8 @@ public abstract class Bsystemjumps extends GeneralEntityObject implements Projec
      * @return ArrayList of Systemjumps objects
      * @throws DBException
      */
-    public ArrayList getSystemjumpss() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Systemjumps.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Systemjumps> getSystemjumpss() throws DBException {
+        return (ArrayList<Systemjumps>)super.getEntities(EMsystemjumps.SQLSelectAll);
     }
 
     /**
@@ -147,21 +126,28 @@ public abstract class Bsystemjumps extends GeneralEntityObject implements Projec
      * @throws DBException
      */
     public Systemjumps getSystemjumps(ISystemjumpsPK systemjumpsPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Systemjumps)super.getEntity((SystemjumpsPK)systemjumpsPK);
-        } else return null;
+        return (Systemjumps)super.getEntity((SystemjumpsPK)systemjumpsPK);
     }
 
-    public ArrayList searchsystemjumpss(ISystemjumpssearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search systemjumps with ISystemjumpssearch parameters
+     * @param search ISystemjumpssearch
+     * @return ArrayList of Systemjumps
+     * @throws DBException 
+     */
+    public ArrayList<Systemjumps> searchsystemjumpss(ISystemjumpssearch search) throws DBException {
+        return (ArrayList<Systemjumps>)this.search(search);
     }
 
-    public ArrayList searchsystemjumpss(ISystemjumpssearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search systemjumps with ISystemjumpssearch parameters, order by orderby sql clause
+     * @param search ISystemjumpssearch
+     * @param orderby sql order by string
+     * @return ArrayList of Systemjumps
+     * @throws DBException 
+     */
+    public ArrayList<Systemjumps> searchsystemjumpss(ISystemjumpssearch search, String orderby) throws DBException {
+        return (ArrayList<Systemjumps>)this.search(search, orderby);
     }
 
     /**
@@ -171,31 +157,26 @@ public abstract class Bsystemjumps extends GeneralEntityObject implements Projec
      * @throws DBException
      */
     public boolean getSystemjumpsExists(ISystemjumpsPK systemjumpsPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((SystemjumpsPK)systemjumpsPK);
-        } else return false;
+        return super.getEntityExists((SystemjumpsPK)systemjumpsPK);
     }
 
     /**
      * try to insert Systemjumps in database
-     * @param film: Systemjumps object
+     * @param systemjumps Systemjumps object
      * @throws DBException
+     * @throws DataException
      */
     public void insertSystemjumps(ISystemjumps systemjumps) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(systemjumps);
-
-
-
-        }
+        super.insertEntity(systemjumps);
     }
 
     /**
      * check if SystemjumpsPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Systemjumps object
+     * @param systemjumps Systemjumps object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateSystemjumps(ISystemjumps systemjumps) throws DBException, DataException {
         if(this.getSystemjumpsExists(systemjumps.getPrimaryKey())) {
@@ -207,33 +188,27 @@ public abstract class Bsystemjumps extends GeneralEntityObject implements Projec
 
     /**
      * try to update Systemjumps in database
-     * @param film: Systemjumps object
+     * @param systemjumps Systemjumps object
      * @throws DBException
+     * @throws DataException
      */
     public void updateSystemjumps(ISystemjumps systemjumps) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(systemjumps);
-
-
-
-        }
+        super.updateEntity(systemjumps);
     }
 
     /**
      * try to delete Systemjumps in database
-     * @param film: Systemjumps object
+     * @param systemjumps Systemjumps object
      * @throws DBException
      */
     public void deleteSystemjumps(ISystemjumps systemjumps) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteSystemjumps(systemjumps.getOwnerobject(), systemjumps.getPrimaryKey());
-            super.deleteEntity(systemjumps);
-        }
+        cascadedeleteSystemjumps(systemjumps.getPrimaryKey());
+        super.deleteEntity(systemjumps);
     }
 
     /**
      * check data rules in Systemjumps, throw DataException with customized message if rules do not apply
-     * @param film: Systemjumps object
+     * @param systemjumps Systemjumps object
      * @throws DataException
      * @throws DBException
      */
@@ -241,7 +216,6 @@ public abstract class Bsystemjumps extends GeneralEntityObject implements Projec
         StringBuffer message = new StringBuffer();
         //foreign key Systemjumps.System_start - System.Id
         //foreign key Systemjumps.System_end - System.Id
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -251,88 +225,86 @@ public abstract class Bsystemjumps extends GeneralEntityObject implements Projec
      * delete all records in tables where systemjumpsPK is used in a primary key
      * @param systemjumpsPK: Systemjumps primary key
      */
-    public void cascadedeleteSystemjumps(String senderobject, ISystemjumpsPK systemjumpsPK) {
+    public void cascadedeleteSystemjumps(ISystemjumpsPK systemjumpsPK) {
     }
 
     /**
      * @param systemPK: foreign key for System
      * @delete all Systemjumps Entity objects for System in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4systemSystem_end(String senderobject, ISystemPK systemPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Systemjumps.SQLDelete4systemSystem_end, systemPK.getKeyFields());
-        }
+    public void delete4systemSystem_end(ISystemPK systemPK) {
+        super.addStatement(EMsystemjumps.SQLDelete4systemSystem_end, systemPK.getSQLprimarykey());
     }
 
     /**
      * @param systemPK: foreign key for System
      * @return all Systemjumps Entity objects for System
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getSystemjumpss4systemSystem_end(ISystemPK systemPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Systemjumps.SQLSelect4systemSystem_end, systemPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Systemjumps> getSystemjumpss4systemSystem_end(ISystemPK systemPK) throws CustomException {
+        return super.getEntities(EMsystemjumps.SQLSelect4systemSystem_end, systemPK.getSQLprimarykey());
     }
     /**
      * @param systemPK: foreign key for System
      * @delete all Systemjumps Entity objects for System in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4systemSystem_start(String senderobject, ISystemPK systemPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Systemjumps.SQLDelete4systemSystem_start, systemPK.getKeyFields());
-        }
+    public void delete4systemSystem_start(ISystemPK systemPK) {
+        super.addStatement(EMsystemjumps.SQLDelete4systemSystem_start, systemPK.getSQLprimarykey());
     }
 
     /**
      * @param systemPK: foreign key for System
      * @return all Systemjumps Entity objects for System
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getSystemjumpss4systemSystem_start(ISystemPK systemPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Systemjumps.SQLSelect4systemSystem_start, systemPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Systemjumps> getSystemjumpss4systemSystem_start(ISystemPK systemPK) throws CustomException {
+        return super.getEntities(EMsystemjumps.SQLSelect4systemSystem_start, systemPK.getSQLprimarykey());
     }
 
     /**
      * get all Systemjumps objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Systemjumps objects
      * @throws DBException
      */
-    public ArrayList getSystemjumpss(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Systemjumps.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Systemjumps> getSystemjumpss(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMsystemjumps.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Systemjumps>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Systemjumps objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delSystemjumps(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Systemjumps.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delSystemjumps(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Systemjumps.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

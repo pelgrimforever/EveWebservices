@@ -2,17 +2,17 @@
  * Bconstellation.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONConstellation;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMconstellation;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bconstellation extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bconstellation extends BLtable {
 
     /**
      * Constructor, sets Constellation as default Entity
      */
     public Bconstellation() {
-        super(new SQLMapper_pgsql(connectionpool, "Constellation"), new Constellation());
+        super(new Constellation(), new EMconstellation());
     }
 
     /**
@@ -60,34 +60,8 @@ public abstract class Bconstellation extends GeneralEntityObject implements Proj
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bconstellation(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Constellation());
-    }
-
-    /**
-     * Map ResultSet Field values to Constellation
-     * @param dbresult: Database ResultSet
-     */
-    public Constellation mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        ConstellationPK constellationPK = null;
-        Constellation constellation;
-        if(dbresult==null) {
-            constellation = new Constellation(constellationPK);
-        } else {
-            try {
-                constellationPK = new ConstellationPK(dbresult.getLong("id"));
-                constellation = new Constellation(constellationPK);
-                constellation.initRegionPK(new RegionPK(dbresult.getLong("region")));
-                if(dbresult.wasNull()) constellation.setRegionPK(null);                
-                constellation.initName(dbresult.getString("name"));
-                constellation.initNoaccess(dbresult.getBoolean("noaccess"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, constellation);
-        return constellation;
+    public Bconstellation(BLtable transactionobject) {
+        super(transactionobject, new Constellation(), new EMconstellation());
     }
 
     /**
@@ -101,6 +75,7 @@ public abstract class Bconstellation extends GeneralEntityObject implements Proj
     /**
      * create new empty Constellation object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return IConstellation with primary key
      */
     public IConstellation newConstellation(long id) {
@@ -126,6 +101,7 @@ public abstract class Bconstellation extends GeneralEntityObject implements Proj
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new IConstellationPK
      */
     public IConstellationPK newConstellationPK(long id) {
@@ -137,10 +113,8 @@ public abstract class Bconstellation extends GeneralEntityObject implements Proj
      * @return ArrayList of Constellation objects
      * @throws DBException
      */
-    public ArrayList getConstellations() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Constellation.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Constellation> getConstellations() throws DBException {
+        return (ArrayList<Constellation>)super.getEntities(EMconstellation.SQLSelectAll);
     }
 
     /**
@@ -150,21 +124,28 @@ public abstract class Bconstellation extends GeneralEntityObject implements Proj
      * @throws DBException
      */
     public Constellation getConstellation(IConstellationPK constellationPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Constellation)super.getEntity((ConstellationPK)constellationPK);
-        } else return null;
+        return (Constellation)super.getEntity((ConstellationPK)constellationPK);
     }
 
-    public ArrayList searchconstellations(IConstellationsearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search constellation with IConstellationsearch parameters
+     * @param search IConstellationsearch
+     * @return ArrayList of Constellation
+     * @throws DBException 
+     */
+    public ArrayList<Constellation> searchconstellations(IConstellationsearch search) throws DBException {
+        return (ArrayList<Constellation>)this.search(search);
     }
 
-    public ArrayList searchconstellations(IConstellationsearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search constellation with IConstellationsearch parameters, order by orderby sql clause
+     * @param search IConstellationsearch
+     * @param orderby sql order by string
+     * @return ArrayList of Constellation
+     * @throws DBException 
+     */
+    public ArrayList<Constellation> searchconstellations(IConstellationsearch search, String orderby) throws DBException {
+        return (ArrayList<Constellation>)this.search(search, orderby);
     }
 
     /**
@@ -174,32 +155,26 @@ public abstract class Bconstellation extends GeneralEntityObject implements Proj
      * @throws DBException
      */
     public boolean getConstellationExists(IConstellationPK constellationPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((ConstellationPK)constellationPK);
-        } else return false;
+        return super.getEntityExists((ConstellationPK)constellationPK);
     }
 
     /**
      * try to insert Constellation in database
-     * @param film: Constellation object
+     * @param constellation Constellation object
      * @throws DBException
+     * @throws DataException
      */
     public void insertConstellation(IConstellation constellation) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(constellation);
-
-
-
-
-        }
+        super.insertEntity(constellation);
     }
 
     /**
      * check if ConstellationPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Constellation object
+     * @param constellation Constellation object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateConstellation(IConstellation constellation) throws DBException, DataException {
         if(this.getConstellationExists(constellation.getPrimaryKey())) {
@@ -211,50 +186,39 @@ public abstract class Bconstellation extends GeneralEntityObject implements Proj
 
     /**
      * try to update Constellation in database
-     * @param film: Constellation object
+     * @param constellation Constellation object
      * @throws DBException
+     * @throws DataException
      */
     public void updateConstellation(IConstellation constellation) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(constellation);
-
-
-
-
-        }
+        super.updateEntity(constellation);
     }
 
     /**
      * try to delete Constellation in database
-     * @param film: Constellation object
+     * @param constellation Constellation object
      * @throws DBException
      */
     public void deleteConstellation(IConstellation constellation) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteConstellation(constellation.getOwnerobject(), constellation.getPrimaryKey());
-            super.deleteEntity(constellation);
-        }
+        cascadedeleteConstellation(constellation.getPrimaryKey());
+        super.deleteEntity(constellation);
     }
 
     /**
      * check data rules in Constellation, throw DataException with customized message if rules do not apply
-     * @param film: Constellation object
+     * @param constellation Constellation object
      * @throws DataException
      * @throws DBException
      */
     public void checkDATA(IConstellation constellation) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
-
-
         if(constellation.getName()!=null && constellation.getName().length()>IConstellation.SIZE_NAME) {
-            message.append("Name is langer dan toegestaan. Max aantal karakters: " + IConstellation.SIZE_NAME + "\n");
+            message.append("Name is langer dan toegestaan. Max aantal karakters: ").append(IConstellation.SIZE_NAME).append("\n");
         }
-
         if(constellation.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -264,95 +228,94 @@ public abstract class Bconstellation extends GeneralEntityObject implements Proj
      * delete all records in tables where constellationPK is used in a primary key
      * @param constellationPK: Constellation primary key
      */
-    public void cascadedeleteConstellation(String senderobject, IConstellationPK constellationPK) {
+    public void cascadedeleteConstellation(IConstellationPK constellationPK) {
         BLconstellation_neighbour blconstellation_neighbourNeighbour = new BLconstellation_neighbour(this);
-        blconstellation_neighbourNeighbour.delete4constellationNeighbour(senderobject, constellationPK);
+        blconstellation_neighbourNeighbour.delete4constellationNeighbour(constellationPK);
         BLconstellation_neighbour blconstellation_neighbourConstellation = new BLconstellation_neighbour(this);
-        blconstellation_neighbourConstellation.delete4constellationConstellation(senderobject, constellationPK);
+        blconstellation_neighbourConstellation.delete4constellationConstellation(constellationPK);
     }
 
     /**
      * @param regionPK: foreign key for Region
      * @delete all Constellation Entity objects for Region in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4region(String senderobject, IRegionPK regionPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Constellation.SQLDelete4region, regionPK.getKeyFields());
-        }
+    public void delete4region(IRegionPK regionPK) {
+        super.addStatement(EMconstellation.SQLDelete4region, regionPK.getSQLprimarykey());
     }
 
     /**
      * @param regionPK: foreign key for Region
      * @return all Constellation Entity objects for Region
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getConstellations4region(IRegionPK regionPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Constellation.SQLSelect4region, regionPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Constellation> getConstellations4region(IRegionPK regionPK) throws CustomException {
+        return super.getEntities(EMconstellation.SQLSelect4region, regionPK.getSQLprimarykey());
     }
     /**
      * @param constellation_neighbourPK: parent Constellation_neighbour for child object Constellation Entity
      * @return child Constellation Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public IConstellation getConstellation_neighbourneighbour(IConstellation_neighbourPK constellation_neighbourPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            ConstellationPK constellationPK = new ConstellationPK(constellation_neighbourPK.getNeighbour());
-            return this.getConstellation(constellationPK);
-        } else return null;
+    public Constellation getConstellation_neighbourneighbour(IConstellation_neighbourPK constellation_neighbourPK) throws CustomException {
+        ConstellationPK constellationPK = new ConstellationPK(constellation_neighbourPK.getNeighbour());
+        return this.getConstellation(constellationPK);
     }
 
     /**
      * @param constellation_neighbourPK: parent Constellation_neighbour for child object Constellation Entity
      * @return child Constellation Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public IConstellation getConstellation_neighbourconstellation(IConstellation_neighbourPK constellation_neighbourPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            ConstellationPK constellationPK = new ConstellationPK(constellation_neighbourPK.getConstellation());
-            return this.getConstellation(constellationPK);
-        } else return null;
+    public Constellation getConstellation_neighbourconstellation(IConstellation_neighbourPK constellation_neighbourPK) throws CustomException {
+        ConstellationPK constellationPK = new ConstellationPK(constellation_neighbourPK.getConstellation());
+        return this.getConstellation(constellationPK);
     }
 
 
     /**
      * get all Constellation objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Constellation objects
      * @throws DBException
      */
-    public ArrayList getConstellations(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Constellation.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Constellation> getConstellations(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMconstellation.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Constellation>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Constellation objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delConstellation(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Constellation.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delConstellation(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Constellation.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

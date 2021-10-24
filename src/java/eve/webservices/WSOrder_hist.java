@@ -2,7 +2,7 @@
  * WSOrder_hist.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSOrder_hist implements WSIOrder_hist {
         Order_hist order_hist;
         try {
             IEvetypePK evetypePK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            blorder_hist.delete4evetype(this.getClass().getName(), evetypePK);
+            blorder_hist.delete4evetype(evetypePK);
         }
         catch(ParseException e) {
         }
@@ -221,7 +221,7 @@ public class WSOrder_hist implements WSIOrder_hist {
         Order_hist order_hist;
         try {
             ISystemPK systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blorder_hist.delete4system(this.getClass().getName(), systemPK);
+            blorder_hist.delete4system(systemPK);
         }
         catch(ParseException e) {
         }

@@ -2,19 +2,17 @@
  * Bview_security_island_systemcount.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.view;
 
-import BusinessObject.GeneralViewObject;
+import BusinessObject.BLview;
+import db.SQLMapperFactory;
 import data.gis.shape.*;
 import db.SQLMapper_pgsql;
-import eve.data.ProjectConstants;
-import db.ArchiveViewMapper;
-import db.ViewMapper;
-import db.ViewMapperInterface;
+import eve.conversion.entity.EMview_security_island_systemcount;
 import general.exception.*;
 import java.util.ArrayList;
 import eve.logicview.View_security_island_systemcount;
@@ -34,33 +32,13 @@ import org.postgis.PGgeometry;
  *
  * @author Franky Laseure
  */
-public abstract class Bview_security_island_systemcount extends GeneralViewObject implements ProjectConstants {
+public abstract class Bview_security_island_systemcount extends BLview {
 
     /**
      * Constructor, sets View_security_island_systemcount as default Entity
      */
     public Bview_security_island_systemcount() {
-        super(new SQLMapper_pgsql(connectionpool, "View_security_island_systemcount"), new View_security_island_systemcount());
-    }
-
-    /**
-     * Map ResultSet Field values to View_security_island_systemcount
-     * @param dbresult: Database ResultSet
-     */
-    public View_security_island_systemcount mapResultSet2View(ResultSet dbresult) throws SQLException {
-        View_security_island_systemcount view_security_island_systemcount = new View_security_island_systemcount();
-        if(dbresult!=null) {
-            try {
-                view_security_island_systemcount.setId(dbresult.getLong("id"));
-                view_security_island_systemcount.setName(dbresult.getString("name"));
-                view_security_island_systemcount.setSystems(dbresult.getLong("systems"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, view_security_island_systemcount);
-        return view_security_island_systemcount;
+        super(new View_security_island_systemcount(), new EMview_security_island_systemcount());
     }
 
     /**
@@ -68,7 +46,7 @@ public abstract class Bview_security_island_systemcount extends GeneralViewObjec
      * @return ArrayList of View_security_island_systemcount objects
      * @throws DBException
      */
-    public ArrayList getView_security_island_systemcounts() throws DBException {
-        return getMapper().loadViewVector(this, View_security_island_systemcount.SQLSelectAll);
+    public ArrayList<View_security_island_systemcount> getView_security_island_systemcounts() throws DBException {
+        return getEntities(EMview_security_island_systemcount.SQLSelectAll);
     }
 }

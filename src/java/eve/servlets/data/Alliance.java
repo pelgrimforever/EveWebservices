@@ -2,7 +2,7 @@
  * Alliance.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -114,11 +114,11 @@ public class Alliance extends SecurityDataServlet {
                             break;
                         case IAllianceOperation.DELETE_Corporationcreator_corporation:
                             ICorporationPK corporationCreator_corporationPK = (ICorporationPK)parser.getJavaObject("corporationpk");
-                            blalliance.delete4corporationCreator_corporation(this.getServletName(), corporationCreator_corporationPK);
+                            blalliance.delete4corporationCreator_corporation(corporationCreator_corporationPK);
                             break;
                         case IAllianceOperation.DELETE_Corporationexecutor_corporation:
                             ICorporationPK corporationExecutor_corporationPK = (ICorporationPK)parser.getJavaObject("corporationpk");
-                            blalliance.delete4corporationExecutor_corporation(this.getServletName(), corporationExecutor_corporationPK);
+                            blalliance.delete4corporationExecutor_corporation(corporationExecutor_corporationPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

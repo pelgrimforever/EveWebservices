@@ -2,7 +2,7 @@
  * Systemtrade.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -118,11 +118,11 @@ public class Systemtrade extends SecurityDataServlet {
                             break;
                         case ISystemtradeOperation.DELETE_Systemsell_system:
                             ISystemPK systemSell_systemPK = (ISystemPK)parser.getJavaObject("systempk");
-                            blsystemtrade.delete4systemSell_system(this.getServletName(), systemSell_systemPK);
+                            blsystemtrade.delete4systemSell_system(systemSell_systemPK);
                             break;
                         case ISystemtradeOperation.DELETE_Systembuy_system:
                             ISystemPK systemBuy_systemPK = (ISystemPK)parser.getJavaObject("systempk");
-                            blsystemtrade.delete4systemBuy_system(this.getServletName(), systemBuy_systemPK);
+                            blsystemtrade.delete4systemBuy_system(systemBuy_systemPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

@@ -2,17 +2,17 @@
  * Bcategory.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONCategory;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMcategory;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bcategory extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bcategory extends BLtable {
 
     /**
      * Constructor, sets Category as default Entity
      */
     public Bcategory() {
-        super(new SQLMapper_pgsql(connectionpool, "Category"), new Category());
+        super(new Category(), new EMcategory());
     }
 
     /**
@@ -60,32 +60,8 @@ public abstract class Bcategory extends GeneralEntityObject implements ProjectCo
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bcategory(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Category());
-    }
-
-    /**
-     * Map ResultSet Field values to Category
-     * @param dbresult: Database ResultSet
-     */
-    public Category mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        CategoryPK categoryPK = null;
-        Category category;
-        if(dbresult==null) {
-            category = new Category(categoryPK);
-        } else {
-            try {
-                categoryPK = new CategoryPK(dbresult.getLong("id"));
-                category = new Category(categoryPK);
-                category.initName(dbresult.getString("name"));
-                category.initPublished(dbresult.getBoolean("published"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, category);
-        return category;
+    public Bcategory(BLtable transactionobject) {
+        super(transactionobject, new Category(), new EMcategory());
     }
 
     /**
@@ -99,6 +75,7 @@ public abstract class Bcategory extends GeneralEntityObject implements ProjectCo
     /**
      * create new empty Category object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return ICategory with primary key
      */
     public ICategory newCategory(long id) {
@@ -124,6 +101,7 @@ public abstract class Bcategory extends GeneralEntityObject implements ProjectCo
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new ICategoryPK
      */
     public ICategoryPK newCategoryPK(long id) {
@@ -135,10 +113,8 @@ public abstract class Bcategory extends GeneralEntityObject implements ProjectCo
      * @return ArrayList of Category objects
      * @throws DBException
      */
-    public ArrayList getCategorys() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Category.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Category> getCategorys() throws DBException {
+        return (ArrayList<Category>)super.getEntities(EMcategory.SQLSelectAll);
     }
 
     /**
@@ -148,21 +124,28 @@ public abstract class Bcategory extends GeneralEntityObject implements ProjectCo
      * @throws DBException
      */
     public Category getCategory(ICategoryPK categoryPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Category)super.getEntity((CategoryPK)categoryPK);
-        } else return null;
+        return (Category)super.getEntity((CategoryPK)categoryPK);
     }
 
-    public ArrayList searchcategorys(ICategorysearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search category with ICategorysearch parameters
+     * @param search ICategorysearch
+     * @return ArrayList of Category
+     * @throws DBException 
+     */
+    public ArrayList<Category> searchcategorys(ICategorysearch search) throws DBException {
+        return (ArrayList<Category>)this.search(search);
     }
 
-    public ArrayList searchcategorys(ICategorysearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search category with ICategorysearch parameters, order by orderby sql clause
+     * @param search ICategorysearch
+     * @param orderby sql order by string
+     * @return ArrayList of Category
+     * @throws DBException 
+     */
+    public ArrayList<Category> searchcategorys(ICategorysearch search, String orderby) throws DBException {
+        return (ArrayList<Category>)this.search(search, orderby);
     }
 
     /**
@@ -172,31 +155,26 @@ public abstract class Bcategory extends GeneralEntityObject implements ProjectCo
      * @throws DBException
      */
     public boolean getCategoryExists(ICategoryPK categoryPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((CategoryPK)categoryPK);
-        } else return false;
+        return super.getEntityExists((CategoryPK)categoryPK);
     }
 
     /**
      * try to insert Category in database
-     * @param film: Category object
+     * @param category Category object
      * @throws DBException
+     * @throws DataException
      */
     public void insertCategory(ICategory category) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(category);
-
-
-
-        }
+        super.insertEntity(category);
     }
 
     /**
      * check if CategoryPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Category object
+     * @param category Category object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateCategory(ICategory category) throws DBException, DataException {
         if(this.getCategoryExists(category.getPrimaryKey())) {
@@ -208,33 +186,27 @@ public abstract class Bcategory extends GeneralEntityObject implements ProjectCo
 
     /**
      * try to update Category in database
-     * @param film: Category object
+     * @param category Category object
      * @throws DBException
+     * @throws DataException
      */
     public void updateCategory(ICategory category) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(category);
-
-
-
-        }
+        super.updateEntity(category);
     }
 
     /**
      * try to delete Category in database
-     * @param film: Category object
+     * @param category Category object
      * @throws DBException
      */
     public void deleteCategory(ICategory category) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteCategory(category.getOwnerobject(), category.getPrimaryKey());
-            super.deleteEntity(category);
-        }
+        cascadedeleteCategory(category.getPrimaryKey());
+        super.deleteEntity(category);
     }
 
     /**
      * check data rules in Category, throw DataException with customized message if rules do not apply
-     * @param film: Category object
+     * @param category Category object
      * @throws DataException
      * @throws DBException
      */
@@ -242,13 +214,11 @@ public abstract class Bcategory extends GeneralEntityObject implements ProjectCo
         StringBuffer message = new StringBuffer();
         //Primary key
         if(category.getName()!=null && category.getName().length()>ICategory.SIZE_NAME) {
-            message.append("Name is langer dan toegestaan. Max aantal karakters: " + ICategory.SIZE_NAME + "\n");
+            message.append("Name is langer dan toegestaan. Max aantal karakters: ").append(ICategory.SIZE_NAME).append("\n");
         }
-
         if(category.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -258,46 +228,54 @@ public abstract class Bcategory extends GeneralEntityObject implements ProjectCo
      * delete all records in tables where categoryPK is used in a primary key
      * @param categoryPK: Category primary key
      */
-    public void cascadedeleteCategory(String senderobject, ICategoryPK categoryPK) {
+    public void cascadedeleteCategory(ICategoryPK categoryPK) {
     }
 
 
     /**
      * get all Category objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Category objects
      * @throws DBException
      */
-    public ArrayList getCategorys(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Category.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Category> getCategorys(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMcategory.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Category>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Category objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delCategory(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Category.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delCategory(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Category.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

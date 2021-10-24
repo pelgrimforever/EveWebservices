@@ -2,7 +2,7 @@
  * WSSystemtrade.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSSystemtrade implements WSISystemtrade {
         Systemtrade systemtrade;
         try {
             ISystemPK systemSell_systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blsystemtrade.delete4systemSell_system(this.getClass().getName(), systemSell_systemPK);
+            blsystemtrade.delete4systemSell_system(systemSell_systemPK);
         }
         catch(ParseException e) {
         }
@@ -221,7 +221,7 @@ public class WSSystemtrade implements WSISystemtrade {
         Systemtrade systemtrade;
         try {
             ISystemPK systemBuy_systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blsystemtrade.delete4systemBuy_system(this.getClass().getName(), systemBuy_systemPK);
+            blsystemtrade.delete4systemBuy_system(systemBuy_systemPK);
         }
         catch(ParseException e) {
         }

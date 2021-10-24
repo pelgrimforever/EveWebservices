@@ -9,17 +9,14 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.ITrade;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import eve.BusinessObject.table.Btrade;
+import eve.conversion.entity.EMtrade;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLtrade;
 import eve.interfaces.entity.pk.ITradePK;
 import eve.logicentity.Orders;
 import eve.logicentity.Trade;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -33,7 +30,7 @@ import java.util.Iterator;
  *
  * @author Franky Laseure
  */
-public class BLtrade extends Btrade implements IBLtrade {
+public class BLtrade extends Btrade {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -50,19 +47,11 @@ public class BLtrade extends Btrade implements IBLtrade {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLtrade(GeneralEntityObject transactionobject) {
+    public BLtrade(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity trade) throws SQLException {
-        
-    }
-    
     /**
      * update all trade lines that contain a sell or buy order from this trade line
      * @param tradePK: trade primary key
@@ -71,7 +60,7 @@ public class BLtrade extends Btrade implements IBLtrade {
      * @throws DataException 
      */
     public void executetrade(ITradePK tradePK, long volume) throws DBException, DataException {
-        ArrayList trades = getMapper().loadEntityVector(this, Trade.SQLSellBuyOrders, tradePK.getKeyFields());
+        ArrayList trades = getEntities(EMtrade.SQLSellBuyOrders, tradePK.getSQLprimarykey());
         BLorders blorders = new BLorders();
         Orders sellorder = blorders.getOrders(tradePK.getOrderssell_order_idPK());
         Orders buyorder = blorders.getOrders(tradePK.getOrdersbuy_order_idPK());
@@ -131,7 +120,7 @@ public class BLtrade extends Btrade implements IBLtrade {
      * @throws DataException 
      */
     public void deletetrade() throws DBException, DataException {
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Trade.SQLdeleteall, null);
+        this.addStatement(EMtrade.SQLdeleteall);
         this.Commit2DB();
     }
     

@@ -2,17 +2,17 @@
  * Blocation.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONLocation;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMlocation;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Blocation extends GeneralEntityObject implements ProjectConstants {
+public abstract class Blocation extends BLtable {
 
     /**
      * Constructor, sets Location as default Entity
      */
     public Blocation() {
-        super(new SQLMapper_pgsql(connectionpool, "Location"), new Location());
+        super(new Location(), new EMlocation());
     }
 
     /**
@@ -60,35 +60,8 @@ public abstract class Blocation extends GeneralEntityObject implements ProjectCo
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Blocation(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Location());
-    }
-
-    /**
-     * Map ResultSet Field values to Location
-     * @param dbresult: Database ResultSet
-     */
-    public Location mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        LocationPK locationPK = null;
-        Location location;
-        if(dbresult==null) {
-            location = new Location(locationPK);
-        } else {
-            try {
-                locationPK = new LocationPK(dbresult.getLong("id"));
-                location = new Location(locationPK);
-                location.initSystemPK(new SystemPK(dbresult.getLong("system")));
-                if(dbresult.wasNull()) location.setSystemPK(null);                
-                location.initName(dbresult.getString("name"));
-                location.initVisited(dbresult.getBoolean("visited"));
-                location.initAccess(dbresult.getBoolean("access"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, location);
-        return location;
+    public Blocation(BLtable transactionobject) {
+        super(transactionobject, new Location(), new EMlocation());
     }
 
     /**
@@ -102,6 +75,7 @@ public abstract class Blocation extends GeneralEntityObject implements ProjectCo
     /**
      * create new empty Location object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return ILocation with primary key
      */
     public ILocation newLocation(long id) {
@@ -127,6 +101,7 @@ public abstract class Blocation extends GeneralEntityObject implements ProjectCo
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new ILocationPK
      */
     public ILocationPK newLocationPK(long id) {
@@ -138,10 +113,8 @@ public abstract class Blocation extends GeneralEntityObject implements ProjectCo
      * @return ArrayList of Location objects
      * @throws DBException
      */
-    public ArrayList getLocations() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Location.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Location> getLocations() throws DBException {
+        return (ArrayList<Location>)super.getEntities(EMlocation.SQLSelectAll);
     }
 
     /**
@@ -151,21 +124,28 @@ public abstract class Blocation extends GeneralEntityObject implements ProjectCo
      * @throws DBException
      */
     public Location getLocation(ILocationPK locationPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Location)super.getEntity((LocationPK)locationPK);
-        } else return null;
+        return (Location)super.getEntity((LocationPK)locationPK);
     }
 
-    public ArrayList searchlocations(ILocationsearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search location with ILocationsearch parameters
+     * @param search ILocationsearch
+     * @return ArrayList of Location
+     * @throws DBException 
+     */
+    public ArrayList<Location> searchlocations(ILocationsearch search) throws DBException {
+        return (ArrayList<Location>)this.search(search);
     }
 
-    public ArrayList searchlocations(ILocationsearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search location with ILocationsearch parameters, order by orderby sql clause
+     * @param search ILocationsearch
+     * @param orderby sql order by string
+     * @return ArrayList of Location
+     * @throws DBException 
+     */
+    public ArrayList<Location> searchlocations(ILocationsearch search, String orderby) throws DBException {
+        return (ArrayList<Location>)this.search(search, orderby);
     }
 
     /**
@@ -175,33 +155,26 @@ public abstract class Blocation extends GeneralEntityObject implements ProjectCo
      * @throws DBException
      */
     public boolean getLocationExists(ILocationPK locationPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((LocationPK)locationPK);
-        } else return false;
+        return super.getEntityExists((LocationPK)locationPK);
     }
 
     /**
      * try to insert Location in database
-     * @param film: Location object
+     * @param location Location object
      * @throws DBException
+     * @throws DataException
      */
     public void insertLocation(ILocation location) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(location);
-
-
-
-
-
-        }
+        super.insertEntity(location);
     }
 
     /**
      * check if LocationPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Location object
+     * @param location Location object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateLocation(ILocation location) throws DBException, DataException {
         if(this.getLocationExists(location.getPrimaryKey())) {
@@ -213,49 +186,36 @@ public abstract class Blocation extends GeneralEntityObject implements ProjectCo
 
     /**
      * try to update Location in database
-     * @param film: Location object
+     * @param location Location object
      * @throws DBException
+     * @throws DataException
      */
     public void updateLocation(ILocation location) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(location);
-
-
-
-
-
-        }
+        super.updateEntity(location);
     }
 
     /**
      * try to delete Location in database
-     * @param film: Location object
+     * @param location Location object
      * @throws DBException
      */
     public void deleteLocation(ILocation location) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteLocation(location.getOwnerobject(), location.getPrimaryKey());
-            super.deleteEntity(location);
-        }
+        cascadedeleteLocation(location.getPrimaryKey());
+        super.deleteEntity(location);
     }
 
     /**
      * check data rules in Location, throw DataException with customized message if rules do not apply
-     * @param film: Location object
+     * @param location Location object
      * @throws DataException
      * @throws DBException
      */
     public void checkDATA(ILocation location) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
-
-
         if(location.getName()!=null && location.getName().length()>ILocation.SIZE_NAME) {
-            message.append("Name is langer dan toegestaan. Max aantal karakters: " + ILocation.SIZE_NAME + "\n");
+            message.append("Name is langer dan toegestaan. Max aantal karakters: ").append(ILocation.SIZE_NAME).append("\n");
         }
-
-
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -265,67 +225,70 @@ public abstract class Blocation extends GeneralEntityObject implements ProjectCo
      * delete all records in tables where locationPK is used in a primary key
      * @param locationPK: Location primary key
      */
-    public void cascadedeleteLocation(String senderobject, ILocationPK locationPK) {
+    public void cascadedeleteLocation(ILocationPK locationPK) {
     }
 
     /**
      * @param systemPK: foreign key for System
      * @delete all Location Entity objects for System in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4system(String senderobject, ISystemPK systemPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Location.SQLDelete4system, systemPK.getKeyFields());
-        }
+    public void delete4system(ISystemPK systemPK) {
+        super.addStatement(EMlocation.SQLDelete4system, systemPK.getSQLprimarykey());
     }
 
     /**
      * @param systemPK: foreign key for System
      * @return all Location Entity objects for System
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getLocations4system(ISystemPK systemPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Location.SQLSelect4system, systemPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Location> getLocations4system(ISystemPK systemPK) throws CustomException {
+        return super.getEntities(EMlocation.SQLSelect4system, systemPK.getSQLprimarykey());
     }
 
     /**
      * get all Location objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Location objects
      * @throws DBException
      */
-    public ArrayList getLocations(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Location.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Location> getLocations(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMlocation.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Location>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Location objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delLocation(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Location.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delLocation(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Location.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

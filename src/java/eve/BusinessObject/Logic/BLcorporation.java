@@ -9,10 +9,9 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.ICorporation;
 import eve.logicentity.Corporation;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import data.conversion.JSONConversion;
 import eve.BusinessObject.table.Bcorporation;
 import eve.data.Swagger;
@@ -20,14 +19,6 @@ import eve.entity.pk.AlliancePK;
 import eve.entity.pk.FactionPK;
 import eve.entity.pk.StationPK;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLcorporation;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import org.json.simple.JSONObject;
 
 /**
@@ -40,7 +31,7 @@ import org.json.simple.JSONObject;
  *
  * @author Franky Laseure
  */
-public class BLcorporation extends Bcorporation implements IBLcorporation {
+public class BLcorporation extends Bcorporation {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -57,19 +48,11 @@ public class BLcorporation extends Bcorporation implements IBLcorporation {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLcorporation(GeneralEntityObject transactionobject) {
+    public BLcorporation(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity corporation) throws SQLException {
-        
-    }
-    
     public void updateCorporation(JSONObject jsoncorporationdetails) throws DBException, DataException {
         Corporation corporation = new Corporation(JSONConversion.getLong(jsoncorporationdetails, "corporation_id"));
         corporation.setName(JSONConversion.getString(jsoncorporationdetails, "name"));

@@ -2,7 +2,7 @@
  * WSStocktrade.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSStocktrade implements WSIStocktrade {
         Stocktrade stocktrade;
         try {
             IStockPK stockPK = JSONStock.toStockPK((JSONObject)parser.parse(json));
-            blstocktrade.delete4stock(this.getClass().getName(), stockPK);
+            blstocktrade.delete4stock(stockPK);
         }
         catch(ParseException e) {
         }

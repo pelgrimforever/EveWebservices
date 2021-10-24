@@ -2,7 +2,7 @@
  * Station.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -122,15 +122,15 @@ public class Station extends SecurityDataServlet {
                             break;
                         case IStationOperation.DELETE_Race:
                             IRacePK racePK = (IRacePK)parser.getJavaObject("racepk");
-                            blstation.delete4race(this.getServletName(), racePK);
+                            blstation.delete4race(racePK);
                             break;
                         case IStationOperation.DELETE_Evetype:
                             IEvetypePK evetypePK = (IEvetypePK)parser.getJavaObject("evetypepk");
-                            blstation.delete4evetype(this.getServletName(), evetypePK);
+                            blstation.delete4evetype(evetypePK);
                             break;
                         case IStationOperation.DELETE_System:
                             ISystemPK systemPK = (ISystemPK)parser.getJavaObject("systempk");
-                            blstation.delete4system(this.getServletName(), systemPK);
+                            blstation.delete4system(systemPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

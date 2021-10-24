@@ -9,16 +9,12 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import general.exception.DataException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IStocktrade;
 import eve.logicentity.Stocktrade;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import eve.BusinessObject.table.Bstocktrade;
+import eve.conversion.entity.EMstocktrade;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLstocktrade;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * Business Logic Entity class BLstocktrade
@@ -30,7 +26,7 @@ import java.sql.SQLException;
  *
  * @author Franky Laseure
  */
-public class BLstocktrade extends Bstocktrade implements IBLstocktrade {
+public class BLstocktrade extends Bstocktrade {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -47,7 +43,7 @@ public class BLstocktrade extends Bstocktrade implements IBLstocktrade {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLstocktrade(GeneralEntityObject transactionobject) {
+    public BLstocktrade(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
@@ -58,24 +54,16 @@ public class BLstocktrade extends Bstocktrade implements IBLstocktrade {
      * @throws DataException 
      */
     public void deletestocktrade() throws DBException, DataException {
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Stocktrade.SQLdeleteall, null);
+        this.addStatement(EMstocktrade.SQLdeleteall);
         this.Commit2DB();
-    }
-    
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity stocktrade) throws SQLException {
-        
     }
     
     /**
      * try to insert Stocktrade object in database
      * commit transaction
      * @param stocktrade: Stocktrade Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void insertStocktrade(IStocktrade stocktrade) throws DBException, DataException {
@@ -88,8 +76,8 @@ public class BLstocktrade extends Bstocktrade implements IBLstocktrade {
      * an alternative to insertStocktrade, which can be made an empty function
      * commit transaction
      * @param stocktrade: Stocktrade Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureinsertStocktrade(IStocktrade stocktrade) throws DBException, DataException {
         trans_insertStocktrade(stocktrade);
@@ -100,8 +88,8 @@ public class BLstocktrade extends Bstocktrade implements IBLstocktrade {
      * try to update Stocktrade object in database
      * commit transaction
      * @param stocktrade: Stocktrade Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void updateStocktrade(IStocktrade stocktrade) throws DBException, DataException {
@@ -114,8 +102,8 @@ public class BLstocktrade extends Bstocktrade implements IBLstocktrade {
      * an alternative to updateStocktrade, which can be made an empty function
      * commit transaction
      * @param stocktrade: Stocktrade Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureupdateStocktrade(IStocktrade stocktrade) throws DBException, DataException {
         trans_updateStocktrade(stocktrade);
@@ -126,7 +114,7 @@ public class BLstocktrade extends Bstocktrade implements IBLstocktrade {
      * try to delete Stocktrade object in database
      * commit transaction
      * @param stocktrade: Stocktrade Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     @Override
     public void deleteStocktrade(IStocktrade stocktrade) throws DBException {
@@ -139,7 +127,7 @@ public class BLstocktrade extends Bstocktrade implements IBLstocktrade {
      * an alternative to deleteStocktrade, which can be made an empty function
      * commit transaction
      * @param stocktrade: Stocktrade Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void securedeleteStocktrade(IStocktrade stocktrade) throws DBException {
         trans_deleteStocktrade(stocktrade);
@@ -150,8 +138,8 @@ public class BLstocktrade extends Bstocktrade implements IBLstocktrade {
      * try to insert Stocktrade object in database
      * do not commit transaction
      * @param stocktrade: Stocktrade Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_insertStocktrade(IStocktrade stocktrade) throws DBException, DataException {
         super.checkDATA(stocktrade);
@@ -162,8 +150,8 @@ public class BLstocktrade extends Bstocktrade implements IBLstocktrade {
      * try to update Stocktrade object in database
      * do not commit transaction
      * @param stocktrade: Stocktrade Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_updateStocktrade(IStocktrade stocktrade) throws DBException, DataException {
         super.checkDATA(stocktrade);
@@ -174,7 +162,7 @@ public class BLstocktrade extends Bstocktrade implements IBLstocktrade {
      * try to delete Stocktrade object in database
      * do not commit transaction
      * @param stocktrade: Stocktrade Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void trans_deleteStocktrade(IStocktrade stocktrade) throws DBException {
         super.deleteStocktrade((Stocktrade)stocktrade);

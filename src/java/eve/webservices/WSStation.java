@@ -2,7 +2,7 @@
  * WSStation.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSStation implements WSIStation {
         Station station;
         try {
             IRacePK racePK = JSONRace.toRacePK((JSONObject)parser.parse(json));
-            blstation.delete4race(this.getClass().getName(), racePK);
+            blstation.delete4race(racePK);
         }
         catch(ParseException e) {
         }
@@ -221,7 +221,7 @@ public class WSStation implements WSIStation {
         Station station;
         try {
             IEvetypePK evetypePK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            blstation.delete4evetype(this.getClass().getName(), evetypePK);
+            blstation.delete4evetype(evetypePK);
         }
         catch(ParseException e) {
         }
@@ -258,7 +258,7 @@ public class WSStation implements WSIStation {
         Station station;
         try {
             ISystemPK systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blstation.delete4system(this.getClass().getName(), systemPK);
+            blstation.delete4system(systemPK);
         }
         catch(ParseException e) {
         }

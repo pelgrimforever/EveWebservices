@@ -8,21 +8,16 @@
 
 package eve.BusinessObject.Logic;
 
-import BusinessObject.BLRecordcount;
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.ITmp_system_jumps;
 import eve.logicentity.Tmp_system_jumps;
-import BusinessObject.GeneralEntityObject;
-import data.interfaces.db.Recordcount;
+import BusinessObject.BLtable;
+import db.SQLparameters;
 import eve.BusinessObject.table.Btmp_system_jumps;
-import eve.data.Swagger;
+import eve.conversion.entity.EMtmp_system_jumps;
 import eve.entity.pk.Security_islandPK;
 import eve.entity.pk.Tmp_system_jumpsPK;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLtmp_system_jumps;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -35,7 +30,7 @@ import java.util.ArrayList;
  *
  * @author Franky Laseure
  */
-public class BLtmp_system_jumps extends Btmp_system_jumps implements IBLtmp_system_jumps {
+public class BLtmp_system_jumps extends Btmp_system_jumps {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -52,17 +47,9 @@ public class BLtmp_system_jumps extends Btmp_system_jumps implements IBLtmp_syst
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLtmp_system_jumps(GeneralEntityObject transactionobject) {
+    public BLtmp_system_jumps(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
-    }
-
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity tmp_system_jumps) throws SQLException {
-        
     }
 
     /**
@@ -73,8 +60,8 @@ public class BLtmp_system_jumps extends Btmp_system_jumps implements IBLtmp_syst
      * @throws DataException 
      */
     public void copySystems(Security_islandPK security_islandPK) throws DBException, DataException {
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Tmp_system_jumps.SQLDeleteAll, null);
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Tmp_system_jumps.SQLCopySystems4Security_island, security_islandPK.getKeyFields());
+        this.addStatement(EMtmp_system_jumps.SQLDeleteAll);
+        this.addStatement(sqlmapper.insertParameters(EMtmp_system_jumps.SQLCopySystems4Security_island, security_islandPK.getSQLprimarykey()));
         this.Commit2DB();
     }
     
@@ -86,7 +73,7 @@ public class BLtmp_system_jumps extends Btmp_system_jumps implements IBLtmp_syst
      */
     public void resetJumps(Tmp_system_jumpsPK tmp_system_jumpsPK) throws DBException, DataException {
         //reset all
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Tmp_system_jumps.SQLResetJump, null);
+        this.addStatement(EMtmp_system_jumps.SQLResetJump);
         //update jump field in database
         Tmp_system_jumps system = this.getTmp_system_jumps(tmp_system_jumpsPK);
         system.setJump(0);
@@ -113,10 +100,7 @@ public class BLtmp_system_jumps extends Btmp_system_jumps implements IBLtmp_syst
      * @throws DBException 
      */
     public long countNojump() throws DBException {
-        BLview_security_island_systemcount dummy = new BLview_security_island_systemcount();
-        BLRecordcount blrecordcount = new BLRecordcount(dummy.getMapper());
-        Recordcount recordcount = (Recordcount)dummy.getMapper().loadView(blrecordcount, Tmp_system_jumps.SQLSelectnojump);
-        return recordcount.getCount();
+        return count(EMtmp_system_jumps.SQLSelectnojump, null);
     }
     
     /**
@@ -129,7 +113,7 @@ public class BLtmp_system_jumps extends Btmp_system_jumps implements IBLtmp_syst
      */
     public void updateNextjump(int jump) throws DBException, DataException {
         Object[][] parameter = {{ "jump", jump} , { "nextjump", jump+1 } };
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Tmp_system_jumps.SQLSetnextjump, parameter);
+        this.addStatement(sqlmapper.insertParameters(EMtmp_system_jumps.SQLSetnextjump, parameter));
         this.Commit2DB();
     }
     
@@ -141,15 +125,16 @@ public class BLtmp_system_jumps extends Btmp_system_jumps implements IBLtmp_syst
      */
     public ArrayList getSystems4jump(int jump) throws DBException {
         Object[][] parameter = { { "jump", jump } };
-        return getMapper().loadEntityVector(this, Tmp_system_jumps.SQLSelect4jump, parameter);
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        return getEntities(EMtmp_system_jumps.SQLSelect4jump, sqlparameters);
     }    
     
     /**
      * try to insert Tmp_system_jumps object in database
      * commit transaction
      * @param tmp_system_jumps: Tmp_system_jumps Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void insertTmp_system_jumps(ITmp_system_jumps tmp_system_jumps) throws DBException, DataException {
@@ -162,8 +147,8 @@ public class BLtmp_system_jumps extends Btmp_system_jumps implements IBLtmp_syst
      * an alternative to insertTmp_system_jumps, which can be made an empty function
      * commit transaction
      * @param tmp_system_jumps: Tmp_system_jumps Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureinsertTmp_system_jumps(ITmp_system_jumps tmp_system_jumps) throws DBException, DataException {
         trans_insertTmp_system_jumps(tmp_system_jumps);
@@ -174,8 +159,8 @@ public class BLtmp_system_jumps extends Btmp_system_jumps implements IBLtmp_syst
      * try to update Tmp_system_jumps object in database
      * commit transaction
      * @param tmp_system_jumps: Tmp_system_jumps Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void updateTmp_system_jumps(ITmp_system_jumps tmp_system_jumps) throws DBException, DataException {
@@ -188,8 +173,8 @@ public class BLtmp_system_jumps extends Btmp_system_jumps implements IBLtmp_syst
      * an alternative to updateTmp_system_jumps, which can be made an empty function
      * commit transaction
      * @param tmp_system_jumps: Tmp_system_jumps Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureupdateTmp_system_jumps(ITmp_system_jumps tmp_system_jumps) throws DBException, DataException {
         trans_updateTmp_system_jumps(tmp_system_jumps);
@@ -200,7 +185,7 @@ public class BLtmp_system_jumps extends Btmp_system_jumps implements IBLtmp_syst
      * try to delete Tmp_system_jumps object in database
      * commit transaction
      * @param tmp_system_jumps: Tmp_system_jumps Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     @Override
     public void deleteTmp_system_jumps(ITmp_system_jumps tmp_system_jumps) throws DBException {
@@ -213,7 +198,7 @@ public class BLtmp_system_jumps extends Btmp_system_jumps implements IBLtmp_syst
      * an alternative to deleteTmp_system_jumps, which can be made an empty function
      * commit transaction
      * @param tmp_system_jumps: Tmp_system_jumps Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void securedeleteTmp_system_jumps(ITmp_system_jumps tmp_system_jumps) throws DBException {
         trans_deleteTmp_system_jumps(tmp_system_jumps);
@@ -224,8 +209,8 @@ public class BLtmp_system_jumps extends Btmp_system_jumps implements IBLtmp_syst
      * try to insert Tmp_system_jumps object in database
      * do not commit transaction
      * @param tmp_system_jumps: Tmp_system_jumps Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_insertTmp_system_jumps(ITmp_system_jumps tmp_system_jumps) throws DBException, DataException {
         super.checkDATA(tmp_system_jumps);
@@ -236,8 +221,8 @@ public class BLtmp_system_jumps extends Btmp_system_jumps implements IBLtmp_syst
      * try to update Tmp_system_jumps object in database
      * do not commit transaction
      * @param tmp_system_jumps: Tmp_system_jumps Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_updateTmp_system_jumps(ITmp_system_jumps tmp_system_jumps) throws DBException, DataException {
         super.checkDATA(tmp_system_jumps);
@@ -248,7 +233,7 @@ public class BLtmp_system_jumps extends Btmp_system_jumps implements IBLtmp_syst
      * try to delete Tmp_system_jumps object in database
      * do not commit transaction
      * @param tmp_system_jumps: Tmp_system_jumps Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void trans_deleteTmp_system_jumps(ITmp_system_jumps tmp_system_jumps) throws DBException {
         super.deleteTmp_system_jumps((Tmp_system_jumps)tmp_system_jumps);

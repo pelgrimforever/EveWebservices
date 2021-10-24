@@ -2,7 +2,7 @@
  * WSStock.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSStock implements WSIStock {
         Stock stock;
         try {
             IEvetypePK evetypePK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            blstock.delete4evetype(this.getClass().getName(), evetypePK);
+            blstock.delete4evetype(evetypePK);
         }
         catch(ParseException e) {
         }

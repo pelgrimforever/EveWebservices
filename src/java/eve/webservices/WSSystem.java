@@ -2,7 +2,7 @@
  * WSSystem.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSSystem implements WSISystem {
         System system;
         try {
             ISecurity_islandPK security_islandPK = JSONSecurity_island.toSecurity_islandPK((JSONObject)parser.parse(json));
-            blsystem.delete4security_island(this.getClass().getName(), security_islandPK);
+            blsystem.delete4security_island(security_islandPK);
         }
         catch(ParseException e) {
         }
@@ -221,7 +221,7 @@ public class WSSystem implements WSISystem {
         System system;
         try {
             IConstellationPK constellationPK = JSONConstellation.toConstellationPK((JSONObject)parser.parse(json));
-            blsystem.delete4constellation(this.getClass().getName(), constellationPK);
+            blsystem.delete4constellation(constellationPK);
         }
         catch(ParseException e) {
         }

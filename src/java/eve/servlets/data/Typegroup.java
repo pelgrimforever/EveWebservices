@@ -2,7 +2,7 @@
  * Typegroup.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -110,7 +110,7 @@ public class Typegroup extends SecurityDataServlet {
                             break;
                         case ITypegroupOperation.DELETE_Category:
                             ICategoryPK categoryPK = (ICategoryPK)parser.getJavaObject("categorypk");
-                            bltypegroup.delete4category(this.getServletName(), categoryPK);
+                            bltypegroup.delete4category(categoryPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

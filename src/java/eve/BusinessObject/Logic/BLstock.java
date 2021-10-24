@@ -9,15 +9,11 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IStock;
 import eve.logicentity.Stock;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import eve.BusinessObject.table.Bstock;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLstock;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * Business Logic Entity class BLstock
@@ -29,7 +25,7 @@ import java.sql.SQLException;
  *
  * @author Franky Laseure
  */
-public class BLstock extends Bstock implements IBLstock {
+public class BLstock extends Bstock {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -46,17 +42,9 @@ public class BLstock extends Bstock implements IBLstock {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLstock(GeneralEntityObject transactionobject) {
+    public BLstock(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
-    }
-
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity stock) throws SQLException {
-        
     }
 
     /**
@@ -92,7 +80,7 @@ public class BLstock extends Bstock implements IBLstock {
         if(stock!=null) {
             stock.setAmount(stock.getAmount() - newstock.getAmount());
             if(stock.getAmount()==0) {
-                blstocktrade.delete4stock(this.getClass().getName(), stock.getPrimaryKey());
+                blstocktrade.delete4stock(stock.getPrimaryKey());
                 this.deleteStock(stock);
             } else {
                 this.trans_updateStock(stock);

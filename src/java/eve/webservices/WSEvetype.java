@@ -2,7 +2,7 @@
  * WSEvetype.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSEvetype implements WSIEvetype {
         Evetype evetype;
         try {
             IMarket_groupPK market_groupPK = JSONMarket_group.toMarket_groupPK((JSONObject)parser.parse(json));
-            blevetype.delete4market_group(this.getClass().getName(), market_groupPK);
+            blevetype.delete4market_group(market_groupPK);
         }
         catch(ParseException e) {
         }
@@ -221,7 +221,7 @@ public class WSEvetype implements WSIEvetype {
         Evetype evetype;
         try {
             ITypegroupPK typegroupPK = JSONTypegroup.toTypegroupPK((JSONObject)parser.parse(json));
-            blevetype.delete4typegroup(this.getClass().getName(), typegroupPK);
+            blevetype.delete4typegroup(typegroupPK);
         }
         catch(ParseException e) {
         }
@@ -258,7 +258,7 @@ public class WSEvetype implements WSIEvetype {
         Evetype evetype;
         try {
             IGraphicPK graphicPK = JSONGraphic.toGraphicPK((JSONObject)parser.parse(json));
-            blevetype.delete4graphic(this.getClass().getName(), graphicPK);
+            blevetype.delete4graphic(graphicPK);
         }
         catch(ParseException e) {
         }

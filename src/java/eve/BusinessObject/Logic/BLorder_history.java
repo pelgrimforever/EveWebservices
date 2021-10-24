@@ -9,17 +9,14 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IOrder_history;
 import eve.logicentity.Order_history;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import data.conversion.JSONConversion;
 import eve.BusinessObject.table.Border_history;
+import eve.conversion.entity.EMorder_history;
 import eve.data.Swagger;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLorder_history;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import org.json.simple.JSONObject;
 
 /**
@@ -32,7 +29,7 @@ import org.json.simple.JSONObject;
  *
  * @author Franky Laseure
  */
-public class BLorder_history extends Border_history implements IBLorder_history {
+public class BLorder_history extends Border_history {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -49,21 +46,13 @@ public class BLorder_history extends Border_history implements IBLorder_history 
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLorder_history(GeneralEntityObject transactionobject) {
+    public BLorder_history(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity order_history) throws SQLException {
-        
-    }
-    
     public void deleteorders() throws DBException, DataException {
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Order_history.SQLdeleteall, null);
+        this.addStatement(EMorder_history.SQLdeleteall);
         this.Commit2DB();
     }
     
@@ -82,8 +71,8 @@ public class BLorder_history extends Border_history implements IBLorder_history 
      * try to insert Order_history object in database
      * commit transaction
      * @param order_history: Order_history Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void insertOrder_history(IOrder_history order_history) throws DBException, DataException {
@@ -96,8 +85,8 @@ public class BLorder_history extends Border_history implements IBLorder_history 
      * an alternative to insertOrder_history, which can be made an empty function
      * commit transaction
      * @param order_history: Order_history Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureinsertOrder_history(IOrder_history order_history) throws DBException, DataException {
         trans_insertOrder_history(order_history);
@@ -108,8 +97,8 @@ public class BLorder_history extends Border_history implements IBLorder_history 
      * try to update Order_history object in database
      * commit transaction
      * @param order_history: Order_history Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void updateOrder_history(IOrder_history order_history) throws DBException, DataException {
@@ -122,8 +111,8 @@ public class BLorder_history extends Border_history implements IBLorder_history 
      * an alternative to updateOrder_history, which can be made an empty function
      * commit transaction
      * @param order_history: Order_history Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureupdateOrder_history(IOrder_history order_history) throws DBException, DataException {
         trans_updateOrder_history(order_history);
@@ -134,7 +123,7 @@ public class BLorder_history extends Border_history implements IBLorder_history 
      * try to delete Order_history object in database
      * commit transaction
      * @param order_history: Order_history Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     @Override
     public void deleteOrder_history(IOrder_history order_history) throws DBException {
@@ -147,7 +136,7 @@ public class BLorder_history extends Border_history implements IBLorder_history 
      * an alternative to deleteOrder_history, which can be made an empty function
      * commit transaction
      * @param order_history: Order_history Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void securedeleteOrder_history(IOrder_history order_history) throws DBException {
         trans_deleteOrder_history(order_history);
@@ -158,8 +147,8 @@ public class BLorder_history extends Border_history implements IBLorder_history 
      * try to insert Order_history object in database
      * do not commit transaction
      * @param order_history: Order_history Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_insertOrder_history(IOrder_history order_history) throws DBException, DataException {
         super.checkDATA(order_history);
@@ -170,8 +159,8 @@ public class BLorder_history extends Border_history implements IBLorder_history 
      * try to update Order_history object in database
      * do not commit transaction
      * @param order_history: Order_history Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_updateOrder_history(IOrder_history order_history) throws DBException, DataException {
         super.checkDATA(order_history);
@@ -182,7 +171,7 @@ public class BLorder_history extends Border_history implements IBLorder_history 
      * try to delete Order_history object in database
      * do not commit transaction
      * @param order_history: Order_history Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void trans_deleteOrder_history(IOrder_history order_history) throws DBException {
         super.deleteOrder_history((Order_history)order_history);

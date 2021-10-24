@@ -1,7 +1,7 @@
 /*
  * RSView_combinedtrade.java
  *
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 

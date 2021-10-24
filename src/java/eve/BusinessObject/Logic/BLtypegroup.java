@@ -8,25 +8,17 @@
 
 package eve.BusinessObject.Logic;
 
-import BusinessObject.BLRecordcount;
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.ITypegroup;
 import eve.logicentity.Typegroup;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import data.conversion.JSONConversion;
-import data.interfaces.db.Recordcount;
-import db.AbstractSQLMapper;
-import db.ViewMapper;
 import eve.BusinessObject.table.Btypegroup;
+import eve.conversion.entity.EMtypegroup;
 import eve.entity.pk.CategoryPK;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLtypegroup;
 import eve.interfaces.entity.pk.ICategoryPK;
-import eve.logicentity.Evetype;
 import general.exception.CustomException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import org.json.simple.JSONObject;
 
 /**
@@ -39,7 +31,7 @@ import org.json.simple.JSONObject;
  *
  * @author Franky Laseure
  */
-public class BLtypegroup extends Btypegroup implements IBLtypegroup {
+public class BLtypegroup extends Btypegroup {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -47,6 +39,7 @@ public class BLtypegroup extends Btypegroup implements IBLtypegroup {
      * Constructor, sets Typegroup as default Entity
      */
     public BLtypegroup() {
+        super();
         this.setLogginrequired(isprivatetable);
     }
 
@@ -56,25 +49,18 @@ public class BLtypegroup extends Btypegroup implements IBLtypegroup {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLtypegroup(GeneralEntityObject transactionobject) {
+    public BLtypegroup(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity typegroup) throws SQLException {
-        
-    }
-    
-    public void updateTypegroup(JSONObject jsongroupdetails) throws DBException, DataException {
+    public Typegroup updateTypegroup(JSONObject jsongroupdetails) throws DBException, DataException {
         Typegroup typegroup = new Typegroup(JSONConversion.getLong(jsongroupdetails, "group_id"));
         typegroup.setName(JSONConversion.getString(jsongroupdetails, "name"));
         typegroup.setCategoryPK(new CategoryPK(JSONConversion.getLong(jsongroupdetails, "category_id")));
         typegroup.setPublished(JSONConversion.getboolean(jsongroupdetails, "published"));
         this.insertupdateTypegroup(typegroup);
+        return typegroup;
     }
 
     /**
@@ -83,11 +69,7 @@ public class BLtypegroup extends Btypegroup implements IBLtypegroup {
      * @throws eve.general.exception.CustomException
      */
     public long getTypegroup4categorycount(ICategoryPK categoryPK) throws CustomException {
-        AbstractSQLMapper sqlmapper = entitymapper.resetSQLMapper("");
-        BLRecordcount blrecordcount = new BLRecordcount(sqlmapper);
-        ViewMapper viewmapper = new ViewMapper(sqlmapper);
-        Recordcount recordcount = (Recordcount)viewmapper.loadView(blrecordcount, Typegroup.SQLSelect4categoryCount, categoryPK.getKeyFields());
-        return recordcount.getCount();
+        return count(EMtypegroup.SQLSelect4categoryCount, categoryPK.getSQLprimarykey());
     }
 
     /**

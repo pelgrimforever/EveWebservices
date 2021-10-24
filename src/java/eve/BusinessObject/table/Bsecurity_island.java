@@ -2,17 +2,17 @@
  * Bsecurity_island.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONSecurity_island;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMsecurity_island;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bsecurity_island extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bsecurity_island extends BLtable {
 
     /**
      * Constructor, sets Security_island as default Entity
      */
     public Bsecurity_island() {
-        super(new SQLMapper_pgsql(connectionpool, "Security_island"), new Security_island());
+        super(new Security_island(), new EMsecurity_island());
     }
 
     /**
@@ -60,32 +60,8 @@ public abstract class Bsecurity_island extends GeneralEntityObject implements Pr
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bsecurity_island(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Security_island());
-    }
-
-    /**
-     * Map ResultSet Field values to Security_island
-     * @param dbresult: Database ResultSet
-     */
-    public Security_island mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        Security_islandPK security_islandPK = null;
-        Security_island security_island;
-        if(dbresult==null) {
-            security_island = new Security_island(security_islandPK);
-        } else {
-            try {
-                security_islandPK = new Security_islandPK(dbresult.getLong("id"));
-                security_island = new Security_island(security_islandPK);
-                security_island.initName(dbresult.getString("name"));
-                security_island.initSecurity_status(dbresult.getDouble("security_status"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, security_island);
-        return security_island;
+    public Bsecurity_island(BLtable transactionobject) {
+        super(transactionobject, new Security_island(), new EMsecurity_island());
     }
 
     /**
@@ -99,6 +75,7 @@ public abstract class Bsecurity_island extends GeneralEntityObject implements Pr
     /**
      * create new empty Security_island object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return ISecurity_island with primary key
      */
     public ISecurity_island newSecurity_island(long id) {
@@ -124,6 +101,7 @@ public abstract class Bsecurity_island extends GeneralEntityObject implements Pr
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new ISecurity_islandPK
      */
     public ISecurity_islandPK newSecurity_islandPK(long id) {
@@ -135,10 +113,8 @@ public abstract class Bsecurity_island extends GeneralEntityObject implements Pr
      * @return ArrayList of Security_island objects
      * @throws DBException
      */
-    public ArrayList getSecurity_islands() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Security_island.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Security_island> getSecurity_islands() throws DBException {
+        return (ArrayList<Security_island>)super.getEntities(EMsecurity_island.SQLSelectAll);
     }
 
     /**
@@ -148,21 +124,28 @@ public abstract class Bsecurity_island extends GeneralEntityObject implements Pr
      * @throws DBException
      */
     public Security_island getSecurity_island(ISecurity_islandPK security_islandPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Security_island)super.getEntity((Security_islandPK)security_islandPK);
-        } else return null;
+        return (Security_island)super.getEntity((Security_islandPK)security_islandPK);
     }
 
-    public ArrayList searchsecurity_islands(ISecurity_islandsearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search security_island with ISecurity_islandsearch parameters
+     * @param search ISecurity_islandsearch
+     * @return ArrayList of Security_island
+     * @throws DBException 
+     */
+    public ArrayList<Security_island> searchsecurity_islands(ISecurity_islandsearch search) throws DBException {
+        return (ArrayList<Security_island>)this.search(search);
     }
 
-    public ArrayList searchsecurity_islands(ISecurity_islandsearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search security_island with ISecurity_islandsearch parameters, order by orderby sql clause
+     * @param search ISecurity_islandsearch
+     * @param orderby sql order by string
+     * @return ArrayList of Security_island
+     * @throws DBException 
+     */
+    public ArrayList<Security_island> searchsecurity_islands(ISecurity_islandsearch search, String orderby) throws DBException {
+        return (ArrayList<Security_island>)this.search(search, orderby);
     }
 
     /**
@@ -172,31 +155,26 @@ public abstract class Bsecurity_island extends GeneralEntityObject implements Pr
      * @throws DBException
      */
     public boolean getSecurity_islandExists(ISecurity_islandPK security_islandPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((Security_islandPK)security_islandPK);
-        } else return false;
+        return super.getEntityExists((Security_islandPK)security_islandPK);
     }
 
     /**
      * try to insert Security_island in database
-     * @param film: Security_island object
+     * @param security_island Security_island object
      * @throws DBException
+     * @throws DataException
      */
     public void insertSecurity_island(ISecurity_island security_island) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(security_island);
-
-
-
-        }
+        super.insertEntity(security_island);
     }
 
     /**
      * check if Security_islandPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Security_island object
+     * @param security_island Security_island object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateSecurity_island(ISecurity_island security_island) throws DBException, DataException {
         if(this.getSecurity_islandExists(security_island.getPrimaryKey())) {
@@ -208,33 +186,27 @@ public abstract class Bsecurity_island extends GeneralEntityObject implements Pr
 
     /**
      * try to update Security_island in database
-     * @param film: Security_island object
+     * @param security_island Security_island object
      * @throws DBException
+     * @throws DataException
      */
     public void updateSecurity_island(ISecurity_island security_island) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(security_island);
-
-
-
-        }
+        super.updateEntity(security_island);
     }
 
     /**
      * try to delete Security_island in database
-     * @param film: Security_island object
+     * @param security_island Security_island object
      * @throws DBException
      */
     public void deleteSecurity_island(ISecurity_island security_island) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteSecurity_island(security_island.getOwnerobject(), security_island.getPrimaryKey());
-            super.deleteEntity(security_island);
-        }
+        cascadedeleteSecurity_island(security_island.getPrimaryKey());
+        super.deleteEntity(security_island);
     }
 
     /**
      * check data rules in Security_island, throw DataException with customized message if rules do not apply
-     * @param film: Security_island object
+     * @param security_island Security_island object
      * @throws DataException
      * @throws DBException
      */
@@ -242,10 +214,8 @@ public abstract class Bsecurity_island extends GeneralEntityObject implements Pr
         StringBuffer message = new StringBuffer();
         //Primary key
         if(security_island.getName()!=null && security_island.getName().length()>ISecurity_island.SIZE_NAME) {
-            message.append("Name is langer dan toegestaan. Max aantal karakters: " + ISecurity_island.SIZE_NAME + "\n");
+            message.append("Name is langer dan toegestaan. Max aantal karakters: ").append(ISecurity_island.SIZE_NAME).append("\n");
         }
-
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -255,46 +225,54 @@ public abstract class Bsecurity_island extends GeneralEntityObject implements Pr
      * delete all records in tables where security_islandPK is used in a primary key
      * @param security_islandPK: Security_island primary key
      */
-    public void cascadedeleteSecurity_island(String senderobject, ISecurity_islandPK security_islandPK) {
+    public void cascadedeleteSecurity_island(ISecurity_islandPK security_islandPK) {
     }
 
 
     /**
      * get all Security_island objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Security_island objects
      * @throws DBException
      */
-    public ArrayList getSecurity_islands(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Security_island.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Security_island> getSecurity_islands(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMsecurity_island.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Security_island>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Security_island objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delSecurity_island(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Security_island.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delSecurity_island(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Security_island.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

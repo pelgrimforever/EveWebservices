@@ -2,7 +2,7 @@
  * Routetype.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -114,7 +114,7 @@ public class Routetype extends SecurityDataServlet {
                             break;
                         case IRoutetypeOperation.DELETE_Security_island:
                             ISecurity_islandPK security_islandPK = (ISecurity_islandPK)parser.getJavaObject("security_islandpk");
-                            blroutetype.delete4security_island(this.getServletName(), security_islandPK);
+                            blroutetype.delete4security_island(security_islandPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

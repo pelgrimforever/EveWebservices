@@ -2,7 +2,7 @@
  * Order_history.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -114,11 +114,11 @@ public class Order_history extends SecurityDataServlet {
                             break;
                         case IOrder_historyOperation.DELETE_Evetype:
                             IEvetypePK evetypePK = (IEvetypePK)parser.getJavaObject("evetypepk");
-                            blorder_history.delete4evetype(this.getServletName(), evetypePK);
+                            blorder_history.delete4evetype(evetypePK);
                             break;
                         case IOrder_historyOperation.DELETE_Region:
                             IRegionPK regionPK = (IRegionPK)parser.getJavaObject("regionpk");
-                            blorder_history.delete4region(this.getServletName(), regionPK);
+                            blorder_history.delete4region(regionPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

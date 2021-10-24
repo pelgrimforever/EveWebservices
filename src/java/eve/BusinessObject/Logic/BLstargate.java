@@ -8,24 +8,17 @@
 
 package eve.BusinessObject.Logic;
 
-import BusinessObject.BLRecordcount;
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IStargate;
 import eve.logicentity.Stargate;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import data.conversion.JSONConversion;
-import data.interfaces.db.Recordcount;
-import db.AbstractSQLMapper;
-import db.ViewMapper;
 import eve.BusinessObject.table.Bstargate;
+import eve.conversion.entity.EMstargate;
 import eve.entity.pk.SystemPK;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLstargate;
 import eve.interfaces.entity.pk.ISystemPK;
 import general.exception.CustomException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import org.json.simple.JSONObject;
 
@@ -39,7 +32,7 @@ import org.json.simple.JSONObject;
  *
  * @author Franky Laseure
  */
-public class BLstargate extends Bstargate implements IBLstargate {
+public class BLstargate extends Bstargate {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -56,19 +49,11 @@ public class BLstargate extends Bstargate implements IBLstargate {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLstargate(GeneralEntityObject transactionobject) {
+    public BLstargate(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity stargate) throws SQLException {
-        
-    }
-    
     public void updateStargate(JSONObject jsonstargatedetails) throws DBException, DataException {
         if(jsonstargatedetails==null) {
             System.out.print("stargate data null");
@@ -94,22 +79,18 @@ public class BLstargate extends Bstargate implements IBLstargate {
 
     public void updateborders() throws DBException, DataException {
         Object[][] parameter = { { "isborder", true } };
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Stargate.SQLupdateconstellationborders, parameter);
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Stargate.SQLupdateregionborders, parameter);
+        this.addStatement(sqlmapper.insertParameters(EMstargate.SQLupdateconstellationborders, parameter));
+        this.addStatement(sqlmapper.insertParameters(EMstargate.SQLupdateregionborders, parameter));
         this.Commit2DB();
     }
     
     /**
      * @param systemPK: foreign key for System
      * @return all Stargate Entity objects for System
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.CustomException
      */
     public long getStargates4systemcount(ISystemPK systemPK) throws CustomException {
-        AbstractSQLMapper sqlmapper = entitymapper.resetSQLMapper("");
-        BLRecordcount blrecordcount = new BLRecordcount(sqlmapper);
-        ViewMapper viewmapper = new ViewMapper(sqlmapper);
-        Recordcount recordcount = (Recordcount)viewmapper.loadView(blrecordcount, Stargate.SQLSelect4systemCount, systemPK.getKeyFields());
-        return recordcount.getCount();
+        return count(EMstargate.SQLSelect4systemCount, systemPK.getSQLprimarykey());
     }
     
     /**
@@ -120,7 +101,7 @@ public class BLstargate extends Bstargate implements IBLstargate {
      */
     public Stargate getPreviousGate(SystemPK systemPK) throws CustomException {
         Stargate stargate = null;
-        ArrayList stargates = getMapper().loadEntityVector(this, Stargate.SQLselectpreviousTMP, systemPK.getKeyFields());
+        ArrayList stargates = getEntities(EMstargate.SQLselectpreviousTMP, systemPK.getSQLprimarykey());
         if(stargates.size()>0) {
             stargate = (Stargate)stargates.get(0);
         }
@@ -131,8 +112,8 @@ public class BLstargate extends Bstargate implements IBLstargate {
      * try to insert Stargate object in database
      * commit transaction
      * @param stargate: Stargate Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void insertStargate(IStargate stargate) throws DBException, DataException {
@@ -145,8 +126,8 @@ public class BLstargate extends Bstargate implements IBLstargate {
      * an alternative to insertStargate, which can be made an empty function
      * commit transaction
      * @param stargate: Stargate Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureinsertStargate(IStargate stargate) throws DBException, DataException {
         trans_insertStargate(stargate);
@@ -157,8 +138,8 @@ public class BLstargate extends Bstargate implements IBLstargate {
      * try to update Stargate object in database
      * commit transaction
      * @param stargate: Stargate Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void updateStargate(IStargate stargate) throws DBException, DataException {
@@ -171,8 +152,8 @@ public class BLstargate extends Bstargate implements IBLstargate {
      * an alternative to updateStargate, which can be made an empty function
      * commit transaction
      * @param stargate: Stargate Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureupdateStargate(IStargate stargate) throws DBException, DataException {
         trans_updateStargate(stargate);
@@ -196,7 +177,7 @@ public class BLstargate extends Bstargate implements IBLstargate {
      * an alternative to deleteStargate, which can be made an empty function
      * commit transaction
      * @param stargate: Stargate Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void securedeleteStargate(IStargate stargate) throws DBException {
         trans_deleteStargate(stargate);
@@ -207,8 +188,8 @@ public class BLstargate extends Bstargate implements IBLstargate {
      * try to insert Stargate object in database
      * do not commit transaction
      * @param stargate: Stargate Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_insertStargate(IStargate stargate) throws DBException, DataException {
         super.checkDATA(stargate);
@@ -219,8 +200,8 @@ public class BLstargate extends Bstargate implements IBLstargate {
      * try to update Stargate object in database
      * do not commit transaction
      * @param stargate: Stargate Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_updateStargate(IStargate stargate) throws DBException, DataException {
         super.checkDATA(stargate);
@@ -231,7 +212,7 @@ public class BLstargate extends Bstargate implements IBLstargate {
      * try to delete Stargate object in database
      * do not commit transaction
      * @param stargate: Stargate Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void trans_deleteStargate(IStargate stargate) throws DBException {
         super.deleteStargate((Stargate)stargate);

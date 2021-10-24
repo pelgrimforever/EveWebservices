@@ -2,17 +2,17 @@
  * Broutetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONRoutetype;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMroutetype;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Broutetype extends GeneralEntityObject implements ProjectConstants {
+public abstract class Broutetype extends BLtable {
 
     /**
      * Constructor, sets Routetype as default Entity
      */
     public Broutetype() {
-        super(new SQLMapper_pgsql(connectionpool, "Routetype"), new Routetype());
+        super(new Routetype(), new EMroutetype());
     }
 
     /**
@@ -60,33 +60,8 @@ public abstract class Broutetype extends GeneralEntityObject implements ProjectC
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Broutetype(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Routetype());
-    }
-
-    /**
-     * Map ResultSet Field values to Routetype
-     * @param dbresult: Database ResultSet
-     */
-    public Routetype mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        RoutetypePK routetypePK = null;
-        Routetype routetype;
-        if(dbresult==null) {
-            routetype = new Routetype(routetypePK);
-        } else {
-            try {
-                routetypePK = new RoutetypePK(dbresult.getLong("id"));
-                routetype = new Routetype(routetypePK);
-                routetype.initSecurity_islandPK(new Security_islandPK(dbresult.getLong("security_island")));
-                if(dbresult.wasNull()) routetype.setSecurity_islandPK(null);                
-                routetype.initName(dbresult.getString("name"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, routetype);
-        return routetype;
+    public Broutetype(BLtable transactionobject) {
+        super(transactionobject, new Routetype(), new EMroutetype());
     }
 
     /**
@@ -100,6 +75,7 @@ public abstract class Broutetype extends GeneralEntityObject implements ProjectC
     /**
      * create new empty Routetype object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return IRoutetype with primary key
      */
     public IRoutetype newRoutetype(long id) {
@@ -125,6 +101,7 @@ public abstract class Broutetype extends GeneralEntityObject implements ProjectC
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new IRoutetypePK
      */
     public IRoutetypePK newRoutetypePK(long id) {
@@ -136,10 +113,8 @@ public abstract class Broutetype extends GeneralEntityObject implements ProjectC
      * @return ArrayList of Routetype objects
      * @throws DBException
      */
-    public ArrayList getRoutetypes() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Routetype.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Routetype> getRoutetypes() throws DBException {
+        return (ArrayList<Routetype>)super.getEntities(EMroutetype.SQLSelectAll);
     }
 
     /**
@@ -149,21 +124,28 @@ public abstract class Broutetype extends GeneralEntityObject implements ProjectC
      * @throws DBException
      */
     public Routetype getRoutetype(IRoutetypePK routetypePK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Routetype)super.getEntity((RoutetypePK)routetypePK);
-        } else return null;
+        return (Routetype)super.getEntity((RoutetypePK)routetypePK);
     }
 
-    public ArrayList searchroutetypes(IRoutetypesearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search routetype with IRoutetypesearch parameters
+     * @param search IRoutetypesearch
+     * @return ArrayList of Routetype
+     * @throws DBException 
+     */
+    public ArrayList<Routetype> searchroutetypes(IRoutetypesearch search) throws DBException {
+        return (ArrayList<Routetype>)this.search(search);
     }
 
-    public ArrayList searchroutetypes(IRoutetypesearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search routetype with IRoutetypesearch parameters, order by orderby sql clause
+     * @param search IRoutetypesearch
+     * @param orderby sql order by string
+     * @return ArrayList of Routetype
+     * @throws DBException 
+     */
+    public ArrayList<Routetype> searchroutetypes(IRoutetypesearch search, String orderby) throws DBException {
+        return (ArrayList<Routetype>)this.search(search, orderby);
     }
 
     /**
@@ -173,31 +155,26 @@ public abstract class Broutetype extends GeneralEntityObject implements ProjectC
      * @throws DBException
      */
     public boolean getRoutetypeExists(IRoutetypePK routetypePK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((RoutetypePK)routetypePK);
-        } else return false;
+        return super.getEntityExists((RoutetypePK)routetypePK);
     }
 
     /**
      * try to insert Routetype in database
-     * @param film: Routetype object
+     * @param routetype Routetype object
      * @throws DBException
+     * @throws DataException
      */
     public void insertRoutetype(IRoutetype routetype) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(routetype);
-
-
-
-        }
+        super.insertEntity(routetype);
     }
 
     /**
      * check if RoutetypePK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Routetype object
+     * @param routetype Routetype object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateRoutetype(IRoutetype routetype) throws DBException, DataException {
         if(this.getRoutetypeExists(routetype.getPrimaryKey())) {
@@ -209,45 +186,36 @@ public abstract class Broutetype extends GeneralEntityObject implements ProjectC
 
     /**
      * try to update Routetype in database
-     * @param film: Routetype object
+     * @param routetype Routetype object
      * @throws DBException
+     * @throws DataException
      */
     public void updateRoutetype(IRoutetype routetype) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(routetype);
-
-
-
-        }
+        super.updateEntity(routetype);
     }
 
     /**
      * try to delete Routetype in database
-     * @param film: Routetype object
+     * @param routetype Routetype object
      * @throws DBException
      */
     public void deleteRoutetype(IRoutetype routetype) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteRoutetype(routetype.getOwnerobject(), routetype.getPrimaryKey());
-            super.deleteEntity(routetype);
-        }
+        cascadedeleteRoutetype(routetype.getPrimaryKey());
+        super.deleteEntity(routetype);
     }
 
     /**
      * check data rules in Routetype, throw DataException with customized message if rules do not apply
-     * @param film: Routetype object
+     * @param routetype Routetype object
      * @throws DataException
      * @throws DBException
      */
     public void checkDATA(IRoutetype routetype) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
-
-
         if(routetype.getName()!=null && routetype.getName().length()>IRoutetype.SIZE_NAME) {
-            message.append("Name is langer dan toegestaan. Max aantal karakters: " + IRoutetype.SIZE_NAME + "\n");
+            message.append("Name is langer dan toegestaan. Max aantal karakters: ").append(IRoutetype.SIZE_NAME).append("\n");
         }
-
         if(routetype.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
@@ -260,81 +228,82 @@ public abstract class Broutetype extends GeneralEntityObject implements ProjectC
      * delete all records in tables where routetypePK is used in a primary key
      * @param routetypePK: Routetype primary key
      */
-    public void cascadedeleteRoutetype(String senderobject, IRoutetypePK routetypePK) {
+    public void cascadedeleteRoutetype(IRoutetypePK routetypePK) {
         BLroute blroute = new BLroute(this);
-        blroute.delete4routetype(senderobject, routetypePK);
+        blroute.delete4routetype(routetypePK);
     }
 
     /**
      * @param security_islandPK: foreign key for Security_island
      * @delete all Routetype Entity objects for Security_island in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4security_island(String senderobject, ISecurity_islandPK security_islandPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Routetype.SQLDelete4security_island, security_islandPK.getKeyFields());
-        }
+    public void delete4security_island(ISecurity_islandPK security_islandPK) {
+        super.addStatement(EMroutetype.SQLDelete4security_island, security_islandPK.getSQLprimarykey());
     }
 
     /**
      * @param security_islandPK: foreign key for Security_island
      * @return all Routetype Entity objects for Security_island
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getRoutetypes4security_island(ISecurity_islandPK security_islandPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Routetype.SQLSelect4security_island, security_islandPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Routetype> getRoutetypes4security_island(ISecurity_islandPK security_islandPK) throws CustomException {
+        return super.getEntities(EMroutetype.SQLSelect4security_island, security_islandPK.getSQLprimarykey());
     }
     /**
      * @param routePK: parent Route for child object Routetype Entity
      * @return child Routetype Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public IRoutetype getRoute(IRoutePK routePK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            RoutetypePK routetypePK = new RoutetypePK(routePK.getRoutetype());
-            return this.getRoutetype(routetypePK);
-        } else return null;
+    public Routetype getRoute(IRoutePK routePK) throws CustomException {
+        RoutetypePK routetypePK = new RoutetypePK(routePK.getRoutetype());
+        return this.getRoutetype(routetypePK);
     }
 
 
     /**
      * get all Routetype objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Routetype objects
      * @throws DBException
      */
-    public ArrayList getRoutetypes(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Routetype.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Routetype> getRoutetypes(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMroutetype.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Routetype>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Routetype objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delRoutetype(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Routetype.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delRoutetype(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Routetype.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

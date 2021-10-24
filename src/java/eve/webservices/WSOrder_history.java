@@ -2,7 +2,7 @@
  * WSOrder_history.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSOrder_history implements WSIOrder_history {
         Order_history order_history;
         try {
             IEvetypePK evetypePK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            blorder_history.delete4evetype(this.getClass().getName(), evetypePK);
+            blorder_history.delete4evetype(evetypePK);
         }
         catch(ParseException e) {
         }
@@ -221,7 +221,7 @@ public class WSOrder_history implements WSIOrder_history {
         Order_history order_history;
         try {
             IRegionPK regionPK = JSONRegion.toRegionPK((JSONObject)parser.parse(json));
-            blorder_history.delete4region(this.getClass().getName(), regionPK);
+            blorder_history.delete4region(regionPK);
         }
         catch(ParseException e) {
         }

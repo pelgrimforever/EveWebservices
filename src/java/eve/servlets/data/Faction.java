@@ -2,7 +2,7 @@
  * Faction.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -110,7 +110,7 @@ public class Faction extends SecurityDataServlet {
                             break;
                         case IFactionOperation.DELETE_System:
                             ISystemPK systemPK = (ISystemPK)parser.getJavaObject("systempk");
-                            blfaction.delete4system(this.getServletName(), systemPK);
+                            blfaction.delete4system(systemPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

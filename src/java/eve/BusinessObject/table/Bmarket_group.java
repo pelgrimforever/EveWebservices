@@ -2,17 +2,17 @@
  * Bmarket_group.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONMarket_group;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMmarket_group;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bmarket_group extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bmarket_group extends BLtable {
 
     /**
      * Constructor, sets Market_group as default Entity
      */
     public Bmarket_group() {
-        super(new SQLMapper_pgsql(connectionpool, "Market_group"), new Market_group());
+        super(new Market_group(), new EMmarket_group());
     }
 
     /**
@@ -60,34 +60,8 @@ public abstract class Bmarket_group extends GeneralEntityObject implements Proje
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bmarket_group(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Market_group());
-    }
-
-    /**
-     * Map ResultSet Field values to Market_group
-     * @param dbresult: Database ResultSet
-     */
-    public Market_group mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        Market_groupPK market_groupPK = null;
-        Market_group market_group;
-        if(dbresult==null) {
-            market_group = new Market_group(market_groupPK);
-        } else {
-            try {
-                market_groupPK = new Market_groupPK(dbresult.getLong("id"));
-                market_group = new Market_group(market_groupPK);
-                market_group.initMarket_groupparent_idPK(new Market_groupPK(dbresult.getLong("parent_id")));
-                if(dbresult.wasNull()) market_group.setMarket_groupparent_idPK(null);                
-                market_group.initName(dbresult.getString("name"));
-                market_group.initDescription(dbresult.getString("description"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, market_group);
-        return market_group;
+    public Bmarket_group(BLtable transactionobject) {
+        super(transactionobject, new Market_group(), new EMmarket_group());
     }
 
     /**
@@ -101,6 +75,7 @@ public abstract class Bmarket_group extends GeneralEntityObject implements Proje
     /**
      * create new empty Market_group object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return IMarket_group with primary key
      */
     public IMarket_group newMarket_group(long id) {
@@ -126,6 +101,7 @@ public abstract class Bmarket_group extends GeneralEntityObject implements Proje
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new IMarket_groupPK
      */
     public IMarket_groupPK newMarket_groupPK(long id) {
@@ -137,10 +113,8 @@ public abstract class Bmarket_group extends GeneralEntityObject implements Proje
      * @return ArrayList of Market_group objects
      * @throws DBException
      */
-    public ArrayList getMarket_groups() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Market_group.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Market_group> getMarket_groups() throws DBException {
+        return (ArrayList<Market_group>)super.getEntities(EMmarket_group.SQLSelectAll);
     }
 
     /**
@@ -150,21 +124,28 @@ public abstract class Bmarket_group extends GeneralEntityObject implements Proje
      * @throws DBException
      */
     public Market_group getMarket_group(IMarket_groupPK market_groupPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Market_group)super.getEntity((Market_groupPK)market_groupPK);
-        } else return null;
+        return (Market_group)super.getEntity((Market_groupPK)market_groupPK);
     }
 
-    public ArrayList searchmarket_groups(IMarket_groupsearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search market_group with IMarket_groupsearch parameters
+     * @param search IMarket_groupsearch
+     * @return ArrayList of Market_group
+     * @throws DBException 
+     */
+    public ArrayList<Market_group> searchmarket_groups(IMarket_groupsearch search) throws DBException {
+        return (ArrayList<Market_group>)this.search(search);
     }
 
-    public ArrayList searchmarket_groups(IMarket_groupsearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search market_group with IMarket_groupsearch parameters, order by orderby sql clause
+     * @param search IMarket_groupsearch
+     * @param orderby sql order by string
+     * @return ArrayList of Market_group
+     * @throws DBException 
+     */
+    public ArrayList<Market_group> searchmarket_groups(IMarket_groupsearch search, String orderby) throws DBException {
+        return (ArrayList<Market_group>)this.search(search, orderby);
     }
 
     /**
@@ -174,32 +155,26 @@ public abstract class Bmarket_group extends GeneralEntityObject implements Proje
      * @throws DBException
      */
     public boolean getMarket_groupExists(IMarket_groupPK market_groupPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((Market_groupPK)market_groupPK);
-        } else return false;
+        return super.getEntityExists((Market_groupPK)market_groupPK);
     }
 
     /**
      * try to insert Market_group in database
-     * @param film: Market_group object
+     * @param market_group Market_group object
      * @throws DBException
+     * @throws DataException
      */
     public void insertMarket_group(IMarket_group market_group) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(market_group);
-
-
-
-
-        }
+        super.insertEntity(market_group);
     }
 
     /**
      * check if Market_groupPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Market_group object
+     * @param market_group Market_group object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateMarket_group(IMarket_group market_group) throws DBException, DataException {
         if(this.getMarket_groupExists(market_group.getPrimaryKey())) {
@@ -211,53 +186,42 @@ public abstract class Bmarket_group extends GeneralEntityObject implements Proje
 
     /**
      * try to update Market_group in database
-     * @param film: Market_group object
+     * @param market_group Market_group object
      * @throws DBException
+     * @throws DataException
      */
     public void updateMarket_group(IMarket_group market_group) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(market_group);
-
-
-
-
-        }
+        super.updateEntity(market_group);
     }
 
     /**
      * try to delete Market_group in database
-     * @param film: Market_group object
+     * @param market_group Market_group object
      * @throws DBException
      */
     public void deleteMarket_group(IMarket_group market_group) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteMarket_group(market_group.getOwnerobject(), market_group.getPrimaryKey());
-            super.deleteEntity(market_group);
-        }
+        cascadedeleteMarket_group(market_group.getPrimaryKey());
+        super.deleteEntity(market_group);
     }
 
     /**
      * check data rules in Market_group, throw DataException with customized message if rules do not apply
-     * @param film: Market_group object
+     * @param market_group Market_group object
      * @throws DataException
      * @throws DBException
      */
     public void checkDATA(IMarket_group market_group) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
-
-
         if(market_group.getName()!=null && market_group.getName().length()>IMarket_group.SIZE_NAME) {
-            message.append("Name is langer dan toegestaan. Max aantal karakters: " + IMarket_group.SIZE_NAME + "\n");
+            message.append("Name is langer dan toegestaan. Max aantal karakters: ").append(IMarket_group.SIZE_NAME).append("\n");
         }
-
         if(market_group.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
         if(market_group.getDescription()!=null && market_group.getDescription().length()>IMarket_group.SIZE_DESCRIPTION) {
-            message.append("Description is langer dan toegestaan. Max aantal karakters: " + IMarket_group.SIZE_DESCRIPTION + "\n");
+            message.append("Description is langer dan toegestaan. Max aantal karakters: ").append(IMarket_group.SIZE_DESCRIPTION).append("\n");
         }
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -267,67 +231,70 @@ public abstract class Bmarket_group extends GeneralEntityObject implements Proje
      * delete all records in tables where market_groupPK is used in a primary key
      * @param market_groupPK: Market_group primary key
      */
-    public void cascadedeleteMarket_group(String senderobject, IMarket_groupPK market_groupPK) {
+    public void cascadedeleteMarket_group(IMarket_groupPK market_groupPK) {
     }
 
     /**
      * @param market_groupPK: foreign key for Market_group
      * @delete all Market_group Entity objects for Market_group in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4market_groupParent_id(String senderobject, IMarket_groupPK market_groupPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Market_group.SQLDelete4market_groupParent_id, market_groupPK.getKeyFields());
-        }
+    public void delete4market_groupParent_id(IMarket_groupPK market_groupPK) {
+        super.addStatement(EMmarket_group.SQLDelete4market_groupParent_id, market_groupPK.getSQLprimarykey());
     }
 
     /**
      * @param market_groupPK: foreign key for Market_group
      * @return all Market_group Entity objects for Market_group
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getMarket_groups4market_groupParent_id(IMarket_groupPK market_groupPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Market_group.SQLSelect4market_groupParent_id, market_groupPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Market_group> getMarket_groups4market_groupParent_id(IMarket_groupPK market_groupPK) throws CustomException {
+        return super.getEntities(EMmarket_group.SQLSelect4market_groupParent_id, market_groupPK.getSQLprimarykey());
     }
 
     /**
      * get all Market_group objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Market_group objects
      * @throws DBException
      */
-    public ArrayList getMarket_groups(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Market_group.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Market_group> getMarket_groups(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMmarket_group.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Market_group>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Market_group objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delMarket_group(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Market_group.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delMarket_group(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Market_group.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

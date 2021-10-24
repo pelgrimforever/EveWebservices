@@ -9,23 +9,14 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IAlliance;
 import eve.logicentity.Alliance;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import data.conversion.JSONConversion;
 import eve.BusinessObject.table.Balliance;
 import eve.data.Swagger;
 import eve.entity.pk.CorporationPK;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLalliance;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import org.json.simple.JSONObject;
 
 /**
@@ -38,7 +29,7 @@ import org.json.simple.JSONObject;
  *
  * @author Franky Laseure
  */
-public class BLalliance extends Balliance implements IBLalliance {
+public class BLalliance extends Balliance {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -55,19 +46,11 @@ public class BLalliance extends Balliance implements IBLalliance {
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLalliance(GeneralEntityObject transactionobject) {
+    public BLalliance(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity alliance) throws SQLException {
-        
-    }
-    
     public void updateAlliance(JSONObject jsonalliancedetails) throws DBException, DataException {
         Alliance alliance = new Alliance(JSONConversion.getLong(jsonalliancedetails, "alliance_id"));
         alliance.setName(JSONConversion.getString(jsonalliancedetails, "name"));

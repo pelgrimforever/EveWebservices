@@ -2,7 +2,7 @@
  * Race.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -110,7 +110,7 @@ public class Race extends SecurityDataServlet {
                             break;
                         case IRaceOperation.DELETE_Faction:
                             IFactionPK factionPK = (IFactionPK)parser.getJavaObject("factionpk");
-                            blrace.delete4faction(this.getServletName(), factionPK);
+                            blrace.delete4faction(factionPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

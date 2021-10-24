@@ -8,14 +8,12 @@
 
 package eve.BusinessObject.Logic;
 
+import db.SQLparameters;
 import general.exception.DBException;
-import data.interfaces.db.View;
 import eve.logicview.View_trade;
 import eve.BusinessObject.view.Bview_trade;
+import eve.conversion.entity.EMview_trade;
 import eve.entity.pk.SystemPK;
-import eve.interfaces.BusinessObject.IBLview_trade;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -28,7 +26,7 @@ import java.util.ArrayList;
  *
  * @author Franky Laseure
  */
-public class BLview_trade extends Bview_trade implements IBLview_trade {
+public class BLview_trade extends Bview_trade {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
 	
     /**
@@ -37,17 +35,6 @@ public class BLview_trade extends Bview_trade implements IBLview_trade {
     public BLview_trade() {
     }
 
-    @Override
-    public void loadExtra(ResultSet dbresult, View view_trade) throws SQLException {
-        View_trade extra = (View_trade)view_trade;
-        try {
-            extra.setStart_system(dbresult.getLong("startsystem_id"));
-            extra.setStart_system_jumps(dbresult.getInt("startsystem_jumps"));
-        }
-        catch(SQLException e) {
-        }
-    }
-    
     /**
      * get all View_trade lines starting on systemPK
      * @param startsystemPK: start system primary key
@@ -55,7 +42,7 @@ public class BLview_trade extends Bview_trade implements IBLview_trade {
      * @throws DBException
      */
     public ArrayList getView_trades_Startsystem(SystemPK systemPK) throws DBException {
-        return getMapper().loadViewVector(this, View_trade.SQLSelectAll4Startingsystem, systemPK.getKeyFields());
+        return getEntities(EMview_trade.SQLSelectAll4Startingsystem, systemPK.getSQLprimarykey());
     }
 
     /**
@@ -67,6 +54,7 @@ public class BLview_trade extends Bview_trade implements IBLview_trade {
      */
     public ArrayList getView_trades_Startendsystem(SystemPK startsystemPK, SystemPK endsystemPK) throws DBException {
         Object[][] parameter = {{ "startsystemid", startsystemPK.getId() }, { "endsystemid", endsystemPK.getId() }};
-        return getMapper().loadViewVector(this, View_trade.SQLSelectAll4Startendsystem, parameter);
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        return getEntities(EMview_trade.SQLSelectAll4Startendsystem, sqlparameters);
     }
 }

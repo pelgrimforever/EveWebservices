@@ -2,7 +2,7 @@
  * WSLocation.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSLocation implements WSILocation {
         Location location;
         try {
             ISystemPK systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            bllocation.delete4system(this.getClass().getName(), systemPK);
+            bllocation.delete4system(systemPK);
         }
         catch(ParseException e) {
         }

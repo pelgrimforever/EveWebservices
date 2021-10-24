@@ -2,7 +2,7 @@
  * Constellation_neighbour.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -114,11 +114,11 @@ public class Constellation_neighbour extends SecurityDataServlet {
                             break;
                         case IConstellation_neighbourOperation.DELETE_Constellationneighbour:
                             IConstellationPK constellationNeighbourPK = (IConstellationPK)parser.getJavaObject("constellationpk");
-                            blconstellation_neighbour.delete4constellationNeighbour(this.getServletName(), constellationNeighbourPK);
+                            blconstellation_neighbour.delete4constellationNeighbour(constellationNeighbourPK);
                             break;
                         case IConstellation_neighbourOperation.DELETE_Constellationconstellation:
                             IConstellationPK constellationConstellationPK = (IConstellationPK)parser.getJavaObject("constellationpk");
-                            blconstellation_neighbour.delete4constellationConstellation(this.getServletName(), constellationConstellationPK);
+                            blconstellation_neighbour.delete4constellationConstellation(constellationConstellationPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

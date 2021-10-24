@@ -2,17 +2,17 @@
  * Borders.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONOrders;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMorders;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Borders extends GeneralEntityObject implements ProjectConstants {
+public abstract class Borders extends BLtable {
 
     /**
      * Constructor, sets Orders as default Entity
      */
     public Borders() {
-        super(new SQLMapper_pgsql(connectionpool, "Orders"), new Orders());
+        super(new Orders(), new EMorders());
     }
 
     /**
@@ -60,46 +60,8 @@ public abstract class Borders extends GeneralEntityObject implements ProjectCons
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Borders(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Orders());
-    }
-
-    /**
-     * Map ResultSet Field values to Orders
-     * @param dbresult: Database ResultSet
-     */
-    public Orders mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        OrdersPK ordersPK = null;
-        Orders orders;
-        if(dbresult==null) {
-            orders = new Orders(ordersPK);
-        } else {
-            try {
-                ordersPK = new OrdersPK(dbresult.getLong("id"));
-                orders = new Orders(ordersPK);
-                orders.initEvetypePK(new EvetypePK(dbresult.getLong("evetype")));
-                if(dbresult.wasNull()) orders.setEvetypePK(null);                
-                orders.initSystemPK(new SystemPK(dbresult.getLong("system")));
-                if(dbresult.wasNull()) orders.setSystemPK(null);                
-                orders.initIsopen(dbresult.getBoolean("isopen"));
-                orders.initVolume_total(dbresult.getLong("volume_total"));
-                orders.initVolume_remain(dbresult.getLong("volume_remain"));
-                orders.initRange(dbresult.getString("range"));
-                orders.initRange_number(dbresult.getInt("range_number"));
-                orders.initPrice(dbresult.getDouble("price"));
-                orders.initMin_volume(dbresult.getInt("min_volume"));
-                orders.initLocation(dbresult.getLong("location"));
-                orders.initIs_buy_order(dbresult.getBoolean("is_buy_order"));
-                orders.initIssued(dbresult.getTimestamp("issued"));
-                orders.initDuration(dbresult.getInt("duration"));
-                orders.initPage(dbresult.getInt("page"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, orders);
-        return orders;
+    public Borders(BLtable transactionobject) {
+        super(transactionobject, new Orders(), new EMorders());
     }
 
     /**
@@ -113,6 +75,7 @@ public abstract class Borders extends GeneralEntityObject implements ProjectCons
     /**
      * create new empty Orders object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return IOrders with primary key
      */
     public IOrders newOrders(long id) {
@@ -138,6 +101,7 @@ public abstract class Borders extends GeneralEntityObject implements ProjectCons
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new IOrdersPK
      */
     public IOrdersPK newOrdersPK(long id) {
@@ -149,10 +113,8 @@ public abstract class Borders extends GeneralEntityObject implements ProjectCons
      * @return ArrayList of Orders objects
      * @throws DBException
      */
-    public ArrayList getOrderss() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Orders.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Orders> getOrderss() throws DBException {
+        return (ArrayList<Orders>)super.getEntities(EMorders.SQLSelectAll);
     }
 
     /**
@@ -162,21 +124,28 @@ public abstract class Borders extends GeneralEntityObject implements ProjectCons
      * @throws DBException
      */
     public Orders getOrders(IOrdersPK ordersPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Orders)super.getEntity((OrdersPK)ordersPK);
-        } else return null;
+        return (Orders)super.getEntity((OrdersPK)ordersPK);
     }
 
-    public ArrayList searchorderss(IOrderssearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search orders with IOrderssearch parameters
+     * @param search IOrderssearch
+     * @return ArrayList of Orders
+     * @throws DBException 
+     */
+    public ArrayList<Orders> searchorderss(IOrderssearch search) throws DBException {
+        return (ArrayList<Orders>)this.search(search);
     }
 
-    public ArrayList searchorderss(IOrderssearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search orders with IOrderssearch parameters, order by orderby sql clause
+     * @param search IOrderssearch
+     * @param orderby sql order by string
+     * @return ArrayList of Orders
+     * @throws DBException 
+     */
+    public ArrayList<Orders> searchorderss(IOrderssearch search, String orderby) throws DBException {
+        return (ArrayList<Orders>)this.search(search, orderby);
     }
 
     /**
@@ -186,43 +155,26 @@ public abstract class Borders extends GeneralEntityObject implements ProjectCons
      * @throws DBException
      */
     public boolean getOrdersExists(IOrdersPK ordersPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((OrdersPK)ordersPK);
-        } else return false;
+        return super.getEntityExists((OrdersPK)ordersPK);
     }
 
     /**
      * try to insert Orders in database
-     * @param film: Orders object
+     * @param orders Orders object
      * @throws DBException
+     * @throws DataException
      */
     public void insertOrders(IOrders orders) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(orders);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        }
+        super.insertEntity(orders);
     }
 
     /**
      * check if OrdersPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Orders object
+     * @param orders Orders object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateOrders(IOrders orders) throws DBException, DataException {
         if(this.getOrdersExists(orders.getPrimaryKey())) {
@@ -234,76 +186,42 @@ public abstract class Borders extends GeneralEntityObject implements ProjectCons
 
     /**
      * try to update Orders in database
-     * @param film: Orders object
+     * @param orders Orders object
      * @throws DBException
+     * @throws DataException
      */
     public void updateOrders(IOrders orders) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(orders);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        }
+        super.updateEntity(orders);
     }
 
     /**
      * try to delete Orders in database
-     * @param film: Orders object
+     * @param orders Orders object
      * @throws DBException
      */
     public void deleteOrders(IOrders orders) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteOrders(orders.getOwnerobject(), orders.getPrimaryKey());
-            super.deleteEntity(orders);
-        }
+        cascadedeleteOrders(orders.getPrimaryKey());
+        super.deleteEntity(orders);
     }
 
     /**
      * check data rules in Orders, throw DataException with customized message if rules do not apply
-     * @param film: Orders object
+     * @param orders Orders object
      * @throws DataException
      * @throws DBException
      */
     public void checkDATA(IOrders orders) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
-
-
-
-
-
-
-
         if(orders.getRange()!=null && orders.getRange().length()>IOrders.SIZE_RANGE) {
-            message.append("Range is langer dan toegestaan. Max aantal karakters: " + IOrders.SIZE_RANGE + "\n");
+            message.append("Range is langer dan toegestaan. Max aantal karakters: ").append(IOrders.SIZE_RANGE).append("\n");
         }
-
         if(orders.getRange()==null) {
             message.append("Range mag niet leeg zijn.\n");
         }
-
-
-
-
-
-
         if(orders.getIssued()==null) {
             message.append("Issued mag niet leeg zijn.\n");
         }
-
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -313,144 +231,134 @@ public abstract class Borders extends GeneralEntityObject implements ProjectCons
      * delete all records in tables where ordersPK is used in a primary key
      * @param ordersPK: Orders primary key
      */
-    public void cascadedeleteOrders(String senderobject, IOrdersPK ordersPK) {
+    public void cascadedeleteOrders(IOrdersPK ordersPK) {
         BLsystemtrade_order blsystemtrade_orderBuy_order = new BLsystemtrade_order(this);
-        blsystemtrade_orderBuy_order.delete4ordersBuy_order(senderobject, ordersPK);
+        blsystemtrade_orderBuy_order.delete4ordersBuy_order(ordersPK);
         BLsystemtrade_order blsystemtrade_orderSell_order = new BLsystemtrade_order(this);
-        blsystemtrade_orderSell_order.delete4ordersSell_order(senderobject, ordersPK);
+        blsystemtrade_orderSell_order.delete4ordersSell_order(ordersPK);
         BLtrade bltradeSell_order_id = new BLtrade(this);
-        bltradeSell_order_id.delete4ordersSell_order_id(senderobject, ordersPK);
+        bltradeSell_order_id.delete4ordersSell_order_id(ordersPK);
         BLtrade bltradeBuy_order_id = new BLtrade(this);
-        bltradeBuy_order_id.delete4ordersBuy_order_id(senderobject, ordersPK);
+        bltradeBuy_order_id.delete4ordersBuy_order_id(ordersPK);
     }
 
     /**
      * @param evetypePK: foreign key for Evetype
      * @delete all Orders Entity objects for Evetype in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4evetype(String senderobject, IEvetypePK evetypePK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Orders.SQLDelete4evetype, evetypePK.getKeyFields());
-        }
+    public void delete4evetype(IEvetypePK evetypePK) {
+        super.addStatement(EMorders.SQLDelete4evetype, evetypePK.getSQLprimarykey());
     }
 
     /**
      * @param evetypePK: foreign key for Evetype
      * @return all Orders Entity objects for Evetype
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getOrderss4evetype(IEvetypePK evetypePK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Orders.SQLSelect4evetype, evetypePK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Orders> getOrderss4evetype(IEvetypePK evetypePK) throws CustomException {
+        return super.getEntities(EMorders.SQLSelect4evetype, evetypePK.getSQLprimarykey());
     }
     /**
      * @param systemPK: foreign key for System
      * @delete all Orders Entity objects for System in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4system(String senderobject, ISystemPK systemPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Orders.SQLDelete4system, systemPK.getKeyFields());
-        }
+    public void delete4system(ISystemPK systemPK) {
+        super.addStatement(EMorders.SQLDelete4system, systemPK.getSQLprimarykey());
     }
 
     /**
      * @param systemPK: foreign key for System
      * @return all Orders Entity objects for System
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getOrderss4system(ISystemPK systemPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Orders.SQLSelect4system, systemPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Orders> getOrderss4system(ISystemPK systemPK) throws CustomException {
+        return super.getEntities(EMorders.SQLSelect4system, systemPK.getSQLprimarykey());
     }
     /**
      * @param systemtrade_orderPK: parent Systemtrade_order for child object Orders Entity
      * @return child Orders Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public IOrders getSystemtrade_orderbuy_order(ISystemtrade_orderPK systemtrade_orderPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            OrdersPK ordersPK = new OrdersPK(systemtrade_orderPK.getBuy_order());
-            return this.getOrders(ordersPK);
-        } else return null;
+    public Orders getSystemtrade_orderbuy_order(ISystemtrade_orderPK systemtrade_orderPK) throws CustomException {
+        OrdersPK ordersPK = new OrdersPK(systemtrade_orderPK.getBuy_order());
+        return this.getOrders(ordersPK);
     }
 
     /**
      * @param systemtrade_orderPK: parent Systemtrade_order for child object Orders Entity
      * @return child Orders Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public IOrders getSystemtrade_ordersell_order(ISystemtrade_orderPK systemtrade_orderPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            OrdersPK ordersPK = new OrdersPK(systemtrade_orderPK.getSell_order());
-            return this.getOrders(ordersPK);
-        } else return null;
+    public Orders getSystemtrade_ordersell_order(ISystemtrade_orderPK systemtrade_orderPK) throws CustomException {
+        OrdersPK ordersPK = new OrdersPK(systemtrade_orderPK.getSell_order());
+        return this.getOrders(ordersPK);
     }
 
     /**
      * @param tradePK: parent Trade for child object Orders Entity
      * @return child Orders Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public IOrders getTradesell_order_id(ITradePK tradePK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            OrdersPK ordersPK = new OrdersPK(tradePK.getSell_order_id());
-            return this.getOrders(ordersPK);
-        } else return null;
+    public Orders getTradesell_order_id(ITradePK tradePK) throws CustomException {
+        OrdersPK ordersPK = new OrdersPK(tradePK.getSell_order_id());
+        return this.getOrders(ordersPK);
     }
 
     /**
      * @param tradePK: parent Trade for child object Orders Entity
      * @return child Orders Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public IOrders getTradebuy_order_id(ITradePK tradePK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            OrdersPK ordersPK = new OrdersPK(tradePK.getBuy_order_id());
-            return this.getOrders(ordersPK);
-        } else return null;
+    public Orders getTradebuy_order_id(ITradePK tradePK) throws CustomException {
+        OrdersPK ordersPK = new OrdersPK(tradePK.getBuy_order_id());
+        return this.getOrders(ordersPK);
     }
 
 
     /**
      * get all Orders objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Orders objects
      * @throws DBException
      */
-    public ArrayList getOrderss(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Orders.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Orders> getOrderss(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMorders.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Orders>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Orders objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delOrders(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Orders.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delOrders(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Orders.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

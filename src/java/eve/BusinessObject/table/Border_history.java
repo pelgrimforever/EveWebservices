@@ -2,17 +2,17 @@
  * Border_history.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONOrder_history;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMorder_history;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Border_history extends GeneralEntityObject implements ProjectConstants {
+public abstract class Border_history extends BLtable {
 
     /**
      * Constructor, sets Order_history as default Entity
      */
     public Border_history() {
-        super(new SQLMapper_pgsql(connectionpool, "Order_history"), new Order_history());
+        super(new Order_history(), new EMorder_history());
     }
 
     /**
@@ -60,35 +60,8 @@ public abstract class Border_history extends GeneralEntityObject implements Proj
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Border_history(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Order_history());
-    }
-
-    /**
-     * Map ResultSet Field values to Order_history
-     * @param dbresult: Database ResultSet
-     */
-    public Order_history mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        Order_historyPK order_historyPK = null;
-        Order_history order_history;
-        if(dbresult==null) {
-            order_history = new Order_history(order_historyPK);
-        } else {
-            try {
-                order_historyPK = new Order_historyPK(dbresult.getLong("region"), dbresult.getLong("evetype"), dbresult.getDate("date"));
-                order_history = new Order_history(order_historyPK);
-                order_history.initAverage(dbresult.getDouble("average"));
-                order_history.initHighest(dbresult.getDouble("highest"));
-                order_history.initLowest(dbresult.getDouble("lowest"));
-                order_history.initVolume(dbresult.getInt("volume"));
-                order_history.initOrder_count(dbresult.getInt("order_count"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, order_history);
-        return order_history;
+    public Border_history(BLtable transactionobject) {
+        super(transactionobject, new Order_history(), new EMorder_history());
     }
 
     /**
@@ -102,6 +75,9 @@ public abstract class Border_history extends GeneralEntityObject implements Proj
     /**
      * create new empty Order_history object
      * create new primary key with given parameters
+     * @param region primary key field
+     * @param evetype primary key field
+     * @param date primary key field
      * @return IOrder_history with primary key
      */
     public IOrder_history newOrder_history(long region, long evetype, java.sql.Date date) {
@@ -127,6 +103,9 @@ public abstract class Border_history extends GeneralEntityObject implements Proj
 
     /**
      * create new primary key with given parameters
+     * @param region primary key field
+     * @param evetype primary key field
+     * @param date primary key field
      * @return new IOrder_historyPK
      */
     public IOrder_historyPK newOrder_historyPK(long region, long evetype, java.sql.Date date) {
@@ -138,10 +117,8 @@ public abstract class Border_history extends GeneralEntityObject implements Proj
      * @return ArrayList of Order_history objects
      * @throws DBException
      */
-    public ArrayList getOrder_historys() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Order_history.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Order_history> getOrder_historys() throws DBException {
+        return (ArrayList<Order_history>)super.getEntities(EMorder_history.SQLSelectAll);
     }
 
     /**
@@ -151,21 +128,28 @@ public abstract class Border_history extends GeneralEntityObject implements Proj
      * @throws DBException
      */
     public Order_history getOrder_history(IOrder_historyPK order_historyPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Order_history)super.getEntity((Order_historyPK)order_historyPK);
-        } else return null;
+        return (Order_history)super.getEntity((Order_historyPK)order_historyPK);
     }
 
-    public ArrayList searchorder_historys(IOrder_historysearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search order_history with IOrder_historysearch parameters
+     * @param search IOrder_historysearch
+     * @return ArrayList of Order_history
+     * @throws DBException 
+     */
+    public ArrayList<Order_history> searchorder_historys(IOrder_historysearch search) throws DBException {
+        return (ArrayList<Order_history>)this.search(search);
     }
 
-    public ArrayList searchorder_historys(IOrder_historysearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search order_history with IOrder_historysearch parameters, order by orderby sql clause
+     * @param search IOrder_historysearch
+     * @param orderby sql order by string
+     * @return ArrayList of Order_history
+     * @throws DBException 
+     */
+    public ArrayList<Order_history> searchorder_historys(IOrder_historysearch search, String orderby) throws DBException {
+        return (ArrayList<Order_history>)this.search(search, orderby);
     }
 
     /**
@@ -175,36 +159,26 @@ public abstract class Border_history extends GeneralEntityObject implements Proj
      * @throws DBException
      */
     public boolean getOrder_historyExists(IOrder_historyPK order_historyPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((Order_historyPK)order_historyPK);
-        } else return false;
+        return super.getEntityExists((Order_historyPK)order_historyPK);
     }
 
     /**
      * try to insert Order_history in database
-     * @param film: Order_history object
+     * @param order_history Order_history object
      * @throws DBException
+     * @throws DataException
      */
     public void insertOrder_history(IOrder_history order_history) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(order_history);
-
-
-
-
-
-
-
-
-        }
+        super.insertEntity(order_history);
     }
 
     /**
      * check if Order_historyPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Order_history object
+     * @param order_history Order_history object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateOrder_history(IOrder_history order_history) throws DBException, DataException {
         if(this.getOrder_historyExists(order_history.getPrimaryKey())) {
@@ -216,38 +190,27 @@ public abstract class Border_history extends GeneralEntityObject implements Proj
 
     /**
      * try to update Order_history in database
-     * @param film: Order_history object
+     * @param order_history Order_history object
      * @throws DBException
+     * @throws DataException
      */
     public void updateOrder_history(IOrder_history order_history) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(order_history);
-
-
-
-
-
-
-
-
-        }
+        super.updateEntity(order_history);
     }
 
     /**
      * try to delete Order_history in database
-     * @param film: Order_history object
+     * @param order_history Order_history object
      * @throws DBException
      */
     public void deleteOrder_history(IOrder_history order_history) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteOrder_history(order_history.getOwnerobject(), order_history.getPrimaryKey());
-            super.deleteEntity(order_history);
-        }
+        cascadedeleteOrder_history(order_history.getPrimaryKey());
+        super.deleteEntity(order_history);
     }
 
     /**
      * check data rules in Order_history, throw DataException with customized message if rules do not apply
-     * @param film: Order_history object
+     * @param order_history Order_history object
      * @throws DataException
      * @throws DBException
      */
@@ -256,11 +219,6 @@ public abstract class Border_history extends GeneralEntityObject implements Proj
         //foreign key Order_history.Region - Region.Id
         //foreign key Order_history.Evetype - Evetype.Id
         //Primary key
-
-
-
-
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -270,88 +228,86 @@ public abstract class Border_history extends GeneralEntityObject implements Proj
      * delete all records in tables where order_historyPK is used in a primary key
      * @param order_historyPK: Order_history primary key
      */
-    public void cascadedeleteOrder_history(String senderobject, IOrder_historyPK order_historyPK) {
+    public void cascadedeleteOrder_history(IOrder_historyPK order_historyPK) {
     }
 
     /**
      * @param evetypePK: foreign key for Evetype
      * @delete all Order_history Entity objects for Evetype in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4evetype(String senderobject, IEvetypePK evetypePK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Order_history.SQLDelete4evetype, evetypePK.getKeyFields());
-        }
+    public void delete4evetype(IEvetypePK evetypePK) {
+        super.addStatement(EMorder_history.SQLDelete4evetype, evetypePK.getSQLprimarykey());
     }
 
     /**
      * @param evetypePK: foreign key for Evetype
      * @return all Order_history Entity objects for Evetype
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getOrder_historys4evetype(IEvetypePK evetypePK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Order_history.SQLSelect4evetype, evetypePK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Order_history> getOrder_historys4evetype(IEvetypePK evetypePK) throws CustomException {
+        return super.getEntities(EMorder_history.SQLSelect4evetype, evetypePK.getSQLprimarykey());
     }
     /**
      * @param regionPK: foreign key for Region
      * @delete all Order_history Entity objects for Region in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4region(String senderobject, IRegionPK regionPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Order_history.SQLDelete4region, regionPK.getKeyFields());
-        }
+    public void delete4region(IRegionPK regionPK) {
+        super.addStatement(EMorder_history.SQLDelete4region, regionPK.getSQLprimarykey());
     }
 
     /**
      * @param regionPK: foreign key for Region
      * @return all Order_history Entity objects for Region
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getOrder_historys4region(IRegionPK regionPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Order_history.SQLSelect4region, regionPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Order_history> getOrder_historys4region(IRegionPK regionPK) throws CustomException {
+        return super.getEntities(EMorder_history.SQLSelect4region, regionPK.getSQLprimarykey());
     }
 
     /**
      * get all Order_history objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Order_history objects
      * @throws DBException
      */
-    public ArrayList getOrder_historys(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Order_history.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Order_history> getOrder_historys(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMorder_history.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Order_history>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Order_history objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delOrder_history(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Order_history.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delOrder_history(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Order_history.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

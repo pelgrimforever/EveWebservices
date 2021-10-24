@@ -2,7 +2,7 @@
  * WSFaction.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSFaction implements WSIFaction {
         Faction faction;
         try {
             ISystemPK systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blfaction.delete4system(this.getClass().getName(), systemPK);
+            blfaction.delete4system(systemPK);
         }
         catch(ParseException e) {
         }

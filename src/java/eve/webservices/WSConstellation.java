@@ -2,7 +2,7 @@
  * WSConstellation.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSConstellation implements WSIConstellation {
         Constellation constellation;
         try {
             IRegionPK regionPK = JSONRegion.toRegionPK((JSONObject)parser.parse(json));
-            blconstellation.delete4region(this.getClass().getName(), regionPK);
+            blconstellation.delete4region(regionPK);
         }
         catch(ParseException e) {
         }

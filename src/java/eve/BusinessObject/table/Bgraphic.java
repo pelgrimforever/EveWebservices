@@ -2,17 +2,17 @@
  * Bgraphic.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONGraphic;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMgraphic;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bgraphic extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bgraphic extends BLtable {
 
     /**
      * Constructor, sets Graphic as default Entity
      */
     public Bgraphic() {
-        super(new SQLMapper_pgsql(connectionpool, "Graphic"), new Graphic());
+        super(new Graphic(), new EMgraphic());
     }
 
     /**
@@ -60,37 +60,8 @@ public abstract class Bgraphic extends GeneralEntityObject implements ProjectCon
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bgraphic(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Graphic());
-    }
-
-    /**
-     * Map ResultSet Field values to Graphic
-     * @param dbresult: Database ResultSet
-     */
-    public Graphic mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        GraphicPK graphicPK = null;
-        Graphic graphic;
-        if(dbresult==null) {
-            graphic = new Graphic(graphicPK);
-        } else {
-            try {
-                graphicPK = new GraphicPK(dbresult.getLong("id"));
-                graphic = new Graphic(graphicPK);
-                graphic.initCollision_file(dbresult.getString("collision_file"));
-                graphic.initGraphic_file(dbresult.getString("graphic_file"));
-                graphic.initIcon_folder(dbresult.getString("icon_folder"));
-                graphic.initSof_dna(dbresult.getString("sof_dna"));
-                graphic.initSof_fation_name(dbresult.getString("sof_fation_name"));
-                graphic.initSof_hull_name(dbresult.getString("sof_hull_name"));
-                graphic.initSof_race_name(dbresult.getString("sof_race_name"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, graphic);
-        return graphic;
+    public Bgraphic(BLtable transactionobject) {
+        super(transactionobject, new Graphic(), new EMgraphic());
     }
 
     /**
@@ -104,6 +75,7 @@ public abstract class Bgraphic extends GeneralEntityObject implements ProjectCon
     /**
      * create new empty Graphic object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return IGraphic with primary key
      */
     public IGraphic newGraphic(long id) {
@@ -129,6 +101,7 @@ public abstract class Bgraphic extends GeneralEntityObject implements ProjectCon
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new IGraphicPK
      */
     public IGraphicPK newGraphicPK(long id) {
@@ -140,10 +113,8 @@ public abstract class Bgraphic extends GeneralEntityObject implements ProjectCon
      * @return ArrayList of Graphic objects
      * @throws DBException
      */
-    public ArrayList getGraphics() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Graphic.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Graphic> getGraphics() throws DBException {
+        return (ArrayList<Graphic>)super.getEntities(EMgraphic.SQLSelectAll);
     }
 
     /**
@@ -153,21 +124,28 @@ public abstract class Bgraphic extends GeneralEntityObject implements ProjectCon
      * @throws DBException
      */
     public Graphic getGraphic(IGraphicPK graphicPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Graphic)super.getEntity((GraphicPK)graphicPK);
-        } else return null;
+        return (Graphic)super.getEntity((GraphicPK)graphicPK);
     }
 
-    public ArrayList searchgraphics(IGraphicsearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search graphic with IGraphicsearch parameters
+     * @param search IGraphicsearch
+     * @return ArrayList of Graphic
+     * @throws DBException 
+     */
+    public ArrayList<Graphic> searchgraphics(IGraphicsearch search) throws DBException {
+        return (ArrayList<Graphic>)this.search(search);
     }
 
-    public ArrayList searchgraphics(IGraphicsearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search graphic with IGraphicsearch parameters, order by orderby sql clause
+     * @param search IGraphicsearch
+     * @param orderby sql order by string
+     * @return ArrayList of Graphic
+     * @throws DBException 
+     */
+    public ArrayList<Graphic> searchgraphics(IGraphicsearch search, String orderby) throws DBException {
+        return (ArrayList<Graphic>)this.search(search, orderby);
     }
 
     /**
@@ -177,36 +155,26 @@ public abstract class Bgraphic extends GeneralEntityObject implements ProjectCon
      * @throws DBException
      */
     public boolean getGraphicExists(IGraphicPK graphicPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((GraphicPK)graphicPK);
-        } else return false;
+        return super.getEntityExists((GraphicPK)graphicPK);
     }
 
     /**
      * try to insert Graphic in database
-     * @param film: Graphic object
+     * @param graphic Graphic object
      * @throws DBException
+     * @throws DataException
      */
     public void insertGraphic(IGraphic graphic) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(graphic);
-
-
-
-
-
-
-
-
-        }
+        super.insertEntity(graphic);
     }
 
     /**
      * check if GraphicPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Graphic object
+     * @param graphic Graphic object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateGraphic(IGraphic graphic) throws DBException, DataException {
         if(this.getGraphicExists(graphic.getPrimaryKey())) {
@@ -218,38 +186,27 @@ public abstract class Bgraphic extends GeneralEntityObject implements ProjectCon
 
     /**
      * try to update Graphic in database
-     * @param film: Graphic object
+     * @param graphic Graphic object
      * @throws DBException
+     * @throws DataException
      */
     public void updateGraphic(IGraphic graphic) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(graphic);
-
-
-
-
-
-
-
-
-        }
+        super.updateEntity(graphic);
     }
 
     /**
      * try to delete Graphic in database
-     * @param film: Graphic object
+     * @param graphic Graphic object
      * @throws DBException
      */
     public void deleteGraphic(IGraphic graphic) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteGraphic(graphic.getOwnerobject(), graphic.getPrimaryKey());
-            super.deleteEntity(graphic);
-        }
+        cascadedeleteGraphic(graphic.getPrimaryKey());
+        super.deleteEntity(graphic);
     }
 
     /**
      * check data rules in Graphic, throw DataException with customized message if rules do not apply
-     * @param film: Graphic object
+     * @param graphic Graphic object
      * @throws DataException
      * @throws DBException
      */
@@ -257,33 +214,26 @@ public abstract class Bgraphic extends GeneralEntityObject implements ProjectCon
         StringBuffer message = new StringBuffer();
         //Primary key
         if(graphic.getCollision_file()!=null && graphic.getCollision_file().length()>IGraphic.SIZE_COLLISION_FILE) {
-            message.append("Collision_file is langer dan toegestaan. Max aantal karakters: " + IGraphic.SIZE_COLLISION_FILE + "\n");
+            message.append("Collision_file is langer dan toegestaan. Max aantal karakters: ").append(IGraphic.SIZE_COLLISION_FILE).append("\n");
         }
-
         if(graphic.getGraphic_file()!=null && graphic.getGraphic_file().length()>IGraphic.SIZE_GRAPHIC_FILE) {
-            message.append("Graphic_file is langer dan toegestaan. Max aantal karakters: " + IGraphic.SIZE_GRAPHIC_FILE + "\n");
+            message.append("Graphic_file is langer dan toegestaan. Max aantal karakters: ").append(IGraphic.SIZE_GRAPHIC_FILE).append("\n");
         }
-
         if(graphic.getIcon_folder()!=null && graphic.getIcon_folder().length()>IGraphic.SIZE_ICON_FOLDER) {
-            message.append("Icon_folder is langer dan toegestaan. Max aantal karakters: " + IGraphic.SIZE_ICON_FOLDER + "\n");
+            message.append("Icon_folder is langer dan toegestaan. Max aantal karakters: ").append(IGraphic.SIZE_ICON_FOLDER).append("\n");
         }
-
         if(graphic.getSof_dna()!=null && graphic.getSof_dna().length()>IGraphic.SIZE_SOF_DNA) {
-            message.append("Sof_dna is langer dan toegestaan. Max aantal karakters: " + IGraphic.SIZE_SOF_DNA + "\n");
+            message.append("Sof_dna is langer dan toegestaan. Max aantal karakters: ").append(IGraphic.SIZE_SOF_DNA).append("\n");
         }
-
         if(graphic.getSof_fation_name()!=null && graphic.getSof_fation_name().length()>IGraphic.SIZE_SOF_FATION_NAME) {
-            message.append("Sof_fation_name is langer dan toegestaan. Max aantal karakters: " + IGraphic.SIZE_SOF_FATION_NAME + "\n");
+            message.append("Sof_fation_name is langer dan toegestaan. Max aantal karakters: ").append(IGraphic.SIZE_SOF_FATION_NAME).append("\n");
         }
-
         if(graphic.getSof_hull_name()!=null && graphic.getSof_hull_name().length()>IGraphic.SIZE_SOF_HULL_NAME) {
-            message.append("Sof_hull_name is langer dan toegestaan. Max aantal karakters: " + IGraphic.SIZE_SOF_HULL_NAME + "\n");
+            message.append("Sof_hull_name is langer dan toegestaan. Max aantal karakters: ").append(IGraphic.SIZE_SOF_HULL_NAME).append("\n");
         }
-
         if(graphic.getSof_race_name()!=null && graphic.getSof_race_name().length()>IGraphic.SIZE_SOF_RACE_NAME) {
-            message.append("Sof_race_name is langer dan toegestaan. Max aantal karakters: " + IGraphic.SIZE_SOF_RACE_NAME + "\n");
+            message.append("Sof_race_name is langer dan toegestaan. Max aantal karakters: ").append(IGraphic.SIZE_SOF_RACE_NAME).append("\n");
         }
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -293,46 +243,54 @@ public abstract class Bgraphic extends GeneralEntityObject implements ProjectCon
      * delete all records in tables where graphicPK is used in a primary key
      * @param graphicPK: Graphic primary key
      */
-    public void cascadedeleteGraphic(String senderobject, IGraphicPK graphicPK) {
+    public void cascadedeleteGraphic(IGraphicPK graphicPK) {
     }
 
 
     /**
      * get all Graphic objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Graphic objects
      * @throws DBException
      */
-    public ArrayList getGraphics(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Graphic.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Graphic> getGraphics(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMgraphic.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Graphic>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Graphic objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delGraphic(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Graphic.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delGraphic(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Graphic.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

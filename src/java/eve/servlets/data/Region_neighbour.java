@@ -2,7 +2,7 @@
  * Region_neighbour.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -114,11 +114,11 @@ public class Region_neighbour extends SecurityDataServlet {
                             break;
                         case IRegion_neighbourOperation.DELETE_Regionregion:
                             IRegionPK regionRegionPK = (IRegionPK)parser.getJavaObject("regionpk");
-                            blregion_neighbour.delete4regionRegion(this.getServletName(), regionRegionPK);
+                            blregion_neighbour.delete4regionRegion(regionRegionPK);
                             break;
                         case IRegion_neighbourOperation.DELETE_Regionneighbour:
                             IRegionPK regionNeighbourPK = (IRegionPK)parser.getJavaObject("regionpk");
-                            blregion_neighbour.delete4regionNeighbour(this.getServletName(), regionNeighbourPK);
+                            blregion_neighbour.delete4regionNeighbour(regionNeighbourPK);
                             break;
 //Custom code, do not change this line
 //add here custom operations

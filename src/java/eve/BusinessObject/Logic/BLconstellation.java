@@ -9,17 +9,14 @@
 package eve.BusinessObject.Logic;
 
 import general.exception.DBException;
-import data.interfaces.db.LogicEntity;
 import eve.interfaces.logicentity.IConstellation;
 import eve.logicentity.Constellation;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import data.conversion.JSONConversion;
 import eve.BusinessObject.table.Bconstellation;
+import eve.conversion.entity.EMconstellation;
 import eve.entity.pk.RegionPK;
 import general.exception.DataException;
-import eve.interfaces.BusinessObject.IBLconstellation;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Iterator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -34,7 +31,7 @@ import org.json.simple.JSONObject;
  *
  * @author Franky Laseure
  */
-public class BLconstellation extends Bconstellation implements IBLconstellation {
+public class BLconstellation extends Bconstellation {
 //ProjectGenerator: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
@@ -51,19 +48,11 @@ public class BLconstellation extends Bconstellation implements IBLconstellation 
      * all transactions will commit at same time
      * @param transactionobject: GeneralObjects that holds the transaction queue
      */
-    public BLconstellation(GeneralEntityObject transactionobject) {
+    public BLconstellation(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * load extra fields from adjusted sql statement
-     */
-    @Override
-    public void loadExtra(ResultSet dbresult, LogicEntity constellation) throws SQLException {
-        
-    }
-    
     public void updateConstellation(JSONObject jsonconstellationdetails) throws DBException, DataException {
         Constellation constellation = new Constellation(JSONConversion.getLong(jsonconstellationdetails, "constellation_id"));
         constellation.setName(JSONConversion.getString(jsonconstellationdetails, "name"));
@@ -99,9 +88,9 @@ public class BLconstellation extends Bconstellation implements IBLconstellation 
      */
     public void postprocess() throws DBException, DataException {
         Object[][] parameter1 = {{ "noaccess", true }, { "systemnoaccess", false }};
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Constellation.updateNoaccess1, parameter1);
+        this.addStatement(sqlmapper.insertParameters(EMconstellation.updateNoaccess1, parameter1));
         Object[][] parameter2 = {{ "noaccess", false }, { "systemnoaccess", false }};
-        this.transactionqueue.addStatement(this.getClass().getSimpleName(), Constellation.updateNoaccess2, parameter2);
+        this.addStatement(sqlmapper.insertParameters(EMconstellation.updateNoaccess2, parameter2));
         this.Commit2DB();
     }
     
@@ -109,8 +98,8 @@ public class BLconstellation extends Bconstellation implements IBLconstellation 
      * try to insert Constellation object in database
      * commit transaction
      * @param constellation: Constellation Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void insertConstellation(IConstellation constellation) throws DBException, DataException {
@@ -123,8 +112,8 @@ public class BLconstellation extends Bconstellation implements IBLconstellation 
      * an alternative to insertConstellation, which can be made an empty function
      * commit transaction
      * @param constellation: Constellation Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureinsertConstellation(IConstellation constellation) throws DBException, DataException {
         trans_insertConstellation(constellation);
@@ -135,8 +124,8 @@ public class BLconstellation extends Bconstellation implements IBLconstellation 
      * try to update Constellation object in database
      * commit transaction
      * @param constellation: Constellation Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     @Override
     public void updateConstellation(IConstellation constellation) throws DBException, DataException {
@@ -149,8 +138,8 @@ public class BLconstellation extends Bconstellation implements IBLconstellation 
      * an alternative to updateConstellation, which can be made an empty function
      * commit transaction
      * @param constellation: Constellation Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void secureupdateConstellation(IConstellation constellation) throws DBException, DataException {
         trans_updateConstellation(constellation);
@@ -161,7 +150,7 @@ public class BLconstellation extends Bconstellation implements IBLconstellation 
      * try to delete Constellation object in database
      * commit transaction
      * @param constellation: Constellation Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     @Override
     public void deleteConstellation(IConstellation constellation) throws DBException {
@@ -174,7 +163,7 @@ public class BLconstellation extends Bconstellation implements IBLconstellation 
      * an alternative to deleteConstellation, which can be made an empty function
      * commit transaction
      * @param constellation: Constellation Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void securedeleteConstellation(IConstellation constellation) throws DBException {
         trans_deleteConstellation(constellation);
@@ -185,8 +174,8 @@ public class BLconstellation extends Bconstellation implements IBLconstellation 
      * try to insert Constellation object in database
      * do not commit transaction
      * @param constellation: Constellation Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_insertConstellation(IConstellation constellation) throws DBException, DataException {
         super.checkDATA(constellation);
@@ -197,8 +186,8 @@ public class BLconstellation extends Bconstellation implements IBLconstellation 
      * try to update Constellation object in database
      * do not commit transaction
      * @param constellation: Constellation Entity Object
-     * @throws eve.general.exception.CustomException
-     * @throws eve.general.exception.DataException
+     * @throws general.exception.DBException
+     * @throws general.exception.DataException
      */
     public void trans_updateConstellation(IConstellation constellation) throws DBException, DataException {
         super.checkDATA(constellation);
@@ -209,7 +198,7 @@ public class BLconstellation extends Bconstellation implements IBLconstellation 
      * try to delete Constellation object in database
      * do not commit transaction
      * @param constellation: Constellation Entity Object
-     * @throws eve.general.exception.CustomException
+     * @throws general.exception.DBException
      */
     public void trans_deleteConstellation(IConstellation constellation) throws DBException {
         super.deleteConstellation((Constellation)constellation);

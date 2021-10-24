@@ -2,17 +2,17 @@
  * Btmp_system_jumps.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONTmp_system_jumps;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMtmp_system_jumps;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Btmp_system_jumps extends GeneralEntityObject implements ProjectConstants {
+public abstract class Btmp_system_jumps extends BLtable {
 
     /**
      * Constructor, sets Tmp_system_jumps as default Entity
      */
     public Btmp_system_jumps() {
-        super(new SQLMapper_pgsql(connectionpool, "Tmp_system_jumps"), new Tmp_system_jumps());
+        super(new Tmp_system_jumps(), new EMtmp_system_jumps());
     }
 
     /**
@@ -60,33 +60,8 @@ public abstract class Btmp_system_jumps extends GeneralEntityObject implements P
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Btmp_system_jumps(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Tmp_system_jumps());
-    }
-
-    /**
-     * Map ResultSet Field values to Tmp_system_jumps
-     * @param dbresult: Database ResultSet
-     */
-    public Tmp_system_jumps mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        Tmp_system_jumpsPK tmp_system_jumpsPK = null;
-        Tmp_system_jumps tmp_system_jumps;
-        if(dbresult==null) {
-            tmp_system_jumps = new Tmp_system_jumps(tmp_system_jumpsPK);
-        } else {
-            try {
-                tmp_system_jumpsPK = new Tmp_system_jumpsPK(dbresult.getLong("system"));
-                tmp_system_jumps = new Tmp_system_jumps(tmp_system_jumpsPK);
-                tmp_system_jumps.initJump(dbresult.getInt("jump"));
-                tmp_system_jumps.initMaxjumps(dbresult.getInt("maxjumps"));
-                tmp_system_jumps.initPrevioussystem(dbresult.getLong("previoussystem"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, tmp_system_jumps);
-        return tmp_system_jumps;
+    public Btmp_system_jumps(BLtable transactionobject) {
+        super(transactionobject, new Tmp_system_jumps(), new EMtmp_system_jumps());
     }
 
     /**
@@ -100,6 +75,7 @@ public abstract class Btmp_system_jumps extends GeneralEntityObject implements P
     /**
      * create new empty Tmp_system_jumps object
      * create new primary key with given parameters
+     * @param system primary key field
      * @return ITmp_system_jumps with primary key
      */
     public ITmp_system_jumps newTmp_system_jumps(long system) {
@@ -125,6 +101,7 @@ public abstract class Btmp_system_jumps extends GeneralEntityObject implements P
 
     /**
      * create new primary key with given parameters
+     * @param system primary key field
      * @return new ITmp_system_jumpsPK
      */
     public ITmp_system_jumpsPK newTmp_system_jumpsPK(long system) {
@@ -136,10 +113,8 @@ public abstract class Btmp_system_jumps extends GeneralEntityObject implements P
      * @return ArrayList of Tmp_system_jumps objects
      * @throws DBException
      */
-    public ArrayList getTmp_system_jumpss() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Tmp_system_jumps.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Tmp_system_jumps> getTmp_system_jumpss() throws DBException {
+        return (ArrayList<Tmp_system_jumps>)super.getEntities(EMtmp_system_jumps.SQLSelectAll);
     }
 
     /**
@@ -149,21 +124,28 @@ public abstract class Btmp_system_jumps extends GeneralEntityObject implements P
      * @throws DBException
      */
     public Tmp_system_jumps getTmp_system_jumps(ITmp_system_jumpsPK tmp_system_jumpsPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Tmp_system_jumps)super.getEntity((Tmp_system_jumpsPK)tmp_system_jumpsPK);
-        } else return null;
+        return (Tmp_system_jumps)super.getEntity((Tmp_system_jumpsPK)tmp_system_jumpsPK);
     }
 
-    public ArrayList searchtmp_system_jumpss(ITmp_system_jumpssearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search tmp_system_jumps with ITmp_system_jumpssearch parameters
+     * @param search ITmp_system_jumpssearch
+     * @return ArrayList of Tmp_system_jumps
+     * @throws DBException 
+     */
+    public ArrayList<Tmp_system_jumps> searchtmp_system_jumpss(ITmp_system_jumpssearch search) throws DBException {
+        return (ArrayList<Tmp_system_jumps>)this.search(search);
     }
 
-    public ArrayList searchtmp_system_jumpss(ITmp_system_jumpssearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search tmp_system_jumps with ITmp_system_jumpssearch parameters, order by orderby sql clause
+     * @param search ITmp_system_jumpssearch
+     * @param orderby sql order by string
+     * @return ArrayList of Tmp_system_jumps
+     * @throws DBException 
+     */
+    public ArrayList<Tmp_system_jumps> searchtmp_system_jumpss(ITmp_system_jumpssearch search, String orderby) throws DBException {
+        return (ArrayList<Tmp_system_jumps>)this.search(search, orderby);
     }
 
     /**
@@ -173,32 +155,26 @@ public abstract class Btmp_system_jumps extends GeneralEntityObject implements P
      * @throws DBException
      */
     public boolean getTmp_system_jumpsExists(ITmp_system_jumpsPK tmp_system_jumpsPK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((Tmp_system_jumpsPK)tmp_system_jumpsPK);
-        } else return false;
+        return super.getEntityExists((Tmp_system_jumpsPK)tmp_system_jumpsPK);
     }
 
     /**
      * try to insert Tmp_system_jumps in database
-     * @param film: Tmp_system_jumps object
+     * @param tmp_system_jumps Tmp_system_jumps object
      * @throws DBException
+     * @throws DataException
      */
     public void insertTmp_system_jumps(ITmp_system_jumps tmp_system_jumps) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(tmp_system_jumps);
-
-
-
-
-        }
+        super.insertEntity(tmp_system_jumps);
     }
 
     /**
      * check if Tmp_system_jumpsPK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Tmp_system_jumps object
+     * @param tmp_system_jumps Tmp_system_jumps object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateTmp_system_jumps(ITmp_system_jumps tmp_system_jumps) throws DBException, DataException {
         if(this.getTmp_system_jumpsExists(tmp_system_jumps.getPrimaryKey())) {
@@ -210,43 +186,33 @@ public abstract class Btmp_system_jumps extends GeneralEntityObject implements P
 
     /**
      * try to update Tmp_system_jumps in database
-     * @param film: Tmp_system_jumps object
+     * @param tmp_system_jumps Tmp_system_jumps object
      * @throws DBException
+     * @throws DataException
      */
     public void updateTmp_system_jumps(ITmp_system_jumps tmp_system_jumps) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(tmp_system_jumps);
-
-
-
-
-        }
+        super.updateEntity(tmp_system_jumps);
     }
 
     /**
      * try to delete Tmp_system_jumps in database
-     * @param film: Tmp_system_jumps object
+     * @param tmp_system_jumps Tmp_system_jumps object
      * @throws DBException
      */
     public void deleteTmp_system_jumps(ITmp_system_jumps tmp_system_jumps) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteTmp_system_jumps(tmp_system_jumps.getOwnerobject(), tmp_system_jumps.getPrimaryKey());
-            super.deleteEntity(tmp_system_jumps);
-        }
+        cascadedeleteTmp_system_jumps(tmp_system_jumps.getPrimaryKey());
+        super.deleteEntity(tmp_system_jumps);
     }
 
     /**
      * check data rules in Tmp_system_jumps, throw DataException with customized message if rules do not apply
-     * @param film: Tmp_system_jumps object
+     * @param tmp_system_jumps Tmp_system_jumps object
      * @throws DataException
      * @throws DBException
      */
     public void checkDATA(ITmp_system_jumps tmp_system_jumps) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
-
-
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -256,46 +222,54 @@ public abstract class Btmp_system_jumps extends GeneralEntityObject implements P
      * delete all records in tables where tmp_system_jumpsPK is used in a primary key
      * @param tmp_system_jumpsPK: Tmp_system_jumps primary key
      */
-    public void cascadedeleteTmp_system_jumps(String senderobject, ITmp_system_jumpsPK tmp_system_jumpsPK) {
+    public void cascadedeleteTmp_system_jumps(ITmp_system_jumpsPK tmp_system_jumpsPK) {
     }
 
 
     /**
      * get all Tmp_system_jumps objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Tmp_system_jumps objects
      * @throws DBException
      */
-    public ArrayList getTmp_system_jumpss(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Tmp_system_jumps.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Tmp_system_jumps> getTmp_system_jumpss(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMtmp_system_jumps.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Tmp_system_jumps>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Tmp_system_jumps objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delTmp_system_jumps(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Tmp_system_jumps.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delTmp_system_jumps(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Tmp_system_jumps.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

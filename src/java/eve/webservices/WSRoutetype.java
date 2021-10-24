@@ -2,7 +2,7 @@
  * WSRoutetype.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSRoutetype implements WSIRoutetype {
         Routetype routetype;
         try {
             ISecurity_islandPK security_islandPK = JSONSecurity_island.toSecurity_islandPK((JSONObject)parser.parse(json));
-            blroutetype.delete4security_island(this.getClass().getName(), security_islandPK);
+            blroutetype.delete4security_island(security_islandPK);
         }
         catch(ParseException e) {
         }

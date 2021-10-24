@@ -2,17 +2,17 @@
  * Bevetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.GeneralEntityInterface;
-import BusinessObject.GeneralEntityObject;
+import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-
+import db.SQLMapperFactory;
+import db.SQLparameters;
 import data.gis.shape.*;
 import data.json.piJson;
 import data.json.psqlJsonobject;
@@ -20,7 +20,7 @@ import db.SQLMapper_pgsql;
 import data.interfaces.db.Filedata;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.JSONEvetype;
-import eve.data.ProjectConstants;
+import eve.conversion.entity.EMevetype;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
@@ -45,13 +45,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bevetype extends GeneralEntityObject implements ProjectConstants {
+public abstract class Bevetype extends BLtable {
 
     /**
      * Constructor, sets Evetype as default Entity
      */
     public Bevetype() {
-        super(new SQLMapper_pgsql(connectionpool, "Evetype"), new Evetype());
+        super(new Evetype(), new EMevetype());
     }
 
     /**
@@ -60,52 +60,8 @@ public abstract class Bevetype extends GeneralEntityObject implements ProjectCon
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bevetype(GeneralEntityInterface transactionobject) {
-        super(transactionobject, new Evetype());
-    }
-
-    /**
-     * Map ResultSet Field values to Evetype
-     * @param dbresult: Database ResultSet
-     */
-    public Evetype mapResultSet2Entity(ResultSet dbresult) throws SQLException {
-        EvetypePK evetypePK = null;
-        Evetype evetype;
-        if(dbresult==null) {
-            evetype = new Evetype(evetypePK);
-        } else {
-            try {
-                evetypePK = new EvetypePK(dbresult.getLong("id"));
-                evetype = new Evetype(evetypePK);
-                evetype.initMarket_groupPK(new Market_groupPK(dbresult.getLong("market_group")));
-                if(dbresult.wasNull()) evetype.setMarket_groupPK(null);                
-                evetype.initTypegroupPK(new TypegroupPK(dbresult.getLong("typegroup")));
-                if(dbresult.wasNull()) evetype.setTypegroupPK(null);                
-                evetype.initGraphicPK(new GraphicPK(dbresult.getLong("graphic")));
-                if(dbresult.wasNull()) evetype.setGraphicPK(null);                
-                evetype.initName(dbresult.getString("name"));
-                evetype.initPublished(dbresult.getBoolean("published"));
-                evetype.initDescription(dbresult.getString("description"));
-                evetype.initCapacity(dbresult.getDouble("capacity"));
-                evetype.initIcon(dbresult.getLong("icon"));
-                evetype.initMass(dbresult.getDouble("mass"));
-                evetype.initPackaged_volume(dbresult.getDouble("packaged_volume"));
-                evetype.initPortion_size(dbresult.getInt("portion_size"));
-                evetype.initRadius(dbresult.getDouble("radius"));
-                evetype.initVolume(dbresult.getDouble("volume"));
-                evetype.initAvg_buyorder(dbresult.getDouble("avg_buyorder"));
-                evetype.initAvg_sellorder(dbresult.getDouble("avg_sellorder"));
-                evetype.initMin_buyorder(dbresult.getDouble("min_buyorder"));
-                evetype.initMax_buyorder(dbresult.getDouble("max_buyorder"));
-                evetype.initMin_selorder(dbresult.getDouble("min_selorder"));
-                evetype.initMax_selorder(dbresult.getDouble("max_selorder"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, evetype);
-        return evetype;
+    public Bevetype(BLtable transactionobject) {
+        super(transactionobject, new Evetype(), new EMevetype());
     }
 
     /**
@@ -119,6 +75,7 @@ public abstract class Bevetype extends GeneralEntityObject implements ProjectCon
     /**
      * create new empty Evetype object
      * create new primary key with given parameters
+     * @param id primary key field
      * @return IEvetype with primary key
      */
     public IEvetype newEvetype(long id) {
@@ -144,6 +101,7 @@ public abstract class Bevetype extends GeneralEntityObject implements ProjectCon
 
     /**
      * create new primary key with given parameters
+     * @param id primary key field
      * @return new IEvetypePK
      */
     public IEvetypePK newEvetypePK(long id) {
@@ -155,10 +113,8 @@ public abstract class Bevetype extends GeneralEntityObject implements ProjectCon
      * @return ArrayList of Evetype objects
      * @throws DBException
      */
-    public ArrayList getEvetypes() throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Evetype.SQLSelectAll);
-        } else return new ArrayList();
+    public ArrayList<Evetype> getEvetypes() throws DBException {
+        return (ArrayList<Evetype>)super.getEntities(EMevetype.SQLSelectAll);
     }
 
     /**
@@ -168,21 +124,28 @@ public abstract class Bevetype extends GeneralEntityObject implements ProjectCon
      * @throws DBException
      */
     public Evetype getEvetype(IEvetypePK evetypePK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return (Evetype)super.getEntity((EvetypePK)evetypePK);
-        } else return null;
+        return (Evetype)super.getEntity((EvetypePK)evetypePK);
     }
 
-    public ArrayList searchevetypes(IEvetypesearch search) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return this.search(search);
-        } else return new ArrayList();
+    /**
+     * search evetype with IEvetypesearch parameters
+     * @param search IEvetypesearch
+     * @return ArrayList of Evetype
+     * @throws DBException 
+     */
+    public ArrayList<Evetype> searchevetypes(IEvetypesearch search) throws DBException {
+        return (ArrayList<Evetype>)this.search(search);
     }
 
-    public ArrayList searchevetypes(IEvetypesearch search, String orderby) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return this.search(search, orderby);
-        } else return new ArrayList();
+    /**
+     * search evetype with IEvetypesearch parameters, order by orderby sql clause
+     * @param search IEvetypesearch
+     * @param orderby sql order by string
+     * @return ArrayList of Evetype
+     * @throws DBException 
+     */
+    public ArrayList<Evetype> searchevetypes(IEvetypesearch search, String orderby) throws DBException {
+        return (ArrayList<Evetype>)this.search(search, orderby);
     }
 
     /**
@@ -192,48 +155,26 @@ public abstract class Bevetype extends GeneralEntityObject implements ProjectCon
      * @throws DBException
      */
     public boolean getEvetypeExists(IEvetypePK evetypePK) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-	        return super.getEntityExists((EvetypePK)evetypePK);
-        } else return false;
+        return super.getEntityExists((EvetypePK)evetypePK);
     }
 
     /**
      * try to insert Evetype in database
-     * @param film: Evetype object
+     * @param evetype Evetype object
      * @throws DBException
+     * @throws DataException
      */
     public void insertEvetype(IEvetype evetype) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.insertEntity(evetype);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        }
+        super.insertEntity(evetype);
     }
 
     /**
      * check if EvetypePK exists
      * insert if not, update if found
      * do not commit transaction
-     * @param film: Evetype object
+     * @param evetype Evetype object
      * @throws DBException
+     * @throws DataException
      */
     public void insertupdateEvetype(IEvetype evetype) throws DBException, DataException {
         if(this.getEvetypeExists(evetype.getPrimaryKey())) {
@@ -245,87 +186,42 @@ public abstract class Bevetype extends GeneralEntityObject implements ProjectCon
 
     /**
      * try to update Evetype in database
-     * @param film: Evetype object
+     * @param evetype Evetype object
      * @throws DBException
+     * @throws DataException
      */
     public void updateEvetype(IEvetype evetype) throws DBException, DataException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.updateEntity(evetype);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        }
+        super.updateEntity(evetype);
     }
 
     /**
      * try to delete Evetype in database
-     * @param film: Evetype object
+     * @param evetype Evetype object
      * @throws DBException
      */
     public void deleteEvetype(IEvetype evetype) throws DBException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            cascadedeleteEvetype(evetype.getOwnerobject(), evetype.getPrimaryKey());
-            super.deleteEntity(evetype);
-        }
+        cascadedeleteEvetype(evetype.getPrimaryKey());
+        super.deleteEntity(evetype);
     }
 
     /**
      * check data rules in Evetype, throw DataException with customized message if rules do not apply
-     * @param film: Evetype object
+     * @param evetype Evetype object
      * @throws DataException
      * @throws DBException
      */
     public void checkDATA(IEvetype evetype) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
-
-
-
-
-
-
         if(evetype.getName()!=null && evetype.getName().length()>IEvetype.SIZE_NAME) {
-            message.append("Name is langer dan toegestaan. Max aantal karakters: " + IEvetype.SIZE_NAME + "\n");
+            message.append("Name is langer dan toegestaan. Max aantal karakters: ").append(IEvetype.SIZE_NAME).append("\n");
         }
-
         if(evetype.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
         }
-
         if(evetype.getDescription()!=null && evetype.getDescription().length()>IEvetype.SIZE_DESCRIPTION) {
-            message.append("Description is langer dan toegestaan. Max aantal karakters: " + IEvetype.SIZE_DESCRIPTION + "\n");
+            message.append("Description is langer dan toegestaan. Max aantal karakters: ").append(IEvetype.SIZE_DESCRIPTION).append("\n");
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -335,137 +231,126 @@ public abstract class Bevetype extends GeneralEntityObject implements ProjectCon
      * delete all records in tables where evetypePK is used in a primary key
      * @param evetypePK: Evetype primary key
      */
-    public void cascadedeleteEvetype(String senderobject, IEvetypePK evetypePK) {
+    public void cascadedeleteEvetype(IEvetypePK evetypePK) {
         BLstock blstock = new BLstock(this);
-        blstock.delete4evetype(senderobject, evetypePK);
+        blstock.delete4evetype(evetypePK);
         BLorder_history blorder_history = new BLorder_history(this);
-        blorder_history.delete4evetype(senderobject, evetypePK);
+        blorder_history.delete4evetype(evetypePK);
     }
 
     /**
      * @param market_groupPK: foreign key for Market_group
      * @delete all Evetype Entity objects for Market_group in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4market_group(String senderobject, IMarket_groupPK market_groupPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Evetype.SQLDelete4market_group, market_groupPK.getKeyFields());
-        }
+    public void delete4market_group(IMarket_groupPK market_groupPK) {
+        super.addStatement(EMevetype.SQLDelete4market_group, market_groupPK.getSQLprimarykey());
     }
 
     /**
      * @param market_groupPK: foreign key for Market_group
      * @return all Evetype Entity objects for Market_group
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getEvetypes4market_group(IMarket_groupPK market_groupPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Evetype.SQLSelect4market_group, market_groupPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Evetype> getEvetypes4market_group(IMarket_groupPK market_groupPK) throws CustomException {
+        return super.getEntities(EMevetype.SQLSelect4market_group, market_groupPK.getSQLprimarykey());
     }
     /**
      * @param typegroupPK: foreign key for Typegroup
      * @delete all Evetype Entity objects for Typegroup in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4typegroup(String senderobject, ITypegroupPK typegroupPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Evetype.SQLDelete4typegroup, typegroupPK.getKeyFields());
-        }
+    public void delete4typegroup(ITypegroupPK typegroupPK) {
+        super.addStatement(EMevetype.SQLDelete4typegroup, typegroupPK.getSQLprimarykey());
     }
 
     /**
      * @param typegroupPK: foreign key for Typegroup
      * @return all Evetype Entity objects for Typegroup
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getEvetypes4typegroup(ITypegroupPK typegroupPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Evetype.SQLSelect4typegroup, typegroupPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Evetype> getEvetypes4typegroup(ITypegroupPK typegroupPK) throws CustomException {
+        return super.getEntities(EMevetype.SQLSelect4typegroup, typegroupPK.getSQLprimarykey());
     }
     /**
      * @param graphicPK: foreign key for Graphic
      * @delete all Evetype Entity objects for Graphic in database
-     * @throws eve.general.exception.CustomException
      */
-    public void delete4graphic(String senderobject, IGraphicPK graphicPK) {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            super.addStatement(senderobject, Evetype.SQLDelete4graphic, graphicPK.getKeyFields());
-        }
+    public void delete4graphic(IGraphicPK graphicPK) {
+        super.addStatement(EMevetype.SQLDelete4graphic, graphicPK.getSQLprimarykey());
     }
 
     /**
      * @param graphicPK: foreign key for Graphic
      * @return all Evetype Entity objects for Graphic
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public ArrayList getEvetypes4graphic(IGraphicPK graphicPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            return getMapper().loadEntityVector(this, Evetype.SQLSelect4graphic, graphicPK.getKeyFields());
-        } else return new ArrayList();
+    public ArrayList<Evetype> getEvetypes4graphic(IGraphicPK graphicPK) throws CustomException {
+        return super.getEntities(EMevetype.SQLSelect4graphic, graphicPK.getSQLprimarykey());
     }
     /**
      * @param stockPK: parent Stock for child object Evetype Entity
      * @return child Evetype Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public IEvetype getStock(IStockPK stockPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            EvetypePK evetypePK = new EvetypePK(stockPK.getEvetype());
-            return this.getEvetype(evetypePK);
-        } else return null;
+    public Evetype getStock(IStockPK stockPK) throws CustomException {
+        EvetypePK evetypePK = new EvetypePK(stockPK.getEvetype());
+        return this.getEvetype(evetypePK);
     }
 
     /**
      * @param order_historyPK: parent Order_history for child object Evetype Entity
      * @return child Evetype Entity object
-     * @throws eve.general.exception.CustomException
+     * @throws CustomException
      */
-    public IEvetype getOrder_history(IOrder_historyPK order_historyPK) throws CustomException {
-        if(!this.getLogginrequired() || this.getLogginrequired() && this.isAuthenticated()) {
-            EvetypePK evetypePK = new EvetypePK(order_historyPK.getEvetype());
-            return this.getEvetype(evetypePK);
-        } else return null;
+    public Evetype getOrder_history(IOrder_historyPK order_historyPK) throws CustomException {
+        EvetypePK evetypePK = new EvetypePK(order_historyPK.getEvetype());
+        return this.getEvetype(evetypePK);
     }
 
 
     /**
      * get all Evetype objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
+     * @param sortlist sql sort string
+     * @param sortoperator asc/desc
      * @return ArrayList of Evetype objects
      * @throws DBException
      */
-    public ArrayList getEvetypes(Object[][] sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
-        String sql =  Evetype.SQLSelect;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public ArrayList<Evetype> getEvetypes(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
+        StringBuilder sql = new StringBuilder(EMevetype.SQLSelect);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
         if(sortlist.length()>0) {
-            sql += " order by " + sortlist + " " + sortoperator;
+            sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return getMapper().loadEntityVector(this, sql, sqlparameters);
+        return (ArrayList<Evetype>)super.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
      * delete all Evetype objects for sqlparameters
+     * @param sqlparameters SQLparameters object
+     * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delEvetype(String senderobject, Object[][] sqlparameters, String andoroperator) throws DBException {
-        String sql =  "Delete from " + Evetype.table;
-        int l = sqlparameters.length;
-        if(sqlparameters.length>0) {
-            sql += " where ";
+    public void delEvetype(SQLparameters sqlparameters, String andoroperator) throws DBException {
+        StringBuilder sql = new StringBuilder("delete from ").append(Evetype.table);
+        ArrayList<Object[]> parameters = sqlparameters.getParameters();
+        int l = parameters.size();
+        if(l>0) {
+            sql.append(" where ");
             for(int i=0; i<l; i++) {
-                sql += String.valueOf(sqlparameters[i][0]) + " = :" + String.valueOf(sqlparameters[i][0]) + ": ";
-                if(i<l-1) sql += " " + andoroperator + " ";
+                sql.append(String.valueOf(parameters.get(i)[0])).append(" = :").append(String.valueOf(parameters.get(i)[0])).append(": ");
+                if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(senderobject, sql, sqlparameters);
+        this.addStatement(sql.toString(), sqlparameters);
     }
 
 

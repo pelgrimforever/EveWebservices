@@ -2,7 +2,7 @@
  * WSRoute.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSRoute implements WSIRoute {
         Route route;
         try {
             IRoutetypePK routetypePK = JSONRoutetype.toRoutetypePK((JSONObject)parser.parse(json));
-            blroute.delete4routetype(this.getClass().getName(), routetypePK);
+            blroute.delete4routetype(routetypePK);
         }
         catch(ParseException e) {
         }
@@ -221,7 +221,7 @@ public class WSRoute implements WSIRoute {
         Route route;
         try {
             ISystemPK systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blroute.delete4system(this.getClass().getName(), systemPK);
+            blroute.delete4system(systemPK);
         }
         catch(ParseException e) {
         }

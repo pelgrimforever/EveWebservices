@@ -2,7 +2,7 @@
  * WSMarket_group.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
@@ -184,7 +184,7 @@ public class WSMarket_group implements WSIMarket_group {
         Market_group market_group;
         try {
             IMarket_groupPK market_groupParent_idPK = JSONMarket_group.toMarket_groupPK((JSONObject)parser.parse(json));
-            blmarket_group.delete4market_groupParent_id(this.getClass().getName(), market_groupParent_idPK);
+            blmarket_group.delete4market_groupParent_id(market_groupParent_idPK);
         }
         catch(ParseException e) {
         }

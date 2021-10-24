@@ -2,19 +2,17 @@
  * Bview_stocktrade_system.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.9.2021 16:29
+ * Generated on 24.9.2021 14:40
  *
  */
 
 package eve.BusinessObject.view;
 
-import BusinessObject.GeneralViewObject;
+import BusinessObject.BLview;
+import db.SQLMapperFactory;
 import data.gis.shape.*;
 import db.SQLMapper_pgsql;
-import eve.data.ProjectConstants;
-import db.ArchiveViewMapper;
-import db.ViewMapper;
-import db.ViewMapperInterface;
+import eve.conversion.entity.EMview_stocktrade_system;
 import general.exception.*;
 import java.util.ArrayList;
 import eve.logicview.View_stocktrade_system;
@@ -34,35 +32,13 @@ import org.postgis.PGgeometry;
  *
  * @author Franky Laseure
  */
-public abstract class Bview_stocktrade_system extends GeneralViewObject implements ProjectConstants {
+public abstract class Bview_stocktrade_system extends BLview {
 
     /**
      * Constructor, sets View_stocktrade_system as default Entity
      */
     public Bview_stocktrade_system() {
-        super(new SQLMapper_pgsql(connectionpool, "View_stocktrade_system"), new View_stocktrade_system());
-    }
-
-    /**
-     * Map ResultSet Field values to View_stocktrade_system
-     * @param dbresult: Database ResultSet
-     */
-    public View_stocktrade_system mapResultSet2View(ResultSet dbresult) throws SQLException {
-        View_stocktrade_system view_stocktrade_system = new View_stocktrade_system();
-        if(dbresult!=null) {
-            try {
-                view_stocktrade_system.setUsername(dbresult.getString("username"));
-                view_stocktrade_system.setId(dbresult.getLong("id"));
-                view_stocktrade_system.setName(dbresult.getString("name"));
-                view_stocktrade_system.setSellprice(dbresult.getDouble("sellprice"));
-                view_stocktrade_system.setTotalvolume(dbresult.getDouble("totalvolume"));
-            }
-            catch(SQLException sqle) {
-                throw sqle;
-            }
-        }
-        this.loadExtra(dbresult, view_stocktrade_system);
-        return view_stocktrade_system;
+        super(new View_stocktrade_system(), new EMview_stocktrade_system());
     }
 
     /**
@@ -70,7 +46,7 @@ public abstract class Bview_stocktrade_system extends GeneralViewObject implemen
      * @return ArrayList of View_stocktrade_system objects
      * @throws DBException
      */
-    public ArrayList getView_stocktrade_systems() throws DBException {
-        return getMapper().loadViewVector(this, View_stocktrade_system.SQLSelectAll);
+    public ArrayList<View_stocktrade_system> getView_stocktrade_systems() throws DBException {
+        return getEntities(EMview_stocktrade_system.SQLSelectAll);
     }
 }
