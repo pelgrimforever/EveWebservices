@@ -1,7 +1,7 @@
 /*
  * ApplicationConfig.java
  *
- * Generated on 24.9.2021 14:40
+ * Generated on 25.9.2021 15:16
  *
  */
 
@@ -54,6 +54,7 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSRoute.class);
         resources.add(eve.restservices.RSRoutetype.class);
         resources.add(eve.restservices.RSSecurity_island.class);
+        resources.add(eve.restservices.RSSettings.class);
         resources.add(eve.restservices.RSStargate.class);
         resources.add(eve.restservices.RSStation.class);
         resources.add(eve.restservices.RSStation_service.class);
@@ -66,6 +67,7 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSTmp_system_jumps.class);
         resources.add(eve.restservices.RSTrade.class);
         resources.add(eve.restservices.RSTypegroup.class);
+        resources.add(eve.restservices.RSUsersettings.class);
         resources.add(eve.restservices.RSView_combinedtrade.class);
         resources.add(eve.restservices.RSView_order.class);
         resources.add(eve.restservices.RSView_order_region_evetype.class);

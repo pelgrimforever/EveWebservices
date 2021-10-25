@@ -15,16 +15,20 @@ import eve.BusinessObject.Logic.BLstock;
 import eve.BusinessObject.Logic.BLstocktrade;
 import eve.BusinessObject.Logic.BLsystem;
 import eve.BusinessObject.Logic.BLtrade;
+import eve.BusinessObject.Logic.BLusersettings;
 import eve.BusinessObject.Logic.BLview_tradeorders;
 import eve.BusinessObject.Logic.RouteHash;
 import eve.entity.pk.RoutetypePK;
 import eve.entity.pk.Security_islandPK;
 import eve.entity.pk.StocktradePK;
+import eve.entity.pk.UsersettingsPK;
+import eve.interfaces.logicentity.ISettings;
 import eve.logicentity.Orders;
 import eve.logicentity.Region;
 import eve.logicentity.Stock;
 import eve.logicentity.Stocktrade;
 import eve.logicentity.Trade;
+import eve.logicentity.Usersettings;
 import eve.logicview.View_tradeorders;
 import general.exception.CustomException;
 import general.exception.DBException;
@@ -39,6 +43,7 @@ import java.util.Iterator;
  */
 public class MarketService implements Runnable {
     
+    private String username;
     private MarketStatus marketstatus;
     private boolean keeprunning = true;
     
@@ -137,7 +142,8 @@ public class MarketService implements Runnable {
         }
     }
     
-    public MarketService() {
+    public MarketService(String username) {
+        this.username = username;
         try {
             marketstatus = new MarketStatus();
             BLregion blregion = new BLregion();
@@ -274,6 +280,7 @@ public class MarketService implements Runnable {
         BLview_tradeorders blviewtradeorders = new BLview_tradeorders();
         BLstock blstock = new BLstock();
         BLstocktrade blstocktrade = new BLstocktrade();
+        BLusersettings blusersettings = new BLusersettings();
 
         //calculate average, min and max price for buy/sell orders for each evetype
         marketstatus.addMessage("Update average prices");
@@ -281,10 +288,14 @@ public class MarketService implements Runnable {
         
         marketstatus.addMessage("Construct trade table");
         bltrade.deletetrade();
+        //make sure all usersettings are present
+        blusersettings.getUsersettings(username);
+        //get named user settings
+        Usersettings brokerfee = blusersettings.getUsersettings(new UsersettingsPK(username, ISettings.BROKER_FEE));
         float max_cargo = 33980.4f;
         long min_profit = 1000000;
         long min_profit_per_jump = 100000;
-        float perc_tax = 0.05f;
+        float perc_tax = ((Double)brokerfee.getValue()).floatValue();
         float perc_net = 1 - perc_tax;
         Security_islandPK security_islandPK = new Security_islandPK(1);
         //get all view_tradeorders
@@ -307,7 +318,7 @@ public class MarketService implements Runnable {
         
         //loop all orders from view
         //add trade opportunities in Trade
-        while(tradeordersI.hasNext()) {
+        while(keeprunning && tradeordersI.hasNext()) {
             tradeorder = tradeordersI.next();
             totalvolume = tradeorder.getTradevolume();
             buyordervalue = tradeorder.getBuy_totalprice();
@@ -364,7 +375,7 @@ public class MarketService implements Runnable {
         Stocktrade stocktrade;
         long stockamount;
         long tradeamount;
-        while(stockI.hasNext()) {
+        while(keeprunning && stockI.hasNext()) {
             stock = stockI.next();
             stockamount = stock.getAmount();
             ordersI = blorders.load_buyorders4evetype(security_islandPK, stock.getPrimaryKey().getEvetypePK()).iterator();

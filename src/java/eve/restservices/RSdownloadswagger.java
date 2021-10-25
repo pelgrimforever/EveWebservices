@@ -3,9 +3,11 @@
  */
 package eve.restservices;
 
-import eve.BusinessObject.Logic.BLorders;
+import base.servlets.Securitycheck;
 import eve.BusinessObject.service.MarketService;
 import eve.BusinessObject.service.MarketService.MarketStatus;
+import general.exception.DatahandlerException;
+import java.io.IOException;
 import java.util.Iterator;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -62,7 +64,10 @@ public class RSdownloadswagger {
             jsonstatus.put("messages", jsonmessages);
             jsonstatus.put("done", true);
             JSONObject json = (JSONObject)parser.parse(jsonstring);
-            if(json.containsKey("start") && (Boolean)json.get("start")) {
+            boolean loggedin = RSsecurity.check(json);
+            if(loggedin && json.containsKey("start") && (Boolean)json.get("start")) {
+                String auth = (String)json.get("auth");
+                String username = Securitycheck.getUsername(auth);
                 keeprunning = true;
                 //reset if previous market upload was finished
                 if(market!=null && market.getStatus().isDone()) {
@@ -70,13 +75,13 @@ public class RSdownloadswagger {
                 }
                 //check if no market upload is running before starting one
                 if(swaggerdownloader==null) {
-                    market = new MarketService();
+                    market = new MarketService(username);
                     swaggerdownloader = new Thread(market); 
                     swaggerdownloader.setPriority(Thread.MIN_PRIORITY);
                     swaggerdownloader.start();
                 }
             }
-            if(json.containsKey("stop") && (Boolean)json.get("stop") && market!=null) {
+            if(loggedin && json.containsKey("stop") && (Boolean)json.get("stop") && market!=null) {
                 market.stoprunning();
                 keeprunning = false;
                 swaggerdownloader.interrupt();
@@ -106,7 +111,7 @@ public class RSdownloadswagger {
             jsonstatus.put("status", "OK");
             result = jsonstatus.toJSONString();
         }
-        catch(ParseException e) {
+        catch(ParseException | DatahandlerException | IOException e) {
             result = returnstatus(e.getMessage());
         }
         return result;
