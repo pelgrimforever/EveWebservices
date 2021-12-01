@@ -26,7 +26,7 @@ import general.exception.DataException;
  * @author Franky Laseure
  */
 public class BLroute extends Broute {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
     /**

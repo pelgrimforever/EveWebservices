@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * @author Franky Laseure
  */
 public class BLview_stock extends Bview_stock {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
 	
     /**
      * Constructor, sets View_stock as default Entity

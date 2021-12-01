@@ -2,7 +2,7 @@
  * JSONSystemtrade.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
  
@@ -113,11 +113,11 @@ public class JSONSystemtrade {
             if(systemtradesearch.getSystemtrade_ordersearch()!=null && systemtradesearch.getSystemtrade_ordersearch().used()) {
                 kss.put("systemtrade_ordersearcher", JSONSystemtrade_order.toJSON((Systemtrade_ordersearch)systemtradesearch.getSystemtrade_ordersearch()));
             }
-            if(systemtradesearch.getOrders1search()!=null && systemtradesearch.getOrders1search().used()) {
-                kss.put("orders1searcher", JSONSystemtrade_order.toJSON((Systemtrade_ordersearch)systemtradesearch.getOrders1search()));
+            if(systemtradesearch.getRelOrders1search()!=null && systemtradesearch.getRelOrders1search().used()) {
+                kss.put("orders1searcher", JSONSystemtrade_order.toJSON((Systemtrade_ordersearch)systemtradesearch.getRelOrders1search()));
             }
-            if(systemtradesearch.getOrders2search()!=null && systemtradesearch.getOrders2search().used()) {
-                kss.put("orders2searcher", JSONSystemtrade_order.toJSON((Systemtrade_ordersearch)systemtradesearch.getOrders2search()));
+            if(systemtradesearch.getRelOrders2search()!=null && systemtradesearch.getRelOrders2search().used()) {
+                kss.put("orders2searcher", JSONSystemtrade_order.toJSON((Systemtrade_ordersearch)systemtradesearch.getRelOrders2search()));
             }
             json.put("keysearch", kss);
         }
@@ -188,14 +188,14 @@ public class JSONSystemtrade {
         if(keysearch!=null) {
             for(int i=0; i<keysearch.size(); i++) {
                 Orderssearch orders1search = JSONOrders.toOrderssearch((JSONObject)keysearch.get(i));
-                systemtradesearch.orders1(orders1search);
+                systemtradesearch.relorders1(orders1search);
             }
         }
         keysearch = (JSONArray)kss.get("orders2searcher");
         if(keysearch!=null) {
             for(int i=0; i<keysearch.size(); i++) {
                 Orderssearch orders2search = JSONOrders.toOrderssearch((JSONObject)keysearch.get(i));
-                systemtradesearch.orders2(orders2search);
+                systemtradesearch.relorders2(orders2search);
             }
         }
         return systemtradesearch;

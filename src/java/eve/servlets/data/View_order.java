@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name="View_order", urlPatterns={"/eve.View_order"})
 public class View_order extends SecurityDataServlet {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

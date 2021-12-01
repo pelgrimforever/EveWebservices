@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * @author Franky Laseure
  */
 public class EMsystem extends EMsystem_default {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     
     public static final String WhereAccess = "not noaccess";
     public static final String SQLSelectAll = SQLSelect + " where " + WhereAccess + OrderBy;

@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name="View_stocktrade_system", urlPatterns={"/eve.View_stocktrade_system"})
 public class View_stocktrade_system extends SecurityDataServlet {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

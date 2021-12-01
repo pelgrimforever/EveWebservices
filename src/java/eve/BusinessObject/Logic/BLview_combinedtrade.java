@@ -27,7 +27,7 @@ import java.util.ArrayList;
  * @author Franky Laseure
  */
 public class BLview_combinedtrade extends Bview_combinedtrade {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
 	
     /**
      * Constructor, sets View_combinedtrade as default Entity
@@ -36,7 +36,7 @@ public class BLview_combinedtrade extends Bview_combinedtrade {
     }
 
     /**
-     * get all View_combinedtrade objects from database
+     * get all View_combinedtrade objects with jump count from start system from database
      * @return ArrayList of View_trade objects
      * @throws DBException
      */

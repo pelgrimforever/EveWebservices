@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * @author Franky Laseure
  */
 public class EMsystemtrade_order extends EMsystemtrade_order_default {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     
     public static final String SQLSelectAll = SQLSelect + OrderBy;
     public static final String SQLdeleteall = "delete from systemtrade_order";

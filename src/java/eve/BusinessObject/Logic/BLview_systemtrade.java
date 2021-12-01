@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * @author Franky Laseure
  */
 public class BLview_systemtrade extends Bview_systemtrade {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
 	
     /**
      * Constructor, sets View_systemtrade as default Entity

@@ -2,7 +2,7 @@
  * WSEvetype.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
 
@@ -300,6 +300,32 @@ public class WSEvetype implements WSIEvetype {
             String result = null;
             IOrder_historyPK order_historyPK = JSONOrder_history.toOrder_historyPK((JSONObject)parser.parse(json));
             evetype = (Evetype)blevetype.getOrder_history(order_historyPK);
+            if(evetype!=null) {
+                result = JSONEvetype.toJSON(evetype).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getEvetypes4tradecombined")
+    @Override
+    public String getEvetypes4tradecombined(String json) {
+        BLevetype blevetype = new BLevetype();
+        JSONParser parser = new JSONParser();
+        Evetype evetype;
+        try {
+            String result = null;
+            ITradecombinedPK tradecombinedPK = JSONTradecombined.toTradecombinedPK((JSONObject)parser.parse(json));
+            evetype = (Evetype)blevetype.getTradecombined(tradecombinedPK);
             if(evetype!=null) {
                 result = JSONEvetype.toJSON(evetype).toJSONString();
             }

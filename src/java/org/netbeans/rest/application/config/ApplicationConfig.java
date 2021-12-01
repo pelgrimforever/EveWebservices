@@ -1,7 +1,7 @@
 /*
  * ApplicationConfig.java
  *
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
 
@@ -66,6 +66,8 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSSystemtrade_order.class);
         resources.add(eve.restservices.RSTmp_system_jumps.class);
         resources.add(eve.restservices.RSTrade.class);
+        resources.add(eve.restservices.RSTradecombined.class);
+        resources.add(eve.restservices.RSTradecombined_sell.class);
         resources.add(eve.restservices.RSTypegroup.class);
         resources.add(eve.restservices.RSUsersettings.class);
         resources.add(eve.restservices.RSView_combinedtrade.class);
@@ -79,6 +81,9 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSView_systemtrade_order.class);
         resources.add(eve.restservices.RSView_systemtradeorders.class);
         resources.add(eve.restservices.RSView_trade.class);
+        resources.add(eve.restservices.RSView_trade_systemsevetype.class);
+        resources.add(eve.restservices.RSView_tradecombined.class);
+        resources.add(eve.restservices.RSView_tradecombined_sell.class);
         resources.add(eve.restservices.RSView_tradeorders.class);
         return resources;
     }

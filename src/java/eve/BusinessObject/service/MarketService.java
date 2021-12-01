@@ -14,21 +14,32 @@ import eve.BusinessObject.Logic.BLroute;
 import eve.BusinessObject.Logic.BLstock;
 import eve.BusinessObject.Logic.BLstocktrade;
 import eve.BusinessObject.Logic.BLsystem;
+import eve.BusinessObject.Logic.BLsystemjumps;
 import eve.BusinessObject.Logic.BLtrade;
+import eve.BusinessObject.Logic.BLtradecombined;
+import eve.BusinessObject.Logic.BLtradecombined_sell;
 import eve.BusinessObject.Logic.BLusersettings;
+import eve.BusinessObject.Logic.BLview_trade_systemsevetype;
 import eve.BusinessObject.Logic.BLview_tradeorders;
 import eve.BusinessObject.Logic.RouteHash;
+import eve.entity.pk.EvetypePK;
 import eve.entity.pk.RoutetypePK;
 import eve.entity.pk.Security_islandPK;
 import eve.entity.pk.StocktradePK;
-import eve.entity.pk.UsersettingsPK;
+import eve.entity.pk.SystemPK;
+import eve.entity.pk.SystemjumpsPK;
+import eve.entity.pk.Tradecombined_sellPK;
 import eve.interfaces.logicentity.ISettings;
 import eve.logicentity.Orders;
 import eve.logicentity.Region;
 import eve.logicentity.Stock;
 import eve.logicentity.Stocktrade;
+import eve.logicentity.Systemjumps;
 import eve.logicentity.Trade;
+import eve.logicentity.Tradecombined;
+import eve.logicentity.Tradecombined_sell;
 import eve.logicentity.Usersettings;
+import eve.logicview.View_trade_systemsevetype;
 import eve.logicview.View_tradeorders;
 import general.exception.CustomException;
 import general.exception.DBException;
@@ -234,6 +245,8 @@ public class MarketService implements Runnable {
 
         try {
             processView_tradeorders();
+            combineTradeorders();
+            processStock();
         }
         catch(DataException e) {
             marketstatus.addMessage(e.getMessage());
@@ -278,8 +291,6 @@ public class MarketService implements Runnable {
         BLroute blroute = new BLroute();
         BLtrade bltrade = new BLtrade();
         BLview_tradeorders blviewtradeorders = new BLview_tradeorders();
-        BLstock blstock = new BLstock();
-        BLstocktrade blstocktrade = new BLstocktrade();
         BLusersettings blusersettings = new BLusersettings();
 
         //calculate average, min and max price for buy/sell orders for each evetype
@@ -288,14 +299,13 @@ public class MarketService implements Runnable {
         
         marketstatus.addMessage("Construct trade table");
         bltrade.deletetrade();
-        //make sure all usersettings are present
-        blusersettings.getUsersettings(username);
-        //get named user settings
-        Usersettings brokerfee = blusersettings.getUsersettings(new UsersettingsPK(username, ISettings.BROKER_FEE));
+        //load usersettings
+        ArrayList<Usersettings> usersettings = blusersettings.getUsersettings(username);
+        Usersettings brokerfee = blusersettings.getUsersetting(usersettings, ISettings.BROKER_FEE);
         float max_cargo = 33980.4f;
         long min_profit = 1000000;
         long min_profit_per_jump = 100000;
-        float perc_tax = ((Double)brokerfee.getValue()).floatValue();
+        float perc_tax = Float.valueOf(brokerfee.getValue());
         float perc_net = 1 - perc_tax;
         Security_islandPK security_islandPK = new Security_islandPK(1);
         //get all view_tradeorders
@@ -362,11 +372,98 @@ public class MarketService implements Runnable {
             if(toutput.getHaserror()) {
                 marketstatus.addMessage(toutput.getErrormessage());
             }
+        }        
+    }
+    
+    private void combineTradeorders() throws DBException, DataException {
+        marketstatus.addMessage("Combine trade orders");
+        BLview_trade_systemsevetype blview_trade_systemsevetype = new BLview_trade_systemsevetype();
+        BLorders blorders = new BLorders();
+        BLusersettings blusersettings = new BLusersettings();
+        BLtradecombined bltradecombined = new BLtradecombined();
+        BLtradecombined_sell bltradecombined_sell = new BLtradecombined_sell();
+        //load usersettings
+        ArrayList<Usersettings> usersettings = blusersettings.getUsersettings(username);
+        Usersettings brokerfee = blusersettings.getUsersetting(usersettings, ISettings.BROKER_FEE);
+        float perc_tax = Float.valueOf(brokerfee.getValue());
+        float perc_net = 1 - perc_tax;
+
+        //buy system, sell system, evetype combinations
+        ArrayList<View_trade_systemsevetype> view_trade_systemsevetypes = blview_trade_systemsevetype.getAll();
+        Iterator<Orders> buyordersI;
+        Orders buyorder;
+        Iterator<Orders> sellordersI;
+        Orders sellorder;
+        SystemPK sellsystemPK;
+        SystemPK buysystemPK;
+        EvetypePK evetypePK;
+        Systemjumps systemjumps;
+        SystemjumpsPK systemjumpspk;
+        long buyorderasked = 0;
+        long sellorderasked = 0;
+        long amount;
+        boolean hasprofit, ordersavailable;
+        Tradecombined tradecombined;
+        Tradecombined_sellPK tradecombined_sellPK;
+        Tradecombined_sell tradecombined_sell;
+        for(View_trade_systemsevetype view_trade_systemsevetype: view_trade_systemsevetypes) {
+            sellsystemPK = new SystemPK(view_trade_systemsevetype.getSystemsell());
+            buysystemPK = new SystemPK(view_trade_systemsevetype.getSystembuy());
+            evetypePK = new EvetypePK(view_trade_systemsevetype.getEvetype());
+            sellordersI = blorders.load_sellorders4systemevetype(sellsystemPK, evetypePK).iterator();
+            buyordersI = blorders.load_buyorders4systemevetype(buysystemPK, evetypePK).iterator();
+            sellorder = sellordersI.next();
+            buyorder = buyordersI.next();
+            buyorderasked = buyorder.getVolume_remain();
+            sellorderasked = sellorder.getVolume_remain();
+            hasprofit = buyorder.getPrice()*perc_net>sellorder.getPrice();
+            ordersavailable = buyorderasked>0 && sellorderasked>0;
+            //new Tradecombined per View_trade_systeevetype
+            tradecombined = new Tradecombined(sellsystemPK.getId(), buysystemPK.getId(), evetypePK.getId());
+            tradecombined.setJumps(view_trade_systemsevetype.getJumps());
+            bltradecombined.trans_insertTradecombined(tradecombined);
+            while(hasprofit && ordersavailable) {
+                amount = Math.min(buyorderasked, sellorderasked);
+                tradecombined_sellPK = new Tradecombined_sellPK();
+                tradecombined_sellPK.setTradecombinedPK(tradecombined.getPrimaryKey());
+                tradecombined_sellPK.setOrdersbuy_order_idPK(buyorder.getPrimaryKey());
+                tradecombined_sellPK.setOrderssell_order_idPK(sellorder.getPrimaryKey());
+                tradecombined_sell = new Tradecombined_sell(tradecombined_sellPK);
+                tradecombined_sell.setAmount(amount);
+                tradecombined_sell.setBuy_order_value(buyorder.getPrice() * amount);
+                tradecombined_sell.setSell_order_value(sellorder.getPrice() * amount);
+                tradecombined_sell.setProfit((buyorder.getPrice() * perc_net - sellorder.getPrice()) * amount);
+                bltradecombined_sell.trans_insertTradecombined_sell(tradecombined_sell);
+                buyorderasked -= amount;
+                sellorderasked -= amount;
+                if(buyorderasked==0 && buyordersI.hasNext()) {
+                    buyorder = buyordersI.next();
+                    buyorderasked += buyorder.getVolume_remain();
+                }
+                if(sellorderasked==0 && sellordersI.hasNext()) {
+                    sellorder = sellordersI.next();
+                    sellorderasked += sellorder.getVolume_remain();
+                }
+                hasprofit = buyorder.getPrice()*perc_net>sellorder.getPrice();
+                ordersavailable = buyorderasked>0 && sellorderasked>0;
+            }
+            bltradecombined.Commit2DB();
+            bltradecombined_sell.Commit2DB();
         }
-        
-        //search highest bidding prices for stock itesm
-        //save in stocktrade
+    }
+    
+    /**
+     * search highest bidding prices for stock items
+     * save in stocktrade
+     * @throws DBException
+     * @throws DataException 
+     */
+    private void processStock() throws DBException, DataException {
         marketstatus.addMessage("Construct stocktrade table");
+        BLorders blorders = new BLorders();
+        BLstock blstock = new BLstock();
+        BLstocktrade blstocktrade = new BLstocktrade();
+        Security_islandPK security_islandPK = new Security_islandPK(1);
         Iterator<Stock> stockI = blstock.getAll().iterator();
         Stock stock;
         Iterator<Orders> ordersI;

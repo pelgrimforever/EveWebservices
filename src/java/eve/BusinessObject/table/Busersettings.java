@@ -2,7 +2,7 @@
  * Busersettings.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
 
@@ -216,6 +216,9 @@ public abstract class Busersettings extends BLtable {
         StringBuffer message = new StringBuffer();
         //foreign key Usersettings.Name - Settings.Name
         //Primary key
+        if(usersettings.getValue()!=null && usersettings.getValue().length()>IUsersettings.SIZE_VALUE) {
+            message.append("Value is langer dan toegestaan. Max aantal karakters: ").append(IUsersettings.SIZE_VALUE).append("\n");
+        }
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

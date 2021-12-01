@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * @author Franky Laseure
  */
 public class EMview_stocktrade_orders extends EMview_stocktrade_orders_default {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     
     public static final String SQLSelect4usernamesystem = SQLSelectAll + " where username = :username: and system = :system:";
 

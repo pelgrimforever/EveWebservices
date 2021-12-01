@@ -1,7 +1,7 @@
 /*
  * RSUsersettings.java
  *
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
 
@@ -135,6 +135,10 @@ public class RSUsersettings {
                             break;
 //Custom code, do not change this line
 //add here custom operations
+                        case IUsersettingsOperation.SELECT_4USER:
+                            String username = JSONConversion.getString(json, "username");
+                            result = JSONUsersettings.toJSONArray(blusersettings.getUsersettings(username)).toJSONString();
+                            break;
 //Custom code, do not change this line   
                     }
                     break;

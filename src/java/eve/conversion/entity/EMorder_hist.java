@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * @author Franky Laseure
  */
 public class EMorder_hist extends EMorder_hist_default {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     
     public static final String SQLdeleteall = "delete from order_hist";
     public static final String SQLcopyorders = "insert into order_hist select * from orders where id not in (select id from order_hist)";

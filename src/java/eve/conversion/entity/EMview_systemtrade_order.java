@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * @author Franky Laseure
  */
 public class EMview_systemtrade_order extends EMview_systemtrade_order_default {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     
     public final static String SQLSelectAll4systemtrade = "select * from view_systemtrade_order " +
         "where sell_system = :systemtrade.sell_system: and buy_system = :systemtrade.buy_system:";

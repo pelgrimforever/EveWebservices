@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * @author Franky Laseure
  */
 public class EMview_tradeorders extends EMview_tradeorders_default {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     
     public final static String SQLSelect4tradevalues = "select * from view_tradeorders " +
         "where sell_packaged_volume <= :max_cargovolume: and security_island = :security_island.id: and " +

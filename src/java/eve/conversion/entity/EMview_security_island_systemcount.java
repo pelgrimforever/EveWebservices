@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * @author Franky Laseure
  */
 public class EMview_security_island_systemcount extends EMview_security_island_systemcount_default {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     
     /**
      * Map ResultSet Field values to View_security_island_systemcount

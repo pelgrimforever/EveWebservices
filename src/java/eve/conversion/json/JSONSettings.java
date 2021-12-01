@@ -2,7 +2,7 @@
  * JSONSettings.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
  
@@ -134,10 +134,10 @@ public class JSONSettings {
         }
         field = (JSONObject)fss.get("value");
         if(field!=null) {
-            Double[] valuearray = JSONConversion.getDoublevalues(field);
-            byte[] operators = JSONConversion.getNumberoperators(field);
+            String[] valuearray = JSONConversion.getStringvalues(field);
+            byte compareoperator = JSONConversion.getbyte(field, "compareoperator");
             byte andor = JSONConversion.getbyte(field, "andor");
-            settingssearch.value(valuearray, operators, andor);
+            settingssearch.value(valuearray, compareoperator, andor);
         }
         JSONObject kss = (JSONObject)json.get("keysearch");
         JSONArray keysearch;
@@ -166,12 +166,12 @@ public class JSONSettings {
     }
 
     public static void updateSettings(ISettings settings, JSONObject json) {
-        settings.setValue(JSONConversion.getdouble(json, "value"));
+        settings.setValue(JSONConversion.getString(json, "value"));
     }
 
     public static Settings initSettings(JSONObject json) {
         Settings settings = new Settings(toSettingsPK((JSONObject)json.get("PK")));
-        settings.initValue(JSONConversion.getdouble(json, "value"));
+        settings.initValue(JSONConversion.getString(json, "value"));
         return settings;
     }
 }

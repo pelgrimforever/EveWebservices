@@ -27,7 +27,7 @@ import java.util.ArrayList;
  * @author Franky Laseure
  */
 public class BLview_order extends Bview_order {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
 	
     /**
      * Constructor, sets View_order as default Entity

@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * @author Franky Laseure
  */
 public class BLusersettings extends Busersettings {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
     /**
@@ -79,6 +79,22 @@ public class BLusersettings extends Busersettings {
     }
     
     /**
+     * find usersetting in List of loaded usersettings for 1 user
+     * @param usersettings ArrayList of usersettings
+     * @param settingsconstant ISettings name constant
+     * @return Usersettings
+     */
+    public Usersettings getUsersetting(ArrayList<Usersettings> usersettings, String settingsconstant) {
+        Usersettings setting = null;
+        for(Usersettings usersetting: usersettings) {
+            if(usersetting.getPrimaryKey().getSettingsPK().getName().equals(settingsconstant)) {
+                setting = usersetting;
+            }
+        }
+        return setting;
+    }
+    
+    /**
      * try to insert Usersettings object in database
      * commit transaction
      * @param usersettings: Usersettings Entity Object
@@ -113,6 +129,9 @@ public class BLusersettings extends Busersettings {
      */
     @Override
     public void updateUsersettings(IUsersettings usersettings) throws DBException, DataException {
+        //make sure all usersettings are present
+        getUsersettings(usersettings.getPrimaryKey().getUsername());
+        //update setting
         trans_updateUsersettings(usersettings);
         super.Commit2DB();
     }

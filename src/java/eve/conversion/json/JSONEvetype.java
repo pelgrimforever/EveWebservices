@@ -2,7 +2,7 @@
  * JSONEvetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
  
@@ -134,8 +134,17 @@ public class JSONEvetype {
             if(evetypesearch.getOrder_historysearch()!=null && evetypesearch.getOrder_historysearch().used()) {
                 kss.put("order_historysearcher", JSONOrder_history.toJSON((Order_historysearch)evetypesearch.getOrder_historysearch()));
             }
-            if(evetypesearch.getRegionsearch()!=null && evetypesearch.getRegionsearch().used()) {
-                kss.put("regionsearcher", JSONOrder_history.toJSON((Order_historysearch)evetypesearch.getRegionsearch()));
+            if(evetypesearch.getRelRegionsearch()!=null && evetypesearch.getRelRegionsearch().used()) {
+                kss.put("regionsearcher", JSONOrder_history.toJSON((Order_historysearch)evetypesearch.getRelRegionsearch()));
+            }
+            if(evetypesearch.getTradecombinedsearch()!=null && evetypesearch.getTradecombinedsearch().used()) {
+                kss.put("tradecombinedsearcher", JSONTradecombined.toJSON((Tradecombinedsearch)evetypesearch.getTradecombinedsearch()));
+            }
+            if(evetypesearch.getRelSystem1search()!=null && evetypesearch.getRelSystem1search().used()) {
+                kss.put("system1searcher", JSONTradecombined.toJSON((Tradecombinedsearch)evetypesearch.getRelSystem1search()));
+            }
+            if(evetypesearch.getRelSystem2search()!=null && evetypesearch.getRelSystem2search().used()) {
+                kss.put("system2searcher", JSONTradecombined.toJSON((Tradecombinedsearch)evetypesearch.getRelSystem2search()));
             }
             json.put("keysearch", kss);
         }
@@ -316,7 +325,28 @@ public class JSONEvetype {
         if(keysearch!=null) {
             for(int i=0; i<keysearch.size(); i++) {
                 Regionsearch regionsearch = JSONRegion.toRegionsearch((JSONObject)keysearch.get(i));
-                evetypesearch.region(regionsearch);
+                evetypesearch.relregion(regionsearch);
+            }
+        }
+        keysearch = (JSONArray)kss.get("tradecombinedsearcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Tradecombinedsearch tradecombinedsearch = JSONTradecombined.toTradecombinedsearch((JSONObject)keysearch.get(i));
+                evetypesearch.tradecombined(tradecombinedsearch);
+            }
+        }
+        keysearch = (JSONArray)kss.get("system1searcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Systemsearch system1search = JSONSystem.toSystemsearch((JSONObject)keysearch.get(i));
+                evetypesearch.relsystem1(system1search);
+            }
+        }
+        keysearch = (JSONArray)kss.get("system2searcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Systemsearch system2search = JSONSystem.toSystemsearch((JSONObject)keysearch.get(i));
+                evetypesearch.relsystem2(system2search);
             }
         }
         return evetypesearch;

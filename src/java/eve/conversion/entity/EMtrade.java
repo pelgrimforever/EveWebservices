@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * @author Franky Laseure
  */
 public class EMtrade extends EMtrade_default {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     
     public static final String SQLSelectAll = SQLSelect + OrderBy;
     public static final String SQLSellBuyOrders = SQLSelect + " where sell_order_id = :trade.sell_order_id: or buy_order_id = :trade.buy_order_id:";

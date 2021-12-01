@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * @author Franky Laseure
  */
 public class EMconstellation extends EMconstellation_default {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     
     public static final String updateNoaccess1 = "update constellation set noaccess = :noaccess: where id not in (select constellation from system where noaccess = :systemnoaccess: group by constellation)";
     public static final String updateNoaccess2 = "update constellation set noaccess = :noaccess: where id in (select constellation from system where noaccess = :systemnoaccess: group by constellation)";

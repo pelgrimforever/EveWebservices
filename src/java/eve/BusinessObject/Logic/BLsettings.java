@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * @author Franky Laseure
  */
 public class BLsettings extends Bsettings {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
     /**
@@ -65,7 +65,7 @@ public class BLsettings extends Bsettings {
             setting = this.getSettings(settingsPK);
             if(setting==null) {
                 setting = new Settings(settingsPK);
-                setting.setValue((Double)defaultsetting[1]);
+                setting.setValue((String)defaultsetting[1]);
                 this.insertSettings(setting);
             }
             settings.add(setting);

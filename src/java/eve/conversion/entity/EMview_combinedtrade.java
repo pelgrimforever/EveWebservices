@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * @author Franky Laseure
  */
 public class EMview_combinedtrade extends EMview_combinedtrade_default {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     
     public static final String SQLSelectAll4Startingsystem = "select starts.id AS startsystem_id, sj.jumps AS startsystem_jumps, view_combinedtrade.* from view_combinedtrade " + 
         "inner join systemjumps sj on view_combinedtrade.sell_systemid = sj.system_end " +

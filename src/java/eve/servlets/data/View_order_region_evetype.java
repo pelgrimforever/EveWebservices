@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name="View_order_region_evetype", urlPatterns={"/eve.View_order_region_evetype"})
 public class View_order_region_evetype extends SecurityDataServlet {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

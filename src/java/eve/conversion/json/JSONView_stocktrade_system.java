@@ -2,7 +2,7 @@
  * JSONView_stocktrade_system.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
  
@@ -48,6 +48,8 @@ public class JSONView_stocktrade_system {
         json.put("sellprice", view_stocktrade_system.getSellprice());
         json.put("totalvolume", view_stocktrade_system.getTotalvolume());
 //Custom code, do not change this line
+        json.put("start_system", String.valueOf(view_stocktrade_system.getStart_system()));
+        json.put("start_system_jumps", view_stocktrade_system.getStart_system_jumps());
 //Custom code, do not change this line
         return json;
     }

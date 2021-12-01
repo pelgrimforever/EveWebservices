@@ -2,7 +2,7 @@
  * DataServlet.java
  *
  * Created on Dec 23, 2012, 6:30 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
 
@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 
 /**
- * Servlettemplate is the superclass for all servlets generated in this project
+ * DataServlet is the superclass for all servlets generated in this project
  * Contains standard variables and a default html output
  *
  * @author Franky Laseure

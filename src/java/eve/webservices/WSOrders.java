@@ -2,7 +2,7 @@
  * WSOrders.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
 
@@ -263,6 +263,58 @@ public class WSOrders implements WSIOrders {
             String result = null;
             ISystemtrade_orderPK systemtrade_orderSell_orderPK = JSONSystemtrade_order.toSystemtrade_orderPK((JSONObject)parser.parse(json));
             orders = (Orders)blorders.getSystemtrade_ordersell_order(systemtrade_orderSell_orderPK);
+            if(orders!=null) {
+                result = JSONOrders.toJSON(orders).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getOrderss4tradecombined_sellBuy_order_id")
+    @Override
+    public String getOrderss4tradecombined_sellBuy_order_id(String json) {
+        BLorders blorders = new BLorders();
+        JSONParser parser = new JSONParser();
+        Orders orders;
+        try {
+            String result = null;
+            ITradecombined_sellPK tradecombined_sellBuy_order_idPK = JSONTradecombined_sell.toTradecombined_sellPK((JSONObject)parser.parse(json));
+            orders = (Orders)blorders.getTradecombined_sellbuy_order_id(tradecombined_sellBuy_order_idPK);
+            if(orders!=null) {
+                result = JSONOrders.toJSON(orders).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getOrderss4tradecombined_sellSell_order_id")
+    @Override
+    public String getOrderss4tradecombined_sellSell_order_id(String json) {
+        BLorders blorders = new BLorders();
+        JSONParser parser = new JSONParser();
+        Orders orders;
+        try {
+            String result = null;
+            ITradecombined_sellPK tradecombined_sellSell_order_idPK = JSONTradecombined_sell.toTradecombined_sellPK((JSONObject)parser.parse(json));
+            orders = (Orders)blorders.getTradecombined_sellsell_order_id(tradecombined_sellSell_order_idPK);
             if(orders!=null) {
                 result = JSONOrders.toJSON(orders).toJSONString();
             }

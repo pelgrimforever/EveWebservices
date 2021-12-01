@@ -19,9 +19,14 @@ import java.sql.SQLException;
  * @author Franky Laseure
  */
 public class EMview_stocktrade_system extends EMview_stocktrade_system_default {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     
     public static final String SQLSelect4username = SQLSelectAll + " where username = :username: order by sellprice";
+    public static final String SQLSelect4usernamestartsystem = "select starts.id AS startsystem_id, sj.jumps AS startsystem_jumps, view_stocktrade_system.* from view_stocktrade_system " +
+        "inner join systemjumps sj on view_stocktrade_system.id = sj.system_end " +
+        "inner join system starts on sj.system_start = starts.id " + 
+        "where starts.id = :stocksystemid: " +
+        "and view_stocktrade_system.username = :username: order by view_stocktrade_system.sellprice desc";
 
     /**
      * Map ResultSet Field values to View_stocktrade_system
@@ -32,6 +37,13 @@ public class EMview_stocktrade_system extends EMview_stocktrade_system_default {
     @Override
     public Object mapResultSet2Entity(ResultSet dbresult) throws SQLException {
         View_stocktrade_system view_stocktrade_system = (View_stocktrade_system)super.mapResultSet2Entity(dbresult);
+        try {
+            view_stocktrade_system.setStart_system(dbresult.getLong("startsystem_id"));
+            view_stocktrade_system.setStart_system_jumps(dbresult.getInt("startsystem_jumps"));
+        }
+        catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return view_stocktrade_system;
     }    
     

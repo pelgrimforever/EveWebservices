@@ -21,7 +21,7 @@ import eve.BusinessObject.view.Bview_security_island_systemcount;
  * @author Franky Laseure
  */
 public class BLview_security_island_systemcount extends Bview_security_island_systemcount {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
 	
     /**
      * Constructor, sets View_security_island_systemcount as default Entity

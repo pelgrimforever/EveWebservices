@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSession;
  * @author pelgrim
  */
 public abstract class SecurityDataServlet extends DataServlet implements Contextparameters {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
 
     protected void loadAuthorization(HttpServletRequest request) throws IOException {
         userID = null;

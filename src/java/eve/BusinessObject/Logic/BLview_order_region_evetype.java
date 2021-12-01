@@ -21,7 +21,7 @@ import eve.BusinessObject.view.Bview_order_region_evetype;
  * @author Franky Laseure
  */
 public class BLview_order_region_evetype extends Bview_order_region_evetype {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
 	
     /**
      * Constructor, sets View_order_region_evetype as default Entity

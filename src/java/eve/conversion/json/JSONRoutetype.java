@@ -2,7 +2,7 @@
  * JSONRoutetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
  
@@ -108,8 +108,8 @@ public class JSONRoutetype {
             if(routetypesearch.getRoutesearch()!=null && routetypesearch.getRoutesearch().used()) {
                 kss.put("routesearcher", JSONRoute.toJSON((Routesearch)routetypesearch.getRoutesearch()));
             }
-            if(routetypesearch.getSystemsearch()!=null && routetypesearch.getSystemsearch().used()) {
-                kss.put("systemsearcher", JSONRoute.toJSON((Routesearch)routetypesearch.getSystemsearch()));
+            if(routetypesearch.getRelSystemsearch()!=null && routetypesearch.getRelSystemsearch().used()) {
+                kss.put("systemsearcher", JSONRoute.toJSON((Routesearch)routetypesearch.getRelSystemsearch()));
             }
             json.put("keysearch", kss);
         }
@@ -166,7 +166,7 @@ public class JSONRoutetype {
         if(keysearch!=null) {
             for(int i=0; i<keysearch.size(); i++) {
                 Systemsearch systemsearch = JSONSystem.toSystemsearch((JSONObject)keysearch.get(i));
-                routetypesearch.system(systemsearch);
+                routetypesearch.relsystem(systemsearch);
             }
         }
         return routetypesearch;

@@ -2,7 +2,7 @@
  * Bsystem.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
 
@@ -242,6 +242,10 @@ public abstract class Bsystem extends BLtable {
         blsystemtradeSell_system.delete4systemSell_system(systemPK);
         BLsystemtrade blsystemtradeBuy_system = new BLsystemtrade(this);
         blsystemtradeBuy_system.delete4systemBuy_system(systemPK);
+        BLtradecombined bltradecombinedBuy_system = new BLtradecombined(this);
+        bltradecombinedBuy_system.delete4systemBuy_system(systemPK);
+        BLtradecombined bltradecombinedSell_system = new BLtradecombined(this);
+        bltradecombinedSell_system.delete4systemSell_system(systemPK);
     }
 
     /**
@@ -323,6 +327,26 @@ public abstract class Bsystem extends BLtable {
      */
     public System getSystemtradebuy_system(ISystemtradePK systemtradePK) throws CustomException {
         SystemPK systemPK = new SystemPK(systemtradePK.getBuy_system());
+        return this.getSystem(systemPK);
+    }
+
+    /**
+     * @param tradecombinedPK: parent Tradecombined for child object System Entity
+     * @return child System Entity object
+     * @throws CustomException
+     */
+    public System getTradecombinedbuy_system(ITradecombinedPK tradecombinedPK) throws CustomException {
+        SystemPK systemPK = new SystemPK(tradecombinedPK.getBuy_system());
+        return this.getSystem(systemPK);
+    }
+
+    /**
+     * @param tradecombinedPK: parent Tradecombined for child object System Entity
+     * @return child System Entity object
+     * @throws CustomException
+     */
+    public System getTradecombinedsell_system(ITradecombinedPK tradecombinedPK) throws CustomException {
+        SystemPK systemPK = new SystemPK(tradecombinedPK.getSell_system());
         return this.getSystem(systemPK);
     }
 

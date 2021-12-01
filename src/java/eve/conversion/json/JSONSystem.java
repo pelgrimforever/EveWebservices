@@ -2,7 +2,7 @@
  * JSONSystem.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
  
@@ -130,14 +130,26 @@ public class JSONSystem {
             if(systemsearch.getRoutesearch()!=null && systemsearch.getRoutesearch().used()) {
                 kss.put("routesearcher", JSONRoute.toJSON((Routesearch)systemsearch.getRoutesearch()));
             }
-            if(systemsearch.getRoutetypesearch()!=null && systemsearch.getRoutetypesearch().used()) {
-                kss.put("routetypesearcher", JSONRoute.toJSON((Routesearch)systemsearch.getRoutetypesearch()));
+            if(systemsearch.getRelRoutetypesearch()!=null && systemsearch.getRelRoutetypesearch().used()) {
+                kss.put("routetypesearcher", JSONRoute.toJSON((Routesearch)systemsearch.getRelRoutetypesearch()));
             }
             if(systemsearch.getSystemtradesell_systemsearch()!=null && systemsearch.getSystemtradesell_systemsearch().used()) {
                 kss.put("systemtradeSell_systemsearcher", JSONSystemtrade.toJSON((Systemtradesearch)systemsearch.getSystemtradesell_systemsearch()));
             }
             if(systemsearch.getSystemtradebuy_systemsearch()!=null && systemsearch.getSystemtradebuy_systemsearch().used()) {
                 kss.put("systemtradeBuy_systemsearcher", JSONSystemtrade.toJSON((Systemtradesearch)systemsearch.getSystemtradebuy_systemsearch()));
+            }
+            if(systemsearch.getTradecombinedbuy_systemsearch()!=null && systemsearch.getTradecombinedbuy_systemsearch().used()) {
+                kss.put("tradecombinedBuy_systemsearcher", JSONTradecombined.toJSON((Tradecombinedsearch)systemsearch.getTradecombinedbuy_systemsearch()));
+            }
+            if(systemsearch.getRelEvetype1search()!=null && systemsearch.getRelEvetype1search().used()) {
+                kss.put("evetype1searcher", JSONTradecombined.toJSON((Tradecombinedsearch)systemsearch.getRelEvetype1search()));
+            }
+            if(systemsearch.getTradecombinedsell_systemsearch()!=null && systemsearch.getTradecombinedsell_systemsearch().used()) {
+                kss.put("tradecombinedSell_systemsearcher", JSONTradecombined.toJSON((Tradecombinedsearch)systemsearch.getTradecombinedsell_systemsearch()));
+            }
+            if(systemsearch.getRelEvetype2search()!=null && systemsearch.getRelEvetype2search().used()) {
+                kss.put("evetype2searcher", JSONTradecombined.toJSON((Tradecombinedsearch)systemsearch.getRelEvetype2search()));
             }
             json.put("keysearch", kss);
         }
@@ -251,7 +263,7 @@ public class JSONSystem {
         if(keysearch!=null) {
             for(int i=0; i<keysearch.size(); i++) {
                 Routetypesearch routetypesearch = JSONRoutetype.toRoutetypesearch((JSONObject)keysearch.get(i));
-                systemsearch.routetype(routetypesearch);
+                systemsearch.relroutetype(routetypesearch);
             }
         }
         keysearch = (JSONArray)kss.get("systemtradeSell_systemsearcher");
@@ -266,6 +278,34 @@ public class JSONSystem {
             for(int i=0; i<keysearch.size(); i++) {
                 Systemtradesearch systemtradeBuy_systemsearch = JSONSystemtrade.toSystemtradesearch((JSONObject)keysearch.get(i));
                 systemsearch.systemtradeBuy_system(systemtradeBuy_systemsearch);
+            }
+        }
+        keysearch = (JSONArray)kss.get("tradecombinedBuy_systemsearcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Tradecombinedsearch tradecombinedBuy_systemsearch = JSONTradecombined.toTradecombinedsearch((JSONObject)keysearch.get(i));
+                systemsearch.tradecombinedBuy_system(tradecombinedBuy_systemsearch);
+            }
+        }
+        keysearch = (JSONArray)kss.get("evetype1searcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Evetypesearch evetype1search = JSONEvetype.toEvetypesearch((JSONObject)keysearch.get(i));
+                systemsearch.relevetype1(evetype1search);
+            }
+        }
+        keysearch = (JSONArray)kss.get("tradecombinedSell_systemsearcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Tradecombinedsearch tradecombinedSell_systemsearch = JSONTradecombined.toTradecombinedsearch((JSONObject)keysearch.get(i));
+                systemsearch.tradecombinedSell_system(tradecombinedSell_systemsearch);
+            }
+        }
+        keysearch = (JSONArray)kss.get("evetype2searcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Evetypesearch evetype2search = JSONEvetype.toEvetypesearch((JSONObject)keysearch.get(i));
+                systemsearch.relevetype2(evetype2search);
             }
         }
         return systemsearch;

@@ -32,7 +32,7 @@ import java.util.ArrayList;
  * @author Franky Laseure
  */
 public class BLsystemtrade extends Bsystemtrade {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
     /**

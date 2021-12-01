@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name="View_security_island_systemcount", urlPatterns={"/eve.View_security_island_systemcount"})
 public class View_security_island_systemcount extends SecurityDataServlet {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

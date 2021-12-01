@@ -2,7 +2,7 @@
  * System.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
 
@@ -89,6 +89,14 @@ public class System extends SecurityDataServlet {
                         case ISystemOperation.SELECT_Systemtradebuy_system:
                             ISystemtradePK systemtradeBuy_systemPK = (ISystemtradePK)parser.getJavaObject("systemtradepk");
                             dataobject = blsystem.getSystemtradebuy_system(systemtradeBuy_systemPK);
+                            break;
+                        case ISystemOperation.SELECT_Tradecombinedbuy_system:
+                            ITradecombinedPK tradecombinedBuy_systemPK = (ITradecombinedPK)parser.getJavaObject("tradecombinedpk");
+                            dataobject = blsystem.getTradecombinedbuy_system(tradecombinedBuy_systemPK);
+                            break;
+                        case ISystemOperation.SELECT_Tradecombinedsell_system:
+                            ITradecombinedPK tradecombinedSell_systemPK = (ITradecombinedPK)parser.getJavaObject("tradecombinedpk");
+                            dataobject = blsystem.getTradecombinedsell_system(tradecombinedSell_systemPK);
                             break;
                         case ISystemOperation.SELECT_SEARCH:
                             ISystemsearch search = (ISystemsearch)parser.getJavaObject("search");

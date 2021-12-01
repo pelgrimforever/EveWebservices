@@ -31,7 +31,7 @@ import java.util.Iterator;
  * @author Franky Laseure
  */
 public class BLtrade extends Btrade {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
     /**

@@ -2,7 +2,7 @@
  * JSONRegion.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
  
@@ -107,8 +107,8 @@ public class JSONRegion {
             if(regionsearch.getOrder_historysearch()!=null && regionsearch.getOrder_historysearch().used()) {
                 kss.put("order_historysearcher", JSONOrder_history.toJSON((Order_historysearch)regionsearch.getOrder_historysearch()));
             }
-            if(regionsearch.getEvetypesearch()!=null && regionsearch.getEvetypesearch().used()) {
-                kss.put("evetypesearcher", JSONOrder_history.toJSON((Order_historysearch)regionsearch.getEvetypesearch()));
+            if(regionsearch.getRelEvetypesearch()!=null && regionsearch.getRelEvetypesearch().used()) {
+                kss.put("evetypesearcher", JSONOrder_history.toJSON((Order_historysearch)regionsearch.getRelEvetypesearch()));
             }
             if(regionsearch.getRegion_neighbourregionsearch()!=null && regionsearch.getRegion_neighbourregionsearch().used()) {
                 kss.put("region_neighbourRegionsearcher", JSONRegion_neighbour.toJSON((Region_neighboursearch)regionsearch.getRegion_neighbourregionsearch()));
@@ -183,7 +183,7 @@ public class JSONRegion {
         if(keysearch!=null) {
             for(int i=0; i<keysearch.size(); i++) {
                 Evetypesearch evetypesearch = JSONEvetype.toEvetypesearch((JSONObject)keysearch.get(i));
-                regionsearch.evetype(evetypesearch);
+                regionsearch.relevetype(evetypesearch);
             }
         }
         keysearch = (JSONArray)kss.get("region_neighbourRegionsearcher");

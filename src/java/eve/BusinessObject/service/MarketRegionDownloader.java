@@ -137,10 +137,10 @@ public class MarketRegionDownloader implements Runnable {
             }         
         }
         catch(DBException e) {
-            marketstatus.addMessage(e.getMessage());
+            marketstatus.addMessage("MarketRegionDownloader " + e.getMessage());
         }
         catch(DataException e) {
-            marketstatus.addMessage(e.getMessage());
+            marketstatus.addMessage("MarketRegionDownloader " + e.getMessage());
         }
         return;
     }    
@@ -246,7 +246,7 @@ public class MarketRegionDownloader implements Runnable {
             blorders.addStatement(sqlstatements.get(s).getSql());
             TransactionOutput toutput2 = blorders.Commit2DB();
             if(toutput2.getHaserror()) {
-                marketstatus.addMessage(toutput2.getErrormessage());
+                marketstatus.addMessage("MarketRegionDownloader correctTypeError " + toutput2.getErrormessage());
             }
         }
     }

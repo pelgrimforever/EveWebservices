@@ -108,11 +108,13 @@ public class RSLoadroute {
             while(routelistI.hasNext()) {
                 systemend = routelistI.next();
                 jsonroute = Swagger.getRoute(systemstart, systemend, avoidsystems, secure);
-                Iterator<Long> jsonrouteI = jsonroute.iterator();
-                //ignore first result
-                jsonrouteI.next();
-                while(jsonrouteI.hasNext()) {
-                    gatechecksystems.add((long)jsonrouteI.next());
+                if(!jsonroute.isEmpty()) {
+                    Iterator<Long> jsonrouteI = jsonroute.iterator();
+                    //ignore first result
+                    jsonrouteI.next();
+                    while(jsonrouteI.hasNext()) {
+                        gatechecksystems.add((long)jsonrouteI.next());
+                    }
                 }
                 systemstart = systemend;
             }

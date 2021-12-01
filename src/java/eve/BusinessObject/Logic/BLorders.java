@@ -18,6 +18,7 @@ import eve.BusinessObject.table.Borders;
 import eve.conversion.entity.EMorders;
 import eve.data.Swagger;
 import eve.entity.pk.EvetypePK;
+import eve.entity.pk.OrdersPK;
 import eve.entity.pk.Security_islandPK;
 import eve.entity.pk.SystemPK;
 import general.exception.DataException;
@@ -37,7 +38,7 @@ import org.json.simple.JSONObject;
  * @author Franky Laseure
  */
 public class BLorders extends Borders {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
     /**
@@ -114,15 +115,24 @@ public class BLorders extends Borders {
      * load all sell orders from view_systemtradeorders in system for evetype, ordered by evetype and price
      * @param systemPK: system primary key
      * @param evetypePK: evetype primary key
-     * @param max_price: max price
      * @return
      * @throws DBException 
      */
-    public ArrayList<Orders> load_sellorders4systemevetype(ISystemPK systemPK, IEvetypePK evetypePK, double max_price) throws DBException {
-        Object[][] parameter = { { "max_price", max_price } };
-        SQLparameters sqlparameters = new SQLparameters(parameter);
-        sqlparameters.add(systemPK.getSQLprimarykey(), evetypePK.getSQLprimarykey());
+    public ArrayList<Orders> load_sellorders4systemevetype(ISystemPK systemPK, IEvetypePK evetypePK) throws DBException {
+        SQLparameters sqlparameters = new SQLparameters(systemPK.getSQLprimarykey(), evetypePK.getSQLprimarykey());
         return getEntities(EMorders.SQLgetSellorders4systemevetype, sqlparameters);
+    }
+
+    /**
+     * load all buy orders from view_systemtradeorders in system for evetype, ordered by evetype and price
+     * @param systemPK: system primary key
+     * @param evetypePK: evetype primary key
+     * @return
+     * @throws DBException 
+     */
+    public ArrayList<Orders> load_buyorders4systemevetype(ISystemPK systemPK, IEvetypePK evetypePK) throws DBException {
+        SQLparameters sqlparameters = new SQLparameters(systemPK.getSQLprimarykey(), evetypePK.getSQLprimarykey());
+        return getEntities(EMorders.SQLgetBuyorders4systemevetype, sqlparameters);
     }
 
     /**
@@ -152,6 +162,25 @@ public class BLorders extends Borders {
         return getEntities(EMorders.SQLgetBuyorders4evetype, sqlparameters);
     }    
 
+    /**
+     * get all district sell orders used in the Trade table, order by sell system id and evetype
+     * @return ArrayList of Orders
+     * @throws general.exception.DBException
+     */
+    public ArrayList<Orders> load_Tradebuyorders() throws DBException {
+        return getEntities(EMorders.SQLgetOrdersTradebuy);
+    }
+    
+    /**
+     * get all district buy orders used in the Trade table linked to a sell order, order by buy system id
+     * @param ordersPK sell order primary key
+     * @return ArrayList of Orders
+     * @throws general.exception.DBException
+     */
+    public ArrayList<Orders> load_Tradesellorders(OrdersPK ordersPK) throws DBException {
+        return getEntities(EMorders.SQLgetOrdersTradesell4order, ordersPK.getSQLprimarykey());
+    }
+    
     /**
      * try to insert Orders object in database
      * commit transaction

@@ -2,7 +2,7 @@
  * WSSystem.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
 
@@ -341,6 +341,58 @@ public class WSSystem implements WSISystem {
             String result = null;
             ISystemtradePK systemtradeBuy_systemPK = JSONSystemtrade.toSystemtradePK((JSONObject)parser.parse(json));
             system = (System)blsystem.getSystemtradebuy_system(systemtradeBuy_systemPK);
+            if(system!=null) {
+                result = JSONSystem.toJSON(system).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getSystems4tradecombinedBuy_system")
+    @Override
+    public String getSystems4tradecombinedBuy_system(String json) {
+        BLsystem blsystem = new BLsystem();
+        JSONParser parser = new JSONParser();
+        System system;
+        try {
+            String result = null;
+            ITradecombinedPK tradecombinedBuy_systemPK = JSONTradecombined.toTradecombinedPK((JSONObject)parser.parse(json));
+            system = (System)blsystem.getTradecombinedbuy_system(tradecombinedBuy_systemPK);
+            if(system!=null) {
+                result = JSONSystem.toJSON(system).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getSystems4tradecombinedSell_system")
+    @Override
+    public String getSystems4tradecombinedSell_system(String json) {
+        BLsystem blsystem = new BLsystem();
+        JSONParser parser = new JSONParser();
+        System system;
+        try {
+            String result = null;
+            ITradecombinedPK tradecombinedSell_systemPK = JSONTradecombined.toTradecombinedPK((JSONObject)parser.parse(json));
+            system = (System)blsystem.getTradecombinedsell_system(tradecombinedSell_systemPK);
             if(system!=null) {
                 result = JSONSystem.toJSON(system).toJSONString();
             }

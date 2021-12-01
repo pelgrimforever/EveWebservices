@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * @author Franky Laseure
  */
 public class EMsettings extends EMsettings_default {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     
 //Custom code, do not change this line
     public static final String SQLSelectAll = SQLSelect + OrderBy;

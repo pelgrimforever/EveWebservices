@@ -2,7 +2,7 @@
  * Borders.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
 
@@ -236,6 +236,10 @@ public abstract class Borders extends BLtable {
         blsystemtrade_orderBuy_order.delete4ordersBuy_order(ordersPK);
         BLsystemtrade_order blsystemtrade_orderSell_order = new BLsystemtrade_order(this);
         blsystemtrade_orderSell_order.delete4ordersSell_order(ordersPK);
+        BLtradecombined_sell bltradecombined_sellBuy_order_id = new BLtradecombined_sell(this);
+        bltradecombined_sellBuy_order_id.delete4ordersBuy_order_id(ordersPK);
+        BLtradecombined_sell bltradecombined_sellSell_order_id = new BLtradecombined_sell(this);
+        bltradecombined_sellSell_order_id.delete4ordersSell_order_id(ordersPK);
         BLtrade bltradeSell_order_id = new BLtrade(this);
         bltradeSell_order_id.delete4ordersSell_order_id(ordersPK);
         BLtrade bltradeBuy_order_id = new BLtrade(this);
@@ -291,6 +295,26 @@ public abstract class Borders extends BLtable {
      */
     public Orders getSystemtrade_ordersell_order(ISystemtrade_orderPK systemtrade_orderPK) throws CustomException {
         OrdersPK ordersPK = new OrdersPK(systemtrade_orderPK.getSell_order());
+        return this.getOrders(ordersPK);
+    }
+
+    /**
+     * @param tradecombined_sellPK: parent Tradecombined_sell for child object Orders Entity
+     * @return child Orders Entity object
+     * @throws CustomException
+     */
+    public Orders getTradecombined_sellbuy_order_id(ITradecombined_sellPK tradecombined_sellPK) throws CustomException {
+        OrdersPK ordersPK = new OrdersPK(tradecombined_sellPK.getBuy_order_id());
+        return this.getOrders(ordersPK);
+    }
+
+    /**
+     * @param tradecombined_sellPK: parent Tradecombined_sell for child object Orders Entity
+     * @return child Orders Entity object
+     * @throws CustomException
+     */
+    public Orders getTradecombined_sellsell_order_id(ITradecombined_sellPK tradecombined_sellPK) throws CustomException {
+        OrdersPK ordersPK = new OrdersPK(tradecombined_sellPK.getSell_order_id());
         return this.getOrders(ordersPK);
     }
 

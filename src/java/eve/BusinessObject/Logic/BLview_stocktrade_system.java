@@ -12,6 +12,9 @@ import general.exception.DBException;
 import db.SQLparameters;
 import eve.BusinessObject.view.Bview_stocktrade_system;
 import eve.conversion.entity.EMview_stocktrade_system;
+import eve.logicentity.Settings;
+import eve.logicentity.Usersettings;
+import general.exception.DataException;
 import java.util.ArrayList;
 
 /**
@@ -25,7 +28,7 @@ import java.util.ArrayList;
  * @author Franky Laseure
  */
 public class BLview_stocktrade_system extends Bview_stocktrade_system {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
 	
     /**
      * Constructor, sets View_stocktrade_system as default Entity
@@ -33,9 +36,22 @@ public class BLview_stocktrade_system extends Bview_stocktrade_system {
     public BLview_stocktrade_system() {
     }
 
-    public ArrayList getView_stocktrade_system4username(String username) throws DBException {
-        Object[][] parameter = { { "username", username } };
-        SQLparameters sqlparameters = new SQLparameters(parameter);
-        return getEntities(EMview_stocktrade_system.SQLSelect4username, sqlparameters);
+    public ArrayList getView_stocktrade_system4username(String username) throws DBException, DataException {
+        BLusersettings blusersettings = new BLusersettings();
+        ArrayList<Usersettings> usersettings = blusersettings.getUsersettings(username);
+        Usersettings usersettingStocksystemid = null;
+        for(Usersettings usersetting: usersettings) {
+            if(usersetting.getPrimaryKey().getName().equals(Settings.STOCKSYSTEMID)) {
+                usersettingStocksystemid = usersetting;
+            }
+        }
+        if(usersettingStocksystemid!=null && usersettingStocksystemid.getValue()!=null) {
+            long stocksystemid = Long.valueOf(usersettingStocksystemid.getValue());
+            Object[][] parameter = { { "username", username }, { "stocksystemid", stocksystemid } };
+            SQLparameters sqlparameters = new SQLparameters(parameter);
+            return getEntities(EMview_stocktrade_system.SQLSelect4usernamestartsystem, sqlparameters);
+        } else {
+            return new ArrayList();
+        }
     }
 }

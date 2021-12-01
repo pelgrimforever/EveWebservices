@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * @author pelgrim
  */
 public class Security {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
 
     public Security() {
     }

@@ -2,7 +2,7 @@
  * JSONUsersettings.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
  
@@ -135,10 +135,10 @@ public class JSONUsersettings {
         }
         field = (JSONObject)fss.get("value");
         if(field!=null) {
-            Double[] valuearray = JSONConversion.getDoublevalues(field);
-            byte[] operators = JSONConversion.getNumberoperators(field);
+            String[] valuearray = JSONConversion.getStringvalues(field);
+            byte compareoperator = JSONConversion.getbyte(field, "compareoperator");
             byte andor = JSONConversion.getbyte(field, "andor");
-            usersettingssearch.value(valuearray, operators, andor);
+            usersettingssearch.value(valuearray, compareoperator, andor);
         }
         JSONObject kss = (JSONObject)json.get("keysearch");
         JSONArray keysearch;
@@ -167,12 +167,12 @@ public class JSONUsersettings {
     }
 
     public static void updateUsersettings(IUsersettings usersettings, JSONObject json) {
-        usersettings.setValue(JSONConversion.getdouble(json, "value"));
+        usersettings.setValue(JSONConversion.getString(json, "value"));
     }
 
     public static Usersettings initUsersettings(JSONObject json) {
         Usersettings usersettings = new Usersettings(toUsersettingsPK((JSONObject)json.get("PK")));
-        usersettings.initValue(JSONConversion.getdouble(json, "value"));
+        usersettings.initValue(JSONConversion.getString(json, "value"));
         return usersettings;
     }
 }

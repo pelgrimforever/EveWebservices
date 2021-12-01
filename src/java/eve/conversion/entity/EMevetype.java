@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * @author Franky Laseure
  */
 public class EMevetype extends EMevetype_default {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     
     public static final String SQLSelectAll = SQLSelect + OrderBy;
     public static final String SQLSelect4typegroupCount = "select count(*) as count from evetype where " + SQLWheretypegroup;

@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * @author Franky Laseure
  */
 public class EMtmp_system_jumps extends EMtmp_system_jumps_default {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     
     public static final String SQLDeleteAll = "delete from tmp_system_jumps";
     public static final String SQLCopySystems4Security_island = 

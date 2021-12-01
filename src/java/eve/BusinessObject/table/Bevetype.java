@@ -2,7 +2,7 @@
  * Bevetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
 
@@ -236,6 +236,8 @@ public abstract class Bevetype extends BLtable {
         blstock.delete4evetype(evetypePK);
         BLorder_history blorder_history = new BLorder_history(this);
         blorder_history.delete4evetype(evetypePK);
+        BLtradecombined bltradecombined = new BLtradecombined(this);
+        bltradecombined.delete4evetype(evetypePK);
     }
 
     /**
@@ -303,6 +305,16 @@ public abstract class Bevetype extends BLtable {
      */
     public Evetype getOrder_history(IOrder_historyPK order_historyPK) throws CustomException {
         EvetypePK evetypePK = new EvetypePK(order_historyPK.getEvetype());
+        return this.getEvetype(evetypePK);
+    }
+
+    /**
+     * @param tradecombinedPK: parent Tradecombined for child object Evetype Entity
+     * @return child Evetype Entity object
+     * @throws CustomException
+     */
+    public Evetype getTradecombined(ITradecombinedPK tradecombinedPK) throws CustomException {
+        EvetypePK evetypePK = new EvetypePK(tradecombinedPK.getEvetype());
         return this.getEvetype(evetypePK);
     }
 

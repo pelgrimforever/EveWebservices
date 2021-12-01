@@ -1,7 +1,7 @@
 /*
  * RSEvetype.java
  *
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
 
@@ -139,6 +139,10 @@ public class RSEvetype {
                             IOrder_historyPK order_historyPK = (IOrder_historyPK)JSONOrder_history.toOrder_historyPK((JSONObject)json.get("order_historypk"));
                             result = JSONEvetype.toJSON(blevetype.getOrder_history(order_historyPK)).toJSONString();
                             break;
+                        case IEvetypeOperation.SELECT_Tradecombined:
+                            ITradecombinedPK tradecombinedPK = (ITradecombinedPK)JSONTradecombined.toTradecombinedPK((JSONObject)json.get("tradecombinedpk"));
+                            result = JSONEvetype.toJSON(blevetype.getTradecombined(tradecombinedPK)).toJSONString();
+                            break;
                         case IEvetypeOperation.SELECT_SEARCH:
                             IEvetypesearch search = (IEvetypesearch)JSONEvetype.toEvetypesearch((JSONObject)json.get("search"));
                             result = JSONEvetype.toJSONArray(blevetype.search(search)).toJSONString();
@@ -226,6 +230,10 @@ public class RSEvetype {
                         case IEvetypeOperation.SELECT_Order_history:
                             IOrder_historyPK order_historyPK = (IOrder_historyPK)JSONOrder_history.toOrder_historyPK((JSONObject)json.get("order_historypk"));
                             result = JSONEvetype.toJSON(blevetype.getOrder_history(order_historyPK)).toJSONString();
+                            break;
+                        case IEvetypeOperation.SELECT_Tradecombined:
+                            ITradecombinedPK tradecombinedPK = (ITradecombinedPK)JSONTradecombined.toTradecombinedPK((JSONObject)json.get("tradecombinedpk"));
+                            result = JSONEvetype.toJSON(blevetype.getTradecombined(tradecombinedPK)).toJSONString();
                             break;
                         case IEvetypeOperation.SELECT_SEARCH:
                             IEvetypesearch search = (IEvetypesearch)JSONEvetype.toEvetypesearch((JSONObject)json.get("search"));

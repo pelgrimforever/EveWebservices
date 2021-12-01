@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * @author Franky Laseure
  */
 public class EMregion extends EMregion_default {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
     
     public static final String OrderByPages = " order by orderpages desc";
     public static final String SQLwhereaccess = "not noaccess";

@@ -2,7 +2,7 @@
  * Bsettings.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.10.2021 7:21
+ * Generated on 30.10.2021 10:3
  *
  */
 
@@ -213,6 +213,9 @@ public abstract class Bsettings extends BLtable {
     public void checkDATA(ISettings settings) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
+        if(settings.getValue()!=null && settings.getValue().length()>ISettings.SIZE_VALUE) {
+            message.append("Value is langer dan toegestaan. Max aantal karakters: ").append(ISettings.SIZE_VALUE).append("\n");
+        }
         if(message.length()>0) {
             throw new DataException(message.toString());
         }

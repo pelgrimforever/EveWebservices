@@ -21,7 +21,7 @@ import eve.BusinessObject.view.Bview_systemtradeorders;
  * @author Franky Laseure
  */
 public class BLview_systemtradeorders extends Bview_systemtradeorders {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
 	
     /**
      * Constructor, sets View_systemtradeorders as default Entity

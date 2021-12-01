@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * @author Franky Laseure
  */
 public class BLview_tradeorders extends Bview_tradeorders {
-//ProjectGenerator: NO AUTHOMATIC UPDATE
+//Metacoder: NO AUTHOMATIC UPDATE
 	
     
     public ArrayList getTradeorders(Security_islandPK security_islandPK, float max_cargovolume, float net_perc, long min_profit) throws DBException {

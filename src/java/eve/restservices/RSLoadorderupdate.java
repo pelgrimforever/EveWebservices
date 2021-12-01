@@ -84,21 +84,8 @@ public class RSLoadorderupdate {
             
             //search orders in swagger
             //search on previous page if not found anymore
-            JSONArray jsonorders;
-            JSONObject jsonsellorder = null;
-            JSONObject jsonbuyorder = null;
-            jsonorders = Swagger.getMarket_region_orders(sellorder.getRegion(), sellorder.getPage());
-            jsonsellorder = findOrder(jsonorders, sellordersPK.getId());
-            if(jsonsellorder==null && sellorder.getPage()>1) {
-                jsonorders = Swagger.getMarket_region_orders(sellorder.getRegion(), sellorder.getPage()-1);
-                jsonsellorder = findOrder(jsonorders, sellordersPK.getId());
-            }
-            jsonorders = Swagger.getMarket_region_orders(buyorder.getRegion(), buyorder.getPage());
-            jsonbuyorder = findOrder(jsonorders, buyordersPK.getId());
-            if(jsonbuyorder==null && buyorder.getPage()>1) {
-                jsonorders = Swagger.getMarket_region_orders(buyorder.getRegion(), buyorder.getPage()-1);
-                jsonbuyorder = findOrder(jsonorders, buyordersPK.getId());
-            }
+            JSONObject jsonsellorder = Swaggerorder.findOrder(sellorder.getRegion(), sellorder.getPage(), sellordersPK.getId());
+            JSONObject jsonbuyorder = Swaggerorder.findOrder(buyorder.getRegion(), buyorder.getPage(), buyordersPK.getId());
             JSONObject orderupdate = new JSONObject();
             if(jsonsellorder!=null) {
                 orderupdate.put("sellamount", JSONConversion.getLong(jsonsellorder, "volume_remain"));
