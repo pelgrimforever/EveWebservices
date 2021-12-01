@@ -29,20 +29,18 @@ public class ApplicationConfig extends Application {
         Set<Class<?>> resources = new java.util.HashSet<Class<?>>();
 //Custom code, do not change this line
 //add here custom operations
-        resources.add(eve.restservices.RSLoadorderupdate.class);
-        resources.add(eve.restservices.RSLoadroute.class);
-        resources.add(eve.restservices.RSdownloadmarkettypes.class);
-        resources.add(eve.restservices.RSdownloadswagger.class);
-//Custom code, do not change this line   
         resources.add(eve.restservices.RSAlliance.class);
         resources.add(eve.restservices.RSCategory.class);
         resources.add(eve.restservices.RSConstellation.class);
         resources.add(eve.restservices.RSConstellation_neighbour.class);
         resources.add(eve.restservices.RSCorporation.class);
+//Custom code, do not change this line   
         resources.add(eve.restservices.RSEvetype.class);
         resources.add(eve.restservices.RSFaction.class);
         resources.add(eve.restservices.RSGraphic.class);
         resources.add(eve.restservices.RSJson_orders.class);
+        resources.add(eve.restservices.RSLoadorderupdate.class);
+        resources.add(eve.restservices.RSLoadroute.class);
         resources.add(eve.restservices.RSLocation.class);
         resources.add(eve.restservices.RSMarket_group.class);
         resources.add(eve.restservices.RSOrder_hist.class);
@@ -85,6 +83,10 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSView_tradecombined.class);
         resources.add(eve.restservices.RSView_tradecombined_sell.class);
         resources.add(eve.restservices.RSView_tradeorders.class);
+        resources.add(eve.restservices.RScreateroutes.class);
+        resources.add(eve.restservices.RSdownloadmarkettypes.class);
+        resources.add(eve.restservices.RSdownloadswagger.class);
+        resources.add(eve.restservices.RStest.class);
         return resources;
     }
 }
