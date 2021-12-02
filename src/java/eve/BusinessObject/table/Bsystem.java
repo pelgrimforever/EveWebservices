@@ -2,7 +2,7 @@
  * Bsystem.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 30.10.2021 10:3
+ * Generated on 2.11.2021 18:45
  *
  */
 
@@ -238,10 +238,6 @@ public abstract class Bsystem extends BLtable {
         blsystemjumpsSystem_start.delete4systemSystem_start(systemPK);
         BLroute blroute = new BLroute(this);
         blroute.delete4system(systemPK);
-        BLsystemtrade blsystemtradeSell_system = new BLsystemtrade(this);
-        blsystemtradeSell_system.delete4systemSell_system(systemPK);
-        BLsystemtrade blsystemtradeBuy_system = new BLsystemtrade(this);
-        blsystemtradeBuy_system.delete4systemBuy_system(systemPK);
         BLtradecombined bltradecombinedBuy_system = new BLtradecombined(this);
         bltradecombinedBuy_system.delete4systemBuy_system(systemPK);
         BLtradecombined bltradecombinedSell_system = new BLtradecombined(this);
@@ -307,26 +303,6 @@ public abstract class Bsystem extends BLtable {
      */
     public System getRoute(IRoutePK routePK) throws CustomException {
         SystemPK systemPK = new SystemPK(routePK.getSystem());
-        return this.getSystem(systemPK);
-    }
-
-    /**
-     * @param systemtradePK: parent Systemtrade for child object System Entity
-     * @return child System Entity object
-     * @throws CustomException
-     */
-    public System getSystemtradesell_system(ISystemtradePK systemtradePK) throws CustomException {
-        SystemPK systemPK = new SystemPK(systemtradePK.getSell_system());
-        return this.getSystem(systemPK);
-    }
-
-    /**
-     * @param systemtradePK: parent Systemtrade for child object System Entity
-     * @return child System Entity object
-     * @throws CustomException
-     */
-    public System getSystemtradebuy_system(ISystemtradePK systemtradePK) throws CustomException {
-        SystemPK systemPK = new SystemPK(systemtradePK.getBuy_system());
         return this.getSystem(systemPK);
     }
 

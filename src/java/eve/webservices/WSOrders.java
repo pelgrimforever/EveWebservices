@@ -2,7 +2,7 @@
  * WSOrders.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 30.10.2021 10:3
+ * Generated on 2.11.2021 18:45
  *
  */
 
@@ -224,58 +224,6 @@ public class WSOrders implements WSIOrders {
             blorders.delete4system(systemPK);
         }
         catch(ParseException e) {
-        }
-    }
-
-    //@WebMethod(operationName = "getOrderss4systemtrade_orderBuy_order")
-    @Override
-    public String getOrderss4systemtrade_orderBuy_order(String json) {
-        BLorders blorders = new BLorders();
-        JSONParser parser = new JSONParser();
-        Orders orders;
-        try {
-            String result = null;
-            ISystemtrade_orderPK systemtrade_orderBuy_orderPK = JSONSystemtrade_order.toSystemtrade_orderPK((JSONObject)parser.parse(json));
-            orders = (Orders)blorders.getSystemtrade_orderbuy_order(systemtrade_orderBuy_orderPK);
-            if(orders!=null) {
-                result = JSONOrders.toJSON(orders).toJSONString();
-            }
-            return result;
-        }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
-            return null;
-        }
-    }
-
-    //@WebMethod(operationName = "getOrderss4systemtrade_orderSell_order")
-    @Override
-    public String getOrderss4systemtrade_orderSell_order(String json) {
-        BLorders blorders = new BLorders();
-        JSONParser parser = new JSONParser();
-        Orders orders;
-        try {
-            String result = null;
-            ISystemtrade_orderPK systemtrade_orderSell_orderPK = JSONSystemtrade_order.toSystemtrade_orderPK((JSONObject)parser.parse(json));
-            orders = (Orders)blorders.getSystemtrade_ordersell_order(systemtrade_orderSell_orderPK);
-            if(orders!=null) {
-                result = JSONOrders.toJSON(orders).toJSONString();
-            }
-            return result;
-        }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
-            return null;
         }
     }
 
