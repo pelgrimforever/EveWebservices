@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 30.10.2021 10:3
+ * Generated on 4.11.2021 14:51
  *
  */
 package eve.conversion.entity.def;
@@ -47,6 +47,7 @@ public class EMview_stocktrade_system_default implements ViewMapper {
                 view_stocktrade_system.setUsername(dbresult.getString("username"));
                 view_stocktrade_system.setId(dbresult.getLong("id"));
                 view_stocktrade_system.setName(dbresult.getString("name"));
+                view_stocktrade_system.setRegion(dbresult.getString("region"));
                 view_stocktrade_system.setSellprice(dbresult.getDouble("sellprice"));
                 view_stocktrade_system.setTotalvolume(dbresult.getDouble("totalvolume"));
             }

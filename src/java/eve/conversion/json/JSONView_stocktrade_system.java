@@ -2,7 +2,7 @@
  * JSONView_stocktrade_system.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 30.10.2021 10:3
+ * Generated on 4.11.2021 14:51
  *
  */
  
@@ -45,6 +45,7 @@ public class JSONView_stocktrade_system {
         json.put("username", view_stocktrade_system.getUsername());
         json.put("id", String.valueOf(view_stocktrade_system.getId()));
         json.put("name", view_stocktrade_system.getName());
+        json.put("region", view_stocktrade_system.getRegion());
         json.put("sellprice", view_stocktrade_system.getSellprice());
         json.put("totalvolume", view_stocktrade_system.getTotalvolume());
 //Custom code, do not change this line
@@ -59,6 +60,7 @@ public class JSONView_stocktrade_system {
         view_stocktrade_system.setUsername(JSONConversion.getString(json, "username"));
         view_stocktrade_system.setId(JSONConversion.getlong(json, "id"));
         view_stocktrade_system.setName(JSONConversion.getString(json, "name"));
+        view_stocktrade_system.setRegion(JSONConversion.getString(json, "region"));
         view_stocktrade_system.setSellprice(JSONConversion.getdouble(json, "sellprice"));
         view_stocktrade_system.setTotalvolume(JSONConversion.getdouble(json, "totalvolume"));
         return view_stocktrade_system;
@@ -96,6 +98,13 @@ public class JSONView_stocktrade_system {
             byte compareoperator = JSONConversion.getbyte(field, "compareoperator");
             byte andor = JSONConversion.getbyte(field, "andor");
             view_stocktrade_systemsearch.name(valuearray, compareoperator, andor);
+        }
+        field = (JSONObject)fss.get("region");
+        if(field!=null) {
+            String[] valuearray = JSONConversion.getStringvalues(field);
+            byte compareoperator = JSONConversion.getbyte(field, "compareoperator");
+            byte andor = JSONConversion.getbyte(field, "andor");
+            view_stocktrade_systemsearch.region(valuearray, compareoperator, andor);
         }
         field = (JSONObject)fss.get("sellprice");
         if(field!=null) {

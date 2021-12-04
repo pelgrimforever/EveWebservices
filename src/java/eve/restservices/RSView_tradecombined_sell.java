@@ -1,7 +1,7 @@
 /*
  * RSView_tradecombined_sell.java
  *
- * Generated on 30.10.2021 10:3
+ * Generated on 4.11.2021 14:51
  *
  */
 
@@ -109,6 +109,11 @@ public class RSView_tradecombined_sell {
                         case IView_tradecombined_sellOperation.SELECT4TRADECOMBINED:
                             TradecombinedPK tradecombinedPK = (TradecombinedPK)JSONTradecombined.toTradecombinedPK((JSONObject)json.get("tradecombinedpk"));
                             result = JSONView_tradecombined_sell.toJSONArray(blview_tradecombined_sell.getView_tradecombined_sells(tradecombinedPK)).toJSONString();
+                            break;
+                        case IView_tradecombined_sellOperation.SELECT4TRADESYSTEMS:
+                            SystemPK sell_systemPK = (SystemPK)JSONSystem.toSystemPK((JSONObject)json.get("sell_systempk"));
+                            SystemPK buy_systemPK = (SystemPK)JSONSystem.toSystemPK((JSONObject)json.get("buy_systempk"));
+                            result = JSONView_tradecombined_sell.toJSONArray(blview_tradecombined_sell.getView_tradecombined_sells(sell_systemPK, buy_systemPK)).toJSONString();
                             break;
 //Custom code, do not change this line   
                     }

@@ -23,6 +23,8 @@ public class EMview_tradecombined_sell extends EMview_tradecombined_sell_default
     
     public static final String SQLSelect4Tradecombined_sell = SQLSelectAll + 
             " where sell_system = :tradecombined.sell_system: and buy_system = :tradecombined.buy_system: and evetype_id = :tradecombined.evetype:";
+    public static final String SQLSelect4sellbuysystem = SQLSelectAll + 
+            " where sell_system = :sell_system: and buy_system = :buy_system: order by evetype_id, profit desc";
     
     /**
      * Map ResultSet Field values to View_tradecombined_sell

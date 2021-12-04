@@ -29,14 +29,10 @@ public class ApplicationConfig extends Application {
         Set<Class<?>> resources = new java.util.HashSet<Class<?>>();
 //Custom code, do not change this line
 //add here custom operations
-        resources.add(eve.restservices.RSAlliance.class);
-        resources.add(eve.restservices.RSCategory.class);
-        resources.add(eve.restservices.RSConstellation.class);
-        resources.add(eve.restservices.RSConstellation_neighbour.class);
-        resources.add(eve.restservices.RSCorporation.class);
         resources.add(eve.restservices.RSLoadorderupdate.class);
         resources.add(eve.restservices.RSLoadroute.class);
         resources.add(eve.restservices.RScreateroutes.class);
+        resources.add(eve.restservices.RSdownloadswagger.class);
 //Custom code, do not change this line   
         resources.add(eve.restservices.RSAlliance.class);
         resources.add(eve.restservices.RSCategory.class);
@@ -83,6 +79,7 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSView_tradecombined.class);
         resources.add(eve.restservices.RSView_tradecombined_sell.class);
         resources.add(eve.restservices.RSView_tradeorders.class);
+        resources.add(eve.restservices.RSView_tradesystem.class);
         return resources;
     }
 }
