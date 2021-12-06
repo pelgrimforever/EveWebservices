@@ -1,7 +1,7 @@
 /*
  * ApplicationConfig.java
  *
- * Generated on 2.11.2021 18:45
+ * Generated on 6.11.2021 16:45
  *
  */
 
@@ -33,6 +33,8 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSLoadroute.class);
         resources.add(eve.restservices.RScreateroutes.class);
         resources.add(eve.restservices.RSdownloadswagger.class);
+        resources.add(eve.restservices.RSdownloadmarkettypes.class);
+        resources.add(eve.restservices.RSdownloaduniverse.class);
 //Custom code, do not change this line   
         resources.add(eve.restservices.RSAlliance.class);
         resources.add(eve.restservices.RSCategory.class);
@@ -51,7 +53,6 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSRace.class);
         resources.add(eve.restservices.RSRegion.class);
         resources.add(eve.restservices.RSRegion_neighbour.class);
-        resources.add(eve.restservices.RSRoute.class);
         resources.add(eve.restservices.RSRoutetype.class);
         resources.add(eve.restservices.RSSecurity_island.class);
         resources.add(eve.restservices.RSSettings.class);
@@ -62,7 +63,6 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSStocktrade.class);
         resources.add(eve.restservices.RSSystem.class);
         resources.add(eve.restservices.RSSystemjumps.class);
-        resources.add(eve.restservices.RSTmp_system_jumps.class);
         resources.add(eve.restservices.RSTrade.class);
         resources.add(eve.restservices.RSTradecombined.class);
         resources.add(eve.restservices.RSTradecombined_sell.class);
