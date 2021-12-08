@@ -1,7 +1,7 @@
 /*
  * ApplicationConfig.java
  *
- * Generated on 6.11.2021 16:45
+ * Generated on 8.11.2021 18:26
  *
  */
 
@@ -35,6 +35,7 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSdownloadswagger.class);
         resources.add(eve.restservices.RSdownloadmarkettypes.class);
         resources.add(eve.restservices.RSdownloaduniverse.class);
+        resources.add(eve.restservices.RScalculatesystemjumps.class);
 //Custom code, do not change this line   
         resources.add(eve.restservices.RSAlliance.class);
         resources.add(eve.restservices.RSCategory.class);
@@ -79,6 +80,7 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSView_tradecombined.class);
         resources.add(eve.restservices.RSView_tradecombined_sell.class);
         resources.add(eve.restservices.RSView_tradeorders.class);
+        resources.add(eve.restservices.RSView_tradeorders_lowsec.class);
         resources.add(eve.restservices.RSView_tradesystem.class);
         return resources;
     }
