@@ -12,6 +12,7 @@ import general.exception.DBException;
 import eve.interfaces.logicentity.IStocktrade;
 import eve.logicentity.Stocktrade;
 import BusinessObject.BLtable;
+import db.SQLparameters;
 import eve.BusinessObject.table.Bstocktrade;
 import eve.conversion.entity.EMstocktrade;
 import general.exception.DataException;
@@ -46,6 +47,19 @@ public class BLstocktrade extends Bstocktrade {
     public BLstocktrade(BLtable transactionobject) {
         super(transactionobject);
         this.setLogginrequired(isprivatetable);
+    }
+
+    /**
+     * delete all stocktrade lines for username
+     * @param username user
+     * @throws DBException
+     * @throws DataException 
+     */
+    public void deletestocktrade(String username) throws DBException, DataException {
+        Object[][] parameters = {{ "username", username }};
+        SQLparameters sqlparameters = new SQLparameters(parameters);
+        this.addStatement(EMstocktrade.SQLdelete4user, sqlparameters);
+        this.Commit2DB();
     }
 
     /**

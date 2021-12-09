@@ -2,7 +2,7 @@
  * JSONStargate.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
  
@@ -70,6 +70,9 @@ public class JSONStargate {
         json.put("z", stargate.getZ());
         json.put("isconstellationborder", stargate.getIsconstellationborder());
         json.put("isregionborder", stargate.getIsregionborder());
+        if(stargate.getDownloaddate()!=null) {
+	        json.put("downloaddate", stargate.getDownloaddate().getTime());
+        }
 //Custom code, do not change this line
 //Custom code, do not change this line
         return json;
@@ -188,6 +191,13 @@ public class JSONStargate {
             boolean value = JSONConversion.getBooleanvalue(field);
             stargatesearch.isregionborder(value);
         }
+        field = (JSONObject)fss.get("downloaddate");
+        if(field!=null) {
+            Date[] valuearray = JSONConversion.getDatevalues(field);
+            byte[] operators = JSONConversion.getDateoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            stargatesearch.downloaddate(valuearray, operators, andor);
+        }
         JSONObject kss = (JSONObject)json.get("keysearch");
         JSONArray keysearch;
         keysearch = (JSONArray)kss.get("systemSystemsearcher");
@@ -231,6 +241,7 @@ public class JSONStargate {
         stargate.setZ(JSONConversion.getdouble(json, "z"));
         stargate.setIsconstellationborder(JSONConversion.getboolean(json, "isconstellationborder"));
         stargate.setIsregionborder(JSONConversion.getboolean(json, "isregionborder"));
+        stargate.setDownloaddate(JSONConversion.getDate(json, "downloaddate"));
     }
 
     public static Stargate initStargate(JSONObject json) {
@@ -244,6 +255,7 @@ public class JSONStargate {
         stargate.initZ(JSONConversion.getdouble(json, "z"));
         stargate.initIsconstellationborder(JSONConversion.getboolean(json, "isconstellationborder"));
         stargate.initIsregionborder(JSONConversion.getboolean(json, "isregionborder"));
+        stargate.initDownloaddate(JSONConversion.getDate(json, "downloaddate"));
         return stargate;
     }
 }

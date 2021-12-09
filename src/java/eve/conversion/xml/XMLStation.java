@@ -2,7 +2,7 @@
  * XMLStation.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
  
@@ -67,6 +67,9 @@ public class XMLStation {
         StationXML.addContent(XMLElement.newContent("reprocessing_stations_take", station.getReprocessing_stations_take()));
         StationXML.addContent(XMLElement.newContent("max_dockable_ship_volume", station.getMax_dockable_ship_volume()));
         StationXML.addContent(XMLElement.newContent("owner", station.getOwner()));
+        if(station.getDownloaddate()!=null) {
+            StationXML.addContent(XMLElement.newContent("downloaddate", station.getDownloaddate().getTime()));
+        }
     }
 }
 

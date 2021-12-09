@@ -1,7 +1,7 @@
 /*
  * RSSystem.java
  *
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
 
@@ -135,10 +135,6 @@ public class RSSystem {
                             ISystemjumpsPK systemjumpsSystem_startPK = (ISystemjumpsPK)JSONSystemjumps.toSystemjumpsPK((JSONObject)json.get("systemjumpspk"));
                             result = JSONSystem.toJSON(blsystem.getSystemjumpssystem_start(systemjumpsSystem_startPK)).toJSONString();
                             break;
-                        case ISystemOperation.SELECT_Route:
-                            IRoutePK routePK = (IRoutePK)JSONRoute.toRoutePK((JSONObject)json.get("routepk"));
-                            result = JSONSystem.toJSON(blsystem.getRoute(routePK)).toJSONString();
-                            break;
                         case ISystemOperation.SELECT_Tradecombinedbuy_system:
                             ITradecombinedPK tradecombinedBuy_systemPK = (ITradecombinedPK)JSONTradecombined.toTradecombinedPK((JSONObject)json.get("tradecombinedpk"));
                             result = JSONSystem.toJSON(blsystem.getTradecombinedbuy_system(tradecombinedBuy_systemPK)).toJSONString();
@@ -230,10 +226,6 @@ public class RSSystem {
                         case ISystemOperation.SELECT_Systemjumpssystem_start:
                             ISystemjumpsPK systemjumpsSystem_startPK = (ISystemjumpsPK)JSONSystemjumps.toSystemjumpsPK((JSONObject)json.get("systemjumpspk"));
                             result = JSONSystem.toJSON(blsystem.getSystemjumpssystem_start(systemjumpsSystem_startPK)).toJSONString();
-                            break;
-                        case ISystemOperation.SELECT_Route:
-                            IRoutePK routePK = (IRoutePK)JSONRoute.toRoutePK((JSONObject)json.get("routepk"));
-                            result = JSONSystem.toJSON(blsystem.getRoute(routePK)).toJSONString();
                             break;
                         case ISystemOperation.SELECT_Tradecombinedbuy_system:
                             ITradecombinedPK tradecombinedBuy_systemPK = (ITradecombinedPK)JSONTradecombined.toTradecombinedPK((JSONObject)json.get("tradecombinedpk"));

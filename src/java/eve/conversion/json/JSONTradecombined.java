@@ -2,7 +2,7 @@
  * JSONTradecombined.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
  
@@ -64,6 +64,8 @@ public class JSONTradecombined {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(tradecombined.getPrimaryKey()));
         json.put("jumps", tradecombined.getJumps());
+        json.put("jumpslowsec", tradecombined.getJumpslowsec());
+        json.put("jumpsnullsec", tradecombined.getJumpsnullsec());
 //Custom code, do not change this line
 //Custom code, do not change this line
         return json;
@@ -149,6 +151,20 @@ public class JSONTradecombined {
             byte andor = JSONConversion.getbyte(field, "andor");
             tradecombinedsearch.jumps(valuearray, operators, andor);
         }
+        field = (JSONObject)fss.get("jumpslowsec");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            tradecombinedsearch.jumpslowsec(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("jumpsnullsec");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            tradecombinedsearch.jumpsnullsec(valuearray, operators, andor);
+        }
         JSONObject kss = (JSONObject)json.get("keysearch");
         JSONArray keysearch;
         keysearch = (JSONArray)kss.get("evetypesearcher");
@@ -212,11 +228,15 @@ public class JSONTradecombined {
 
     public static void updateTradecombined(ITradecombined tradecombined, JSONObject json) {
         tradecombined.setJumps(JSONConversion.getint(json, "jumps"));
+        tradecombined.setJumpslowsec(JSONConversion.getint(json, "jumpslowsec"));
+        tradecombined.setJumpsnullsec(JSONConversion.getint(json, "jumpsnullsec"));
     }
 
     public static Tradecombined initTradecombined(JSONObject json) {
         Tradecombined tradecombined = new Tradecombined(toTradecombinedPK((JSONObject)json.get("PK")));
         tradecombined.initJumps(JSONConversion.getint(json, "jumps"));
+        tradecombined.initJumpslowsec(JSONConversion.getint(json, "jumpslowsec"));
+        tradecombined.initJumpsnullsec(JSONConversion.getint(json, "jumpsnullsec"));
         return tradecombined;
     }
 }

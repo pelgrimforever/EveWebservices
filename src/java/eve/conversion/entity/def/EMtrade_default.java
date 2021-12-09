@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
 package eve.conversion.entity.def;
@@ -98,6 +98,8 @@ public class EMtrade_default implements TableMapper {
                 trade.initProfit_per_jump(dbresult.getDouble("profit_per_jump"));
                 trade.initSinglerun_profit_per_jump(dbresult.getDouble("singlerun_profit_per_jump"));
                 trade.initMaxunits_per_run(dbresult.getInt("maxunits_per_run"));
+                trade.initJumpslowsec(dbresult.getInt("jumpslowsec"));
+                trade.initJumpsnullsec(dbresult.getInt("jumpsnullsec"));
             }
             catch(SQLException sqle) {
                 throw sqle;

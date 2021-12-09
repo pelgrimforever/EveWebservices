@@ -2,7 +2,7 @@
  * JSONStation.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
  
@@ -70,6 +70,9 @@ public class JSONStation {
         json.put("reprocessing_stations_take", station.getReprocessing_stations_take());
         json.put("max_dockable_ship_volume", station.getMax_dockable_ship_volume());
         json.put("owner", String.valueOf(station.getOwner()));
+        if(station.getDownloaddate()!=null) {
+	        json.put("downloaddate", station.getDownloaddate().getTime());
+        }
 //Custom code, do not change this line
 //Custom code, do not change this line
         return json;
@@ -191,6 +194,13 @@ public class JSONStation {
             byte andor = JSONConversion.getbyte(field, "andor");
             stationsearch.owner(valuearray, operators, andor);
         }
+        field = (JSONObject)fss.get("downloaddate");
+        if(field!=null) {
+            Date[] valuearray = JSONConversion.getDatevalues(field);
+            byte[] operators = JSONConversion.getDateoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            stationsearch.downloaddate(valuearray, operators, andor);
+        }
         JSONObject kss = (JSONObject)json.get("keysearch");
         JSONArray keysearch;
         keysearch = (JSONArray)kss.get("racesearcher");
@@ -248,6 +258,7 @@ public class JSONStation {
         station.setReprocessing_stations_take(JSONConversion.getdouble(json, "reprocessing_stations_take"));
         station.setMax_dockable_ship_volume(JSONConversion.getdouble(json, "max_dockable_ship_volume"));
         station.setOwner(JSONConversion.getlong(json, "owner"));
+        station.setDownloaddate(JSONConversion.getDate(json, "downloaddate"));
     }
 
     public static Station initStation(JSONObject json) {
@@ -261,6 +272,7 @@ public class JSONStation {
         station.initReprocessing_stations_take(JSONConversion.getdouble(json, "reprocessing_stations_take"));
         station.initMax_dockable_ship_volume(JSONConversion.getdouble(json, "max_dockable_ship_volume"));
         station.initOwner(JSONConversion.getlong(json, "owner"));
+        station.initDownloaddate(JSONConversion.getDate(json, "downloaddate"));
         return station;
     }
 }

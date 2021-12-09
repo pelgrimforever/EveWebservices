@@ -95,6 +95,7 @@ public class RSdownloadswagger {
                     jsonregion.put("region", regionid);
                     jsonregion.put("name", regionstatus.getName());
                     jsonregion.put("totalpages", regionstatus.getTotalpages());
+                    jsonregion.put("orders", regionstatus.getOrders());
                     jsonregion.put("page", regionstatus.getPage());
                     jsonregion.put("done", regionstatus.isDone());
                     jsonregions.add(jsonregion);

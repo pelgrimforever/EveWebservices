@@ -49,27 +49,12 @@ public class BLsystemjumps extends Bsystemjumps {
         this.setLogginrequired(isprivatetable);
     }
 
-    /**
-     * @throws general.exception.DBException
-     * @delete all systemjumps
-     */
-    public void deleteall() throws DBException {
+    public void createsystemjumps() throws DBException {
         super.addStatement(EMsystemjumps.SQLDeleteall);
+        super.addStatement(EMsystemjumps.SQLcreatesystemjumpslowsec);
         super.Commit2DB();
     }
-
-    /**
-     * @param systemid
-     * @throws general.exception.DBException
-     * @copy all results in tmp_system_jumps to Systemjumps with given system as starting point
-     */
-    public void copy_Tmp_system_jumps(long systemid) throws DBException {
-        Object[][] parameter = { { "system.id", systemid } };
-        SQLparameters sqlparameters = new SQLparameters(parameter);
-        super.addStatement(EMsystemjumps.SQLcopy_from_tmpjups, sqlparameters);
-        super.Commit2DB();
-    }
-
+    
     /**
      * @set all starting points to 1 jump
      * @throws general.exception.DBException

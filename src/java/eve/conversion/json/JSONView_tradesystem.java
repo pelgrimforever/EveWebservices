@@ -2,7 +2,7 @@
  * JSONView_tradesystem.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
  
@@ -54,6 +54,8 @@ public class JSONView_tradesystem {
         json.put("buy_systemid", String.valueOf(view_tradesystem.getBuy_systemid()));
         json.put("buy_systemname", view_tradesystem.getBuy_systemname());
         json.put("trade_jumps", view_tradesystem.getTrade_jumps());
+        json.put("trade_jumpslowsec", view_tradesystem.getTrade_jumpslowsec());
+        json.put("trade_jumpsnullsec", view_tradesystem.getTrade_jumpsnullsec());
 //Custom code, do not change this line
         json.put("start_system", String.valueOf(view_tradesystem.getStart_system()));
         json.put("start_system_jumps", view_tradesystem.getStart_system_jumps());
@@ -75,6 +77,8 @@ public class JSONView_tradesystem {
         view_tradesystem.setBuy_systemid(JSONConversion.getlong(json, "buy_systemid"));
         view_tradesystem.setBuy_systemname(JSONConversion.getString(json, "buy_systemname"));
         view_tradesystem.setTrade_jumps(JSONConversion.getint(json, "trade_jumps"));
+        view_tradesystem.setTrade_jumpslowsec(JSONConversion.getint(json, "trade_jumpslowsec"));
+        view_tradesystem.setTrade_jumpsnullsec(JSONConversion.getint(json, "trade_jumpsnullsec"));
         return view_tradesystem;
     }
 
@@ -173,6 +177,20 @@ public class JSONView_tradesystem {
             byte[] operators = JSONConversion.getNumberoperators(field);
             byte andor = JSONConversion.getbyte(field, "andor");
             view_tradesystemsearch.trade_jumps(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("trade_jumpslowsec");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            view_tradesystemsearch.trade_jumpslowsec(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("trade_jumpsnullsec");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            view_tradesystemsearch.trade_jumpsnullsec(valuearray, operators, andor);
         }
         return view_tradesystemsearch;
     }

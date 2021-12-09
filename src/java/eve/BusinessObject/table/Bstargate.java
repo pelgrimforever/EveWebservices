@@ -2,7 +2,7 @@
  * Bstargate.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
 
@@ -218,6 +218,9 @@ public abstract class Bstargate extends BLtable {
         }
         if(stargate.getName()==null) {
             message.append("Name mag niet leeg zijn.\n");
+        }
+        if(stargate.getDownloaddate()==null) {
+            message.append("Downloaddate mag niet leeg zijn.\n");
         }
         if(message.length()>0) {
             throw new DataException(message.toString());

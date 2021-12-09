@@ -21,6 +21,7 @@ import eve.entity.pk.ConstellationPK;
 import general.exception.DataException;
 import eve.interfaces.entity.pk.ISecurity_islandPK;
 import general.exception.CustomException;
+import java.sql.Date;
 import java.util.ArrayList;
 import org.json.simple.JSONObject;
 
@@ -63,6 +64,7 @@ public class BLsystem extends Bsystem {
         if(jsonsystemdetails.containsKey("security_class")) system.setSecurity_class(JSONConversion.getString(jsonsystemdetails, "security_class"));
         system.setSecurity_status(JSONConversion.getDouble(jsonsystemdetails, "security_status"));
         if(jsonsystemdetails.containsKey("star_id")) system.setStar_id(JSONConversion.getLong(jsonsystemdetails, "star_id"));
+        system.setDownloaddate(new Date(java.lang.System.currentTimeMillis()));
         this.insertupdateSystem(system);
     }
 
@@ -99,6 +101,10 @@ public class BLsystem extends Bsystem {
         Object[][] parameter2 = {{ "noaccess", false }};
         this.addStatement(sqlmapper.insertParameters(EMsystem.updateNoaccess2, parameter2));
         this.Commit2DB();
+    }
+
+    public ArrayList getSystemLowHisec() throws DBException {
+        return getEntities(EMsystem.SQLSelectHiLowSec);
     }
     
     /**

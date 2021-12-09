@@ -163,6 +163,18 @@ public class BLorders extends Borders {
     }    
 
     /**
+     * Search buy orders for eve type, ordered by descending price
+     * @param security_islandPK
+     * @param evetypePK: evetype primary key
+     * @return orders
+     * @throws DBException 
+     */
+    public ArrayList<Orders> load_buyorders4evetype(SystemPK systemPK, IEvetypePK evetypePK) throws DBException {
+        SQLparameters sqlparameters = new SQLparameters(systemPK.getSQLprimarykey(), evetypePK.getSQLprimarykey());
+        return getEntities(EMorders.SQLgetClosestBuyorders4evetype, sqlparameters);
+    }    
+
+    /**
      * get all district sell orders used in the Trade table, order by sell system id and evetype
      * @return ArrayList of Orders
      * @throws general.exception.DBException

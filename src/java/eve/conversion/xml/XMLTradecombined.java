@@ -2,7 +2,7 @@
  * XMLTradecombined.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
  
@@ -49,6 +49,8 @@ public class XMLTradecombined {
         addXML(PK, tradecombined.getPrimaryKey());
         TradecombinedXML.addContent(PK);
         TradecombinedXML.addContent(XMLElement.newContent("jumps", tradecombined.getJumps()));
+        TradecombinedXML.addContent(XMLElement.newContent("jumpslowsec", tradecombined.getJumpslowsec()));
+        TradecombinedXML.addContent(XMLElement.newContent("jumpsnullsec", tradecombined.getJumpsnullsec()));
     }
 }
 

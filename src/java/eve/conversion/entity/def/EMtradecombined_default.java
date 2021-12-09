@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
 package eve.conversion.entity.def;
@@ -92,6 +92,8 @@ public class EMtradecombined_default implements TableMapper {
                 tradecombinedPK = new TradecombinedPK(dbresult.getLong("sell_system"), dbresult.getLong("buy_system"), dbresult.getLong("evetype"));
                 tradecombined = new Tradecombined(tradecombinedPK);
                 tradecombined.initJumps(dbresult.getInt("jumps"));
+                tradecombined.initJumpslowsec(dbresult.getInt("jumpslowsec"));
+                tradecombined.initJumpsnullsec(dbresult.getInt("jumpsnullsec"));
             }
             catch(SQLException sqle) {
                 throw sqle;

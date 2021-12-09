@@ -62,7 +62,8 @@ public class BLcorporation extends Bcorporation {
         corporation.setCeo(JSONConversion.getLong(jsoncorporationdetails, "ceo_id"));
         corporation.setMember_count(JSONConversion.getint(jsoncorporationdetails, "member_count"));
         corporation.setTax_rate(JSONConversion.getDouble(jsoncorporationdetails, "tax_rate"));
-        if(jsoncorporationdetails.containsKey("alliance_id")) corporation.setAlliancePK(new AlliancePK(JSONConversion.getLong(jsoncorporationdetails, "alliance_id")));
+        //alliance may not exist yet, fill in after alliances are downloaded
+        //if(jsoncorporationdetails.containsKey("alliance_id")) corporation.setAlliancePK(new AlliancePK(JSONConversion.getLong(jsoncorporationdetails, "alliance_id")));
         if(jsoncorporationdetails.containsKey("date_founded")) {
             String stringdatefounded = JSONConversion.getString(jsoncorporationdetails, "date_founded");
             corporation.setDate_founded(Swagger.datetimestring2Timestamp(stringdatefounded));

@@ -2,7 +2,7 @@
  * Broutetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
 
@@ -229,8 +229,6 @@ public abstract class Broutetype extends BLtable {
      * @param routetypePK: Routetype primary key
      */
     public void cascadedeleteRoutetype(IRoutetypePK routetypePK) {
-        BLroute blroute = new BLroute(this);
-        blroute.delete4routetype(routetypePK);
     }
 
     /**
@@ -249,16 +247,6 @@ public abstract class Broutetype extends BLtable {
     public ArrayList<Routetype> getRoutetypes4security_island(ISecurity_islandPK security_islandPK) throws CustomException {
         return super.getEntities(EMroutetype.SQLSelect4security_island, security_islandPK.getSQLprimarykey());
     }
-    /**
-     * @param routePK: parent Route for child object Routetype Entity
-     * @return child Routetype Entity object
-     * @throws CustomException
-     */
-    public Routetype getRoute(IRoutePK routePK) throws CustomException {
-        RoutetypePK routetypePK = new RoutetypePK(routePK.getRoutetype());
-        return this.getRoutetype(routetypePK);
-    }
-
 
     /**
      * get all Routetype objects for sqlparameters

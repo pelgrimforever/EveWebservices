@@ -82,10 +82,12 @@ public class MarketRegionDownloader implements Runnable {
             Region region = data.getNextregion();
             while(keeprunning && region!=null) {
                 pagenr = 1;
+                orderbatch = 0;
                 errorcounter = 0;
                 orderids.clear();
                 do {
                     jsonorders = Swagger.getMarket_region_orders(region.getPrimaryKey().getId(), pagenr);
+                    orderbatch += jsonorders.size();
                     jsonordersI = jsonorders.iterator();
                     ordercounter = 0;
                     while(keeprunning && jsonordersI.hasNext()) {
@@ -101,7 +103,6 @@ public class MarketRegionDownloader implements Runnable {
                             ordercounter++;
                         }
                         if(ordercounter==100) {
-                            orderbatch = ordercounter;
                             ordercounter = 0;
                             toutput = blorders.Commit2DB();
                             if(toutput.getHaserror()) {
@@ -122,7 +123,7 @@ public class MarketRegionDownloader implements Runnable {
                         //sqlstatements = new ArrayList<>();
                         type_statements = new ArrayList<>();
                         pagenr++;
-                        marketstatus.updateStatus(region.getPrimaryKey().getId(), pagenr);
+                        marketstatus.updateStatus(region.getPrimaryKey().getId(), pagenr, orderbatch);
                     }
                 } while(keeprunning && jsonorders.size()>0);
                 marketstatus.setDone(region.getPrimaryKey().getId());

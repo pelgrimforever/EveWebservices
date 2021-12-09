@@ -19,6 +19,7 @@ import eve.entity.pk.SystemPK;
 import general.exception.DataException;
 import eve.interfaces.entity.pk.ISystemPK;
 import general.exception.CustomException;
+import java.sql.Date;
 import java.util.ArrayList;
 import org.json.simple.JSONObject;
 
@@ -74,6 +75,7 @@ public class BLstargate extends Bstargate {
         stargate.setX(JSONConversion.getDouble(jsonposition, "x"));
         stargate.setY(JSONConversion.getDouble(jsonposition, "y"));
         stargate.setZ(JSONConversion.getDouble(jsonposition, "z"));
+        stargate.setDownloaddate(new Date(System.currentTimeMillis()));
         this.insertupdateStargate(stargate);
     }
 

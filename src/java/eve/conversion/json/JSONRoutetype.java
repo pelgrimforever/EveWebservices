@@ -2,7 +2,7 @@
  * JSONRoutetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
  
@@ -105,12 +105,6 @@ public class JSONRoutetype {
             if(routetypesearch.getSecurity_islandsearch()!=null && routetypesearch.getSecurity_islandsearch().used()) {
                 kss.put("security_islandsearcher", JSONSecurity_island.toJSON((Security_islandsearch)routetypesearch.getSecurity_islandsearch()));
             }
-            if(routetypesearch.getRoutesearch()!=null && routetypesearch.getRoutesearch().used()) {
-                kss.put("routesearcher", JSONRoute.toJSON((Routesearch)routetypesearch.getRoutesearch()));
-            }
-            if(routetypesearch.getRelSystemsearch()!=null && routetypesearch.getRelSystemsearch().used()) {
-                kss.put("systemsearcher", JSONRoute.toJSON((Routesearch)routetypesearch.getRelSystemsearch()));
-            }
             json.put("keysearch", kss);
         }
         return json;
@@ -153,20 +147,6 @@ public class JSONRoutetype {
             for(int i=0; i<keysearch.size(); i++) {
                 Security_islandsearch security_islandsearch = JSONSecurity_island.toSecurity_islandsearch((JSONObject)keysearch.get(i));
                 routetypesearch.security_island(security_islandsearch);
-            }
-        }
-        keysearch = (JSONArray)kss.get("routesearcher");
-        if(keysearch!=null) {
-            for(int i=0; i<keysearch.size(); i++) {
-                Routesearch routesearch = JSONRoute.toRoutesearch((JSONObject)keysearch.get(i));
-                routetypesearch.route(routesearch);
-            }
-        }
-        keysearch = (JSONArray)kss.get("systemsearcher");
-        if(keysearch!=null) {
-            for(int i=0; i<keysearch.size(); i++) {
-                Systemsearch systemsearch = JSONSystem.toSystemsearch((JSONObject)keysearch.get(i));
-                routetypesearch.relsystem(systemsearch);
             }
         }
         return routetypesearch;

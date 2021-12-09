@@ -1,7 +1,7 @@
 /*
  * ApplicationConfig.java
  *
- * Generated on 8.11.2021 18:26
+ * Generated on 9.11.2021 14:30
  *
  */
 

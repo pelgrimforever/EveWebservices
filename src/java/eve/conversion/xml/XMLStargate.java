@@ -2,7 +2,7 @@
  * XMLStargate.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
  
@@ -63,6 +63,9 @@ public class XMLStargate {
         StargateXML.addContent(XMLElement.newContent("z", stargate.getZ()));
         StargateXML.addContent(XMLElement.newContent("isconstellationborder", stargate.getIsconstellationborder()));
         StargateXML.addContent(XMLElement.newContent("isregionborder", stargate.getIsregionborder()));
+        if(stargate.getDownloaddate()!=null) {
+            StargateXML.addContent(XMLElement.newContent("downloaddate", stargate.getDownloaddate().getTime()));
+        }
     }
 }
 

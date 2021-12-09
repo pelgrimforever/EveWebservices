@@ -2,7 +2,7 @@
  * WSSystem.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
 
@@ -263,32 +263,6 @@ public class WSSystem implements WSISystem {
             String result = null;
             ISystemjumpsPK systemjumpsSystem_startPK = JSONSystemjumps.toSystemjumpsPK((JSONObject)parser.parse(json));
             system = (System)blsystem.getSystemjumpssystem_start(systemjumpsSystem_startPK);
-            if(system!=null) {
-                result = JSONSystem.toJSON(system).toJSONString();
-            }
-            return result;
-        }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
-            return null;
-        }
-    }
-
-    //@WebMethod(operationName = "getSystems4route")
-    @Override
-    public String getSystems4route(String json) {
-        BLsystem blsystem = new BLsystem();
-        JSONParser parser = new JSONParser();
-        System system;
-        try {
-            String result = null;
-            IRoutePK routePK = JSONRoute.toRoutePK((JSONObject)parser.parse(json));
-            system = (System)blsystem.getRoute(routePK);
             if(system!=null) {
                 result = JSONSystem.toJSON(system).toJSONString();
             }

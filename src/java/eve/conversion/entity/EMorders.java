@@ -21,7 +21,7 @@ import java.sql.SQLException;
 public class EMorders extends EMorders_default {
 //Metacoder: NO AUTHOMATIC UPDATE
     
-    public static final String Truncate = "truncate tradecombined_sell, tradecombined, trade, stocktrade, orders";
+    public static final String Truncate = "truncate tradecombined_sell, tradecombined, trade, orders";
     
     public static final String SQLSelectAll = SQLSelect + OrderBy;
 
@@ -53,6 +53,9 @@ public class EMorders extends EMorders_default {
     public static final String SQLgetBuyorders4evetype = "select * from orders " +
             "inner join system on system.id = orders.system and system.security_island = :security_island.id: " +
             "where " + SQLWhereevetype + " and is_buy_order order by price desc";
+    public static final String SQLgetClosestBuyorders4evetype = "select * from orders " +
+            "inner join systemjumps sj on sj.system_end = orders.system and sj.system_start = :system.id: " +
+            "where " + SQLWhereevetype + " and is_buy_order order by price desc, sj.jumps";
     public static final String SQLgetOrdersTradebuy = "select * from orders inner join " +
             "(select trade.buy_order_id from trade group by trade.buy_order_id) as tradeorders " +
             "on orders.id = tradeorders.buy_order_id " +

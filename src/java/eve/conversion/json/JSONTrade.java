@@ -2,7 +2,7 @@
  * JSONTrade.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
  
@@ -72,6 +72,8 @@ public class JSONTrade {
         json.put("profit_per_jump", trade.getProfit_per_jump());
         json.put("singlerun_profit_per_jump", trade.getSinglerun_profit_per_jump());
         json.put("maxunits_per_run", trade.getMaxunits_per_run());
+        json.put("jumpslowsec", trade.getJumpslowsec());
+        json.put("jumpsnullsec", trade.getJumpsnullsec());
 //Custom code, do not change this line
 //Custom code, do not change this line
         return json;
@@ -208,6 +210,20 @@ public class JSONTrade {
             byte andor = JSONConversion.getbyte(field, "andor");
             tradesearch.maxunits_per_run(valuearray, operators, andor);
         }
+        field = (JSONObject)fss.get("jumpslowsec");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            tradesearch.jumpslowsec(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("jumpsnullsec");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            tradesearch.jumpsnullsec(valuearray, operators, andor);
+        }
         JSONObject kss = (JSONObject)json.get("keysearch");
         JSONArray keysearch;
         keysearch = (JSONArray)kss.get("ordersSell_order_idsearcher");
@@ -252,6 +268,8 @@ public class JSONTrade {
         trade.setProfit_per_jump(JSONConversion.getdouble(json, "profit_per_jump"));
         trade.setSinglerun_profit_per_jump(JSONConversion.getdouble(json, "singlerun_profit_per_jump"));
         trade.setMaxunits_per_run(JSONConversion.getint(json, "maxunits_per_run"));
+        trade.setJumpslowsec(JSONConversion.getint(json, "jumpslowsec"));
+        trade.setJumpsnullsec(JSONConversion.getint(json, "jumpsnullsec"));
     }
 
     public static Trade initTrade(JSONObject json) {
@@ -266,6 +284,8 @@ public class JSONTrade {
         trade.initProfit_per_jump(JSONConversion.getdouble(json, "profit_per_jump"));
         trade.initSinglerun_profit_per_jump(JSONConversion.getdouble(json, "singlerun_profit_per_jump"));
         trade.initMaxunits_per_run(JSONConversion.getint(json, "maxunits_per_run"));
+        trade.initJumpslowsec(JSONConversion.getint(json, "jumpslowsec"));
+        trade.initJumpsnullsec(JSONConversion.getint(json, "jumpsnullsec"));
         return trade;
     }
 }

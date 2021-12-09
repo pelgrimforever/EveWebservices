@@ -26,6 +26,7 @@ public class Swagger {
     
     public static final long EVE_CONST_FACTION_UNKNOWN = 500021;
     public static final double EVE_HIGHSEC_LIMIT = 0.45;
+    public static final double EVE_LOWSEC_LIMIT = 0;
     
     private static final String URL_EVE = "https://esi.evetech.net/";
     private static final String URL_Swaggerversion = "latest/";

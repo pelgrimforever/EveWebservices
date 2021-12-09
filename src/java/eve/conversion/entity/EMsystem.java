@@ -23,6 +23,7 @@ public class EMsystem extends EMsystem_default {
     
     public static final String WhereAccess = "not noaccess";
     public static final String SQLSelectAll = SQLSelect + " where " + WhereAccess + OrderBy;
+    public static final String SQLSelectHiLowSec = SQLSelect + " where security_status>0 and not noaccess";
     
     public static final String SQLupdateconstellationborders = "update system set isconstellationborder = :isborder: where id in (select system from stargate where isconstellationborder group by system)";
     public static final String SQLupdateregionborders = "update system set isregionborder = :isborder: where id in (select system from stargate where isregionborder group by system)";

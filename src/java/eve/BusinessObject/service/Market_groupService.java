@@ -5,6 +5,7 @@
  */
 package eve.BusinessObject.service;
 
+import db.TransactionOutput;
 import eve.BusinessObject.Logic.BLmarket_group;
 import eve.data.Swagger;
 import eve.entity.pk.Market_groupPK;
@@ -86,6 +87,7 @@ public class Market_groupService implements Runnable {
         market_groupstatus.addMessage("Download market groups");
 
         long start = System.currentTimeMillis();
+        TransactionOutput toutput;
 
         try {
             BLmarket_group blmarketgroup = new BLmarket_group();
@@ -111,11 +113,17 @@ public class Market_groupService implements Runnable {
                         marketgroupcounter++;
                         if(marketgroupcounter==100) {
                             marketgroupcounter = 0;
-                            blmarketgroup.Commit2DB();
+                            toutput = blmarketgroup.Commit2DB();
+                            if(toutput.getHaserror()) {
+                                market_groupstatus.addMessage("MarketGroupDownloader " + toutput.getErrormessage());
+                            }
                         }
                     }
                 }
-                blmarketgroup.Commit2DB();
+                toutput = blmarketgroup.Commit2DB();
+                if(toutput.getHaserror()) {
+                    market_groupstatus.addMessage("MarketGroupDownloader " + toutput.getErrormessage());
+                }
                 run++;
             } while(keeprunning && blmarketgroup.count()<jsonmarketgroup.size());
 
@@ -123,7 +131,10 @@ public class Market_groupService implements Runnable {
             while(marketgroupI.hasNext()) {
                 blmarketgroup.trans_updateMarket_group(marketgroupI.next());
             }
-            blmarketgroup.Commit2DB();
+            toutput = blmarketgroup.Commit2DB();
+            if(toutput.getHaserror()) {
+                market_groupstatus.addMessage("MarketGroupDownloader " + toutput.getErrormessage());
+            }
         }
         catch(DBException e) {
             market_groupstatus.addMessage(e.getMessage());

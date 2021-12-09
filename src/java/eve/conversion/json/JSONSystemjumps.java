@@ -2,7 +2,7 @@
  * JSONSystemjumps.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
  
@@ -63,6 +63,11 @@ public class JSONSystemjumps {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(systemjumps.getPrimaryKey()));
         json.put("jumps", systemjumps.getJumps());
+        json.put("jumpslowsec", systemjumps.getJumpslowsec());
+        json.put("jumpsnullsec", systemjumps.getJumpsnullsec());
+        json.put("jumpssafe", systemjumps.getJumpssafe());
+        json.put("jumpssafelowsec", systemjumps.getJumpssafelowsec());
+        json.put("jumpssafenullsec", systemjumps.getJumpssafenullsec());
 //Custom code, do not change this line
 //Custom code, do not change this line
         return json;
@@ -136,6 +141,41 @@ public class JSONSystemjumps {
             byte andor = JSONConversion.getbyte(field, "andor");
             systemjumpssearch.jumps(valuearray, operators, andor);
         }
+        field = (JSONObject)fss.get("jumpslowsec");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            systemjumpssearch.jumpslowsec(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("jumpsnullsec");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            systemjumpssearch.jumpsnullsec(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("jumpssafe");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            systemjumpssearch.jumpssafe(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("jumpssafelowsec");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            systemjumpssearch.jumpssafelowsec(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("jumpssafenullsec");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            systemjumpssearch.jumpssafenullsec(valuearray, operators, andor);
+        }
         JSONObject kss = (JSONObject)json.get("keysearch");
         JSONArray keysearch;
         keysearch = (JSONArray)kss.get("systemSystem_endsearcher");
@@ -171,11 +211,21 @@ public class JSONSystemjumps {
 
     public static void updateSystemjumps(ISystemjumps systemjumps, JSONObject json) {
         systemjumps.setJumps(JSONConversion.getint(json, "jumps"));
+        systemjumps.setJumpslowsec(JSONConversion.getint(json, "jumpslowsec"));
+        systemjumps.setJumpsnullsec(JSONConversion.getint(json, "jumpsnullsec"));
+        systemjumps.setJumpssafe(JSONConversion.getint(json, "jumpssafe"));
+        systemjumps.setJumpssafelowsec(JSONConversion.getint(json, "jumpssafelowsec"));
+        systemjumps.setJumpssafenullsec(JSONConversion.getint(json, "jumpssafenullsec"));
     }
 
     public static Systemjumps initSystemjumps(JSONObject json) {
         Systemjumps systemjumps = new Systemjumps(toSystemjumpsPK((JSONObject)json.get("PK")));
         systemjumps.initJumps(JSONConversion.getint(json, "jumps"));
+        systemjumps.initJumpslowsec(JSONConversion.getint(json, "jumpslowsec"));
+        systemjumps.initJumpsnullsec(JSONConversion.getint(json, "jumpsnullsec"));
+        systemjumps.initJumpssafe(JSONConversion.getint(json, "jumpssafe"));
+        systemjumps.initJumpssafelowsec(JSONConversion.getint(json, "jumpssafelowsec"));
+        systemjumps.initJumpssafenullsec(JSONConversion.getint(json, "jumpssafenullsec"));
         return systemjumps;
     }
 }

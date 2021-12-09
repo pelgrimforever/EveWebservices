@@ -2,7 +2,7 @@
  * Routetype.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
 
@@ -65,10 +65,6 @@ public class Routetype extends SecurityDataServlet {
                         case IRoutetypeOperation.SELECT_Security_island:
                             ISecurity_islandPK security_islandPK = (ISecurity_islandPK)parser.getJavaObject("security_islandpk");
                             dataobject = blroutetype.getRoutetypes4security_island(security_islandPK);
-                            break;
-                        case IRoutetypeOperation.SELECT_Route:
-                            IRoutePK routePK = (IRoutePK)parser.getJavaObject("routepk");
-                            dataobject = blroutetype.getRoute(routePK);
                             break;
                         case IRoutetypeOperation.SELECT_SEARCH:
                             IRoutetypesearch search = (IRoutetypesearch)parser.getJavaObject("search");

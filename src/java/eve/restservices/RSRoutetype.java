@@ -1,7 +1,7 @@
 /*
  * RSRoutetype.java
  *
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
 
@@ -123,10 +123,6 @@ public class RSRoutetype {
                             ISecurity_islandPK security_islandPK = (ISecurity_islandPK)JSONSecurity_island.toSecurity_islandPK((JSONObject)json.get("security_islandpk"));
                             result = JSONRoutetype.toJSONArray(blroutetype.getRoutetypes4security_island(security_islandPK)).toJSONString();
                             break;
-                        case IRoutetypeOperation.SELECT_Route:
-                            IRoutePK routePK = (IRoutePK)JSONRoute.toRoutePK((JSONObject)json.get("routepk"));
-                            result = JSONRoutetype.toJSON(blroutetype.getRoute(routePK)).toJSONString();
-                            break;
                         case IRoutetypeOperation.SELECT_SEARCH:
                             IRoutetypesearch search = (IRoutetypesearch)JSONRoutetype.toRoutetypesearch((JSONObject)json.get("search"));
                             result = JSONRoutetype.toJSONArray(blroutetype.search(search)).toJSONString();
@@ -198,10 +194,6 @@ public class RSRoutetype {
                         case IRoutetypeOperation.SELECT_Security_island:
                             ISecurity_islandPK security_islandPK = (ISecurity_islandPK)JSONSecurity_island.toSecurity_islandPK((JSONObject)json.get("security_islandpk"));
                             result = JSONRoutetype.toJSONArray(blroutetype.getRoutetypes4security_island(security_islandPK)).toJSONString();
-                            break;
-                        case IRoutetypeOperation.SELECT_Route:
-                            IRoutePK routePK = (IRoutePK)JSONRoute.toRoutePK((JSONObject)json.get("routepk"));
-                            result = JSONRoutetype.toJSON(blroutetype.getRoute(routePK)).toJSONString();
                             break;
                         case IRoutetypeOperation.SELECT_SEARCH:
                             IRoutetypesearch search = (IRoutetypesearch)JSONRoutetype.toRoutetypesearch((JSONObject)json.get("search"));

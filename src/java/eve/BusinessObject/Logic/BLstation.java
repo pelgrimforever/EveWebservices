@@ -21,6 +21,7 @@ import eve.entity.pk.SystemPK;
 import general.exception.DataException;
 import eve.interfaces.entity.pk.ISystemPK;
 import general.exception.CustomException;
+import java.sql.Date;
 import org.json.simple.JSONObject;
 
 /**
@@ -66,6 +67,7 @@ public class BLstation extends Bstation {
         station.setReprocessing_stations_take(JSONConversion.getDouble(jsonstationdetails, "reprocessing_stations_take"));
         station.setSystemPK(new SystemPK(JSONConversion.getLong(jsonstationdetails, "system_id")));
         station.setMax_dockable_ship_volume(JSONConversion.getDouble(jsonstationdetails, "max_dockable_ship_volume"));
+        station.setDownloaddate(new Date(System.currentTimeMillis()));
         this.insertupdateStation(station);
     }
 

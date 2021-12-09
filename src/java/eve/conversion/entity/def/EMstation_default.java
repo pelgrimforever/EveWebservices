@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
 package eve.conversion.entity.def;
@@ -103,6 +103,7 @@ public class EMstation_default implements TableMapper {
                 station.initReprocessing_stations_take(dbresult.getDouble("reprocessing_stations_take"));
                 station.initMax_dockable_ship_volume(dbresult.getDouble("max_dockable_ship_volume"));
                 station.initOwner(dbresult.getLong("owner"));
+                station.initDownloaddate(dbresult.getDate("downloaddate"));
             }
             catch(SQLException sqle) {
                 throw sqle;

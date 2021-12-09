@@ -2,7 +2,7 @@
  * JSONSystem.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
  
@@ -70,6 +70,9 @@ public class JSONSystem {
         json.put("noaccess", system.getNoaccess());
         json.put("isconstellationborder", system.getIsconstellationborder());
         json.put("isregionborder", system.getIsregionborder());
+        if(system.getDownloaddate()!=null) {
+	        json.put("downloaddate", system.getDownloaddate().getTime());
+        }
 //Custom code, do not change this line
         json.put("npc_kills", system.getNpc_kills());
         json.put("pod_kills", system.getPod_kills());
@@ -126,12 +129,6 @@ public class JSONSystem {
             }
             if(systemsearch.getSystemjumpssystem_startsearch()!=null && systemsearch.getSystemjumpssystem_startsearch().used()) {
                 kss.put("systemjumpsSystem_startsearcher", JSONSystemjumps.toJSON((Systemjumpssearch)systemsearch.getSystemjumpssystem_startsearch()));
-            }
-            if(systemsearch.getRoutesearch()!=null && systemsearch.getRoutesearch().used()) {
-                kss.put("routesearcher", JSONRoute.toJSON((Routesearch)systemsearch.getRoutesearch()));
-            }
-            if(systemsearch.getRelRoutetypesearch()!=null && systemsearch.getRelRoutetypesearch().used()) {
-                kss.put("routetypesearcher", JSONRoute.toJSON((Routesearch)systemsearch.getRelRoutetypesearch()));
             }
             if(systemsearch.getTradecombinedbuy_systemsearch()!=null && systemsearch.getTradecombinedbuy_systemsearch().used()) {
                 kss.put("tradecombinedBuy_systemsearcher", JSONTradecombined.toJSON((Tradecombinedsearch)systemsearch.getTradecombinedbuy_systemsearch()));
@@ -216,6 +213,13 @@ public class JSONSystem {
             boolean value = JSONConversion.getBooleanvalue(field);
             systemsearch.isregionborder(value);
         }
+        field = (JSONObject)fss.get("downloaddate");
+        if(field!=null) {
+            Date[] valuearray = JSONConversion.getDatevalues(field);
+            byte[] operators = JSONConversion.getDateoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            systemsearch.downloaddate(valuearray, operators, andor);
+        }
         JSONObject kss = (JSONObject)json.get("keysearch");
         JSONArray keysearch;
         keysearch = (JSONArray)kss.get("security_islandsearcher");
@@ -244,20 +248,6 @@ public class JSONSystem {
             for(int i=0; i<keysearch.size(); i++) {
                 Systemjumpssearch systemjumpsSystem_startsearch = JSONSystemjumps.toSystemjumpssearch((JSONObject)keysearch.get(i));
                 systemsearch.systemjumpsSystem_start(systemjumpsSystem_startsearch);
-            }
-        }
-        keysearch = (JSONArray)kss.get("routesearcher");
-        if(keysearch!=null) {
-            for(int i=0; i<keysearch.size(); i++) {
-                Routesearch routesearch = JSONRoute.toRoutesearch((JSONObject)keysearch.get(i));
-                systemsearch.route(routesearch);
-            }
-        }
-        keysearch = (JSONArray)kss.get("routetypesearcher");
-        if(keysearch!=null) {
-            for(int i=0; i<keysearch.size(); i++) {
-                Routetypesearch routetypesearch = JSONRoutetype.toRoutetypesearch((JSONObject)keysearch.get(i));
-                systemsearch.relroutetype(routetypesearch);
             }
         }
         keysearch = (JSONArray)kss.get("tradecombinedBuy_systemsearcher");
@@ -315,6 +305,7 @@ public class JSONSystem {
         system.setNoaccess(JSONConversion.getboolean(json, "noaccess"));
         system.setIsconstellationborder(JSONConversion.getboolean(json, "isconstellationborder"));
         system.setIsregionborder(JSONConversion.getboolean(json, "isregionborder"));
+        system.setDownloaddate(JSONConversion.getDate(json, "downloaddate"));
     }
 
     public static System initSystem(JSONObject json) {
@@ -328,6 +319,7 @@ public class JSONSystem {
         system.initNoaccess(JSONConversion.getboolean(json, "noaccess"));
         system.initIsconstellationborder(JSONConversion.getboolean(json, "isconstellationborder"));
         system.initIsregionborder(JSONConversion.getboolean(json, "isregionborder"));
+        system.initDownloaddate(JSONConversion.getDate(json, "downloaddate"));
         return system;
     }
 }

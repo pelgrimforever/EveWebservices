@@ -2,7 +2,7 @@
  * XMLTrade.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
  
@@ -57,6 +57,8 @@ public class XMLTrade {
         TradeXML.addContent(XMLElement.newContent("profit_per_jump", trade.getProfit_per_jump()));
         TradeXML.addContent(XMLElement.newContent("singlerun_profit_per_jump", trade.getSinglerun_profit_per_jump()));
         TradeXML.addContent(XMLElement.newContent("maxunits_per_run", trade.getMaxunits_per_run()));
+        TradeXML.addContent(XMLElement.newContent("jumpslowsec", trade.getJumpslowsec()));
+        TradeXML.addContent(XMLElement.newContent("jumpsnullsec", trade.getJumpsnullsec()));
     }
 }
 

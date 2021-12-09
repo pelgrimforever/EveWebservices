@@ -2,7 +2,7 @@
  * JSONView_trade.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
  
@@ -66,6 +66,8 @@ public class JSONView_trade {
         json.put("buy_total", view_trade.getBuy_total());
         json.put("trade_profit", view_trade.getTrade_profit());
         json.put("trade_jumps", view_trade.getTrade_jumps());
+        json.put("trade_jumpslowsec", view_trade.getTrade_jumpslowsec());
+        json.put("trade_jumpsnullsec", view_trade.getTrade_jumpsnullsec());
         json.put("trade_profit_per_jump", view_trade.getTrade_profit_per_jump());
         json.put("trade_runs", view_trade.getTrade_runs());
         json.put("trade_total_jumps", view_trade.getTrade_total_jumps());
@@ -104,6 +106,8 @@ public class JSONView_trade {
         view_trade.setBuy_total(JSONConversion.getdouble(json, "buy_total"));
         view_trade.setTrade_profit(JSONConversion.getdouble(json, "trade_profit"));
         view_trade.setTrade_jumps(JSONConversion.getint(json, "trade_jumps"));
+        view_trade.setTrade_jumpslowsec(JSONConversion.getint(json, "trade_jumpslowsec"));
+        view_trade.setTrade_jumpsnullsec(JSONConversion.getint(json, "trade_jumpsnullsec"));
         view_trade.setTrade_profit_per_jump(JSONConversion.getdouble(json, "trade_profit_per_jump"));
         view_trade.setTrade_runs(JSONConversion.getint(json, "trade_runs"));
         view_trade.setTrade_total_jumps(JSONConversion.getint(json, "trade_total_jumps"));
@@ -291,6 +295,20 @@ public class JSONView_trade {
             byte[] operators = JSONConversion.getNumberoperators(field);
             byte andor = JSONConversion.getbyte(field, "andor");
             view_tradesearch.trade_jumps(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("trade_jumpslowsec");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            view_tradesearch.trade_jumpslowsec(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("trade_jumpsnullsec");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            view_tradesearch.trade_jumpsnullsec(valuearray, operators, andor);
         }
         field = (JSONObject)fss.get("trade_profit_per_jump");
         if(field!=null) {

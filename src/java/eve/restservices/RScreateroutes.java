@@ -5,9 +5,9 @@ package eve.restservices;
 
 import data.conversion.JSONConversion;
 import eve.BusinessObject.service.RouteService;
+import eve.BusinessObject.service.Systemdata;
 import eve.conversion.json.JSONSystem;
 import eve.data.Swagger;
-import eve.entity.pk.SystemPK;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.ws.rs.Consumes;
@@ -74,7 +74,7 @@ public class RScreateroutes {
             if(routeservice==null) {
                 routeservice = new RouteService();
             }
-            ArrayList<Long> route = routeservice.getRoute(origin, destination, avoidsystems, viasystems, secure);
+            Systemdata route_endnode = routeservice.getRoute(origin, destination, avoidsystems, viasystems, secure);
 
             //add kill info to the systems
             JSONArray jsonsystemkills;
@@ -83,12 +83,12 @@ public class RScreateroutes {
             //get kills from Eve Swagger
             jsonsystemkills = Swagger.getSystemkills();
             //get kills from Eve gatecheck
-            jsongatechecks = Swagger.getEveGatecheck(route);
-            //build route systems array
+            jsongatechecks = Swagger.getEveGatecheck(route_endnode.getRoute());
+            //build route_endnode systems array
             ArrayList systems = new ArrayList();
             JSONObject systemkill;
             JSONObject gatecheckkill;
-            for(Long systemid: route) {
+            for(Long systemid: route_endnode.getRoute()) {
                 system = routeservice.getSystem(systemid);
                 systemkill = findSystemkill(jsonsystemkills, systemid);
                 gatecheckkill = findGatecheckkill(jsongatechecks, systemid);

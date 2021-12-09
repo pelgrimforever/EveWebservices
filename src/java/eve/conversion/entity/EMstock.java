@@ -22,6 +22,7 @@ public class EMstock extends EMstock_default {
 //Metacoder: NO AUTHOMATIC UPDATE
     
     public static final String SQLSelectAll = SQLSelect + OrderBy;
+    public static final String SQLSelect4username = SQLSelect + " where username = :username: " + OrderBy;
 
     /**
      * Map ResultSet Field values to Stock

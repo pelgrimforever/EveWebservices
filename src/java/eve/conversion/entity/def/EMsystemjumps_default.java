@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
 package eve.conversion.entity.def;
@@ -89,6 +89,11 @@ public class EMsystemjumps_default implements TableMapper {
                 systemjumpsPK = new SystemjumpsPK(dbresult.getLong("system_start"), dbresult.getLong("system_end"));
                 systemjumps = new Systemjumps(systemjumpsPK);
                 systemjumps.initJumps(dbresult.getInt("jumps"));
+                systemjumps.initJumpslowsec(dbresult.getInt("jumpslowsec"));
+                systemjumps.initJumpsnullsec(dbresult.getInt("jumpsnullsec"));
+                systemjumps.initJumpssafe(dbresult.getInt("jumpssafe"));
+                systemjumps.initJumpssafelowsec(dbresult.getInt("jumpssafelowsec"));
+                systemjumps.initJumpssafenullsec(dbresult.getInt("jumpssafenullsec"));
             }
             catch(SQLException sqle) {
                 throw sqle;

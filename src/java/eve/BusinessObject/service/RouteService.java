@@ -44,7 +44,7 @@ public class RouteService {
         return systemhash.get(systemid).getSystem();
     }
     
-    public ArrayList<Long> getRoute(long startpoint, long endpoint, ArrayList<Long> avoidlist, ArrayList<Long> viasystems, boolean safe) {
+    public Systemdata getRoute(long startpoint, long endpoint, ArrayList<Long> avoidlist, ArrayList<Long> viasystems, boolean safe) {
         //build routelist
         ArrayList<Long> routelist = new ArrayList();
         routelist.add(startpoint);
@@ -54,21 +54,28 @@ public class RouteService {
         Iterator<Long> routelistI = routelist.iterator();
         long systemstart = routelistI.next();
         long systemend;
+        Systemdata endnode = new Systemdata(null);
         ArrayList<Long> gatechecksystems = new ArrayList();
+        int lowsecjumps = 0;
+        int nullsecjumps = 0;
         gatechecksystems.add(startpoint);
         while(routelistI.hasNext()) {
             systemend = routelistI.next();
             if(safe) {
-                gatechecksystems.addAll(getRouteSafe(systemstart, systemend, avoidlist));
+                endnode = getRouteSafe(systemstart, systemend, avoidlist);
             } else {
-                gatechecksystems.addAll(getRoute(systemstart, systemend, avoidlist));
+                endnode = getRoute(systemstart, systemend, avoidlist);
             }
+            gatechecksystems.addAll(endnode.getRoute());
+            lowsecjumps += endnode.getLowsecjumps();
+            nullsecjumps += endnode.getNullsecjumps();
             systemstart = systemend;
         }
-        return gatechecksystems;
+        endnode.forceroute(gatechecksystems, lowsecjumps, nullsecjumps);
+        return endnode;
     }
     
-    private ArrayList<Long> getRoute(long startpoint, long endpoint, ArrayList<Long> avoidlist) {
+    private Systemdata getRoute(long startpoint, long endpoint, ArrayList<Long> avoidlist) {
         //initialize for new starting point
         for(Systemdata systeminit: systemhash.values()) {
             systeminit.reset();
@@ -97,7 +104,7 @@ public class RouteService {
             for(Systemdata activesystem: activesystems) {
                 for(Systemdata connection: activesystem.getConnections()) {
                     if(connection.isAvailable()) {
-                        connection.setRoute(activesystem.getRoute());
+                        connection.setRoute(activesystem);
                         connections.add(connection);
                     }
                 }
@@ -110,10 +117,10 @@ public class RouteService {
             }
             connections.clear();
         }
-        return endsystem.getRoute();
+        return endsystem;
     }
     
-    private ArrayList<Long> getRouteSafe(long startpoint, long endpoint, ArrayList<Long> avoidlist) {
+    private Systemdata getRouteSafe(long startpoint, long endpoint, ArrayList<Long> avoidlist) {
         //initialize for new starting point
         for(Systemdata systeminit: systemhash.values()) {
             systeminit.reset();
@@ -144,7 +151,7 @@ public class RouteService {
             for(Systemdata activesystem: activesystems) {
                 for(Systemdata connection: activesystem.getConnections()) {
                     if(connection.isAvailable() && connection.isHighsec()) {
-                        connection.setRoute(activesystem.getRoute());
+                        connection.setRoute(activesystem);
                         connections.add(connection);
                     }
                 }
@@ -167,7 +174,7 @@ public class RouteService {
                 for(Systemdata activesystem: activesystems) {
                     for(Systemdata connection: activesystem.getConnections()) {
                         if(connection.isAvailable()) {
-                            connection.setRoute(activesystem.getRoute());
+                            connection.setRoute(activesystem);
                             connections.add(connection);
                         }
                     }
@@ -182,46 +189,7 @@ public class RouteService {
             }
         }
         
-        return endsystem.getRoute();
+        return endsystem;
     }    
     
-    public void run() {
-        //load systems and stargates
-        //calculate routes
-        int systemcount = systemhash.values().size();
-        ArrayList<Systemdata> checkedsystems;
-        ArrayList<Systemdata> activesystems;
-        ArrayList<Systemdata> connections;
-        Systemdata newconnection;
-        for(Systemdata systemdata: systemhash.values()) {
-            //initialize for new starting point
-            for(Systemdata systeminit: systemhash.values()) {
-                systeminit.reset();
-            }
-            systemdata.setStartingpoint();
-            checkedsystems = new ArrayList<>();
-            checkedsystems.add(systemdata);
-            activesystems = new ArrayList<>();
-            activesystems.add(systemdata);
-            connections = new ArrayList<>();
-            //isolated clusters of systems exists in eve
-            //so we check if there are still open connection in stead of looking if all systems are checked
-            while(activesystems.size()>0) {
-                //process next connections (stargates)
-                for(Systemdata activesystem: activesystems) {
-                    for(Systemdata connection: activesystem.getConnections()) {
-                        if(!connection.isUsed()) {
-                            connection.setRoute(activesystem.getRoute());
-                            connections.add(connection);
-                        }
-                    }
-                }
-                //gather active connections for next loop
-                checkedsystems.addAll(connections);
-                activesystems.clear();
-                activesystems.addAll(connections);
-                connections.clear();
-            }
-        }
-    }
 }

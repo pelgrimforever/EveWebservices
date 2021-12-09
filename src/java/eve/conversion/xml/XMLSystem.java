@@ -2,7 +2,7 @@
  * XMLSystem.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
  
@@ -63,6 +63,9 @@ public class XMLSystem {
         SystemXML.addContent(XMLElement.newContent("noaccess", system.getNoaccess()));
         SystemXML.addContent(XMLElement.newContent("isconstellationborder", system.getIsconstellationborder()));
         SystemXML.addContent(XMLElement.newContent("isregionborder", system.getIsregionborder()));
+        if(system.getDownloaddate()!=null) {
+            SystemXML.addContent(XMLElement.newContent("downloaddate", system.getDownloaddate().getTime()));
+        }
     }
 }
 

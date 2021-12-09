@@ -2,7 +2,7 @@
  * JSONView_tradeorders.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
  
@@ -60,6 +60,8 @@ public class JSONView_tradeorders {
         json.put("buy_volume_remain", String.valueOf(view_tradeorders.getBuy_volume_remain()));
         json.put("buy_price", view_tradeorders.getBuy_price());
         json.put("jumps", view_tradeorders.getJumps());
+        json.put("jumpslowsec", view_tradeorders.getJumpslowsec());
+        json.put("jumpsnullsec", view_tradeorders.getJumpsnullsec());
 //Custom code, do not change this line
 //Custom code, do not change this line
         return json;
@@ -85,6 +87,8 @@ public class JSONView_tradeorders {
         view_tradeorders.setBuy_volume_remain(JSONConversion.getlong(json, "buy_volume_remain"));
         view_tradeorders.setBuy_price(JSONConversion.getdouble(json, "buy_price"));
         view_tradeorders.setJumps(JSONConversion.getint(json, "jumps"));
+        view_tradeorders.setJumpslowsec(JSONConversion.getint(json, "jumpslowsec"));
+        view_tradeorders.setJumpsnullsec(JSONConversion.getint(json, "jumpsnullsec"));
         return view_tradeorders;
     }
 
@@ -225,6 +229,20 @@ public class JSONView_tradeorders {
             byte[] operators = JSONConversion.getNumberoperators(field);
             byte andor = JSONConversion.getbyte(field, "andor");
             view_tradeorderssearch.jumps(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("jumpslowsec");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            view_tradeorderssearch.jumpslowsec(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("jumpsnullsec");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            view_tradeorderssearch.jumpsnullsec(valuearray, operators, andor);
         }
         return view_tradeorderssearch;
     }

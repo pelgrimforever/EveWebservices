@@ -51,7 +51,7 @@ public class BLalliance extends Balliance {
         this.setLogginrequired(isprivatetable);
     }
 
-    public void updateAlliance(JSONObject jsonalliancedetails) throws DBException, DataException {
+    public Alliance updateAlliance(JSONObject jsonalliancedetails) throws DBException, DataException {
         Alliance alliance = new Alliance(JSONConversion.getLong(jsonalliancedetails, "alliance_id"));
         alliance.setName(JSONConversion.getString(jsonalliancedetails, "name"));
         alliance.setTicker(JSONConversion.getString(jsonalliancedetails, "ticker"));
@@ -62,6 +62,7 @@ public class BLalliance extends Balliance {
         if(jsonalliancedetails.containsKey("executor_corporation_id")) alliance.setCorporationexecutor_corporationPK(new CorporationPK(JSONConversion.getLong(jsonalliancedetails, "executor_corporation_id")));
         if(jsonalliancedetails.containsKey("faction_id")) alliance.setFaction_id(JSONConversion.getLong(jsonalliancedetails, "faction_id"));
         this.insertupdateAlliance(alliance);
+        return alliance;
     }
 
     /**

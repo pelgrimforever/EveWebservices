@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
 package eve.conversion.entity.def;
@@ -99,6 +99,7 @@ public class EMsystem_default implements TableMapper {
                 system.initNoaccess(dbresult.getBoolean("noaccess"));
                 system.initIsconstellationborder(dbresult.getBoolean("isconstellationborder"));
                 system.initIsregionborder(dbresult.getBoolean("isregionborder"));
+                system.initDownloaddate(dbresult.getDate("downloaddate"));
             }
             catch(SQLException sqle) {
                 throw sqle;

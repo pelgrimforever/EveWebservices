@@ -2,7 +2,7 @@
  * Bsystem.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
 
@@ -222,6 +222,9 @@ public abstract class Bsystem extends BLtable {
         if(system.getSecurity_class()!=null && system.getSecurity_class().length()>ISystem.SIZE_SECURITY_CLASS) {
             message.append("Security_class is langer dan toegestaan. Max aantal karakters: ").append(ISystem.SIZE_SECURITY_CLASS).append("\n");
         }
+        if(system.getDownloaddate()==null) {
+            message.append("Downloaddate mag niet leeg zijn.\n");
+        }
         if(message.length()>0) {
             throw new DataException(message.toString());
         }
@@ -236,8 +239,6 @@ public abstract class Bsystem extends BLtable {
         blsystemjumpsSystem_end.delete4systemSystem_end(systemPK);
         BLsystemjumps blsystemjumpsSystem_start = new BLsystemjumps(this);
         blsystemjumpsSystem_start.delete4systemSystem_start(systemPK);
-        BLroute blroute = new BLroute(this);
-        blroute.delete4system(systemPK);
         BLtradecombined bltradecombinedBuy_system = new BLtradecombined(this);
         bltradecombinedBuy_system.delete4systemBuy_system(systemPK);
         BLtradecombined bltradecombinedSell_system = new BLtradecombined(this);
@@ -293,16 +294,6 @@ public abstract class Bsystem extends BLtable {
      */
     public System getSystemjumpssystem_start(ISystemjumpsPK systemjumpsPK) throws CustomException {
         SystemPK systemPK = new SystemPK(systemjumpsPK.getSystem_start());
-        return this.getSystem(systemPK);
-    }
-
-    /**
-     * @param routePK: parent Route for child object System Entity
-     * @return child System Entity object
-     * @throws CustomException
-     */
-    public System getRoute(IRoutePK routePK) throws CustomException {
-        SystemPK systemPK = new SystemPK(routePK.getSystem());
         return this.getSystem(systemPK);
     }
 

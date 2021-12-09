@@ -12,8 +12,11 @@ import general.exception.DBException;
 import eve.interfaces.logicentity.IStock;
 import eve.logicentity.Stock;
 import BusinessObject.BLtable;
+import db.SQLparameters;
 import eve.BusinessObject.table.Bstock;
+import eve.conversion.entity.EMstock;
 import general.exception.DataException;
+import java.util.ArrayList;
 
 /**
  * Business Logic Entity class BLstock
@@ -36,6 +39,12 @@ public class BLstock extends Bstock {
         this.setLogginrequired(isprivatetable);
     }
 
+    public ArrayList getStock4user(String username) throws DBException {
+        Object[][] parameters = {{ "username", username }};
+        SQLparameters sqlparameters = new SQLparameters(parameters);
+        return getEntities(EMstock.SQLSelect4username, sqlparameters);
+    }
+    
     /**
      * Constructor, sets Stock as default Entity
      * sets transaction queue from given GeneralObject implementation

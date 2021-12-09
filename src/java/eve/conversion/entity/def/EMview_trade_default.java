@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
 package eve.conversion.entity.def;
@@ -68,6 +68,8 @@ public class EMview_trade_default implements ViewMapper {
                 view_trade.setBuy_total(dbresult.getDouble("buy_total"));
                 view_trade.setTrade_profit(dbresult.getDouble("trade_profit"));
                 view_trade.setTrade_jumps(dbresult.getInt("trade_jumps"));
+                view_trade.setTrade_jumpslowsec(dbresult.getInt("trade_jumpslowsec"));
+                view_trade.setTrade_jumpsnullsec(dbresult.getInt("trade_jumpsnullsec"));
                 view_trade.setTrade_profit_per_jump(dbresult.getDouble("trade_profit_per_jump"));
                 view_trade.setTrade_runs(dbresult.getInt("trade_runs"));
                 view_trade.setTrade_total_jumps(dbresult.getInt("trade_total_jumps"));

@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
 package eve.conversion.entity.def;
@@ -62,6 +62,8 @@ public class EMview_tradeorders_default implements ViewMapper {
                 view_tradeorders.setBuy_volume_remain(dbresult.getLong("buy_volume_remain"));
                 view_tradeorders.setBuy_price(dbresult.getDouble("buy_price"));
                 view_tradeorders.setJumps(dbresult.getInt("jumps"));
+                view_tradeorders.setJumpslowsec(dbresult.getInt("jumpslowsec"));
+                view_tradeorders.setJumpsnullsec(dbresult.getInt("jumpsnullsec"));
             }
             catch(SQLException sqle) {
                 throw sqle;

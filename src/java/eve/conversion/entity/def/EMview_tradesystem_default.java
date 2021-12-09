@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
 package eve.conversion.entity.def;
@@ -56,6 +56,8 @@ public class EMview_tradesystem_default implements ViewMapper {
                 view_tradesystem.setBuy_systemid(dbresult.getLong("buy_systemid"));
                 view_tradesystem.setBuy_systemname(dbresult.getString("buy_systemname"));
                 view_tradesystem.setTrade_jumps(dbresult.getInt("trade_jumps"));
+                view_tradesystem.setTrade_jumpslowsec(dbresult.getInt("trade_jumpslowsec"));
+                view_tradesystem.setTrade_jumpsnullsec(dbresult.getInt("trade_jumpsnullsec"));
             }
             catch(SQLException sqle) {
                 throw sqle;

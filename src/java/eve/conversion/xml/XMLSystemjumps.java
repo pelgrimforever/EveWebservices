@@ -2,7 +2,7 @@
  * XMLSystemjumps.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 4.11.2021 14:51
+ * Generated on 9.11.2021 14:30
  *
  */
  
@@ -48,6 +48,11 @@ public class XMLSystemjumps {
         addXML(PK, systemjumps.getPrimaryKey());
         SystemjumpsXML.addContent(PK);
         SystemjumpsXML.addContent(XMLElement.newContent("jumps", systemjumps.getJumps()));
+        SystemjumpsXML.addContent(XMLElement.newContent("jumpslowsec", systemjumps.getJumpslowsec()));
+        SystemjumpsXML.addContent(XMLElement.newContent("jumpsnullsec", systemjumps.getJumpsnullsec()));
+        SystemjumpsXML.addContent(XMLElement.newContent("jumpssafe", systemjumps.getJumpssafe()));
+        SystemjumpsXML.addContent(XMLElement.newContent("jumpssafelowsec", systemjumps.getJumpssafelowsec()));
+        SystemjumpsXML.addContent(XMLElement.newContent("jumpssafenullsec", systemjumps.getJumpssafenullsec()));
     }
 }
 

@@ -10,37 +10,32 @@ import eve.BusinessObject.Logic.BLevetype;
 import eve.BusinessObject.Logic.BLorder_hist;
 import eve.BusinessObject.Logic.BLorders;
 import eve.BusinessObject.Logic.BLregion;
-import eve.BusinessObject.Logic.BLroute;
 import eve.BusinessObject.Logic.BLstock;
 import eve.BusinessObject.Logic.BLstocktrade;
 import eve.BusinessObject.Logic.BLsystem;
-import eve.BusinessObject.Logic.BLsystemjumps;
 import eve.BusinessObject.Logic.BLtrade;
 import eve.BusinessObject.Logic.BLtradecombined;
 import eve.BusinessObject.Logic.BLtradecombined_sell;
 import eve.BusinessObject.Logic.BLusersettings;
 import eve.BusinessObject.Logic.BLview_trade_systemsevetype;
-import eve.BusinessObject.Logic.BLview_tradeorders;
-import eve.BusinessObject.Logic.RouteHash;
+import eve.BusinessObject.Logic.BLview_tradeorders_lowsec;
 import eve.entity.pk.EvetypePK;
-import eve.entity.pk.RoutetypePK;
 import eve.entity.pk.Security_islandPK;
 import eve.entity.pk.StocktradePK;
 import eve.entity.pk.SystemPK;
-import eve.entity.pk.SystemjumpsPK;
 import eve.entity.pk.Tradecombined_sellPK;
 import eve.interfaces.logicentity.ISettings;
 import eve.logicentity.Orders;
 import eve.logicentity.Region;
 import eve.logicentity.Stock;
 import eve.logicentity.Stocktrade;
-import eve.logicentity.Systemjumps;
 import eve.logicentity.Trade;
 import eve.logicentity.Tradecombined;
 import eve.logicentity.Tradecombined_sell;
 import eve.logicentity.Usersettings;
 import eve.logicview.View_trade_systemsevetype;
 import eve.logicview.View_tradeorders;
+import eve.logicview.View_tradeorders_lowsec;
 import general.exception.CustomException;
 import general.exception.DBException;
 import general.exception.DataException;
@@ -87,8 +82,10 @@ public class MarketService implements Runnable {
             }
         }
         
-        public void updateStatus(long regionid, int page) {
-            regions.get(regionid).setPage(page);
+        public void updateStatus(long regionid, int page, long orders) {
+            RegionStatus regionstatus = regions.get(regionid);
+            regionstatus.setPage(page);
+            regionstatus.setOrders(orders);
         }
         
         public void setDone(long regionid) {
@@ -120,6 +117,7 @@ public class MarketService implements Runnable {
     public class RegionStatus {
         private String name = "";
         private int page = 0;
+        private long orders = 0;
         private int totalpages = 1;
         private boolean done = false;
         
@@ -138,6 +136,14 @@ public class MarketService implements Runnable {
         
         public int getPage() {
             return page;
+        }
+        
+        public void setOrders(long orders) {
+            this.orders = orders;
+        }
+
+        public long getOrders() {
+            return this.orders;
         }
         
         public int getTotalpages() {
@@ -167,7 +173,7 @@ public class MarketService implements Runnable {
     
     protected boolean locktoONEprocessor = false;
     private static int processors = Runtime.getRuntime().availableProcessors(); //max number of available processors
-    //private static int processors = 4; //max number of available processors
+    private static int maxprocessors = 4; //max number of available processors
     
     /**
      * Get number of processors
@@ -223,6 +229,7 @@ public class MarketService implements Runnable {
         //start all threads
         long start = System.currentTimeMillis();
         try {
+            if(processorsasked>maxprocessors) processors = maxprocessors;
             for(p=0; p<processorsasked && p<processors; p++) {
                 downloader = new MarketRegionDownloader(data, marketstatus, p);
                 downloaders.add(downloader);
@@ -282,15 +289,14 @@ public class MarketService implements Runnable {
      * @throws DBException 
      */
     private void processView_tradeorders() throws DataException, DBException, CustomException {
-        RouteHash routehash = new RouteHash(new RoutetypePK(1));
         BLorders blorders = new BLorders();
         BLorder_hist blorderhist = new BLorder_hist();
         BLregion blregion = new BLregion();
         BLevetype blevetype = new BLevetype();
         BLsystem blsystem = new BLsystem();
-        BLroute blroute = new BLroute();
         BLtrade bltrade = new BLtrade();
-        BLview_tradeorders blviewtradeorders = new BLview_tradeorders();
+        //BLview_tradeorders blviewtradeorders = new BLview_tradeorders();
+        BLview_tradeorders_lowsec blviewtradeorders_lowsec = new BLview_tradeorders_lowsec();
         BLusersettings blusersettings = new BLusersettings();
 
         //calculate average, min and max price for buy/sell orders for each evetype
@@ -309,8 +315,10 @@ public class MarketService implements Runnable {
         float perc_net = 1 - perc_tax;
         Security_islandPK security_islandPK = new Security_islandPK(1);
         //get all view_tradeorders
-        Iterator<View_tradeorders> tradeordersI = blviewtradeorders.getTradeorders(security_islandPK, max_cargo, perc_net, min_profit).iterator();
-        View_tradeorders tradeorder;
+        //Iterator<View_tradeorders> tradeordersI = blviewtradeorders.getTradeorders(security_islandPK, max_cargo, perc_net, min_profit).iterator();
+        Iterator<View_tradeorders_lowsec> tradeordersI = blviewtradeorders_lowsec.getTradeorders(max_cargo, perc_net, min_profit).iterator();
+        //View_tradeorders tradeorder;
+        View_tradeorders_lowsec tradeorder;
         double buyordervalue;
         double sellordervalue;
         double totalvolume;
@@ -350,6 +358,8 @@ public class MarketService implements Runnable {
                     trade = new Trade(tradeorder.getSell_id(), tradeorder.getBuy_id());
                     trade.setBuy_order_value(buyordervalue);
                     trade.setJumps(jumps);
+                    trade.setJumpslowsec(tradeorder.getJumpslowsec());
+                    trade.setJumpsnullsec(tradeorder.getJumpsnullsec());
                     trade.setMaxunits_per_run(maxunits_per_run);
                     trade.setProfit(profit);
                     trade.setProfit_per_jump(profit_per_jump);
@@ -360,7 +370,7 @@ public class MarketService implements Runnable {
                     trade.setTotal_volume(totalvolume);
                     bltrade.trans_insertTrade(trade);
                     count++;
-                    if(count==100) {
+                    if(count==200) {
                         toutput = bltrade.Commit2DB();
                         if(toutput.getHaserror()) {
                             marketstatus.addMessage(toutput.getErrormessage());
@@ -397,8 +407,6 @@ public class MarketService implements Runnable {
         SystemPK sellsystemPK;
         SystemPK buysystemPK;
         EvetypePK evetypePK;
-        Systemjumps systemjumps;
-        SystemjumpsPK systemjumpspk;
         long buyorderasked = 0;
         long sellorderasked = 0;
         long amount;
@@ -406,6 +414,7 @@ public class MarketService implements Runnable {
         Tradecombined tradecombined;
         Tradecombined_sellPK tradecombined_sellPK;
         Tradecombined_sell tradecombined_sell;
+        int insertcounter = 0;
         for(View_trade_systemsevetype view_trade_systemsevetype: view_trade_systemsevetypes) {
             sellsystemPK = new SystemPK(view_trade_systemsevetype.getSystemsell());
             buysystemPK = new SystemPK(view_trade_systemsevetype.getSystembuy());
@@ -421,6 +430,8 @@ public class MarketService implements Runnable {
             //new Tradecombined per View_trade_systeevetype
             tradecombined = new Tradecombined(sellsystemPK.getId(), buysystemPK.getId(), evetypePK.getId());
             tradecombined.setJumps(view_trade_systemsevetype.getJumps());
+            tradecombined.setJumpslowsec(view_trade_systemsevetype.getJumpslowsec());
+            tradecombined.setJumpsnullsec(view_trade_systemsevetype.getJumpsnullsec());
             bltradecombined.trans_insertTradecombined(tradecombined);
             while(hasprofit && ordersavailable) {
                 amount = Math.min(buyorderasked, sellorderasked);
@@ -434,6 +445,7 @@ public class MarketService implements Runnable {
                 tradecombined_sell.setSell_order_value(sellorder.getPrice() * amount);
                 tradecombined_sell.setProfit((buyorder.getPrice() * perc_net - sellorder.getPrice()) * amount);
                 bltradecombined_sell.trans_insertTradecombined_sell(tradecombined_sell);
+                insertcounter++;
                 buyorderasked -= amount;
                 sellorderasked -= amount;
                 if(buyorderasked==0 && buyordersI.hasNext()) {
@@ -447,9 +459,13 @@ public class MarketService implements Runnable {
                 hasprofit = buyorder.getPrice()*perc_net>sellorder.getPrice();
                 ordersavailable = buyorderasked>0 && sellorderasked>0;
             }
-            bltradecombined.Commit2DB();
-            bltradecombined_sell.Commit2DB();
+            if(insertcounter>200) {
+                bltradecombined.Commit2DB();
+                bltradecombined_sell.Commit2DB();
+            }
         }
+        bltradecombined.Commit2DB();
+        bltradecombined_sell.Commit2DB();
     }
     
     /**
@@ -463,8 +479,15 @@ public class MarketService implements Runnable {
         BLorders blorders = new BLorders();
         BLstock blstock = new BLstock();
         BLstocktrade blstocktrade = new BLstocktrade();
-        Security_islandPK security_islandPK = new Security_islandPK(1);
-        Iterator<Stock> stockI = blstock.getAll().iterator();
+        BLusersettings blusersettings = new BLusersettings();
+        blstocktrade.deletestocktrade(username);
+        blstocktrade.Commit2DB();
+        //Security_islandPK security_islandPK = new Security_islandPK(1);
+        //load usersettings
+        ArrayList<Usersettings> usersettings = blusersettings.getUsersettings(username);
+        long stocksystemid = Long.valueOf(blusersettings.getUsersetting(usersettings, ISettings.STOCKSYSTEMID).getValue());
+        SystemPK stocksystemPK = new SystemPK(stocksystemid);
+        Iterator<Stock> stockI = blstock.getStock4user(username).iterator();
         Stock stock;
         Iterator<Orders> ordersI;
         Orders order;
@@ -475,7 +498,8 @@ public class MarketService implements Runnable {
         while(keeprunning && stockI.hasNext()) {
             stock = stockI.next();
             stockamount = stock.getAmount();
-            ordersI = blorders.load_buyorders4evetype(security_islandPK, stock.getPrimaryKey().getEvetypePK()).iterator();
+            //ordersI = blorders.load_buyorders4evetype(security_islandPK, stock.getPrimaryKey().getEvetypePK()).iterator();
+            ordersI = blorders.load_buyorders4evetype(stocksystemPK, stock.getPrimaryKey().getEvetypePK()).iterator();
             while(ordersI.hasNext() && stockamount>0) {
                 order = ordersI.next();
                 tradeamount = Math.min(order.getVolume_remain(), stockamount);
