@@ -1,7 +1,7 @@
 /*
  * ApplicationConfig.java
  *
- * Generated on 9.11.2021 14:30
+ * Generated on 11.11.2021 13:40
  *
  */
 
@@ -48,7 +48,6 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSJson_orders.class);
         resources.add(eve.restservices.RSLocation.class);
         resources.add(eve.restservices.RSMarket_group.class);
-        resources.add(eve.restservices.RSOrder_hist.class);
         resources.add(eve.restservices.RSOrder_history.class);
         resources.add(eve.restservices.RSOrders.class);
         resources.add(eve.restservices.RSRace.class);
@@ -62,6 +61,7 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSStation_service.class);
         resources.add(eve.restservices.RSStock.class);
         resources.add(eve.restservices.RSStocktrade.class);
+        resources.add(eve.restservices.RSSyssettings.class);
         resources.add(eve.restservices.RSSystem.class);
         resources.add(eve.restservices.RSSystemjumps.class);
         resources.add(eve.restservices.RSTrade.class);
