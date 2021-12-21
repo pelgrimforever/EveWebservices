@@ -1,7 +1,7 @@
 /*
  * RSStation_service.java
  *
- * Generated on 9.11.2021 14:30
+ * Generated on 16.11.2021 15:46
  *
  */
 

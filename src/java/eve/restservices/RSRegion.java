@@ -1,7 +1,7 @@
 /*
  * RSRegion.java
  *
- * Generated on 9.11.2021 14:30
+ * Generated on 16.11.2021 15:46
  *
  */
 
@@ -119,6 +119,10 @@ public class RSRegion {
                             regionPK = (IRegionPK)JSONRegion.toRegionPK((JSONObject)json.get("regionpk"));
                             result = JSONRegion.toJSON(blregion.getRegion(regionPK)).toJSONString();
                             break;
+                        case IRegionOperation.SELECT_Order_history_month:
+                            IOrder_history_monthPK order_history_monthPK = (IOrder_history_monthPK)JSONOrder_history_month.toOrder_history_monthPK((JSONObject)json.get("order_history_monthpk"));
+                            result = JSONRegion.toJSON(blregion.getOrder_history_month(order_history_monthPK)).toJSONString();
+                            break;
                         case IRegionOperation.SELECT_Order_history:
                             IOrder_historyPK order_historyPK = (IOrder_historyPK)JSONOrder_history.toOrder_historyPK((JSONObject)json.get("order_historypk"));
                             result = JSONRegion.toJSON(blregion.getOrder_history(order_historyPK)).toJSONString();
@@ -198,6 +202,10 @@ public class RSRegion {
                         case IRegionOperation.SELECT_REGION:
                             regionPK = (IRegionPK)JSONRegion.toRegionPK((JSONObject)json.get("regionpk"));
                             result = JSONRegion.toJSON(blregion.getRegion(regionPK)).toJSONString();
+                            break;
+                        case IRegionOperation.SELECT_Order_history_month:
+                            IOrder_history_monthPK order_history_monthPK = (IOrder_history_monthPK)JSONOrder_history_month.toOrder_history_monthPK((JSONObject)json.get("order_history_monthpk"));
+                            result = JSONRegion.toJSON(blregion.getOrder_history_month(order_history_monthPK)).toJSONString();
                             break;
                         case IRegionOperation.SELECT_Order_history:
                             IOrder_historyPK order_historyPK = (IOrder_historyPK)JSONOrder_history.toOrder_historyPK((JSONObject)json.get("order_historypk"));

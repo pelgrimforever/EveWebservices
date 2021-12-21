@@ -2,7 +2,7 @@
  * JSONView_order.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 9.11.2021 14:30
+ * Generated on 16.11.2021 15:46
  *
  */
  
@@ -71,7 +71,12 @@ public class JSONView_order {
         json.put("regionname", view_order.getRegionname());
         json.put("evetypename", view_order.getEvetypename());
         json.put("packaged_volume", view_order.getPackaged_volume());
+        json.put("avg_buyorder", view_order.getAvg_buyorder());
+        json.put("avg_sellorder", view_order.getAvg_sellorder());
 //Custom code, do not change this line
+        json.put("startsystem_jumps", view_order.getStart_system_jumps());
+        json.put("startsystem_jumpslowsec", view_order.getStart_system_jumpslowsec());
+        json.put("startsystem_jumpsnullsec", view_order.getStart_system_jumpsnullsec());
 //Custom code, do not change this line
         return json;
     }
@@ -105,6 +110,8 @@ public class JSONView_order {
         view_order.setRegionname(JSONConversion.getString(json, "regionname"));
         view_order.setEvetypename(JSONConversion.getString(json, "evetypename"));
         view_order.setPackaged_volume(JSONConversion.getdouble(json, "packaged_volume"));
+        view_order.setAvg_buyorder(JSONConversion.getdouble(json, "avg_buyorder"));
+        view_order.setAvg_sellorder(JSONConversion.getdouble(json, "avg_sellorder"));
         return view_order;
     }
 
@@ -297,6 +304,20 @@ public class JSONView_order {
             byte[] operators = JSONConversion.getNumberoperators(field);
             byte andor = JSONConversion.getbyte(field, "andor");
             view_ordersearch.packaged_volume(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("avg_buyorder");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            view_ordersearch.avg_buyorder(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("avg_sellorder");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            view_ordersearch.avg_sellorder(valuearray, operators, andor);
         }
         return view_ordersearch;
     }

@@ -2,7 +2,7 @@
  * Borders.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 9.11.2021 14:30
+ * Generated on 20.11.2021 17:22
  *
  */
 
@@ -236,6 +236,8 @@ public abstract class Borders extends BLtable {
         bltradecombined_sellBuy_order_id.delete4ordersBuy_order_id(ordersPK);
         BLtradecombined_sell bltradecombined_sellSell_order_id = new BLtradecombined_sell(this);
         bltradecombined_sellSell_order_id.delete4ordersSell_order_id(ordersPK);
+        BLshipfitorderselected blshipfitorderselected = new BLshipfitorderselected(this);
+        blshipfitorderselected.delete4orders(ordersPK);
         BLtrade bltradeSell_order_id = new BLtrade(this);
         bltradeSell_order_id.delete4ordersSell_order_id(ordersPK);
         BLtrade bltradeBuy_order_id = new BLtrade(this);
@@ -291,6 +293,16 @@ public abstract class Borders extends BLtable {
      */
     public Orders getTradecombined_sellsell_order_id(ITradecombined_sellPK tradecombined_sellPK) throws CustomException {
         OrdersPK ordersPK = new OrdersPK(tradecombined_sellPK.getSell_order_id());
+        return this.getOrders(ordersPK);
+    }
+
+    /**
+     * @param shipfitorderselectedPK: parent Shipfitorderselected for child object Orders Entity
+     * @return child Orders Entity object
+     * @throws CustomException
+     */
+    public Orders getShipfitorderselected(IShipfitorderselectedPK shipfitorderselectedPK) throws CustomException {
+        OrdersPK ordersPK = new OrdersPK(shipfitorderselectedPK.getOrderid());
         return this.getOrders(ordersPK);
     }
 

@@ -51,11 +51,6 @@ public class BLorder_history extends Border_history {
         this.setLogginrequired(isprivatetable);
     }
 
-    public void deleteorders() throws DBException, DataException {
-        this.addStatement(EMorder_history.SQLdeleteall);
-        this.Commit2DB();
-    }
-    
     public void updateOrder_history(long regionid, long evetypeid, JSONObject jsonhistory) throws DBException, DataException {
         String stringdate = JSONConversion.getString(jsonhistory, "date");
         Order_history history = new Order_history(regionid, evetypeid, Swagger.datestring2Date(stringdate));

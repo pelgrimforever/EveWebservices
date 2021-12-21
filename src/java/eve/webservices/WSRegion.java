@@ -2,7 +2,7 @@
  * WSRegion.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 9.11.2021 14:30
+ * Generated on 16.11.2021 15:46
  *
  */
 
@@ -150,6 +150,32 @@ public class WSRegion implements WSIRegion {
         catch(ParseException e) {
         }
         catch(DBException e) {
+        }
+    }
+
+    //@WebMethod(operationName = "getRegions4order_history_month")
+    @Override
+    public String getRegions4order_history_month(String json) {
+        BLregion blregion = new BLregion();
+        JSONParser parser = new JSONParser();
+        Region region;
+        try {
+            String result = null;
+            IOrder_history_monthPK order_history_monthPK = JSONOrder_history_month.toOrder_history_monthPK((JSONObject)parser.parse(json));
+            region = (Region)blregion.getOrder_history_month(order_history_monthPK);
+            if(region!=null) {
+                result = JSONRegion.toJSON(region).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
         }
     }
 

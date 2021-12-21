@@ -2,7 +2,7 @@
  * Bregion.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 9.11.2021 14:30
+ * Generated on 16.11.2021 15:46
  *
  */
 
@@ -229,12 +229,24 @@ public abstract class Bregion extends BLtable {
      * @param regionPK: Region primary key
      */
     public void cascadedeleteRegion(IRegionPK regionPK) {
+        BLorder_history_month blorder_history_month = new BLorder_history_month(this);
+        blorder_history_month.delete4region(regionPK);
         BLorder_history blorder_history = new BLorder_history(this);
         blorder_history.delete4region(regionPK);
         BLregion_neighbour blregion_neighbourRegion = new BLregion_neighbour(this);
         blregion_neighbourRegion.delete4regionRegion(regionPK);
         BLregion_neighbour blregion_neighbourNeighbour = new BLregion_neighbour(this);
         blregion_neighbourNeighbour.delete4regionNeighbour(regionPK);
+    }
+
+    /**
+     * @param order_history_monthPK: parent Order_history_month for child object Region Entity
+     * @return child Region Entity object
+     * @throws CustomException
+     */
+    public Region getOrder_history_month(IOrder_history_monthPK order_history_monthPK) throws CustomException {
+        RegionPK regionPK = new RegionPK(order_history_monthPK.getRegion());
+        return this.getRegion(regionPK);
     }
 
     /**

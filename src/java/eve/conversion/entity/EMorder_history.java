@@ -21,8 +21,6 @@ import java.sql.SQLException;
 public class EMorder_history extends EMorder_history_default {
 //Metacoder: NO AUTHOMATIC UPDATE
     
-    public static final String SQLdeleteall = "Delete from order_history";
-
     /**
      * Map ResultSet Field values to Order_history
      * @param dbresult: Database ResultSet

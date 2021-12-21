@@ -2,7 +2,7 @@
  * JSONOrders.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 9.11.2021 14:30
+ * Generated on 20.11.2021 17:22
  *
  */
  
@@ -133,6 +133,12 @@ public class JSONOrders {
             }
             if(orderssearch.getRelTradecombined2search()!=null && orderssearch.getRelTradecombined2search().used()) {
                 kss.put("tradecombined2searcher", JSONTradecombined_sell.toJSON((Tradecombined_sellsearch)orderssearch.getRelTradecombined2search()));
+            }
+            if(orderssearch.getShipfitorderselectedsearch()!=null && orderssearch.getShipfitorderselectedsearch().used()) {
+                kss.put("shipfitorderselectedsearcher", JSONShipfitorderselected.toJSON((Shipfitorderselectedsearch)orderssearch.getShipfitorderselectedsearch()));
+            }
+            if(orderssearch.getRelShipfitordersearch()!=null && orderssearch.getRelShipfitordersearch().used()) {
+                kss.put("shipfitordersearcher", JSONShipfitorderselected.toJSON((Shipfitorderselectedsearch)orderssearch.getRelShipfitordersearch()));
             }
             if(orderssearch.getTradesell_order_idsearch()!=null && orderssearch.getTradesell_order_idsearch().used()) {
                 kss.put("tradeSell_order_idsearcher", JSONTrade.toJSON((Tradesearch)orderssearch.getTradesell_order_idsearch()));
@@ -290,6 +296,20 @@ public class JSONOrders {
             for(int i=0; i<keysearch.size(); i++) {
                 Tradecombinedsearch tradecombined2search = JSONTradecombined.toTradecombinedsearch((JSONObject)keysearch.get(i));
                 orderssearch.reltradecombined2(tradecombined2search);
+            }
+        }
+        keysearch = (JSONArray)kss.get("shipfitorderselectedsearcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Shipfitorderselectedsearch shipfitorderselectedsearch = JSONShipfitorderselected.toShipfitorderselectedsearch((JSONObject)keysearch.get(i));
+                orderssearch.shipfitorderselected(shipfitorderselectedsearch);
+            }
+        }
+        keysearch = (JSONArray)kss.get("shipfitordersearcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Shipfitordersearch shipfitordersearch = JSONShipfitorder.toShipfitordersearch((JSONObject)keysearch.get(i));
+                orderssearch.relshipfitorder(shipfitordersearch);
             }
         }
         keysearch = (JSONArray)kss.get("tradeSell_order_idsearcher");

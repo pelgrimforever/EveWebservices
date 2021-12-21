@@ -2,7 +2,7 @@
  * Evetype.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 9.11.2021 14:30
+ * Generated on 19.11.2021 16:16
  *
  */
 
@@ -74,6 +74,14 @@ public class Evetype extends SecurityDataServlet {
                             IGraphicPK graphicPK = (IGraphicPK)parser.getJavaObject("graphicpk");
                             dataobject = blevetype.getEvetypes4graphic(graphicPK);
                             break;
+                        case IEvetypeOperation.SELECT_Wishlist:
+                            IWishlistPK wishlistPK = (IWishlistPK)parser.getJavaObject("wishlistpk");
+                            dataobject = blevetype.getWishlist(wishlistPK);
+                            break;
+                        case IEvetypeOperation.SELECT_Order_history_month:
+                            IOrder_history_monthPK order_history_monthPK = (IOrder_history_monthPK)parser.getJavaObject("order_history_monthpk");
+                            dataobject = blevetype.getOrder_history_month(order_history_monthPK);
+                            break;
                         case IEvetypeOperation.SELECT_Stock:
                             IStockPK stockPK = (IStockPK)parser.getJavaObject("stockpk");
                             dataobject = blevetype.getStock(stockPK);
@@ -81,6 +89,14 @@ public class Evetype extends SecurityDataServlet {
                         case IEvetypeOperation.SELECT_Order_history:
                             IOrder_historyPK order_historyPK = (IOrder_historyPK)parser.getJavaObject("order_historypk");
                             dataobject = blevetype.getOrder_history(order_historyPK);
+                            break;
+                        case IEvetypeOperation.SELECT_Shipfitmodule:
+                            IShipfitmodulePK shipfitmodulePK = (IShipfitmodulePK)parser.getJavaObject("shipfitmodulepk");
+                            dataobject = blevetype.getShipfitmodule(shipfitmodulePK);
+                            break;
+                        case IEvetypeOperation.SELECT_Shipfitorder:
+                            IShipfitorderPK shipfitorderPK = (IShipfitorderPK)parser.getJavaObject("shipfitorderpk");
+                            dataobject = blevetype.getShipfitorder(shipfitorderPK);
                             break;
                         case IEvetypeOperation.SELECT_Tradecombined:
                             ITradecombinedPK tradecombinedPK = (ITradecombinedPK)parser.getJavaObject("tradecombinedpk");

@@ -55,7 +55,7 @@ public class Loadmarkethistory extends HttpServlet {
             BLview_order_region_evetype blview_order_region_evetype = new BLview_order_region_evetype();
 
             //delete order history
-            blorderhistory.deleteorders();
+            //blorderhistory.deleteorders();
             
             //add market history per region / type
             int pagenr;

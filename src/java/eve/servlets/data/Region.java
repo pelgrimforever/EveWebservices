@@ -2,7 +2,7 @@
  * Region.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 9.11.2021 14:30
+ * Generated on 16.11.2021 15:46
  *
  */
 
@@ -61,6 +61,10 @@ public class Region extends SecurityDataServlet {
                         case IRegionOperation.SELECT_REGION:
                             regionPK = (IRegionPK)parser.getJavaObject("regionpk");
                             dataobject = blregion.getRegion(regionPK);
+                            break;
+                        case IRegionOperation.SELECT_Order_history_month:
+                            IOrder_history_monthPK order_history_monthPK = (IOrder_history_monthPK)parser.getJavaObject("order_history_monthpk");
+                            dataobject = blregion.getOrder_history_month(order_history_monthPK);
                             break;
                         case IRegionOperation.SELECT_Order_history:
                             IOrder_historyPK order_historyPK = (IOrder_historyPK)parser.getJavaObject("order_historypk");

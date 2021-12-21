@@ -2,7 +2,7 @@
  * Orders.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 9.11.2021 14:30
+ * Generated on 20.11.2021 17:22
  *
  */
 
@@ -77,6 +77,10 @@ public class Orders extends SecurityDataServlet {
                         case IOrdersOperation.SELECT_Tradecombined_sellsell_order_id:
                             ITradecombined_sellPK tradecombined_sellSell_order_idPK = (ITradecombined_sellPK)parser.getJavaObject("tradecombined_sellpk");
                             dataobject = blorders.getTradecombined_sellsell_order_id(tradecombined_sellSell_order_idPK);
+                            break;
+                        case IOrdersOperation.SELECT_Shipfitorderselected:
+                            IShipfitorderselectedPK shipfitorderselectedPK = (IShipfitorderselectedPK)parser.getJavaObject("shipfitorderselectedpk");
+                            dataobject = blorders.getShipfitorderselected(shipfitorderselectedPK);
                             break;
                         case IOrdersOperation.SELECT_Tradesell_order_id:
                             ITradePK tradeSell_order_idPK = (ITradePK)parser.getJavaObject("tradepk");

@@ -2,7 +2,7 @@
  * Bevetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 9.11.2021 14:30
+ * Generated on 19.11.2021 16:16
  *
  */
 
@@ -232,10 +232,18 @@ public abstract class Bevetype extends BLtable {
      * @param evetypePK: Evetype primary key
      */
     public void cascadedeleteEvetype(IEvetypePK evetypePK) {
+        BLwishlist blwishlist = new BLwishlist(this);
+        blwishlist.delete4evetype(evetypePK);
+        BLorder_history_month blorder_history_month = new BLorder_history_month(this);
+        blorder_history_month.delete4evetype(evetypePK);
         BLstock blstock = new BLstock(this);
         blstock.delete4evetype(evetypePK);
         BLorder_history blorder_history = new BLorder_history(this);
         blorder_history.delete4evetype(evetypePK);
+        BLshipfitmodule blshipfitmodule = new BLshipfitmodule(this);
+        blshipfitmodule.delete4evetype(evetypePK);
+        BLshipfitorder blshipfitorder = new BLshipfitorder(this);
+        blshipfitorder.delete4evetype(evetypePK);
         BLtradecombined bltradecombined = new BLtradecombined(this);
         bltradecombined.delete4evetype(evetypePK);
     }
@@ -289,6 +297,26 @@ public abstract class Bevetype extends BLtable {
         return super.getEntities(EMevetype.SQLSelect4graphic, graphicPK.getSQLprimarykey());
     }
     /**
+     * @param wishlistPK: parent Wishlist for child object Evetype Entity
+     * @return child Evetype Entity object
+     * @throws CustomException
+     */
+    public Evetype getWishlist(IWishlistPK wishlistPK) throws CustomException {
+        EvetypePK evetypePK = new EvetypePK(wishlistPK.getEvetype());
+        return this.getEvetype(evetypePK);
+    }
+
+    /**
+     * @param order_history_monthPK: parent Order_history_month for child object Evetype Entity
+     * @return child Evetype Entity object
+     * @throws CustomException
+     */
+    public Evetype getOrder_history_month(IOrder_history_monthPK order_history_monthPK) throws CustomException {
+        EvetypePK evetypePK = new EvetypePK(order_history_monthPK.getEvetype());
+        return this.getEvetype(evetypePK);
+    }
+
+    /**
      * @param stockPK: parent Stock for child object Evetype Entity
      * @return child Evetype Entity object
      * @throws CustomException
@@ -305,6 +333,26 @@ public abstract class Bevetype extends BLtable {
      */
     public Evetype getOrder_history(IOrder_historyPK order_historyPK) throws CustomException {
         EvetypePK evetypePK = new EvetypePK(order_historyPK.getEvetype());
+        return this.getEvetype(evetypePK);
+    }
+
+    /**
+     * @param shipfitmodulePK: parent Shipfitmodule for child object Evetype Entity
+     * @return child Evetype Entity object
+     * @throws CustomException
+     */
+    public Evetype getShipfitmodule(IShipfitmodulePK shipfitmodulePK) throws CustomException {
+        EvetypePK evetypePK = new EvetypePK(shipfitmodulePK.getModuletype());
+        return this.getEvetype(evetypePK);
+    }
+
+    /**
+     * @param shipfitorderPK: parent Shipfitorder for child object Evetype Entity
+     * @return child Evetype Entity object
+     * @throws CustomException
+     */
+    public Evetype getShipfitorder(IShipfitorderPK shipfitorderPK) throws CustomException {
+        EvetypePK evetypePK = new EvetypePK(shipfitorderPK.getEvetype());
         return this.getEvetype(evetypePK);
     }
 

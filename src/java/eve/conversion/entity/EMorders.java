@@ -21,7 +21,7 @@ import java.sql.SQLException;
 public class EMorders extends EMorders_default {
 //Metacoder: NO AUTHOMATIC UPDATE
     
-    public static final String Truncate = "truncate tradecombined_sell, tradecombined, trade, orders";
+    public static final String Truncate = "truncate shipfitorderselected, tradecombined_sell, tradecombined, trade, orders";
     
     public static final String SQLSelectAll = SQLSelect + OrderBy;
 

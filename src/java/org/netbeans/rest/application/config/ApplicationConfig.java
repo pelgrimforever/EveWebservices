@@ -1,7 +1,7 @@
 /*
  * ApplicationConfig.java
  *
- * Generated on 12.11.2021 17:9
+ * Generated on 13.11.2021 18:23
  *
  */
 
@@ -27,18 +27,9 @@ public class ApplicationConfig extends Application {
      */
     private Set<Class<?>> getRestResourceClasses() {
         Set<Class<?>> resources = new java.util.HashSet<Class<?>>();
-//Custom code, do not change this line
-//add here custom operations
-        resources.add(eve.restservices.RSLoadorderupdate.class);
-        resources.add(eve.restservices.RSLoadroute.class);
-        resources.add(eve.restservices.RScreateroutes.class);
-        resources.add(eve.restservices.RSdownloadswagger.class);
-        resources.add(eve.restservices.RSdownloadmarkettypes.class);
-        resources.add(eve.restservices.RSdownloaduniverse.class);
-        resources.add(eve.restservices.RSdownloadmarkethistory.class);
-        resources.add(eve.restservices.RScalculatesystemjumps.class);
-//Custom code, do not change this line   
         resources.add(eve.restservices.RSAlliance.class);
+        resources.add(eve.restservices.RSAllnodes_stargate.class);
+        resources.add(eve.restservices.RSAllnodes_system.class);
         resources.add(eve.restservices.RSCategory.class);
         resources.add(eve.restservices.RSConstellation.class);
         resources.add(eve.restservices.RSConstellation_neighbour.class);
@@ -47,9 +38,13 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSFaction.class);
         resources.add(eve.restservices.RSGraphic.class);
         resources.add(eve.restservices.RSJson_orders.class);
+        resources.add(eve.restservices.RSLoadorderupdate.class);
+        resources.add(eve.restservices.RSLoadroute.class);
         resources.add(eve.restservices.RSLocation.class);
         resources.add(eve.restservices.RSMarket_group.class);
         resources.add(eve.restservices.RSOrder_history.class);
+        resources.add(eve.restservices.RSOrder_history_maxdate.class);
+        resources.add(eve.restservices.RSOrder_history_month.class);
         resources.add(eve.restservices.RSOrders.class);
         resources.add(eve.restservices.RSRace.class);
         resources.add(eve.restservices.RSRegion.class);
@@ -57,6 +52,10 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSRoutetype.class);
         resources.add(eve.restservices.RSSecurity_island.class);
         resources.add(eve.restservices.RSSettings.class);
+        resources.add(eve.restservices.RSShipfit.class);
+        resources.add(eve.restservices.RSShipfitmodule.class);
+        resources.add(eve.restservices.RSShipfitorder.class);
+        resources.add(eve.restservices.RSShipfitorderselected.class);
         resources.add(eve.restservices.RSStargate.class);
         resources.add(eve.restservices.RSStation.class);
         resources.add(eve.restservices.RSStation_service.class);
@@ -70,10 +69,17 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSTradecombined_sell.class);
         resources.add(eve.restservices.RSTypegroup.class);
         resources.add(eve.restservices.RSUsersettings.class);
-        resources.add(eve.restservices.RSOrder_history_maxdate.class);
+        resources.add(eve.restservices.RSView_activemodules.class);
+        resources.add(eve.restservices.RSView_evetype_order_history.class);
+        resources.add(eve.restservices.RSView_evetype_order_history_month.class);
+        resources.add(eve.restservices.RSView_evetypes.class);
         resources.add(eve.restservices.RSView_order.class);
         resources.add(eve.restservices.RSView_order_region_evetype.class);
         resources.add(eve.restservices.RSView_security_island_systemcount.class);
+        resources.add(eve.restservices.RSView_shipfit.class);
+        resources.add(eve.restservices.RSView_shipfitmodule.class);
+        resources.add(eve.restservices.RSView_shipfitorder.class);
+        resources.add(eve.restservices.RSView_shipfitorderselected.class);
         resources.add(eve.restservices.RSView_stock.class);
         resources.add(eve.restservices.RSView_stocktrade_orders.class);
         resources.add(eve.restservices.RSView_stocktrade_system.class);
@@ -84,6 +90,16 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSView_tradeorders.class);
         resources.add(eve.restservices.RSView_tradeorders_lowsec.class);
         resources.add(eve.restservices.RSView_tradesystem.class);
+        resources.add(eve.restservices.RSView_wishlist.class);
+        resources.add(eve.restservices.RSWishlist.class);
+        resources.add(eve.restservices.RScalculatesystemjumps.class);
+        resources.add(eve.restservices.RScreatenodes.class);
+        resources.add(eve.restservices.RScreateroutes.class);
+        resources.add(eve.restservices.RSdownloadmarkethistory.class);
+        resources.add(eve.restservices.RSdownloadmarkettypes.class);
+        resources.add(eve.restservices.RSdownloadswagger.class);
+        resources.add(eve.restservices.RSdownloaduniverse.class);
+        resources.add(eve.restservices.RStest.class);
         return resources;
     }
 }

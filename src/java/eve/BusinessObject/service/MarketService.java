@@ -7,11 +7,11 @@ package eve.BusinessObject.service;
 
 import db.TransactionOutput;
 import eve.BusinessObject.Logic.BLevetype;
-import eve.BusinessObject.Logic.BLorder_hist;
 import eve.BusinessObject.Logic.BLorders;
 import eve.BusinessObject.Logic.BLregion;
 import eve.BusinessObject.Logic.BLstock;
 import eve.BusinessObject.Logic.BLstocktrade;
+import eve.BusinessObject.Logic.BLsyssettings;
 import eve.BusinessObject.Logic.BLsystem;
 import eve.BusinessObject.Logic.BLtrade;
 import eve.BusinessObject.Logic.BLtradecombined;
@@ -25,16 +25,17 @@ import eve.entity.pk.StocktradePK;
 import eve.entity.pk.SystemPK;
 import eve.entity.pk.Tradecombined_sellPK;
 import eve.interfaces.logicentity.ISettings;
+import eve.interfaces.logicentity.ISyssettings;
 import eve.logicentity.Orders;
 import eve.logicentity.Region;
 import eve.logicentity.Stock;
 import eve.logicentity.Stocktrade;
+import eve.logicentity.Syssettings;
 import eve.logicentity.Trade;
 import eve.logicentity.Tradecombined;
 import eve.logicentity.Tradecombined_sell;
 import eve.logicentity.Usersettings;
 import eve.logicview.View_trade_systemsevetype;
-import eve.logicview.View_tradeorders;
 import eve.logicview.View_tradeorders_lowsec;
 import general.exception.CustomException;
 import general.exception.DBException;
@@ -52,6 +53,7 @@ public class MarketService implements Runnable {
     private String username;
     private MarketStatus marketstatus;
     private boolean keeprunning = true;
+    private int maxtransactions = 50;
     
     protected Marketdata data;
     protected ArrayList<MarketRegionDownloader> downloaders;
@@ -289,15 +291,15 @@ public class MarketService implements Runnable {
      * @throws DBException 
      */
     private void processView_tradeorders() throws DataException, DBException, CustomException {
+        long start = System.currentTimeMillis();
         BLorders blorders = new BLorders();
-        BLorder_hist blorderhist = new BLorder_hist();
         BLregion blregion = new BLregion();
         BLevetype blevetype = new BLevetype();
         BLsystem blsystem = new BLsystem();
         BLtrade bltrade = new BLtrade();
         //BLview_tradeorders blviewtradeorders = new BLview_tradeorders();
         BLview_tradeorders_lowsec blviewtradeorders_lowsec = new BLview_tradeorders_lowsec();
-        BLusersettings blusersettings = new BLusersettings();
+        BLsyssettings blsyssettings = new BLsyssettings();
 
         //calculate average, min and max price for buy/sell orders for each evetype
         marketstatus.addMessage("Update average prices");
@@ -306,12 +308,14 @@ public class MarketService implements Runnable {
         marketstatus.addMessage("Construct trade table");
         bltrade.deletetrade();
         //load usersettings
-        ArrayList<Usersettings> usersettings = blusersettings.getUsersettings(username);
-        Usersettings brokerfee = blusersettings.getUsersetting(usersettings, ISettings.BROKER_FEE);
-        float max_cargo = 33980.4f;
-        long min_profit = 1000000;
-        long min_profit_per_jump = 100000;
-        float perc_tax = Float.valueOf(brokerfee.getValue());
+        Syssettings set_brokerfee = blsyssettings.getSyssettings(ISyssettings.BROKER_FEE);
+        Syssettings set_maxcargo = blsyssettings.getSyssettings(ISyssettings.MAXCARGO);
+        Syssettings set_minprofit = blsyssettings.getSyssettings(ISyssettings.MIN_PROFIT);
+        Syssettings set_minprofitperjump = blsyssettings.getSyssettings(ISyssettings.MIN_PROFIT_PER_JUMP);
+        float max_cargo = Float.valueOf(set_maxcargo.getValue());
+        long min_profit = Long.valueOf(set_minprofit.getValue());
+        long min_profit_per_jump = Long.valueOf(set_minprofitperjump.getValue());
+        float perc_tax = Float.valueOf(set_brokerfee.getValue());
         float perc_net = 1 - perc_tax;
         Security_islandPK security_islandPK = new Security_islandPK(1);
         //get all view_tradeorders
@@ -333,6 +337,7 @@ public class MarketService implements Runnable {
         Trade trade;
         int count = 0;
         TransactionOutput toutput;
+        StringBuilder sql;
         
         //loop all orders from view
         //add trade opportunities in Trade
@@ -355,7 +360,7 @@ public class MarketService implements Runnable {
                     singlerun_profit_per_jump = maxunits_per_run * (profit_per_unit) / jumps;
                 }
                 if(profit_per_jump >= min_profit_per_jump || singlerun_profit_per_jump >= min_profit_per_jump) {
-                    trade = new Trade(tradeorder.getSell_id(), tradeorder.getBuy_id());
+/*                    trade = new Trade(tradeorder.getSell_id(), tradeorder.getBuy_id());
                     trade.setBuy_order_value(buyordervalue);
                     trade.setJumps(jumps);
                     trade.setJumpslowsec(tradeorder.getJumpslowsec());
@@ -369,8 +374,26 @@ public class MarketService implements Runnable {
                     trade.setTotal_jumps(totaljumps);
                     trade.setTotal_volume(totalvolume);
                     bltrade.trans_insertTrade(trade);
+*/
+                    sql = new StringBuilder("insert into trade (sell_order_id, buy_order_id, total_volume, buy_order_value, sell_order_value, profit, jumps, runs, total_jumps, profit_per_jump, singlerun_profit_per_jump, maxunits_per_run, jumpslowsec, jumpsnullsec) values (");
+                    sql.append(tradeorder.getSell_id()).append(",");
+                    sql.append(tradeorder.getBuy_id()).append(",");
+                    sql.append(totalvolume).append(",");
+                    sql.append(buyordervalue).append(",");
+                    sql.append(sellordervalue).append(",");
+                    sql.append(profit).append(",");
+                    sql.append(jumps).append(",");
+                    sql.append(runs).append(",");
+                    sql.append(totaljumps).append(",");
+                    sql.append(profit_per_jump).append(",");
+                    sql.append(singlerun_profit_per_jump).append(",");
+                    sql.append(maxunits_per_run).append(",");
+                    sql.append(tradeorder.getJumpslowsec()).append(",");
+                    sql.append(tradeorder.getJumpsnullsec());
+                    sql.append(")");
+                    bltrade.addStatement(sql.toString());
                     count++;
-                    if(count==200) {
+                    if(count==maxtransactions) {
                         toutput = bltrade.Commit2DB();
                         if(toutput.getHaserror()) {
                             marketstatus.addMessage(toutput.getErrormessage());
@@ -383,19 +406,22 @@ public class MarketService implements Runnable {
                 marketstatus.addMessage(toutput.getErrormessage());
             }
         }        
+        long end = System.currentTimeMillis();
+        marketstatus.addMessage("Trade orders compiled in " + ((end - start)/1000) + "sec.");
     }
     
     private void combineTradeorders() throws DBException, DataException {
+        long start = System.currentTimeMillis();
         marketstatus.addMessage("Combine trade orders");
         BLview_trade_systemsevetype blview_trade_systemsevetype = new BLview_trade_systemsevetype();
         BLorders blorders = new BLorders();
         BLusersettings blusersettings = new BLusersettings();
         BLtradecombined bltradecombined = new BLtradecombined();
         BLtradecombined_sell bltradecombined_sell = new BLtradecombined_sell();
+        BLsyssettings blsyssettings = new BLsyssettings();
         //load usersettings
-        ArrayList<Usersettings> usersettings = blusersettings.getUsersettings(username);
-        Usersettings brokerfee = blusersettings.getUsersetting(usersettings, ISettings.BROKER_FEE);
-        float perc_tax = Float.valueOf(brokerfee.getValue());
+        Syssettings set_brokerfee = blsyssettings.getSyssettings(ISyssettings.BROKER_FEE);
+        float perc_tax = Float.valueOf(set_brokerfee.getValue());
         float perc_net = 1 - perc_tax;
 
         //buy system, sell system, evetype combinations
@@ -415,6 +441,8 @@ public class MarketService implements Runnable {
         Tradecombined_sellPK tradecombined_sellPK;
         Tradecombined_sell tradecombined_sell;
         int insertcounter = 0;
+        StringBuilder sql;
+        TransactionOutput toutput;
         for(View_trade_systemsevetype view_trade_systemsevetype: view_trade_systemsevetypes) {
             sellsystemPK = new SystemPK(view_trade_systemsevetype.getSystemsell());
             buysystemPK = new SystemPK(view_trade_systemsevetype.getSystembuy());
@@ -428,14 +456,23 @@ public class MarketService implements Runnable {
             hasprofit = buyorder.getPrice()*perc_net>sellorder.getPrice();
             ordersavailable = buyorderasked>0 && sellorderasked>0;
             //new Tradecombined per View_trade_systeevetype
-            tradecombined = new Tradecombined(sellsystemPK.getId(), buysystemPK.getId(), evetypePK.getId());
+/*            tradecombined = new Tradecombined(sellsystemPK.getId(), buysystemPK.getId(), evetypePK.getId());
             tradecombined.setJumps(view_trade_systemsevetype.getJumps());
             tradecombined.setJumpslowsec(view_trade_systemsevetype.getJumpslowsec());
             tradecombined.setJumpsnullsec(view_trade_systemsevetype.getJumpsnullsec());
             bltradecombined.trans_insertTradecombined(tradecombined);
+*/
+            sql = new StringBuilder("insert into tradecombined values (");
+            sql.append(sellsystemPK.getId()).append(",");
+            sql.append(buysystemPK.getId()).append(",");
+            sql.append(evetypePK.getId()).append(",");
+            sql.append(view_trade_systemsevetype.getJumps()).append(",");
+            sql.append(view_trade_systemsevetype.getJumpslowsec()).append(",");
+            sql.append(view_trade_systemsevetype.getJumpsnullsec()).append(")");
+            bltradecombined.addStatement(sql.toString());
             while(hasprofit && ordersavailable) {
                 amount = Math.min(buyorderasked, sellorderasked);
-                tradecombined_sellPK = new Tradecombined_sellPK();
+/*                tradecombined_sellPK = new Tradecombined_sellPK();
                 tradecombined_sellPK.setTradecombinedPK(tradecombined.getPrimaryKey());
                 tradecombined_sellPK.setOrdersbuy_order_idPK(buyorder.getPrimaryKey());
                 tradecombined_sellPK.setOrderssell_order_idPK(sellorder.getPrimaryKey());
@@ -444,7 +481,18 @@ public class MarketService implements Runnable {
                 tradecombined_sell.setBuy_order_value(buyorder.getPrice() * amount);
                 tradecombined_sell.setSell_order_value(sellorder.getPrice() * amount);
                 tradecombined_sell.setProfit((buyorder.getPrice() * perc_net - sellorder.getPrice()) * amount);
-                bltradecombined_sell.trans_insertTradecombined_sell(tradecombined_sell);
+                bltradecombined_sell.trans_insertTradecombined_sell(tradecombined_sell);*/
+                sql = new StringBuilder("insert into tradecombined_sell values (");
+                sql.append(sellsystemPK.getId()).append(",");
+                sql.append(buysystemPK.getId()).append(",");
+                sql.append(evetypePK.getId()).append(",");
+                sql.append(buyorder.getPrimaryKey().getId()).append(",");
+                sql.append(sellorder.getPrimaryKey().getId()).append(",");
+                sql.append(amount).append(",");
+                sql.append(buyorder.getPrice() * amount).append(",");
+                sql.append(sellorder.getPrice() * amount).append(",");
+                sql.append((buyorder.getPrice() * perc_net - sellorder.getPrice()) * amount).append(")");
+                bltradecombined_sell.addStatement(sql.toString());
                 insertcounter++;
                 buyorderasked -= amount;
                 sellorderasked -= amount;
@@ -459,13 +507,27 @@ public class MarketService implements Runnable {
                 hasprofit = buyorder.getPrice()*perc_net>sellorder.getPrice();
                 ordersavailable = buyorderasked>0 && sellorderasked>0;
             }
-            if(insertcounter>200) {
-                bltradecombined.Commit2DB();
-                bltradecombined_sell.Commit2DB();
+            if(insertcounter>maxtransactions) {
+                toutput = bltradecombined.Commit2DB();
+                if(toutput.getHaserror()) {
+                    marketstatus.addMessage(toutput.getErrormessage());
+                }
+                toutput = bltradecombined_sell.Commit2DB();
+                if(toutput.getHaserror()) {
+                    marketstatus.addMessage(toutput.getErrormessage());
+                }
             }
         }
-        bltradecombined.Commit2DB();
-        bltradecombined_sell.Commit2DB();
+        toutput = bltradecombined.Commit2DB();
+        if(toutput.getHaserror()) {
+            marketstatus.addMessage(toutput.getErrormessage());
+        }
+        toutput = bltradecombined_sell.Commit2DB();
+        if(toutput.getHaserror()) {
+            marketstatus.addMessage(toutput.getErrormessage());
+        }
+        long end = System.currentTimeMillis();
+        marketstatus.addMessage("Combined Orders by System/Type in " + ((end - start)/1000) + "sec.");
     }
     
     /**
@@ -495,6 +557,7 @@ public class MarketService implements Runnable {
         Stocktrade stocktrade;
         long stockamount;
         long tradeamount;
+        TransactionOutput toutput;
         while(keeprunning && stockI.hasNext()) {
             stock = stockI.next();
             stockamount = stock.getAmount();
@@ -514,6 +577,9 @@ public class MarketService implements Runnable {
                 }
             }
         }
-        blstocktrade.Commit2DB();
+        toutput = blstocktrade.Commit2DB();
+        if(toutput.getHaserror()) {
+            marketstatus.addMessage(toutput.getErrormessage());
+        }
     }
 }

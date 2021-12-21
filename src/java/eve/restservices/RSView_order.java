@@ -1,7 +1,7 @@
 /*
  * RSView_order.java
  *
- * Generated on 9.11.2021 14:30
+ * Generated on 16.11.2021 15:46
  *
  */
 
@@ -117,6 +117,14 @@ public class RSView_order {
                         case IView_orderOperation.SELECT_EVETYPE_BUY:
                             EvetypePK evetypePKbuy = (EvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
                             result = JSONView_order.toJSONArray(blview_order.getView_orders4evetype_buy(evetypePKbuy)).toJSONString();
+                            break;
+                        case IView_orderOperation.SELECT_LOWPRICE_SELL:
+                            eve.entity.pk.SystemPK systemPK = (eve.entity.pk.SystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+                            result = JSONView_order.toJSONArray(blview_order.getView_ordersAtselllowprice(systemPK)).toJSONString();
+                            break;
+                        case IView_orderOperation.SELECT_Wishlistorders:
+                            String username = JSONConversion.getString(json, "username");
+                            result = JSONView_order.toJSONArray(blview_order.getOrders4Wishlist(username)).toJSONString();
                             break;
 //Custom code, do not change this line   
                     }

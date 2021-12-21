@@ -2,7 +2,7 @@
  * WSOrders.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 9.11.2021 14:30
+ * Generated on 20.11.2021 17:22
  *
  */
 
@@ -263,6 +263,32 @@ public class WSOrders implements WSIOrders {
             String result = null;
             ITradecombined_sellPK tradecombined_sellSell_order_idPK = JSONTradecombined_sell.toTradecombined_sellPK((JSONObject)parser.parse(json));
             orders = (Orders)blorders.getTradecombined_sellsell_order_id(tradecombined_sellSell_order_idPK);
+            if(orders!=null) {
+                result = JSONOrders.toJSON(orders).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getOrderss4shipfitorderselected")
+    @Override
+    public String getOrderss4shipfitorderselected(String json) {
+        BLorders blorders = new BLorders();
+        JSONParser parser = new JSONParser();
+        Orders orders;
+        try {
+            String result = null;
+            IShipfitorderselectedPK shipfitorderselectedPK = JSONShipfitorderselected.toShipfitorderselectedPK((JSONObject)parser.parse(json));
+            orders = (Orders)blorders.getShipfitorderselected(shipfitorderselectedPK);
             if(orders!=null) {
                 result = JSONOrders.toJSON(orders).toJSONString();
             }

@@ -1,7 +1,7 @@
 /*
  * RSStock.java
  *
- * Generated on 9.11.2021 14:30
+ * Generated on 16.11.2021 15:46
  *
  */
 
@@ -170,12 +170,6 @@ public class RSStock {
                             JSONObject jsonaddstock = (JSONObject)json.get("stock");
                             stock = JSONStock.toStock(jsonaddstock);
                             blstock.addStock(stock);
-                            result = returnstatus("OK");
-                            break;
-                        case IStockOperation.UPDATE_REMOVESTOCK:
-                            JSONObject jsonremovestock = (JSONObject)json.get("stock");
-                            stock = JSONStock.toStock(jsonremovestock);
-                            blstock.removeStock(stock);
                             result = returnstatus("OK");
                             break;
 //Custom code, do not change this line   

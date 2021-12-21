@@ -50,6 +50,12 @@ public class Systemdata {
         route = new ArrayList<>();
         lowsec = 0;
         nullsec = 0;
+        used = false;
+        avoid = false;
+    }
+    
+    public void setStartingpoint() {
+        used = true;
         if(system.getSecurity_status()<0.45) {
             if(!(system.getSecurity_status()>0)) {
                 this.nullsec++;
@@ -57,12 +63,6 @@ public class Systemdata {
                 this.lowsec++;
             }
         }
-        used = false;
-        avoid = false;
-    }
-    
-    public void setStartingpoint() {
-        used = true;
     }
     
     public void avoid() {

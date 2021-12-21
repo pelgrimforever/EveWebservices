@@ -2,7 +2,7 @@
  * JSONRegion.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 9.11.2021 14:30
+ * Generated on 16.11.2021 15:46
  *
  */
  
@@ -104,11 +104,17 @@ public class JSONRegion {
             }
             json.put("fields", fss);
             JSONObject kss = new JSONObject();
+            if(regionsearch.getOrder_history_monthsearch()!=null && regionsearch.getOrder_history_monthsearch().used()) {
+                kss.put("order_history_monthsearcher", JSONOrder_history_month.toJSON((Order_history_monthsearch)regionsearch.getOrder_history_monthsearch()));
+            }
+            if(regionsearch.getRelEvetype1search()!=null && regionsearch.getRelEvetype1search().used()) {
+                kss.put("evetype1searcher", JSONOrder_history_month.toJSON((Order_history_monthsearch)regionsearch.getRelEvetype1search()));
+            }
             if(regionsearch.getOrder_historysearch()!=null && regionsearch.getOrder_historysearch().used()) {
                 kss.put("order_historysearcher", JSONOrder_history.toJSON((Order_historysearch)regionsearch.getOrder_historysearch()));
             }
-            if(regionsearch.getRelEvetypesearch()!=null && regionsearch.getRelEvetypesearch().used()) {
-                kss.put("evetypesearcher", JSONOrder_history.toJSON((Order_historysearch)regionsearch.getRelEvetypesearch()));
+            if(regionsearch.getRelEvetype2search()!=null && regionsearch.getRelEvetype2search().used()) {
+                kss.put("evetype2searcher", JSONOrder_history.toJSON((Order_historysearch)regionsearch.getRelEvetype2search()));
             }
             if(regionsearch.getRegion_neighbourregionsearch()!=null && regionsearch.getRegion_neighbourregionsearch().used()) {
                 kss.put("region_neighbourRegionsearcher", JSONRegion_neighbour.toJSON((Region_neighboursearch)regionsearch.getRegion_neighbourregionsearch()));
@@ -172,6 +178,20 @@ public class JSONRegion {
         }
         JSONObject kss = (JSONObject)json.get("keysearch");
         JSONArray keysearch;
+        keysearch = (JSONArray)kss.get("order_history_monthsearcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Order_history_monthsearch order_history_monthsearch = JSONOrder_history_month.toOrder_history_monthsearch((JSONObject)keysearch.get(i));
+                regionsearch.order_history_month(order_history_monthsearch);
+            }
+        }
+        keysearch = (JSONArray)kss.get("evetype1searcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Evetypesearch evetype1search = JSONEvetype.toEvetypesearch((JSONObject)keysearch.get(i));
+                regionsearch.relevetype1(evetype1search);
+            }
+        }
         keysearch = (JSONArray)kss.get("order_historysearcher");
         if(keysearch!=null) {
             for(int i=0; i<keysearch.size(); i++) {
@@ -179,11 +199,11 @@ public class JSONRegion {
                 regionsearch.order_history(order_historysearch);
             }
         }
-        keysearch = (JSONArray)kss.get("evetypesearcher");
+        keysearch = (JSONArray)kss.get("evetype2searcher");
         if(keysearch!=null) {
             for(int i=0; i<keysearch.size(); i++) {
-                Evetypesearch evetypesearch = JSONEvetype.toEvetypesearch((JSONObject)keysearch.get(i));
-                regionsearch.relevetype(evetypesearch);
+                Evetypesearch evetype2search = JSONEvetype.toEvetypesearch((JSONObject)keysearch.get(i));
+                regionsearch.relevetype2(evetype2search);
             }
         }
         keysearch = (JSONArray)kss.get("region_neighbourRegionsearcher");

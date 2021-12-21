@@ -1,7 +1,7 @@
 /*
  * RSEvetype.java
  *
- * Generated on 9.11.2021 14:30
+ * Generated on 19.11.2021 16:16
  *
  */
 
@@ -131,6 +131,14 @@ public class RSEvetype {
                             IGraphicPK graphicPK = (IGraphicPK)JSONGraphic.toGraphicPK((JSONObject)json.get("graphicpk"));
                             result = JSONEvetype.toJSONArray(blevetype.getEvetypes4graphic(graphicPK)).toJSONString();
                             break;
+                        case IEvetypeOperation.SELECT_Wishlist:
+                            IWishlistPK wishlistPK = (IWishlistPK)JSONWishlist.toWishlistPK((JSONObject)json.get("wishlistpk"));
+                            result = JSONEvetype.toJSON(blevetype.getWishlist(wishlistPK)).toJSONString();
+                            break;
+                        case IEvetypeOperation.SELECT_Order_history_month:
+                            IOrder_history_monthPK order_history_monthPK = (IOrder_history_monthPK)JSONOrder_history_month.toOrder_history_monthPK((JSONObject)json.get("order_history_monthpk"));
+                            result = JSONEvetype.toJSON(blevetype.getOrder_history_month(order_history_monthPK)).toJSONString();
+                            break;
                         case IEvetypeOperation.SELECT_Stock:
                             IStockPK stockPK = (IStockPK)JSONStock.toStockPK((JSONObject)json.get("stockpk"));
                             result = JSONEvetype.toJSON(blevetype.getStock(stockPK)).toJSONString();
@@ -138,6 +146,14 @@ public class RSEvetype {
                         case IEvetypeOperation.SELECT_Order_history:
                             IOrder_historyPK order_historyPK = (IOrder_historyPK)JSONOrder_history.toOrder_historyPK((JSONObject)json.get("order_historypk"));
                             result = JSONEvetype.toJSON(blevetype.getOrder_history(order_historyPK)).toJSONString();
+                            break;
+                        case IEvetypeOperation.SELECT_Shipfitmodule:
+                            IShipfitmodulePK shipfitmodulePK = (IShipfitmodulePK)JSONShipfitmodule.toShipfitmodulePK((JSONObject)json.get("shipfitmodulepk"));
+                            result = JSONEvetype.toJSON(blevetype.getShipfitmodule(shipfitmodulePK)).toJSONString();
+                            break;
+                        case IEvetypeOperation.SELECT_Shipfitorder:
+                            IShipfitorderPK shipfitorderPK = (IShipfitorderPK)JSONShipfitorder.toShipfitorderPK((JSONObject)json.get("shipfitorderpk"));
+                            result = JSONEvetype.toJSON(blevetype.getShipfitorder(shipfitorderPK)).toJSONString();
                             break;
                         case IEvetypeOperation.SELECT_Tradecombined:
                             ITradecombinedPK tradecombinedPK = (ITradecombinedPK)JSONTradecombined.toTradecombinedPK((JSONObject)json.get("tradecombinedpk"));
@@ -223,6 +239,14 @@ public class RSEvetype {
                             IGraphicPK graphicPK = (IGraphicPK)JSONGraphic.toGraphicPK((JSONObject)json.get("graphicpk"));
                             result = JSONEvetype.toJSONArray(blevetype.getEvetypes4graphic(graphicPK)).toJSONString();
                             break;
+                        case IEvetypeOperation.SELECT_Wishlist:
+                            IWishlistPK wishlistPK = (IWishlistPK)JSONWishlist.toWishlistPK((JSONObject)json.get("wishlistpk"));
+                            result = JSONEvetype.toJSON(blevetype.getWishlist(wishlistPK)).toJSONString();
+                            break;
+                        case IEvetypeOperation.SELECT_Order_history_month:
+                            IOrder_history_monthPK order_history_monthPK = (IOrder_history_monthPK)JSONOrder_history_month.toOrder_history_monthPK((JSONObject)json.get("order_history_monthpk"));
+                            result = JSONEvetype.toJSON(blevetype.getOrder_history_month(order_history_monthPK)).toJSONString();
+                            break;
                         case IEvetypeOperation.SELECT_Stock:
                             IStockPK stockPK = (IStockPK)JSONStock.toStockPK((JSONObject)json.get("stockpk"));
                             result = JSONEvetype.toJSON(blevetype.getStock(stockPK)).toJSONString();
@@ -230,6 +254,14 @@ public class RSEvetype {
                         case IEvetypeOperation.SELECT_Order_history:
                             IOrder_historyPK order_historyPK = (IOrder_historyPK)JSONOrder_history.toOrder_historyPK((JSONObject)json.get("order_historypk"));
                             result = JSONEvetype.toJSON(blevetype.getOrder_history(order_historyPK)).toJSONString();
+                            break;
+                        case IEvetypeOperation.SELECT_Shipfitmodule:
+                            IShipfitmodulePK shipfitmodulePK = (IShipfitmodulePK)JSONShipfitmodule.toShipfitmodulePK((JSONObject)json.get("shipfitmodulepk"));
+                            result = JSONEvetype.toJSON(blevetype.getShipfitmodule(shipfitmodulePK)).toJSONString();
+                            break;
+                        case IEvetypeOperation.SELECT_Shipfitorder:
+                            IShipfitorderPK shipfitorderPK = (IShipfitorderPK)JSONShipfitorder.toShipfitorderPK((JSONObject)json.get("shipfitorderpk"));
+                            result = JSONEvetype.toJSON(blevetype.getShipfitorder(shipfitorderPK)).toJSONString();
                             break;
                         case IEvetypeOperation.SELECT_Tradecombined:
                             ITradecombinedPK tradecombinedPK = (ITradecombinedPK)JSONTradecombined.toTradecombinedPK((JSONObject)json.get("tradecombinedpk"));

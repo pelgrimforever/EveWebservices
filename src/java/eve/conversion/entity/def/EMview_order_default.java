@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 9.11.2021 14:30
+ * Generated on 16.11.2021 15:46
  *
  */
 package eve.conversion.entity.def;
@@ -71,6 +71,8 @@ public class EMview_order_default implements ViewMapper {
                 view_order.setRegionname(dbresult.getString("regionname"));
                 view_order.setEvetypename(dbresult.getString("evetypename"));
                 view_order.setPackaged_volume(dbresult.getDouble("packaged_volume"));
+                view_order.setAvg_buyorder(dbresult.getDouble("avg_buyorder"));
+                view_order.setAvg_sellorder(dbresult.getDouble("avg_sellorder"));
             }
             catch(SQLException sqle) {
                 throw sqle;

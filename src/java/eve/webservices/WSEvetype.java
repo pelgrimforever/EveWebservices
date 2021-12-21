@@ -2,7 +2,7 @@
  * WSEvetype.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 9.11.2021 14:30
+ * Generated on 19.11.2021 16:16
  *
  */
 
@@ -264,6 +264,58 @@ public class WSEvetype implements WSIEvetype {
         }
     }
 
+    //@WebMethod(operationName = "getEvetypes4wishlist")
+    @Override
+    public String getEvetypes4wishlist(String json) {
+        BLevetype blevetype = new BLevetype();
+        JSONParser parser = new JSONParser();
+        Evetype evetype;
+        try {
+            String result = null;
+            IWishlistPK wishlistPK = JSONWishlist.toWishlistPK((JSONObject)parser.parse(json));
+            evetype = (Evetype)blevetype.getWishlist(wishlistPK);
+            if(evetype!=null) {
+                result = JSONEvetype.toJSON(evetype).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getEvetypes4order_history_month")
+    @Override
+    public String getEvetypes4order_history_month(String json) {
+        BLevetype blevetype = new BLevetype();
+        JSONParser parser = new JSONParser();
+        Evetype evetype;
+        try {
+            String result = null;
+            IOrder_history_monthPK order_history_monthPK = JSONOrder_history_month.toOrder_history_monthPK((JSONObject)parser.parse(json));
+            evetype = (Evetype)blevetype.getOrder_history_month(order_history_monthPK);
+            if(evetype!=null) {
+                result = JSONEvetype.toJSON(evetype).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
     //@WebMethod(operationName = "getEvetypes4stock")
     @Override
     public String getEvetypes4stock(String json) {
@@ -300,6 +352,58 @@ public class WSEvetype implements WSIEvetype {
             String result = null;
             IOrder_historyPK order_historyPK = JSONOrder_history.toOrder_historyPK((JSONObject)parser.parse(json));
             evetype = (Evetype)blevetype.getOrder_history(order_historyPK);
+            if(evetype!=null) {
+                result = JSONEvetype.toJSON(evetype).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getEvetypes4shipfitmodule")
+    @Override
+    public String getEvetypes4shipfitmodule(String json) {
+        BLevetype blevetype = new BLevetype();
+        JSONParser parser = new JSONParser();
+        Evetype evetype;
+        try {
+            String result = null;
+            IShipfitmodulePK shipfitmodulePK = JSONShipfitmodule.toShipfitmodulePK((JSONObject)parser.parse(json));
+            evetype = (Evetype)blevetype.getShipfitmodule(shipfitmodulePK);
+            if(evetype!=null) {
+                result = JSONEvetype.toJSON(evetype).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getEvetypes4shipfitorder")
+    @Override
+    public String getEvetypes4shipfitorder(String json) {
+        BLevetype blevetype = new BLevetype();
+        JSONParser parser = new JSONParser();
+        Evetype evetype;
+        try {
+            String result = null;
+            IShipfitorderPK shipfitorderPK = JSONShipfitorder.toShipfitorderPK((JSONObject)parser.parse(json));
+            evetype = (Evetype)blevetype.getShipfitorder(shipfitorderPK);
             if(evetype!=null) {
                 result = JSONEvetype.toJSON(evetype).toJSONString();
             }

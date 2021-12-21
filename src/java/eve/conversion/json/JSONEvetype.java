@@ -2,7 +2,7 @@
  * JSONEvetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 9.11.2021 14:30
+ * Generated on 19.11.2021 16:16
  *
  */
  
@@ -128,14 +128,35 @@ public class JSONEvetype {
             if(evetypesearch.getGraphicsearch()!=null && evetypesearch.getGraphicsearch().used()) {
                 kss.put("graphicsearcher", JSONGraphic.toJSON((Graphicsearch)evetypesearch.getGraphicsearch()));
             }
+            if(evetypesearch.getWishlistsearch()!=null && evetypesearch.getWishlistsearch().used()) {
+                kss.put("wishlistsearcher", JSONWishlist.toJSON((Wishlistsearch)evetypesearch.getWishlistsearch()));
+            }
+            if(evetypesearch.getOrder_history_monthsearch()!=null && evetypesearch.getOrder_history_monthsearch().used()) {
+                kss.put("order_history_monthsearcher", JSONOrder_history_month.toJSON((Order_history_monthsearch)evetypesearch.getOrder_history_monthsearch()));
+            }
+            if(evetypesearch.getRelRegion1search()!=null && evetypesearch.getRelRegion1search().used()) {
+                kss.put("region1searcher", JSONOrder_history_month.toJSON((Order_history_monthsearch)evetypesearch.getRelRegion1search()));
+            }
             if(evetypesearch.getStocksearch()!=null && evetypesearch.getStocksearch().used()) {
                 kss.put("stocksearcher", JSONStock.toJSON((Stocksearch)evetypesearch.getStocksearch()));
             }
             if(evetypesearch.getOrder_historysearch()!=null && evetypesearch.getOrder_historysearch().used()) {
                 kss.put("order_historysearcher", JSONOrder_history.toJSON((Order_historysearch)evetypesearch.getOrder_historysearch()));
             }
-            if(evetypesearch.getRelRegionsearch()!=null && evetypesearch.getRelRegionsearch().used()) {
-                kss.put("regionsearcher", JSONOrder_history.toJSON((Order_historysearch)evetypesearch.getRelRegionsearch()));
+            if(evetypesearch.getRelRegion2search()!=null && evetypesearch.getRelRegion2search().used()) {
+                kss.put("region2searcher", JSONOrder_history.toJSON((Order_historysearch)evetypesearch.getRelRegion2search()));
+            }
+            if(evetypesearch.getShipfitmodulesearch()!=null && evetypesearch.getShipfitmodulesearch().used()) {
+                kss.put("shipfitmodulesearcher", JSONShipfitmodule.toJSON((Shipfitmodulesearch)evetypesearch.getShipfitmodulesearch()));
+            }
+            if(evetypesearch.getRelShipfit1search()!=null && evetypesearch.getRelShipfit1search().used()) {
+                kss.put("shipfit1searcher", JSONShipfitmodule.toJSON((Shipfitmodulesearch)evetypesearch.getRelShipfit1search()));
+            }
+            if(evetypesearch.getShipfitordersearch()!=null && evetypesearch.getShipfitordersearch().used()) {
+                kss.put("shipfitordersearcher", JSONShipfitorder.toJSON((Shipfitordersearch)evetypesearch.getShipfitordersearch()));
+            }
+            if(evetypesearch.getRelShipfit2search()!=null && evetypesearch.getRelShipfit2search().used()) {
+                kss.put("shipfit2searcher", JSONShipfitorder.toJSON((Shipfitordersearch)evetypesearch.getRelShipfit2search()));
             }
             if(evetypesearch.getTradecombinedsearch()!=null && evetypesearch.getTradecombinedsearch().used()) {
                 kss.put("tradecombinedsearcher", JSONTradecombined.toJSON((Tradecombinedsearch)evetypesearch.getTradecombinedsearch()));
@@ -307,6 +328,27 @@ public class JSONEvetype {
                 evetypesearch.graphic(graphicsearch);
             }
         }
+        keysearch = (JSONArray)kss.get("wishlistsearcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Wishlistsearch wishlistsearch = JSONWishlist.toWishlistsearch((JSONObject)keysearch.get(i));
+                evetypesearch.wishlist(wishlistsearch);
+            }
+        }
+        keysearch = (JSONArray)kss.get("order_history_monthsearcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Order_history_monthsearch order_history_monthsearch = JSONOrder_history_month.toOrder_history_monthsearch((JSONObject)keysearch.get(i));
+                evetypesearch.order_history_month(order_history_monthsearch);
+            }
+        }
+        keysearch = (JSONArray)kss.get("region1searcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Regionsearch region1search = JSONRegion.toRegionsearch((JSONObject)keysearch.get(i));
+                evetypesearch.relregion1(region1search);
+            }
+        }
         keysearch = (JSONArray)kss.get("stocksearcher");
         if(keysearch!=null) {
             for(int i=0; i<keysearch.size(); i++) {
@@ -321,11 +363,39 @@ public class JSONEvetype {
                 evetypesearch.order_history(order_historysearch);
             }
         }
-        keysearch = (JSONArray)kss.get("regionsearcher");
+        keysearch = (JSONArray)kss.get("region2searcher");
         if(keysearch!=null) {
             for(int i=0; i<keysearch.size(); i++) {
-                Regionsearch regionsearch = JSONRegion.toRegionsearch((JSONObject)keysearch.get(i));
-                evetypesearch.relregion(regionsearch);
+                Regionsearch region2search = JSONRegion.toRegionsearch((JSONObject)keysearch.get(i));
+                evetypesearch.relregion2(region2search);
+            }
+        }
+        keysearch = (JSONArray)kss.get("shipfitmodulesearcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Shipfitmodulesearch shipfitmodulesearch = JSONShipfitmodule.toShipfitmodulesearch((JSONObject)keysearch.get(i));
+                evetypesearch.shipfitmodule(shipfitmodulesearch);
+            }
+        }
+        keysearch = (JSONArray)kss.get("shipfit1searcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Shipfitsearch shipfit1search = JSONShipfit.toShipfitsearch((JSONObject)keysearch.get(i));
+                evetypesearch.relshipfit1(shipfit1search);
+            }
+        }
+        keysearch = (JSONArray)kss.get("shipfitordersearcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Shipfitordersearch shipfitordersearch = JSONShipfitorder.toShipfitordersearch((JSONObject)keysearch.get(i));
+                evetypesearch.shipfitorder(shipfitordersearch);
+            }
+        }
+        keysearch = (JSONArray)kss.get("shipfit2searcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Shipfitsearch shipfit2search = JSONShipfit.toShipfitsearch((JSONObject)keysearch.get(i));
+                evetypesearch.relshipfit2(shipfit2search);
             }
         }
         keysearch = (JSONArray)kss.get("tradecombinedsearcher");
