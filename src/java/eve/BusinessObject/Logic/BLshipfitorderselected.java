@@ -13,10 +13,10 @@ import general.exception.DBException;
 import eve.interfaces.logicentity.IShipfitorderselected;
 import eve.logicentity.Shipfitorderselected;
 import eve.BusinessObject.table.Bshipfitorderselected;
-import eve.entity.pk.OrdersPK;
 import eve.entity.pk.ShipfitorderselectedPK;
 import eve.interfaces.entity.pk.IOrdersPK;
 import eve.interfaces.entity.pk.IShipfitorderPK;
+import eve.interfaces.entity.pk.IShipfitorderselectedPK;
 import eve.logicentity.Orders;
 import eve.logicentity.Shipfitorder;
 import general.exception.CustomException;
@@ -80,8 +80,31 @@ public class BLshipfitorderselected extends Bshipfitorderselected {
                     insertShipfitorderselected(shipfitorderselected);
                 }
             }
+        }    
+    }
+    
+    /**
+     * update the amount of an order by subtracting what is bought
+     * if all is confirmed, delete this line
+     * update the shipfitorder for this line, adding to the stock what is bought
+     * @param shipfitorderselectedPK
+     * @param amount
+     * @throws DBException
+     * @throws DataException 
+     */
+    public void confirmOrder(IShipfitorderselectedPK shipfitorderselectedPK, int amount) throws DBException, DataException, CustomException {
+        Shipfitorderselected shipfitorderselected = this.getShipfitorderselected(shipfitorderselectedPK);
+        int amountleft = Math.max(shipfitorderselected.getAmount()-amount, 0);
+        if(amountleft>0) {
+            shipfitorderselected.setAmount(Math.max(shipfitorderselected.getAmount()-amount, 0));
+            this.trans_updateShipfitorderselected(shipfitorderselected);
+        } else {
+            this.trans_deleteShipfitorderselected(shipfitorderselected);
         }
-        
+        BLshipfitorder blshipfitorder = new BLshipfitorder(this);
+        Shipfitorder shipfitorder = blshipfitorder.getShipfitorderselected(shipfitorderselectedPK);
+        blshipfitorder.updateAmount(shipfitorderselectedPK.getShipfitorderPK(), amount);
+        this.Commit2DB();
     }
     
     /**

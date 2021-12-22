@@ -174,6 +174,7 @@ public class RSShipfitorder {
                             shipfitorderPK = (IShipfitorderPK)JSONShipfitorder.toShipfitorderPK((JSONObject)json.get("shipfitorderpk"));
                             int amount = JSONConversion.getint(json, "amount");
                             blshipfitorder.updateAmount(shipfitorderPK, amount);
+                            blshipfitorder.Commit2DB();
                             result = returnstatus("OK");
                             break;
 //Custom code, do not change this line   

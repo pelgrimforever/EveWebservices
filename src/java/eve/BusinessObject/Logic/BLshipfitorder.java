@@ -51,8 +51,7 @@ public class BLshipfitorder extends Bshipfitorder {
     public void updateAmount(IShipfitorderPK shipfitorderPK, int amount) throws DBException, DataException {
         Shipfitorder shipfitorder = this.getShipfitorder(shipfitorderPK);
         shipfitorder.incAmountinstock(amount);
-        updateShipfitorder(shipfitorder);
-        this.Commit2DB();
+        trans_updateShipfitorder(shipfitorder);
     }
     
     /**

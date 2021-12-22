@@ -172,6 +172,12 @@ public class RSShipfitorderselected {
                             break;
 //Custom code, do not change this line
 //add here custom operations
+                        case IShipfitorderselectedOperation.UPDATE_CONFIRMORDER:
+                            shipfitorderselectedPK = (IShipfitorderselectedPK)JSONShipfitorderselected.toShipfitorderselectedPK((JSONObject)json.get("shipfitorderselectedpk"));
+                            int amount = JSONConversion.getint(json, "amount");
+                            blshipfitorderselected.confirmOrder(shipfitorderselectedPK, amount);
+                            result = returnstatus("OK");
+                            break;
 //Custom code, do not change this line   
                     }
                     break;
