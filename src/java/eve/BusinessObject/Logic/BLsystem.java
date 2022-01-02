@@ -57,6 +57,17 @@ public class BLsystem extends Bsystem {
         this.setLogginrequired(isprivatetable);
     }
 
+    /**
+     * get all systems used in shipfitorderselected table
+     * @return ArrayList
+     * @throws DBException 
+     */
+    public ArrayList getSystems4shipfitorderselected(String username) throws DBException {
+        Object[][] parameter = {{ "username", username }};
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        return this.getEntities(EMsystem.SQLSelect4shipfitorderselected, sqlparameters);
+    }
+    
     public void updateSystem(JSONObject jsonsystemdetails) throws DBException, DataException {
         System system = new System(JSONConversion.getLong(jsonsystemdetails, "system_id"));
         system.setName(JSONConversion.getString(jsonsystemdetails, "name"));

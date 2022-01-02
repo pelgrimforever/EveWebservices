@@ -14,14 +14,20 @@ import eve.interfaces.logicentity.IShipfitorderselected;
 import eve.logicentity.Shipfitorderselected;
 import eve.BusinessObject.table.Bshipfitorderselected;
 import eve.entity.pk.ShipfitorderselectedPK;
+import eve.entity.pk.SystemPK;
 import eve.interfaces.entity.pk.IOrdersPK;
 import eve.interfaces.entity.pk.IShipfitorderPK;
 import eve.interfaces.entity.pk.IShipfitorderselectedPK;
 import eve.logicentity.Orders;
 import eve.logicentity.Shipfitorder;
+import eve.logicentity.Systemjumps;
+import eve.logicentity.System;
+import eve.logicview.View_system;
 import general.exception.CustomException;
 import general.exception.DataException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import javafx.util.Pair;
 
 /**
  * Business Logic Entity class BLshipfitorderselected
@@ -105,6 +111,38 @@ public class BLshipfitorderselected extends Bshipfitorderselected {
         Shipfitorder shipfitorder = blshipfitorder.getShipfitorderselected(shipfitorderselectedPK);
         blshipfitorder.updateAmount(shipfitorderselectedPK.getShipfitorderPK(), amount);
         this.Commit2DB();
+        //clean up orders that are complete
+        blshipfitorder.removeCompleteorders(shipfitorderselectedPK.getUsername());
+    }
+    
+    public ArrayList<View_system> calculateroute(String username, long startsystem, long endsystem) throws DBException {
+        BLsystem blsystem = new BLsystem();
+        System start = blsystem.getSystem(new SystemPK(startsystem));
+        System end = blsystem.getSystem(new SystemPK(endsystem));
+        ArrayList<System> usedsystems = blsystem.getSystems4shipfitorderselected(username);
+        
+        BLsystemjumps blsystemjumps = new BLsystemjumps();
+        ArrayList<Systemjumps> systemjumps = blsystemjumps.getSystemjumps4shiporderselected(username, startsystem, endsystem);
+        HashMap<Pair<Long,Long>, Systemjumps> jumptable = new HashMap<>();
+        for(Systemjumps systemjump: systemjumps) {
+            jumptable.put(new Pair(systemjump.getPrimaryKey().getSystem_start(), systemjump.getPrimaryKey().getSystem_end()), systemjump);
+        }
+        
+        Systempermutation permutation = new Systempermutation(usedsystems, jumptable, startsystem, endsystem);
+        ArrayList<System> route = new ArrayList<>();
+        route.add(start);
+        route.addAll(permutation.findroute());
+        route.add(end);
+        
+        //load View_system lines for every System
+        BLview_system blview_system = new BLview_system();
+        ArrayList<View_system> routesystems = new ArrayList<>();
+        System prevsystem = start;
+        for(System system: route) {
+            routesystems.add(blview_system.getView_systems(prevsystem.getPrimaryKey().getId(), system.getPrimaryKey().getId()));
+            prevsystem = system;
+        }
+        return routesystems;
     }
     
     /**

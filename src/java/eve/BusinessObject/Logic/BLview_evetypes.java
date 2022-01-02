@@ -31,6 +31,7 @@ public class BLview_evetypes extends Bview_evetypes {
     private static final long SHIP = 6;
     private static final long MODULE = 7;
     private static final long CHARGE = 8;
+    private static final long DRONE = 18;
     private static final long DEPLOYABLE = 22;
 	
     /**
@@ -68,6 +69,17 @@ public class BLview_evetypes extends Bview_evetypes {
      */
     public ArrayList<View_evetypes> getCharges() throws DBException {
         Object[][] parameter = {{ "category", CHARGE }};
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        return getEntities(EMview_evetypes.SQLSelect4Category, sqlparameters);
+    }
+    
+    /**
+     * get all evetypes of category drone
+     * @return ArrayList of View_evetypes objects
+     * @throws DBException
+     */
+    public ArrayList<View_evetypes> getDrones() throws DBException {
+        Object[][] parameter = {{ "category", DRONE }};
         SQLparameters sqlparameters = new SQLparameters(parameter);
         return getEntities(EMview_evetypes.SQLSelect4Category, sqlparameters);
     }

@@ -83,6 +83,7 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSView_stock.class);
         resources.add(eve.restservices.RSView_stocktrade_orders.class);
         resources.add(eve.restservices.RSView_stocktrade_system.class);
+        resources.add(eve.restservices.RSView_system.class);
         resources.add(eve.restservices.RSView_trade.class);
         resources.add(eve.restservices.RSView_trade_systemsevetype.class);
         resources.add(eve.restservices.RSView_tradecombined.class);
@@ -95,6 +96,7 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RScalculatesystemjumps.class);
         resources.add(eve.restservices.RScreatenodes.class);
         resources.add(eve.restservices.RScreateroutes.class);
+        resources.add(eve.restservices.RScreateshipfitroute.class);
         resources.add(eve.restservices.RSdownloadmarkethistory.class);
         resources.add(eve.restservices.RSdownloadmarkettypes.class);
         resources.add(eve.restservices.RSdownloadswagger.class);

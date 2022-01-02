@@ -175,6 +175,7 @@ public class RSShipfitorder {
                             int amount = JSONConversion.getint(json, "amount");
                             blshipfitorder.updateAmount(shipfitorderPK, amount);
                             blshipfitorder.Commit2DB();
+                            blshipfitorder.removeCompleteorders(shipfitorderPK.getUsername());
                             result = returnstatus("OK");
                             break;
 //Custom code, do not change this line   

@@ -23,6 +23,7 @@ public class Systemdata {
     private int nullsec = 0;
     private boolean used = false;
     private boolean avoid = false;
+    private boolean[] usedroute = { false, false}; //usedroute[0] route from starting system, usedroute[1] route from end system
     
     public Systemdata(eve.logicentity.System system) {
         this.system = system;
@@ -51,11 +52,14 @@ public class Systemdata {
         lowsec = 0;
         nullsec = 0;
         used = false;
+        usedroute[0] = false;
+        usedroute[1] = false;
         avoid = false;
     }
     
-    public void setStartingpoint() {
+    public void setStartingpoint(byte route) {
         used = true;
+        usedroute[route] = true;
         if(system.getSecurity_status()<0.45) {
             if(!(system.getSecurity_status()>0)) {
                 this.nullsec++;
@@ -82,6 +86,8 @@ public class Systemdata {
             }
         }
         used = true;
+        usedroute[0] = previousnode.getUsedroute()[0];
+        usedroute[1] = previousnode.getUsedroute()[1];
     }
     
     public Collection<Systemdata> getConnections() {
@@ -108,7 +114,19 @@ public class Systemdata {
         return used;
     }
     
+    public boolean[] getUsedroute() {
+        return usedroute;
+    }
+    
     public boolean isAvailable() {
         return !(used || avoid);
+    }
+    
+    public boolean isAvailable(byte routenumber) {
+        return !(usedroute[routenumber] || avoid);
+    }
+    
+    public boolean hasConnected2Route(byte routenumber) {
+        return usedroute[routenumber];
     }
 }

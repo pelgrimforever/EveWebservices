@@ -39,6 +39,10 @@ public class EMsystem extends EMsystem_default {
         "where system.security_island = :security_island.id: " +
         "and s_to.security_island is null and s_to.security_status >= :highsec:";
 
+    public static final String SQLSelect4shipfitorderselected = "select * from system where id in " +
+        "(select orders.system from orders inner join shipfitorderselected on orders.id = shipfitorderselected.orderid and shipfitorderselected.username = :username:) " +
+        "group by id, name, constellation, security_class, security_status, star_id, noaccess, isconstellationborder, isregionborder, security_island, downloaddate";
+    
     /**
      * Map ResultSet Field values to System
      * @param dbresult: Database ResultSet

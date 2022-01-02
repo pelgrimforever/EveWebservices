@@ -1,7 +1,7 @@
 /*
- * RSView_shipfitorderselected.java
+ * RSView_system.java
  *
- * Generated on 20.11.2021 17:22
+ * Generated on 30.11.2021 19:35
  *
  */
 
@@ -14,9 +14,9 @@ import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
-import eve.interfaces.logicview.IView_shipfitorderselected;
-import eve.interfaces.servlet.IView_shipfitorderselectedOperation;
-import eve.logicview.View_shipfitorderselected;
+import eve.interfaces.logicview.IView_system;
+import eve.interfaces.servlet.IView_systemOperation;
+import eve.logicview.View_system;
 import eve.servlets.DataServlet;
 import general.exception.CustomException;
 import general.exception.DataException;
@@ -47,20 +47,20 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-@Path("rsview_shipfitorderselected")
-public class RSView_shipfitorderselected {
+@Path("rsview_system")
+public class RSView_system {
 
     @Context
     private UriInfo context;
 
     /**
-     * Creates a new instance of RSView_shipfitorderselected
+     * Creates a new instance of RSView_system
      */
-    public RSView_shipfitorderselected() {
+    public RSView_system() {
     }
 
     /**
-     * Retrieves representation of an instance of view_shipfitorderselected.restservices.RSView_shipfitorderselected
+     * Retrieves representation of an instance of view_system.restservices.RSView_system
      * @return an instance of java.lang.String
      */
     @GET
@@ -68,10 +68,10 @@ public class RSView_shipfitorderselected {
     @Produces(MediaType.APPLICATION_JSON)
     public String get(@PathParam("json") String jsonstring) {
         try {
-            BLview_shipfitorderselected blview_shipfitorderselected = new BLview_shipfitorderselected();
-            ArrayList view_shipfitorderselecteds = blview_shipfitorderselected.getAll();
-            JSONArray jsonview_shipfitorderselecteds = JSONView_shipfitorderselected.toJSONArray(view_shipfitorderselecteds);
-            return jsonview_shipfitorderselecteds.toJSONString();
+            BLview_system blview_system = new BLview_system();
+            ArrayList view_systems = blview_system.getAll();
+            JSONArray jsonview_systems = JSONView_system.toJSONArray(view_systems);
+            return jsonview_systems.toJSONString();
         }
         catch(DBException e) {
             return "{ \"status\": \"error\"}";
@@ -79,7 +79,7 @@ public class RSView_shipfitorderselected {
     }
 
     /**
-     * Retrieves representation of an instance of view_shipfitorderselected.restservices.RSView_shipfitorderselected
+     * Retrieves representation of an instance of view_system.restservices.RSView_system
      * @return an instance of java.lang.String
      */
     @POST
@@ -87,34 +87,25 @@ public class RSView_shipfitorderselected {
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         String result = "";
-        BLview_shipfitorderselected blview_shipfitorderselected = new BLview_shipfitorderselected();
+        BLview_system blview_system = new BLview_system();
         JSONParser parser = new JSONParser();
         try {
             JSONObject json = (JSONObject)parser.parse(jsonstring);
             JSONObject jsonoperation = (JSONObject)json.get("operation");
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
-            IView_shipfitorderselected view_shipfitorderselected;
+            IView_system view_system;
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operationtype) {
                 case DataServlet.OPERATIONTYPE_SELECT:
                     switch(operation) {
-                        case IView_shipfitorderselectedOperation.SELECT_ALL:
-                            result = JSONView_shipfitorderselected.toJSONArray(blview_shipfitorderselected.getView_shipfitorderselecteds()).toJSONString();
+                        case IView_systemOperation.SELECT_ALL:
+                            result = JSONView_system.toJSONArray(blview_system.getView_systems()).toJSONString();
                             break;
 //Custom code, do not change this line
 //add here custom operations
-                        case IView_shipfitorderselectedOperation.SELECT_4USER:
-                            String username = JSONConversion.getString(json, "username");
-                            result = JSONView_shipfitorderselected.toJSONArray(blview_shipfitorderselected.getView_shipfitorderselecteds(username)).toJSONString();
-                            break;
-                        case IView_shipfitorderselectedOperation.SELECT_4USERSYSTEM:
-                            String username2 = JSONConversion.getString(json, "username");
-                            long systemid = JSONConversion.getlong(json, "systemid");
-                            result = JSONView_shipfitorderselected.toJSONArray(blview_shipfitorderselected.getView_shipfitorderselecteds(username2, systemid)).toJSONString();
-                            break;
 //Custom code, do not change this line   
                     }
             }
@@ -135,7 +126,7 @@ public class RSView_shipfitorderselected {
     }
 
     /**
-     * PUT method for updating or creating an instance of RSView_shipfitorderselected
+     * PUT method for updating or creating an instance of RSView_system
      * @param content representation for the resource
      * @return an HTTP response with content of the updated or created resource.
      */

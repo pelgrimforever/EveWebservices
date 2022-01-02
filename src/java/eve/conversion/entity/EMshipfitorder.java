@@ -23,6 +23,7 @@ public class EMshipfitorder extends EMshipfitorder_default {
     
 //Custom code, do not change this line
     public static final String SQLSelectAll = SQLSelect + OrderBy;
+    public static final String SQLSelect4user = SQLSelect + " where username = :username: order by shipname";
 //Custom code, do not change this line
 
     /**

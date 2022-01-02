@@ -16,6 +16,7 @@ import eve.interfaces.logicentity.ISystemjumps;
 import eve.logicentity.Systemjumps;
 import general.exception.DBException;
 import general.exception.DataException;
+import java.util.ArrayList;
 
 /**
  * Business Logic Entity class BLsystemjumps
@@ -64,6 +65,22 @@ public class BLsystemjumps extends Bsystemjumps {
         super.Commit2DB();
     }
 
+    /**
+     * get all systemjump combinations for all systems used in shiporderselected
+     * @return
+     * @throws DBException 
+     */
+    public ArrayList getSystemjumps4shiporderselected(String username, long system1, long system2) throws DBException {
+        Object[][] parameteruser = {{ "username", username }};
+        SQLparameters sqlparameters = new SQLparameters(parameteruser);
+        ArrayList systemjumpspermutations = this.getEntities(EMsystemjumps.SQLSelect4shipfitorderselectedpermutations, sqlparameters);
+        Object[][] parametersystems = {{ "system1", system1 }, { "system2", system2 } };
+        sqlparameters = new SQLparameters(parametersystems, parameteruser);
+        ArrayList systemjumps = this.getEntities(EMsystemjumps.SQLSelect4shipfitorderselected, sqlparameters);
+        systemjumpspermutations.addAll(systemjumps);
+        return systemjumpspermutations;
+    }
+    
     /**
      * try to insert Systemjumps object in database
      * commit transaction

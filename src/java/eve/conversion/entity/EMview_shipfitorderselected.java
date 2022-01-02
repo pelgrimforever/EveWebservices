@@ -23,6 +23,7 @@ public class EMview_shipfitorderselected extends EMview_shipfitorderselected_def
 //Metacoder: NO AUTHOMATIC UPDATE
     
     public static final String SQLSelect4username = SQLSelectAll + " where username = :username: order by regionname, systemname, evetypename";
+    public static final String SQLSelect4usernamesystem = SQLSelectAll + " where username = :username: and system = :systemid: order by regionname, systemname, evetypename";
 
     /**
      * Map ResultSet Field values to View_shipfitorderselected

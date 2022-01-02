@@ -115,6 +115,9 @@ public class RSView_evetypes {
                         case IView_evetypesOperation.SELECT_CHARGES:
                             result = JSONView_evetypes.toJSONArray(blview_evetypes.getCharges()).toJSONString();
                             break;
+                        case IView_evetypesOperation.SELECT_DRONES:
+                            result = JSONView_evetypes.toJSONArray(blview_evetypes.getDrones()).toJSONString();
+                            break;
                         case IView_evetypesOperation.SELECT_DEPLOYABLES:
                             result = JSONView_evetypes.toJSONArray(blview_evetypes.getDeployables()).toJSONString();
                             break;

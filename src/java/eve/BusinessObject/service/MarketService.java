@@ -376,20 +376,20 @@ public class MarketService implements Runnable {
                     bltrade.trans_insertTrade(trade);
 */
                     sql = new StringBuilder("insert into trade (sell_order_id, buy_order_id, total_volume, buy_order_value, sell_order_value, profit, jumps, runs, total_jumps, profit_per_jump, singlerun_profit_per_jump, maxunits_per_run, jumpslowsec, jumpsnullsec) values (");
-                    sql.append(tradeorder.getSell_id()).append(",");
-                    sql.append(tradeorder.getBuy_id()).append(",");
-                    sql.append(totalvolume).append(",");
-                    sql.append(buyordervalue).append(",");
-                    sql.append(sellordervalue).append(",");
-                    sql.append(profit).append(",");
-                    sql.append(jumps).append(",");
-                    sql.append(runs).append(",");
-                    sql.append(totaljumps).append(",");
-                    sql.append(profit_per_jump).append(",");
-                    sql.append(singlerun_profit_per_jump).append(",");
-                    sql.append(maxunits_per_run).append(",");
-                    sql.append(tradeorder.getJumpslowsec()).append(",");
-                    sql.append(tradeorder.getJumpsnullsec());
+                    sql.append(tradeorder.getSell_id()).append(","); //sell_order_id
+                    sql.append(tradeorder.getBuy_id()).append(","); //buy_order_id
+                    sql.append(totalvolume).append(","); //total_volume
+                    sql.append(buyordervalue).append(",");//buy_order_value
+                    sql.append(sellordervalue).append(",");//sell_order_value
+                    sql.append(profit).append(",");//profit
+                    sql.append(jumps).append(",");//jumps
+                    sql.append(runs).append(",");//runs
+                    sql.append(totaljumps).append(",");//total_jumps
+                    sql.append(profit_per_jump).append(",");//profit_per_jump
+                    sql.append(singlerun_profit_per_jump).append(",");//singlerun_profit_per_jump
+                    sql.append(maxunits_per_run).append(",");//maxunits_per_run
+                    sql.append(tradeorder.getJumpslowsec()).append(",");//jumpslowsec
+                    sql.append(tradeorder.getJumpsnullsec());//jumpsnullsec
                     sql.append(")");
                     bltrade.addStatement(sql.toString());
                     count++;

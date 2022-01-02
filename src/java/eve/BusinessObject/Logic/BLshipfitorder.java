@@ -9,12 +9,17 @@
 package eve.BusinessObject.Logic;
 
 import BusinessObject.BLtable;
+import db.SQLparameters;
 import general.exception.DBException;
-import eve.interfaces.logicentity.IShipfitorder;
 import eve.logicentity.Shipfitorder;
 import eve.BusinessObject.table.Bshipfitorder;
+import eve.conversion.entity.EMshipfitorder;
+import eve.entity.pk.ShipfitPK;
 import eve.interfaces.entity.pk.IShipfitorderPK;
+import eve.interfaces.logicentity.IShipfitorder;
+import eve.logicentity.Shipfit;
 import general.exception.DataException;
+import java.util.ArrayList;
 
 /**
  * Business Logic Entity class BLshipfitorder
@@ -52,6 +57,44 @@ public class BLshipfitorder extends Bshipfitorder {
         Shipfitorder shipfitorder = this.getShipfitorder(shipfitorderPK);
         shipfitorder.incAmountinstock(amount);
         trans_updateShipfitorder(shipfitorder);
+    }
+    
+    /**
+     * remove completed orders for user
+     * @param username
+     * @throws DBException
+     * @throws DataException 
+     */
+    public void removeCompleteorders(String username) throws DBException, DataException {
+        Object[][] parameters = {{ "username", username }};
+        SQLparameters sqlparameters = new SQLparameters(parameters);
+        ArrayList<Shipfitorder> shipfitorders = this.getEntities(EMshipfitorder.SQLSelect4user, sqlparameters);
+        ShipfitPK previousshipfitpk = null;
+        ShipfitPK shipfitpk = null;
+        boolean ordercomplete = true;
+        for(Shipfitorder shipfitorder: shipfitorders) {
+            shipfitpk = (ShipfitPK)shipfitorder.getPrimaryKey().getShipfitPK();
+            if(shipfitpk.equals(previousshipfitpk)) {
+                //check if this orderline is complete
+                ordercomplete = ordercomplete && shipfitorder.getAmountwanted()<=shipfitorder.getAmountinstock();
+            } else {
+                //new shipfit, if previous order was complete, delete it
+                if(ordercomplete && previousshipfitpk!=null) {
+                    Object[][] delparameters = {{ "username", previousshipfitpk.getUsername() }, { "shipname", previousshipfitpk.getShipname() }};
+                    SQLparameters delsqlparameters = new SQLparameters(delparameters);
+                    delShipfitorder(delsqlparameters, "and");
+                }
+                //initialize
+                ordercomplete = true;
+            }
+            previousshipfitpk = shipfitpk;
+        }
+        if(ordercomplete && previousshipfitpk!=null) {
+            Object[][] delparameters = {{ "username", previousshipfitpk.getUsername() }, { "shipname", previousshipfitpk.getShipname() }};
+            SQLparameters delsqlparameters = new SQLparameters(delparameters);
+            delShipfitorder(delsqlparameters, "and");
+        }
+        this.Commit2DB();
     }
     
     /**

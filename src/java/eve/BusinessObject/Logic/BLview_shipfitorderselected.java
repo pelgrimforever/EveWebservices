@@ -48,4 +48,16 @@ public class BLview_shipfitorderselected extends Bview_shipfitorderselected {
         SQLparameters sqlparameters = new SQLparameters(parameter);
         return getEntities(EMview_shipfitorderselected.SQLSelect4username, sqlparameters);
     }
+
+    /**
+     * get all View_shipfitorderselected objects from database
+     * @param systemid system primary key
+     * @return ArrayList of View_shipfitorderselected objects
+     * @throws DBException
+     */
+    public ArrayList<View_shipfitorderselected> getView_shipfitorderselecteds(String username, long systemid) throws DBException {
+        Object[][] parameter = { { "username", username }, { "systemid", systemid } };
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        return getEntities(EMview_shipfitorderselected.SQLSelect4usernamesystem, sqlparameters);
+    }
 }
