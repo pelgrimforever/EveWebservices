@@ -40,6 +40,14 @@ public class EMevetype extends EMevetype_default {
         "inner join system s on o.system = s.id and s.security_island = 1 " +
         "where o.is_buy_order group by o.evetype) as orders " +
         "where evetype.id = orders.evetype";
+    
+    public static final String SQLUpdateAverages = 
+        "update evetype e set average = oh.average, highest = oh.highest, lowest = oh.lowest, order_count = oh.order_count " +
+        "from (select evetype, sum(average * volume)/sum(volume) as average , max(highest) as highest , min(lowest) as lowest , sum(volume) as volume , sum(order_count) as order_count " +
+        "from order_history_month " +
+        "where year = :year: and month = :month: " +
+        "group by evetype) oh " +
+        "where e.id = oh.evetype";
 
     /**
      * Map ResultSet Field values to Evetype

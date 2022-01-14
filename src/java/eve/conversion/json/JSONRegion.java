@@ -2,7 +2,7 @@
  * JSONRegion.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
+ * Generated on 8.0.2022 19:32
  *
  */
  
@@ -65,6 +65,8 @@ public class JSONRegion {
         json.put("noaccess", region.getNoaccess());
         json.put("orderpages", region.getOrderpages());
         json.put("ordererrors", region.getOrdererrors());
+        json.put("contractpages", region.getContractpages());
+        json.put("contracterrors", region.getContracterrors());
 //Custom code, do not change this line
 //Custom code, do not change this line
         return json;
@@ -176,6 +178,20 @@ public class JSONRegion {
             byte andor = JSONConversion.getbyte(field, "andor");
             regionsearch.ordererrors(valuearray, operators, andor);
         }
+        field = (JSONObject)fss.get("contractpages");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            regionsearch.contractpages(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("contracterrors");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            regionsearch.contracterrors(valuearray, operators, andor);
+        }
         JSONObject kss = (JSONObject)json.get("keysearch");
         JSONArray keysearch;
         keysearch = (JSONArray)kss.get("order_history_monthsearcher");
@@ -242,6 +258,8 @@ public class JSONRegion {
         region.setNoaccess(JSONConversion.getboolean(json, "noaccess"));
         region.setOrderpages(JSONConversion.getint(json, "orderpages"));
         region.setOrdererrors(JSONConversion.getint(json, "ordererrors"));
+        region.setContractpages(JSONConversion.getint(json, "contractpages"));
+        region.setContracterrors(JSONConversion.getint(json, "contracterrors"));
     }
 
     public static Region initRegion(JSONObject json) {
@@ -250,6 +268,8 @@ public class JSONRegion {
         region.initNoaccess(JSONConversion.getboolean(json, "noaccess"));
         region.initOrderpages(JSONConversion.getint(json, "orderpages"));
         region.initOrdererrors(JSONConversion.getint(json, "ordererrors"));
+        region.initContractpages(JSONConversion.getint(json, "contractpages"));
+        region.initContracterrors(JSONConversion.getint(json, "contracterrors"));
         return region;
     }
 }

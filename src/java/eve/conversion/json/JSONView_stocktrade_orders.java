@@ -2,7 +2,7 @@
  * JSONView_stocktrade_orders.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
+ * Generated on 14.0.2022 16:56
  *
  */
  
@@ -51,6 +51,7 @@ public class JSONView_stocktrade_orders {
         json.put("evetypename", view_stocktrade_orders.getEvetypename());
         json.put("packaged_volume", view_stocktrade_orders.getPackaged_volume());
         json.put("min_volume", view_stocktrade_orders.getMin_volume());
+        json.put("orderid", String.valueOf(view_stocktrade_orders.getOrderid()));
         json.put("sellamount", String.valueOf(view_stocktrade_orders.getSellamount()));
 //Custom code, do not change this line
 //Custom code, do not change this line
@@ -68,6 +69,7 @@ public class JSONView_stocktrade_orders {
         view_stocktrade_orders.setEvetypename(JSONConversion.getString(json, "evetypename"));
         view_stocktrade_orders.setPackaged_volume(JSONConversion.getdouble(json, "packaged_volume"));
         view_stocktrade_orders.setMin_volume(JSONConversion.getint(json, "min_volume"));
+        view_stocktrade_orders.setOrderid(JSONConversion.getlong(json, "orderid"));
         view_stocktrade_orders.setSellamount(JSONConversion.getlong(json, "sellamount"));
         return view_stocktrade_orders;
     }
@@ -146,6 +148,13 @@ public class JSONView_stocktrade_orders {
             byte[] operators = JSONConversion.getNumberoperators(field);
             byte andor = JSONConversion.getbyte(field, "andor");
             view_stocktrade_orderssearch.min_volume(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("orderid");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            view_stocktrade_orderssearch.orderid(valuearray, operators, andor);
         }
         field = (JSONObject)fss.get("sellamount");
         if(field!=null) {

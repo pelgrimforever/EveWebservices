@@ -13,6 +13,7 @@ import eve.interfaces.logicentity.IEvetype;
 import eve.logicentity.Evetype;
 import BusinessObject.BLtable;
 import data.conversion.JSONConversion;
+import db.SQLparameters;
 import eve.BusinessObject.table.Bevetype;
 import eve.conversion.entity.EMevetype;
 import eve.entity.pk.GraphicPK;
@@ -21,6 +22,7 @@ import eve.entity.pk.TypegroupPK;
 import general.exception.DataException;
 import eve.interfaces.entity.pk.ITypegroupPK;
 import general.exception.CustomException;
+import java.util.Calendar;
 import org.json.simple.JSONObject;
 
 /**
@@ -95,6 +97,23 @@ public class BLevetype extends Bevetype {
         this.Commit2DB();
     }
 
+    /**
+     * update average prices from history (average, highest, lowest, order_count)
+     * use last month to get data
+     * This procedure is to be executed after a order_history download and order_history_month update
+     * @throws DBException
+     * @throws DataException 
+     */
+    public void updateHistoryaverages() throws DBException, DataException {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -1);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        Object[][] parameters = {{ "year", year }, { "month", month+1 }};
+        SQLparameters sqlparameters = new SQLparameters(parameters);
+        this.addStatement(EMevetype.SQLUpdateAverages, sqlparameters);
+    }
+    
     /**
      * try to insert Evetype object in database
      * commit transaction

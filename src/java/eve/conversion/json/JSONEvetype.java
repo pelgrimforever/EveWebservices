@@ -2,7 +2,7 @@
  * JSONEvetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 19.11.2021 16:16
+ * Generated on 9.0.2022 17:5
  *
  */
  
@@ -80,6 +80,10 @@ public class JSONEvetype {
         json.put("max_buyorder", evetype.getMax_buyorder());
         json.put("min_selorder", evetype.getMin_selorder());
         json.put("max_selorder", evetype.getMax_selorder());
+        json.put("average", evetype.getAverage());
+        json.put("highest", evetype.getHighest());
+        json.put("lowest", evetype.getLowest());
+        json.put("order_count", String.valueOf(evetype.getOrder_count()));
 //Custom code, do not change this line
 //Custom code, do not change this line
         return json;
@@ -305,6 +309,34 @@ public class JSONEvetype {
             byte andor = JSONConversion.getbyte(field, "andor");
             evetypesearch.max_selorder(valuearray, operators, andor);
         }
+        field = (JSONObject)fss.get("average");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            evetypesearch.average(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("highest");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            evetypesearch.highest(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("lowest");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            evetypesearch.lowest(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("order_count");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            evetypesearch.order_count(valuearray, operators, andor);
+        }
         JSONObject kss = (JSONObject)json.get("keysearch");
         JSONArray keysearch;
         keysearch = (JSONArray)kss.get("market_groupsearcher");
@@ -456,6 +488,10 @@ public class JSONEvetype {
         evetype.setMax_buyorder(JSONConversion.getdouble(json, "max_buyorder"));
         evetype.setMin_selorder(JSONConversion.getdouble(json, "min_selorder"));
         evetype.setMax_selorder(JSONConversion.getdouble(json, "max_selorder"));
+        evetype.setAverage(JSONConversion.getdouble(json, "average"));
+        evetype.setHighest(JSONConversion.getdouble(json, "highest"));
+        evetype.setLowest(JSONConversion.getdouble(json, "lowest"));
+        evetype.setOrder_count(JSONConversion.getlong(json, "order_count"));
     }
 
     public static Evetype initEvetype(JSONObject json) {
@@ -479,6 +515,10 @@ public class JSONEvetype {
         evetype.initMax_buyorder(JSONConversion.getdouble(json, "max_buyorder"));
         evetype.initMin_selorder(JSONConversion.getdouble(json, "min_selorder"));
         evetype.initMax_selorder(JSONConversion.getdouble(json, "max_selorder"));
+        evetype.initAverage(JSONConversion.getdouble(json, "average"));
+        evetype.initHighest(JSONConversion.getdouble(json, "highest"));
+        evetype.initLowest(JSONConversion.getdouble(json, "lowest"));
+        evetype.initOrder_count(JSONConversion.getlong(json, "order_count"));
         return evetype;
     }
 }

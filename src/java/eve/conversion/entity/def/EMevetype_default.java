@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 16.11.2021 15:46
+ * Generated on 14.0.2022 16:56
  *
  */
 package eve.conversion.entity.def;
@@ -113,6 +113,10 @@ public class EMevetype_default implements TableMapper {
                 evetype.initMax_buyorder(dbresult.getDouble("max_buyorder"));
                 evetype.initMin_selorder(dbresult.getDouble("min_selorder"));
                 evetype.initMax_selorder(dbresult.getDouble("max_selorder"));
+                evetype.initAverage(dbresult.getDouble("average"));
+                evetype.initHighest(dbresult.getDouble("highest"));
+                evetype.initLowest(dbresult.getDouble("lowest"));
+                evetype.initOrder_count(dbresult.getLong("order_count"));
             }
             catch(SQLException sqle) {
                 throw sqle;

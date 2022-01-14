@@ -33,6 +33,8 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSCategory.class);
         resources.add(eve.restservices.RSConstellation.class);
         resources.add(eve.restservices.RSConstellation_neighbour.class);
+        resources.add(eve.restservices.RSContract.class);
+        resources.add(eve.restservices.RSContractitem.class);
         resources.add(eve.restservices.RSCorporation.class);
         resources.add(eve.restservices.RSEvetype.class);
         resources.add(eve.restservices.RSFaction.class);
@@ -70,6 +72,8 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSTypegroup.class);
         resources.add(eve.restservices.RSUsersettings.class);
         resources.add(eve.restservices.RSView_activemodules.class);
+        resources.add(eve.restservices.RSView_contractitem.class);
+        resources.add(eve.restservices.RSView_contractswithprofit.class);
         resources.add(eve.restservices.RSView_evetype_order_history.class);
         resources.add(eve.restservices.RSView_evetype_order_history_month.class);
         resources.add(eve.restservices.RSView_evetypes.class);
@@ -97,6 +101,7 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RScreatenodes.class);
         resources.add(eve.restservices.RScreateroutes.class);
         resources.add(eve.restservices.RScreateshipfitroute.class);
+        resources.add(eve.restservices.RSdownloadcontracts.class);
         resources.add(eve.restservices.RSdownloadmarkethistory.class);
         resources.add(eve.restservices.RSdownloadmarkettypes.class);
         resources.add(eve.restservices.RSdownloadswagger.class);

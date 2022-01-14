@@ -62,6 +62,8 @@ public class Swagger {
     private static final String URL_markets = URL_server + "markets/";
     private static final String REST_market_orders = "/orders/";
     private static final String REST_market_history = "/history/";
+    private static final String URL_publiccontracts = URL_server + "contracts/public/";
+    private static final String URL_publiccontractitems = URL_publiccontracts + "items/";
     
     //market data
     private static final String URL_routes = URL_server + "route/";
@@ -191,6 +193,31 @@ public class Swagger {
             history = new JSONArray();
         }
         return history;
+    }
+    
+    public static JSONArray getPubliccontracts_region(long region_id, int pagenr) {
+        JSONArray page;
+        try {
+            page = jsonrequest.requestJSONArray(URL_publiccontracts + region_id + "/" + URL_Datasource + REST_page + pagenr);
+        }
+        catch(Exception e) {
+            page = new JSONArray();
+        }
+        return page;
+    }
+    
+    public static JSONArray getPubliccontractitems(long contract_id) {
+        JSONArray page;
+        try {
+            page = jsonrequest.requestJSONArray(URL_publiccontractitems + contract_id + "/" + URL_Datasource);
+            if(page==null) {
+                page = new JSONArray();
+            }
+        }
+        catch(Exception e) {
+            page = new JSONArray();
+        }
+        return page;
     }
     
     public static JSONArray getRoute(long origin, long destination, ArrayList<Long> avoidsystems, boolean secure) {

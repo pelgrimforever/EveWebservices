@@ -24,6 +24,8 @@ public class EMstocktrade extends EMstocktrade_default {
     public static final String SQLSelectAll = SQLSelect + OrderBy;
     public static final String SQLdeleteall = "delete from stocktrade";
     public static final String SQLdelete4user = "delete from stocktrade where username = :username:";
+    public static final String SQL4usersystem = SQLSelect + " join orders o ON o.id = stocktrade.orderid " +
+        "where stocktrade.username = :username: and o.system = :system:";
 
     /**
      * Map ResultSet Field values to Stocktrade

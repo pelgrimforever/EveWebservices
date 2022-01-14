@@ -1,7 +1,7 @@
 /*
  * RSStock.java
  *
- * Generated on 16.11.2021 15:46
+ * Generated on 14.0.2022 16:56
  *
  */
 
@@ -172,6 +172,24 @@ public class RSStock {
                             blstock.addStock(stock);
                             result = returnstatus("OK");
                             break;
+                        case IStockOperation.UPDATE_REMOVESTOCK:
+                            JSONObject jsonremovestock = (JSONObject)json.get("stock");
+                            stock = JSONStock.toStock(jsonremovestock);
+                            blstock.removeStock(stock);
+                            blstock.Commit2DB();
+                            result = returnstatus("OK");
+                            break;
+                        case IStockOperation.UPDATE_SELLSTOCKTRADE:
+                            eve.logicentity.Stocktrade stocktrade = (eve.logicentity.Stocktrade)JSONStocktrade.toStocktrade((JSONObject)json.get("stocktrade"));
+                            blstock.sellStocktrade(stocktrade);
+                            result = returnstatus("OK");
+                            break;
+                        case IStockOperation.UPDATE_SELLALL4SYSTEM:
+                            String username = JSONConversion.getString(json, "username");
+                            long system = JSONConversion.getlong(json, "system");
+                            blstock.sellall4System(username, system);
+                            result = returnstatus("OK");
+                            break;                    
 //Custom code, do not change this line   
                     }
                     break;

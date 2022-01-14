@@ -7,6 +7,7 @@ package eve.BusinessObject.service;
 
 import data.conversion.JSONConversion;
 import db.TransactionOutput;
+import eve.BusinessObject.Logic.BLevetype;
 import eve.BusinessObject.Logic.BLorder_history;
 import eve.BusinessObject.Logic.BLorder_history_maxdate;
 import eve.BusinessObject.Logic.BLorder_history_month;
@@ -16,6 +17,7 @@ import eve.logicview.View_order_region_evetype;
 import general.exception.DBException;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -92,10 +94,10 @@ public class Markethistory implements Runnable {
             JSONArray jsonhistory;
             Iterator<JSONObject> jsonhistoryI;
             JSONObject jsonline;
-            
             BLorder_history blorderhistory = new BLorder_history();
             BLview_order_region_evetype blview_order_region_evetype = new BLview_order_region_evetype();
             BLorder_history_maxdate blorder_history_maxdate = new BLorder_history_maxdate();
+            BLevetype blevetype = new BLevetype();
             Date maxdate = blorder_history_maxdate.getOrder_history_maxdates().get(0).getMaxdate();
             Date swaggerdate;
 
@@ -142,16 +144,23 @@ public class Markethistory implements Runnable {
                 if(toutput.getHaserror()) {
                     markethistorystatus.addMessage("Markethistory Downloader " + toutput.getErrormessage());
                 }
-                markethistorystatus.addMessage("Build Market history / month " + toutput.getErrormessage());
-                BLorder_history_month blorderhistorymonth = new BLorder_history_month();
-                blorderhistorymonth.deleteall();
-                blorderhistorymonth.buildfromMarkethistory();
-                toutput = blorderhistorymonth.Commit2DB();
-                if(toutput.getHaserror()) {
-                    markethistorystatus.addMessage("Markethistory Downloader " + toutput.getErrormessage());
-                }
             }
-            System.out.println("Download done");
+            markethistorystatus.addMessage("Build Market history / month");
+            BLorder_history_month blorderhistorymonth = new BLorder_history_month();
+            blorderhistorymonth.deleteall();
+            blorderhistorymonth.buildfromMarkethistory();
+            toutput = blorderhistorymonth.Commit2DB();
+            if(toutput.getHaserror()) {
+                markethistorystatus.addMessage("Markethistory Downloader " + toutput.getErrormessage());
+            }
+
+            //get history from last month, use this as average prices for evetype
+            markethistorystatus.addMessage("Update type averages");
+            blevetype.updateHistoryaverages();
+            toutput = blevetype.Commit2DB();
+            if(toutput.getHaserror()) {
+                markethistorystatus.addMessage("Update type averages " + toutput.getErrormessage());
+            }
         }
         catch(DBException e) {
             markethistorystatus.addMessage(e.getMessage());

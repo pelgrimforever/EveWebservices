@@ -2,7 +2,7 @@
  * XMLEvetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
+ * Generated on 9.0.2022 17:5
  *
  */
  
@@ -77,6 +77,10 @@ public class XMLEvetype {
         EvetypeXML.addContent(XMLElement.newContent("max_buyorder", evetype.getMax_buyorder()));
         EvetypeXML.addContent(XMLElement.newContent("min_selorder", evetype.getMin_selorder()));
         EvetypeXML.addContent(XMLElement.newContent("max_selorder", evetype.getMax_selorder()));
+        EvetypeXML.addContent(XMLElement.newContent("average", evetype.getAverage()));
+        EvetypeXML.addContent(XMLElement.newContent("highest", evetype.getHighest()));
+        EvetypeXML.addContent(XMLElement.newContent("lowest", evetype.getLowest()));
+        EvetypeXML.addContent(XMLElement.newContent("order_count", evetype.getOrder_count()));
     }
 }
 

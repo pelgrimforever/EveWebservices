@@ -2,7 +2,7 @@
  * XMLRegion.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
+ * Generated on 5.0.2022 19:19
  *
  */
  
@@ -50,6 +50,8 @@ public class XMLRegion {
         RegionXML.addContent(XMLElement.newContent("noaccess", region.getNoaccess()));
         RegionXML.addContent(XMLElement.newContent("orderpages", region.getOrderpages()));
         RegionXML.addContent(XMLElement.newContent("ordererrors", region.getOrdererrors()));
+        RegionXML.addContent(XMLElement.newContent("contractpages", region.getContractpages()));
+        RegionXML.addContent(XMLElement.newContent("contracterrors", region.getContracterrors()));
     }
 }
 

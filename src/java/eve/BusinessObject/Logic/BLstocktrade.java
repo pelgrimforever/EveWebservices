@@ -16,6 +16,7 @@ import db.SQLparameters;
 import eve.BusinessObject.table.Bstocktrade;
 import eve.conversion.entity.EMstocktrade;
 import general.exception.DataException;
+import java.util.ArrayList;
 
 /**
  * Business Logic Entity class BLstocktrade
@@ -49,6 +50,19 @@ public class BLstocktrade extends Bstocktrade {
         this.setLogginrequired(isprivatetable);
     }
 
+    /**
+     * get all Stocktrade lines for user / system
+     * @param username user login name
+     * @param systemid system pk
+     * @return ArrayList of stocktrade
+     * @throws DBException 
+     */
+    public ArrayList get4System(String username, long systemid) throws DBException {
+        Object[][] parameters = {{ "username", username }, { "system", systemid }};
+        SQLparameters sqlparameters = new SQLparameters(parameters);
+        return this.getEntities(EMstocktrade.SQL4usersystem, sqlparameters);
+    }
+    
     /**
      * delete all stocktrade lines for username
      * @param username user

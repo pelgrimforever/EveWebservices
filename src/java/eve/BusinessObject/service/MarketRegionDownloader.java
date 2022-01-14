@@ -127,6 +127,7 @@ public class MarketRegionDownloader implements Runnable {
                     }
                 } while(keeprunning && jsonorders.size()>0);
                 pagenr--;
+                marketstatus.updateStatus(region.getPrimaryKey().getId(), Math.max(1, pagenr), orderbatch);
                 marketstatus.setDone(region.getPrimaryKey().getId());
                 //don't attempt to commit to database if keeprunning flag is off
                 if(keeprunning) {

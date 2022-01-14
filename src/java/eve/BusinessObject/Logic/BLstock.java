@@ -15,6 +15,8 @@ import BusinessObject.BLtable;
 import db.SQLparameters;
 import eve.BusinessObject.table.Bstock;
 import eve.conversion.entity.EMstock;
+import eve.entity.pk.StockPK;
+import eve.logicentity.Stocktrade;
 import general.exception.DataException;
 import java.util.ArrayList;
 
@@ -95,7 +97,42 @@ public class BLstock extends Bstock {
                 this.trans_updateStock(stock);
             }
         }
-        Commit2DB();
+    }
+    
+    /**
+     * Delete stock that is linked with the order in stocktrade, and stocktrade
+     * @param stocktrade Stocktrade line
+     * @throws DBException
+     * @throws DataException 
+     */
+    public void sellStocktrade(Stocktrade stocktrade) throws DBException, DataException {
+        BLstocktrade blstocktrade = new BLstocktrade(this);
+        Stock newstock = new Stock((StockPK)stocktrade.getPrimaryKey().getStockPK());
+        newstock.setAmount(stocktrade.getSellamount());
+        this.removeStock(newstock);
+        blstocktrade.trans_deleteStocktrade(stocktrade); 
+        this.Commit2DB();
+    }
+    
+    /**
+     * Delete all Stock that is linked with orders from a system
+     * @param username user name
+     * @param systemid system pk
+     * @throws DBException
+     * @throws DataException 
+     */
+    public void sellall4System(String username, long systemid) throws DBException, DataException {
+        //get all from stocktrade for username where linked orders are in system
+        BLstocktrade blstocktrade = new BLstocktrade(this);
+        ArrayList<Stocktrade> stocktradelist = blstocktrade.get4System(username, systemid);
+        Stock newstock;
+        for(Stocktrade stocktrade: stocktradelist) {
+            newstock = new Stock((StockPK)stocktrade.getPrimaryKey().getStockPK());
+            newstock.setAmount(stocktrade.getSellamount());
+            this.removeStock(newstock);
+            blstocktrade.trans_deleteStocktrade(stocktrade);
+        }
+        this.Commit2DB();
     }
     
     /**

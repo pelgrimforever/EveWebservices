@@ -13,7 +13,9 @@ import db.SQLparameters;
 import eve.BusinessObject.view.Bview_stocktrade_system;
 import eve.conversion.entity.EMview_stocktrade_system;
 import eve.logicentity.Settings;
+import eve.logicentity.Syssettings;
 import eve.logicentity.Usersettings;
+import eve.logicview.View_stocktrade_system;
 import general.exception.DataException;
 import java.util.ArrayList;
 
@@ -36,20 +38,31 @@ public class BLview_stocktrade_system extends Bview_stocktrade_system {
     public BLview_stocktrade_system() {
     }
 
+    /**
+     * get all stock trade grouped by system
+     * sell prices are netto prices (with broker fee subtracted)
+     * @param username: User name
+     * @return ArrayList
+     * @throws DBException
+     * @throws DataException 
+     */
     public ArrayList getView_stocktrade_system4username(String username) throws DBException, DataException {
         BLusersettings blusersettings = new BLusersettings();
+        BLsyssettings blsyssettings = new BLsyssettings();
         ArrayList<Usersettings> usersettings = blusersettings.getUsersettings(username);
-        Usersettings usersettingStocksystemid = null;
-        for(Usersettings usersetting: usersettings) {
-            if(usersetting.getPrimaryKey().getName().equals(Settings.STOCKSYSTEMID)) {
-                usersettingStocksystemid = usersetting;
-            }
-        }
+        Usersettings usersettingStocksystemid = blusersettings.getUsersetting(usersettings, Settings.STOCKSYSTEMID);
+        Syssettings syssettingBrokerfee = blsyssettings.getSyssettings(Syssettings.BROKER_FEE);
+        float perc_tax = Float.valueOf(syssettingBrokerfee.getValue());
+        float perc_net = 1 - perc_tax;        
         if(usersettingStocksystemid!=null && usersettingStocksystemid.getValue()!=null) {
             long stocksystemid = Long.valueOf(usersettingStocksystemid.getValue());
             Object[][] parameter = { { "username", username }, { "stocksystemid", stocksystemid } };
             SQLparameters sqlparameters = new SQLparameters(parameter);
-            return getEntities(EMview_stocktrade_system.SQLSelect4usernamestartsystem, sqlparameters);
+            ArrayList<View_stocktrade_system> viewstocktradesystems = getEntities(EMview_stocktrade_system.SQLSelect4usernamestartsystem, sqlparameters);
+            for(View_stocktrade_system stocktradesystem: viewstocktradesystems) {
+                stocktradesystem.setSellprice(stocktradesystem.getSellprice()*perc_net);
+            }
+            return viewstocktradesystems;
         } else {
             return new ArrayList();
         }

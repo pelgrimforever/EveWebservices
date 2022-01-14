@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 16.11.2021 15:46
+ * Generated on 14.0.2022 16:56
  *
  */
 package eve.conversion.entity.def;
@@ -86,6 +86,8 @@ public class EMregion_default implements TableMapper {
                 region.initNoaccess(dbresult.getBoolean("noaccess"));
                 region.initOrderpages(dbresult.getInt("orderpages"));
                 region.initOrdererrors(dbresult.getInt("ordererrors"));
+                region.initContractpages(dbresult.getInt("contractpages"));
+                region.initContracterrors(dbresult.getInt("contracterrors"));
             }
             catch(SQLException sqle) {
                 throw sqle;
