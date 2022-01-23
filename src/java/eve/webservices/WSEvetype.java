@@ -2,7 +2,7 @@
  * WSEvetype.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 14.0.2022 16:56
+ * Generated on 17.0.2022 13:37
  *
  */
 
@@ -274,6 +274,32 @@ public class WSEvetype implements WSIEvetype {
             String result = null;
             IWishlistPK wishlistPK = JSONWishlist.toWishlistPK((JSONObject)parser.parse(json));
             evetype = (Evetype)blevetype.getWishlist(wishlistPK);
+            if(evetype!=null) {
+                result = JSONEvetype.toJSON(evetype).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getEvetypes4materialinput")
+    @Override
+    public String getEvetypes4materialinput(String json) {
+        BLevetype blevetype = new BLevetype();
+        JSONParser parser = new JSONParser();
+        Evetype evetype;
+        try {
+            String result = null;
+            IMaterialinputPK materialinputPK = JSONMaterialinput.toMaterialinputPK((JSONObject)parser.parse(json));
+            evetype = (Evetype)blevetype.getMaterialinput(materialinputPK);
             if(evetype!=null) {
                 result = JSONEvetype.toJSON(evetype).toJSONString();
             }

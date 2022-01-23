@@ -45,8 +45,8 @@ import org.json.simple.JSONObject;
  */
 public class ContractRegionDownloader implements Runnable {
     
-    private Marketdata data;
-    private ContractStatus contractstatus;
+    private final Marketdata data;
+    private final ContractStatus contractstatus;
     private boolean keeprunning = true;
     private int id = 0;
     

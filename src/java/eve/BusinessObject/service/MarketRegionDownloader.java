@@ -41,8 +41,8 @@ import org.json.simple.JSONObject;
  */
 public class MarketRegionDownloader implements Runnable {
     
-    private Marketdata data;
-    private MarketStatus marketstatus;
+    private final Marketdata data;
+    private final MarketStatus marketstatus;
     private boolean keeprunning = true;
     private int id = 0;
     

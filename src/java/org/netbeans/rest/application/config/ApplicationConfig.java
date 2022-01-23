@@ -44,6 +44,7 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSLoadroute.class);
         resources.add(eve.restservices.RSLocation.class);
         resources.add(eve.restservices.RSMarket_group.class);
+        resources.add(eve.restservices.RSMaterialinput.class);
         resources.add(eve.restservices.RSOrder_history.class);
         resources.add(eve.restservices.RSOrder_history_maxdate.class);
         resources.add(eve.restservices.RSOrder_history_month.class);
@@ -77,6 +78,8 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSView_evetype_order_history.class);
         resources.add(eve.restservices.RSView_evetype_order_history_month.class);
         resources.add(eve.restservices.RSView_evetypes.class);
+        resources.add(eve.restservices.RSView_materialinput.class);
+        resources.add(eve.restservices.RSView_materialinputavg.class);
         resources.add(eve.restservices.RSView_order.class);
         resources.add(eve.restservices.RSView_order_region_evetype.class);
         resources.add(eve.restservices.RSView_security_island_systemcount.class);

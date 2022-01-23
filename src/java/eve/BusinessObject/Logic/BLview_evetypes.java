@@ -28,11 +28,15 @@ import java.util.ArrayList;
 public class BLview_evetypes extends Bview_evetypes {
 //Metacoder: NO AUTHOMATIC UPDATE
     
+    //categories
     private static final long SHIP = 6;
     private static final long MODULE = 7;
     private static final long CHARGE = 8;
     private static final long DRONE = 18;
     private static final long DEPLOYABLE = 22;
+    //typegroups
+    private static final long MINERALS = 18;
+    private static final long SALVAGEDMATERIAL = 754;
 	
     /**
      * Constructor, sets View_evetypes as default Entity
@@ -93,6 +97,28 @@ public class BLview_evetypes extends Bview_evetypes {
         Object[][] parameter = {{ "category", DEPLOYABLE }};
         SQLparameters sqlparameters = new SQLparameters(parameter);
         return getEntities(EMview_evetypes.SQLSelect4Category, sqlparameters);
+    }
+        
+    /**
+     * get all evetypes of typegroup minerals
+     * @return ArrayList of View_evetypes objects
+     * @throws DBException
+     */
+    public ArrayList<View_evetypes> getMinerals() throws DBException {
+        Object[][] parameter = {{ "typegroupid", MINERALS }};
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        return getEntities(EMview_evetypes.SQLSelect4Typegroup, sqlparameters);
+    }
+        
+    /**
+     * get all evetypes of typegroup salvaged material
+     * @return ArrayList of View_evetypes objects
+     * @throws DBException
+     */
+    public ArrayList<View_evetypes> getSalvagedmaterials() throws DBException {
+        Object[][] parameter = {{ "typegroupid", SALVAGEDMATERIAL }};
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        return getEntities(EMview_evetypes.SQLSelect4Typegroup, sqlparameters);
     }
         
 }

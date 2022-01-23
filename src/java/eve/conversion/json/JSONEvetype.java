@@ -2,7 +2,7 @@
  * JSONEvetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 9.0.2022 17:5
+ * Generated on 17.0.2022 13:37
  *
  */
  
@@ -134,6 +134,9 @@ public class JSONEvetype {
             }
             if(evetypesearch.getWishlistsearch()!=null && evetypesearch.getWishlistsearch().used()) {
                 kss.put("wishlistsearcher", JSONWishlist.toJSON((Wishlistsearch)evetypesearch.getWishlistsearch()));
+            }
+            if(evetypesearch.getMaterialinputsearch()!=null && evetypesearch.getMaterialinputsearch().used()) {
+                kss.put("materialinputsearcher", JSONMaterialinput.toJSON((Materialinputsearch)evetypesearch.getMaterialinputsearch()));
             }
             if(evetypesearch.getOrder_history_monthsearch()!=null && evetypesearch.getOrder_history_monthsearch().used()) {
                 kss.put("order_history_monthsearcher", JSONOrder_history_month.toJSON((Order_history_monthsearch)evetypesearch.getOrder_history_monthsearch()));
@@ -365,6 +368,13 @@ public class JSONEvetype {
             for(int i=0; i<keysearch.size(); i++) {
                 Wishlistsearch wishlistsearch = JSONWishlist.toWishlistsearch((JSONObject)keysearch.get(i));
                 evetypesearch.wishlist(wishlistsearch);
+            }
+        }
+        keysearch = (JSONArray)kss.get("materialinputsearcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Materialinputsearch materialinputsearch = JSONMaterialinput.toMaterialinputsearch((JSONObject)keysearch.get(i));
+                evetypesearch.materialinput(materialinputsearch);
             }
         }
         keysearch = (JSONArray)kss.get("order_history_monthsearcher");

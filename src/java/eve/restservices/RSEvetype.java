@@ -1,7 +1,7 @@
 /*
  * RSEvetype.java
  *
- * Generated on 14.0.2022 16:56
+ * Generated on 17.0.2022 13:37
  *
  */
 
@@ -135,6 +135,10 @@ public class RSEvetype {
                             IWishlistPK wishlistPK = (IWishlistPK)JSONWishlist.toWishlistPK((JSONObject)json.get("wishlistpk"));
                             result = JSONEvetype.toJSON(blevetype.getWishlist(wishlistPK)).toJSONString();
                             break;
+                        case IEvetypeOperation.SELECT_Materialinput:
+                            IMaterialinputPK materialinputPK = (IMaterialinputPK)JSONMaterialinput.toMaterialinputPK((JSONObject)json.get("materialinputpk"));
+                            result = JSONEvetype.toJSON(blevetype.getMaterialinput(materialinputPK)).toJSONString();
+                            break;
                         case IEvetypeOperation.SELECT_Order_history_month:
                             IOrder_history_monthPK order_history_monthPK = (IOrder_history_monthPK)JSONOrder_history_month.toOrder_history_monthPK((JSONObject)json.get("order_history_monthpk"));
                             result = JSONEvetype.toJSON(blevetype.getOrder_history_month(order_history_monthPK)).toJSONString();
@@ -242,6 +246,10 @@ public class RSEvetype {
                         case IEvetypeOperation.SELECT_Wishlist:
                             IWishlistPK wishlistPK = (IWishlistPK)JSONWishlist.toWishlistPK((JSONObject)json.get("wishlistpk"));
                             result = JSONEvetype.toJSON(blevetype.getWishlist(wishlistPK)).toJSONString();
+                            break;
+                        case IEvetypeOperation.SELECT_Materialinput:
+                            IMaterialinputPK materialinputPK = (IMaterialinputPK)JSONMaterialinput.toMaterialinputPK((JSONObject)json.get("materialinputpk"));
+                            result = JSONEvetype.toJSON(blevetype.getMaterialinput(materialinputPK)).toJSONString();
                             break;
                         case IEvetypeOperation.SELECT_Order_history_month:
                             IOrder_history_monthPK order_history_monthPK = (IOrder_history_monthPK)JSONOrder_history_month.toOrder_history_monthPK((JSONObject)json.get("order_history_monthpk"));

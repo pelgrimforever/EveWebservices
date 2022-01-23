@@ -2,7 +2,7 @@
  * Evetype.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 14.0.2022 16:56
+ * Generated on 17.0.2022 13:37
  *
  */
 
@@ -77,6 +77,10 @@ public class Evetype extends SecurityDataServlet {
                         case IEvetypeOperation.SELECT_Wishlist:
                             IWishlistPK wishlistPK = (IWishlistPK)parser.getJavaObject("wishlistpk");
                             dataobject = blevetype.getWishlist(wishlistPK);
+                            break;
+                        case IEvetypeOperation.SELECT_Materialinput:
+                            IMaterialinputPK materialinputPK = (IMaterialinputPK)parser.getJavaObject("materialinputpk");
+                            dataobject = blevetype.getMaterialinput(materialinputPK);
                             break;
                         case IEvetypeOperation.SELECT_Order_history_month:
                             IOrder_history_monthPK order_history_monthPK = (IOrder_history_monthPK)parser.getJavaObject("order_history_monthpk");

@@ -121,6 +121,12 @@ public class RSView_evetypes {
                         case IView_evetypesOperation.SELECT_DEPLOYABLES:
                             result = JSONView_evetypes.toJSONArray(blview_evetypes.getDeployables()).toJSONString();
                             break;
+                        case IView_evetypesOperation.SELECT_MINERALS:
+                            result = JSONView_evetypes.toJSONArray(blview_evetypes.getMinerals()).toJSONString();
+                            break;
+                        case IView_evetypesOperation.SELECT_SALVAGED:
+                            result = JSONView_evetypes.toJSONArray(blview_evetypes.getSalvagedmaterials()).toJSONString();
+                            break;
 //Custom code, do not change this line   
                     }
             }
