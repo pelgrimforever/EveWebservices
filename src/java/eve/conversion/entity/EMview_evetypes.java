@@ -22,6 +22,7 @@ public class EMview_evetypes extends EMview_evetypes_default {
 //Metacoder: NO AUTHOMATIC UPDATE
 
     public static final String SQLSelect4Category = SQLSelectAll + " where category = :category: order by name";
+    public static final String SQLSelect4Categorysearch = SQLSelectAll + " where category = :category: and name like :searchstring: order by name";
     public static final String SQLSelect4Typegroup = SQLSelectAll + " where typegroupid = :typegroupid: order by name";
     
     /**

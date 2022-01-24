@@ -1,7 +1,7 @@
 /*
- * RSView_evetypes.java
+ * RSView_bpmaterial.java
  *
- * Generated on 14.0.2022 16:56
+ * Generated on 24.0.2022 17:38
  *
  */
 
@@ -14,9 +14,9 @@ import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
-import eve.interfaces.logicview.IView_evetypes;
-import eve.interfaces.servlet.IView_evetypesOperation;
-import eve.logicview.View_evetypes;
+import eve.interfaces.logicview.IView_bpmaterial;
+import eve.interfaces.servlet.IView_bpmaterialOperation;
+import eve.logicview.View_bpmaterial;
 import eve.servlets.DataServlet;
 import general.exception.CustomException;
 import general.exception.DataException;
@@ -47,20 +47,20 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-@Path("rsview_evetypes")
-public class RSView_evetypes {
+@Path("rsview_bpmaterial")
+public class RSView_bpmaterial {
 
     @Context
     private UriInfo context;
 
     /**
-     * Creates a new instance of RSView_evetypes
+     * Creates a new instance of RSView_bpmaterial
      */
-    public RSView_evetypes() {
+    public RSView_bpmaterial() {
     }
 
     /**
-     * Retrieves representation of an instance of view_evetypes.restservices.RSView_evetypes
+     * Retrieves representation of an instance of view_bpmaterial.restservices.RSView_bpmaterial
      * @return an instance of java.lang.String
      */
     @GET
@@ -68,10 +68,10 @@ public class RSView_evetypes {
     @Produces(MediaType.APPLICATION_JSON)
     public String get(@PathParam("json") String jsonstring) {
         try {
-            BLview_evetypes blview_evetypes = new BLview_evetypes();
-            ArrayList view_evetypess = blview_evetypes.getAll();
-            JSONArray jsonview_evetypess = JSONView_evetypes.toJSONArray(view_evetypess);
-            return jsonview_evetypess.toJSONString();
+            BLview_bpmaterial blview_bpmaterial = new BLview_bpmaterial();
+            ArrayList view_bpmaterials = blview_bpmaterial.getAll();
+            JSONArray jsonview_bpmaterials = JSONView_bpmaterial.toJSONArray(view_bpmaterials);
+            return jsonview_bpmaterials.toJSONString();
         }
         catch(DBException e) {
             return "{ \"status\": \"error\"}";
@@ -79,7 +79,7 @@ public class RSView_evetypes {
     }
 
     /**
-     * Retrieves representation of an instance of view_evetypes.restservices.RSView_evetypes
+     * Retrieves representation of an instance of view_bpmaterial.restservices.RSView_bpmaterial
      * @return an instance of java.lang.String
      */
     @POST
@@ -87,49 +87,28 @@ public class RSView_evetypes {
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         String result = "";
-        BLview_evetypes blview_evetypes = new BLview_evetypes();
+        BLview_bpmaterial blview_bpmaterial = new BLview_bpmaterial();
         JSONParser parser = new JSONParser();
         try {
             JSONObject json = (JSONObject)parser.parse(jsonstring);
             JSONObject jsonoperation = (JSONObject)json.get("operation");
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
-            IView_evetypes view_evetypes;
+            IView_bpmaterial view_bpmaterial;
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operationtype) {
                 case DataServlet.OPERATIONTYPE_SELECT:
                     switch(operation) {
-                        case IView_evetypesOperation.SELECT_ALL:
-                            result = JSONView_evetypes.toJSONArray(blview_evetypes.getView_evetypess()).toJSONString();
+                        case IView_bpmaterialOperation.SELECT_ALL:
+                            result = JSONView_bpmaterial.toJSONArray(blview_bpmaterial.getView_bpmaterials()).toJSONString();
                             break;
 //Custom code, do not change this line
 //add here custom operations
-                        case IView_evetypesOperation.SELECT_SHIPS:
-                            result = JSONView_evetypes.toJSONArray(blview_evetypes.getShips()).toJSONString();
-                            break;
-                        case IView_evetypesOperation.SELECT_MODULES:
-                            result = JSONView_evetypes.toJSONArray(blview_evetypes.getModules()).toJSONString();
-                            break;
-                        case IView_evetypesOperation.SELECT_CHARGES:
-                            result = JSONView_evetypes.toJSONArray(blview_evetypes.getCharges()).toJSONString();
-                            break;
-                        case IView_evetypesOperation.SELECT_DRONES:
-                            result = JSONView_evetypes.toJSONArray(blview_evetypes.getDrones()).toJSONString();
-                            break;
-                        case IView_evetypesOperation.SELECT_DEPLOYABLES:
-                            result = JSONView_evetypes.toJSONArray(blview_evetypes.getDeployables()).toJSONString();
-                            break;
-                        case IView_evetypesOperation.SELECT_MINERALS:
-                            result = JSONView_evetypes.toJSONArray(blview_evetypes.getMinerals()).toJSONString();
-                            break;
-                        case IView_evetypesOperation.SELECT_SALVAGED:
-                            result = JSONView_evetypes.toJSONArray(blview_evetypes.getSalvagedmaterials()).toJSONString();
-                            break;
-                        case IView_evetypesOperation.SELECT_BLEUPRINT:
-                            String searchstring = JSONConversion.getString(json, "searchstring");
-                            result = JSONView_evetypes.toJSONArray(blview_evetypes.getBlueprints(searchstring)).toJSONString();
+                        case IView_bpmaterialOperation.SELECT_4BLUEPRINT:
+                            long blueprintid = JSONConversion.getlong(json, "bp");
+                            result = JSONView_bpmaterial.toJSONArray(blview_bpmaterial.getView_bpmaterials(blueprintid)).toJSONString();
                             break;
 //Custom code, do not change this line   
                     }
@@ -151,7 +130,7 @@ public class RSView_evetypes {
     }
 
     /**
-     * PUT method for updating or creating an instance of RSView_evetypes
+     * PUT method for updating or creating an instance of RSView_bpmaterial
      * @param content representation for the resource
      * @return an HTTP response with content of the updated or created resource.
      */

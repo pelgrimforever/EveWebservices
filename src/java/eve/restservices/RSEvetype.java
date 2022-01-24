@@ -1,7 +1,7 @@
 /*
  * RSEvetype.java
  *
- * Generated on 17.0.2022 13:37
+ * Generated on 24.0.2022 16:47
  *
  */
 
@@ -139,6 +139,14 @@ public class RSEvetype {
                             IMaterialinputPK materialinputPK = (IMaterialinputPK)JSONMaterialinput.toMaterialinputPK((JSONObject)json.get("materialinputpk"));
                             result = JSONEvetype.toJSON(blevetype.getMaterialinput(materialinputPK)).toJSONString();
                             break;
+                        case IEvetypeOperation.SELECT_Bpmaterialbp:
+                            IBpmaterialPK bpmaterialBpPK = (IBpmaterialPK)JSONBpmaterial.toBpmaterialPK((JSONObject)json.get("bpmaterialpk"));
+                            result = JSONEvetype.toJSON(blevetype.getBpmaterialbp(bpmaterialBpPK)).toJSONString();
+                            break;
+                        case IEvetypeOperation.SELECT_Bpmaterialmaterial:
+                            IBpmaterialPK bpmaterialMaterialPK = (IBpmaterialPK)JSONBpmaterial.toBpmaterialPK((JSONObject)json.get("bpmaterialpk"));
+                            result = JSONEvetype.toJSON(blevetype.getBpmaterialmaterial(bpmaterialMaterialPK)).toJSONString();
+                            break;
                         case IEvetypeOperation.SELECT_Order_history_month:
                             IOrder_history_monthPK order_history_monthPK = (IOrder_history_monthPK)JSONOrder_history_month.toOrder_history_monthPK((JSONObject)json.get("order_history_monthpk"));
                             result = JSONEvetype.toJSON(blevetype.getOrder_history_month(order_history_monthPK)).toJSONString();
@@ -250,6 +258,14 @@ public class RSEvetype {
                         case IEvetypeOperation.SELECT_Materialinput:
                             IMaterialinputPK materialinputPK = (IMaterialinputPK)JSONMaterialinput.toMaterialinputPK((JSONObject)json.get("materialinputpk"));
                             result = JSONEvetype.toJSON(blevetype.getMaterialinput(materialinputPK)).toJSONString();
+                            break;
+                        case IEvetypeOperation.SELECT_Bpmaterialbp:
+                            IBpmaterialPK bpmaterialBpPK = (IBpmaterialPK)JSONBpmaterial.toBpmaterialPK((JSONObject)json.get("bpmaterialpk"));
+                            result = JSONEvetype.toJSON(blevetype.getBpmaterialbp(bpmaterialBpPK)).toJSONString();
+                            break;
+                        case IEvetypeOperation.SELECT_Bpmaterialmaterial:
+                            IBpmaterialPK bpmaterialMaterialPK = (IBpmaterialPK)JSONBpmaterial.toBpmaterialPK((JSONObject)json.get("bpmaterialpk"));
+                            result = JSONEvetype.toJSON(blevetype.getBpmaterialmaterial(bpmaterialMaterialPK)).toJSONString();
                             break;
                         case IEvetypeOperation.SELECT_Order_history_month:
                             IOrder_history_monthPK order_history_monthPK = (IOrder_history_monthPK)JSONOrder_history_month.toOrder_history_monthPK((JSONObject)json.get("order_history_monthpk"));

@@ -2,7 +2,7 @@
  * JSONEvetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.0.2022 13:37
+ * Generated on 24.0.2022 16:47
  *
  */
  
@@ -137,6 +137,12 @@ public class JSONEvetype {
             }
             if(evetypesearch.getMaterialinputsearch()!=null && evetypesearch.getMaterialinputsearch().used()) {
                 kss.put("materialinputsearcher", JSONMaterialinput.toJSON((Materialinputsearch)evetypesearch.getMaterialinputsearch()));
+            }
+            if(evetypesearch.getBpmaterialbpsearch()!=null && evetypesearch.getBpmaterialbpsearch().used()) {
+                kss.put("bpmaterialBpsearcher", JSONBpmaterial.toJSON((Bpmaterialsearch)evetypesearch.getBpmaterialbpsearch()));
+            }
+            if(evetypesearch.getBpmaterialmaterialsearch()!=null && evetypesearch.getBpmaterialmaterialsearch().used()) {
+                kss.put("bpmaterialMaterialsearcher", JSONBpmaterial.toJSON((Bpmaterialsearch)evetypesearch.getBpmaterialmaterialsearch()));
             }
             if(evetypesearch.getOrder_history_monthsearch()!=null && evetypesearch.getOrder_history_monthsearch().used()) {
                 kss.put("order_history_monthsearcher", JSONOrder_history_month.toJSON((Order_history_monthsearch)evetypesearch.getOrder_history_monthsearch()));
@@ -375,6 +381,20 @@ public class JSONEvetype {
             for(int i=0; i<keysearch.size(); i++) {
                 Materialinputsearch materialinputsearch = JSONMaterialinput.toMaterialinputsearch((JSONObject)keysearch.get(i));
                 evetypesearch.materialinput(materialinputsearch);
+            }
+        }
+        keysearch = (JSONArray)kss.get("bpmaterialBpsearcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Bpmaterialsearch bpmaterialBpsearch = JSONBpmaterial.toBpmaterialsearch((JSONObject)keysearch.get(i));
+                evetypesearch.bpmaterialBp(bpmaterialBpsearch);
+            }
+        }
+        keysearch = (JSONArray)kss.get("bpmaterialMaterialsearcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Bpmaterialsearch bpmaterialMaterialsearch = JSONBpmaterial.toBpmaterialsearch((JSONObject)keysearch.get(i));
+                evetypesearch.bpmaterialMaterial(bpmaterialMaterialsearch);
             }
         }
         keysearch = (JSONArray)kss.get("order_history_monthsearcher");

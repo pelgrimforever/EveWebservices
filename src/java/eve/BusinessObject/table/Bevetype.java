@@ -2,7 +2,7 @@
  * Bevetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.0.2022 13:37
+ * Generated on 24.0.2022 16:47
  *
  */
 
@@ -236,6 +236,10 @@ public abstract class Bevetype extends BLtable {
         blwishlist.delete4evetype(evetypePK);
         BLmaterialinput blmaterialinput = new BLmaterialinput(this);
         blmaterialinput.delete4evetype(evetypePK);
+        BLbpmaterial blbpmaterialBp = new BLbpmaterial(this);
+        blbpmaterialBp.delete4evetypeBp(evetypePK);
+        BLbpmaterial blbpmaterialMaterial = new BLbpmaterial(this);
+        blbpmaterialMaterial.delete4evetypeMaterial(evetypePK);
         BLorder_history_month blorder_history_month = new BLorder_history_month(this);
         blorder_history_month.delete4evetype(evetypePK);
         BLstock blstock = new BLstock(this);
@@ -315,6 +319,26 @@ public abstract class Bevetype extends BLtable {
      */
     public Evetype getMaterialinput(IMaterialinputPK materialinputPK) throws CustomException {
         EvetypePK evetypePK = new EvetypePK(materialinputPK.getEvetype());
+        return this.getEvetype(evetypePK);
+    }
+
+    /**
+     * @param bpmaterialPK: parent Bpmaterial for child object Evetype Entity
+     * @return child Evetype Entity object
+     * @throws CustomException
+     */
+    public Evetype getBpmaterialbp(IBpmaterialPK bpmaterialPK) throws CustomException {
+        EvetypePK evetypePK = new EvetypePK(bpmaterialPK.getBp());
+        return this.getEvetype(evetypePK);
+    }
+
+    /**
+     * @param bpmaterialPK: parent Bpmaterial for child object Evetype Entity
+     * @return child Evetype Entity object
+     * @throws CustomException
+     */
+    public Evetype getBpmaterialmaterial(IBpmaterialPK bpmaterialPK) throws CustomException {
+        EvetypePK evetypePK = new EvetypePK(bpmaterialPK.getMaterial());
         return this.getEvetype(evetypePK);
     }
 

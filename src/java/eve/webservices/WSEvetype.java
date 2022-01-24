@@ -2,7 +2,7 @@
  * WSEvetype.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 17.0.2022 13:37
+ * Generated on 24.0.2022 16:47
  *
  */
 
@@ -300,6 +300,58 @@ public class WSEvetype implements WSIEvetype {
             String result = null;
             IMaterialinputPK materialinputPK = JSONMaterialinput.toMaterialinputPK((JSONObject)parser.parse(json));
             evetype = (Evetype)blevetype.getMaterialinput(materialinputPK);
+            if(evetype!=null) {
+                result = JSONEvetype.toJSON(evetype).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getEvetypes4bpmaterialBp")
+    @Override
+    public String getEvetypes4bpmaterialBp(String json) {
+        BLevetype blevetype = new BLevetype();
+        JSONParser parser = new JSONParser();
+        Evetype evetype;
+        try {
+            String result = null;
+            IBpmaterialPK bpmaterialBpPK = JSONBpmaterial.toBpmaterialPK((JSONObject)parser.parse(json));
+            evetype = (Evetype)blevetype.getBpmaterialbp(bpmaterialBpPK);
+            if(evetype!=null) {
+                result = JSONEvetype.toJSON(evetype).toJSONString();
+            }
+            return result;
+        }
+        catch(ParseException e) {
+            return null;
+        }
+        catch(DBException e) {
+            return null;
+        }
+        catch(CustomException e) {
+            return null;
+        }
+    }
+
+    //@WebMethod(operationName = "getEvetypes4bpmaterialMaterial")
+    @Override
+    public String getEvetypes4bpmaterialMaterial(String json) {
+        BLevetype blevetype = new BLevetype();
+        JSONParser parser = new JSONParser();
+        Evetype evetype;
+        try {
+            String result = null;
+            IBpmaterialPK bpmaterialMaterialPK = JSONBpmaterial.toBpmaterialPK((JSONObject)parser.parse(json));
+            evetype = (Evetype)blevetype.getBpmaterialmaterial(bpmaterialMaterialPK);
             if(evetype!=null) {
                 result = JSONEvetype.toJSON(evetype).toJSONString();
             }

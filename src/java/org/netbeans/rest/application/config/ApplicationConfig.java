@@ -30,6 +30,7 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSAlliance.class);
         resources.add(eve.restservices.RSAllnodes_stargate.class);
         resources.add(eve.restservices.RSAllnodes_system.class);
+        resources.add(eve.restservices.RSBpmaterial.class);
         resources.add(eve.restservices.RSCategory.class);
         resources.add(eve.restservices.RSConstellation.class);
         resources.add(eve.restservices.RSConstellation_neighbour.class);
@@ -73,6 +74,7 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSTypegroup.class);
         resources.add(eve.restservices.RSUsersettings.class);
         resources.add(eve.restservices.RSView_activemodules.class);
+        resources.add(eve.restservices.RSView_bpmaterial.class);
         resources.add(eve.restservices.RSView_contractitem.class);
         resources.add(eve.restservices.RSView_contractswithprofit.class);
         resources.add(eve.restservices.RSView_evetype_order_history.class);

@@ -31,6 +31,7 @@ public class BLview_evetypes extends Bview_evetypes {
     //categories
     private static final long SHIP = 6;
     private static final long MODULE = 7;
+    private static final long BLUEPRINT = 9;
     private static final long CHARGE = 8;
     private static final long DRONE = 18;
     private static final long DEPLOYABLE = 22;
@@ -121,4 +122,14 @@ public class BLview_evetypes extends Bview_evetypes {
         return getEntities(EMview_evetypes.SQLSelect4Typegroup, sqlparameters);
     }
         
+    /**
+     * get all evetypes of category BPO matching searchstring
+     * @return ArrayList of View_evetypes objects
+     * @throws DBException
+     */
+    public ArrayList<View_evetypes> getBlueprints(String searchstring) throws DBException {
+        Object[][] parameter = {{ "category", BLUEPRINT }, { "searchstring", searchstring }};
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        return getEntities(EMview_evetypes.SQLSelect4Categorysearch, sqlparameters);
+    }
 }
