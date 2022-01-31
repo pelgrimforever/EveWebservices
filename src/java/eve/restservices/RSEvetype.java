@@ -1,7 +1,7 @@
 /*
  * RSEvetype.java
  *
- * Generated on 24.0.2022 16:47
+ * Generated on 28.0.2022 15:59
  *
  */
 
@@ -171,6 +171,10 @@ public class RSEvetype {
                             ITradecombinedPK tradecombinedPK = (ITradecombinedPK)JSONTradecombined.toTradecombinedPK((JSONObject)json.get("tradecombinedpk"));
                             result = JSONEvetype.toJSON(blevetype.getTradecombined(tradecombinedPK)).toJSONString();
                             break;
+                        case IEvetypeOperation.SELECT_Userbp:
+                            IUserbpPK userbpPK = (IUserbpPK)JSONUserbp.toUserbpPK((JSONObject)json.get("userbppk"));
+                            result = JSONEvetype.toJSON(blevetype.getUserbp(userbpPK)).toJSONString();
+                            break;
                         case IEvetypeOperation.SELECT_SEARCH:
                             IEvetypesearch search = (IEvetypesearch)JSONEvetype.toEvetypesearch((JSONObject)json.get("search"));
                             result = JSONEvetype.toJSONArray(blevetype.search(search)).toJSONString();
@@ -290,6 +294,10 @@ public class RSEvetype {
                         case IEvetypeOperation.SELECT_Tradecombined:
                             ITradecombinedPK tradecombinedPK = (ITradecombinedPK)JSONTradecombined.toTradecombinedPK((JSONObject)json.get("tradecombinedpk"));
                             result = JSONEvetype.toJSON(blevetype.getTradecombined(tradecombinedPK)).toJSONString();
+                            break;
+                        case IEvetypeOperation.SELECT_Userbp:
+                            IUserbpPK userbpPK = (IUserbpPK)JSONUserbp.toUserbpPK((JSONObject)json.get("userbppk"));
+                            result = JSONEvetype.toJSON(blevetype.getUserbp(userbpPK)).toJSONString();
                             break;
                         case IEvetypeOperation.SELECT_SEARCH:
                             IEvetypesearch search = (IEvetypesearch)JSONEvetype.toEvetypesearch((JSONObject)json.get("search"));

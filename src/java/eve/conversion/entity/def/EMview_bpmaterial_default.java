@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 24.0.2022 17:38
+ * Generated on 31.0.2022 17:49
  *
  */
 package eve.conversion.entity.def;
@@ -51,6 +51,7 @@ public class EMview_bpmaterial_default implements ViewMapper {
                 view_bpmaterial.setTypegroupid(dbresult.getLong("typegroupid"));
                 view_bpmaterial.setTypegroupname(dbresult.getString("typegroupname"));
                 view_bpmaterial.setName(dbresult.getString("name"));
+                view_bpmaterial.setAverage(dbresult.getDouble("average"));
             }
             catch(SQLException sqle) {
                 throw sqle;

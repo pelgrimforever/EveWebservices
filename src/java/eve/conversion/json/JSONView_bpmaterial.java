@@ -2,7 +2,7 @@
  * JSONView_bpmaterial.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 24.0.2022 17:38
+ * Generated on 26.0.2022 16:51
  *
  */
  
@@ -49,6 +49,7 @@ public class JSONView_bpmaterial {
         json.put("typegroupid", String.valueOf(view_bpmaterial.getTypegroupid()));
         json.put("typegroupname", view_bpmaterial.getTypegroupname());
         json.put("name", view_bpmaterial.getName());
+        json.put("average", view_bpmaterial.getAverage());
 //Custom code, do not change this line
 //Custom code, do not change this line
         return json;
@@ -63,6 +64,7 @@ public class JSONView_bpmaterial {
         view_bpmaterial.setTypegroupid(JSONConversion.getlong(json, "typegroupid"));
         view_bpmaterial.setTypegroupname(JSONConversion.getString(json, "typegroupname"));
         view_bpmaterial.setName(JSONConversion.getString(json, "name"));
+        view_bpmaterial.setAverage(JSONConversion.getdouble(json, "average"));
         return view_bpmaterial;
     }
 
@@ -126,6 +128,13 @@ public class JSONView_bpmaterial {
             byte compareoperator = JSONConversion.getbyte(field, "compareoperator");
             byte andor = JSONConversion.getbyte(field, "andor");
             view_bpmaterialsearch.name(valuearray, compareoperator, andor);
+        }
+        field = (JSONObject)fss.get("average");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            view_bpmaterialsearch.average(valuearray, operators, andor);
         }
         return view_bpmaterialsearch;
     }

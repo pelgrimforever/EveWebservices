@@ -1,7 +1,7 @@
 /*
  * RSMaterialinput.java
  *
- * Generated on 17.0.2022 13:37
+ * Generated on 28.0.2022 15:57
  *
  */
 
@@ -162,6 +162,13 @@ public class RSMaterialinput {
                             break;
 //Custom code, do not change this line
 //add here custom operations
+                        case IMaterialinputOperation.UPDATE_MATERIALUSAGE:
+                            String username = JSONConversion.getString(json, "username");
+                            long amount = JSONConversion.getlong(json, "amount");
+                            EvetypePK evetypePK = (EvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+                            blmaterialinput.useMaterial(username, evetypePK, amount);
+                            result = returnstatus("OK");
+                            break;
 //Custom code, do not change this line   
                     }
                     break;

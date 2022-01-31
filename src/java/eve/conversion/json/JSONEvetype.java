@@ -2,7 +2,7 @@
  * JSONEvetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 24.0.2022 16:47
+ * Generated on 28.0.2022 15:59
  *
  */
  
@@ -179,6 +179,9 @@ public class JSONEvetype {
             }
             if(evetypesearch.getRelSystem2search()!=null && evetypesearch.getRelSystem2search().used()) {
                 kss.put("system2searcher", JSONTradecombined.toJSON((Tradecombinedsearch)evetypesearch.getRelSystem2search()));
+            }
+            if(evetypesearch.getUserbpsearch()!=null && evetypesearch.getUserbpsearch().used()) {
+                kss.put("userbpsearcher", JSONUserbp.toJSON((Userbpsearch)evetypesearch.getUserbpsearch()));
             }
             json.put("keysearch", kss);
         }
@@ -479,6 +482,13 @@ public class JSONEvetype {
             for(int i=0; i<keysearch.size(); i++) {
                 Systemsearch system2search = JSONSystem.toSystemsearch((JSONObject)keysearch.get(i));
                 evetypesearch.relsystem2(system2search);
+            }
+        }
+        keysearch = (JSONArray)kss.get("userbpsearcher");
+        if(keysearch!=null) {
+            for(int i=0; i<keysearch.size(); i++) {
+                Userbpsearch userbpsearch = JSONUserbp.toUserbpsearch((JSONObject)keysearch.get(i));
+                evetypesearch.userbp(userbpsearch);
             }
         }
         return evetypesearch;

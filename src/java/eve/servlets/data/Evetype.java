@@ -2,7 +2,7 @@
  * Evetype.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 24.0.2022 16:47
+ * Generated on 28.0.2022 15:59
  *
  */
 
@@ -113,6 +113,10 @@ public class Evetype extends SecurityDataServlet {
                         case IEvetypeOperation.SELECT_Tradecombined:
                             ITradecombinedPK tradecombinedPK = (ITradecombinedPK)parser.getJavaObject("tradecombinedpk");
                             dataobject = blevetype.getTradecombined(tradecombinedPK);
+                            break;
+                        case IEvetypeOperation.SELECT_Userbp:
+                            IUserbpPK userbpPK = (IUserbpPK)parser.getJavaObject("userbppk");
+                            dataobject = blevetype.getUserbp(userbpPK);
                             break;
                         case IEvetypeOperation.SELECT_SEARCH:
                             IEvetypesearch search = (IEvetypesearch)parser.getJavaObject("search");

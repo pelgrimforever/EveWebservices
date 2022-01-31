@@ -9,12 +9,16 @@
 package eve.BusinessObject.Logic;
 
 import BusinessObject.BLtable;
+import db.SQLparameters;
 import general.exception.DBException;
 import eve.interfaces.logicentity.IMaterialinput;
 import eve.logicentity.Materialinput;
 import eve.BusinessObject.table.Bmaterialinput;
+import eve.conversion.entity.EMmaterialinput;
+import eve.entity.pk.EvetypePK;
 import general.exception.DataException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 /**
  * Business Logic Entity class BLmaterialinput
@@ -48,6 +52,35 @@ public class BLmaterialinput extends Bmaterialinput {
         this.setLogginrequired(isprivatetable);
     }
 
+    /**
+     * update used amount in materialinput stock
+     * use oldest lines first
+     * @param username User name
+     * @param evetypepk material type
+     * @param amount used amount
+     * @throws DBException
+     * @throws DataException 
+     */
+    public void useMaterial(String username, EvetypePK evetypepk, long amount) throws DBException, DataException {
+        //get all material in stock for username / evetype
+        Object[][] parameters = {{ "username", username }};
+        SQLparameters sqlparameters = new SQLparameters(parameters);
+        sqlparameters.add(evetypepk.getSQLprimarykey());
+        ArrayList<Materialinput> stock = this.getEntities(EMmaterialinput.SQLSelect4usage, sqlparameters);
+        long amountremaining = amount;
+        long stock_usadamount;
+        for(Materialinput materialinput: stock) {
+            stock_usadamount = Math.min(materialinput.getAmount()-materialinput.getUsedamount(), amountremaining);
+            materialinput.setUsedamount(materialinput.getUsedamount() + stock_usadamount);
+            amountremaining -= stock_usadamount;
+            this.updateMaterialinput(materialinput);
+            if(amountremaining==0) {
+                break;
+            }
+        }
+        this.Commit2DB();
+    }
+    
     /**
      * try to insert Materialinput object in database
      * commit transaction

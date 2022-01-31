@@ -23,6 +23,7 @@ public class EMmaterialinput extends EMmaterialinput_default {
     
 //Custom code, do not change this line
     public static final String SQLSelectAll = SQLSelect + OrderBy;
+    public static final String SQLSelect4usage = SQLSelect + " where username = :username: and evetype = :evetype.id: and amount>usedamount order by addtimestamp";
 //Custom code, do not change this line
 
     /**
