@@ -1,7 +1,7 @@
 /*
  * RSView_order.java
  *
- * Generated on 14.0.2022 16:56
+ * Generated on 22.1.2022 10:57
  *
  */
 
@@ -95,11 +95,23 @@ public class RSView_order {
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
             IView_order view_order;
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            blview_order.setAuthenticated(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operationtype) {
                 case DataServlet.OPERATIONTYPE_SELECT:
+                    switch(operation) {
+                        case IView_orderOperation.SELECT_ALL:
+                            result = JSONView_order.toJSONArray(blview_order.getView_orders()).toJSONString();
+                            break;
+//Custom code, do not change this line
+//add here custom operations
+//Custom code, do not change this line   
+                    }
+                case DataServlet.OPERATIONTYPE_SECURESELECT:
                     switch(operation) {
                         case IView_orderOperation.SELECT_ALL:
                             result = JSONView_order.toJSONArray(blview_order.getView_orders()).toJSONString();
@@ -125,6 +137,11 @@ public class RSView_order {
                         case IView_orderOperation.SELECT_Wishlistorders:
                             String username = JSONConversion.getString(json, "username");
                             result = JSONView_order.toJSONArray(blview_order.getOrders4Wishlist(username)).toJSONString();
+                            break;
+                        case IView_orderOperation.SELECT_EVETYPE_REGION_SELL:
+                            EvetypePK evetypePKsellr = (EvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+                            RegionPK regionPKsellr = (RegionPK)JSONRegion.toRegionPK((JSONObject)json.get("regionpk"));
+                            result = JSONView_order.toJSONArray(blview_order.getView_orders4evetyperegion_sell(evetypePKsellr, regionPKsellr)).toJSONString();
                             break;
 //Custom code, do not change this line   
                     }

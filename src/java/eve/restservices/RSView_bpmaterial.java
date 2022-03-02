@@ -1,7 +1,7 @@
 /*
  * RSView_bpmaterial.java
  *
- * Generated on 24.0.2022 17:38
+ * Generated on 22.1.2022 10:57
  *
  */
 
@@ -95,11 +95,23 @@ public class RSView_bpmaterial {
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
             IView_bpmaterial view_bpmaterial;
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            blview_bpmaterial.setAuthenticated(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operationtype) {
                 case DataServlet.OPERATIONTYPE_SELECT:
+                    switch(operation) {
+                        case IView_bpmaterialOperation.SELECT_ALL:
+                            result = JSONView_bpmaterial.toJSONArray(blview_bpmaterial.getView_bpmaterials()).toJSONString();
+                            break;
+//Custom code, do not change this line
+//add here custom operations
+//Custom code, do not change this line   
+                    }
+                case DataServlet.OPERATIONTYPE_SECURESELECT:
                     switch(operation) {
                         case IView_bpmaterialOperation.SELECT_ALL:
                             result = JSONView_bpmaterial.toJSONArray(blview_bpmaterial.getView_bpmaterials()).toJSONString();

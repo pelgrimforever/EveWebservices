@@ -31,6 +31,7 @@ public class BLview_wishlist extends Bview_wishlist {
      * Constructor, sets View_wishlist as default Entity
      */
     public BLview_wishlist() {
+        this.setLogginrequired(true);
     }
 
     public ArrayList getView_wishlist4username(String username) throws DBException {

@@ -118,13 +118,16 @@ public class CategoryService implements Runnable {
     @Override
     public void run() {
         categorystatus.addMessage("Download Categories/Type groups/Types");
+        BLcategory blcategory = new BLcategory();
+        blcategory.setAuthenticated(true);
+        BLtypegroup bltypegroup = new BLtypegroup(blcategory);
+        bltypegroup.setAuthenticated(true);
+        BLevetype blevetype = new BLevetype(bltypegroup);
+        blevetype.setAuthenticated(true);
 
         long start = System.currentTimeMillis();
 
         try {
-            BLcategory blcategory = new BLcategory();
-            BLtypegroup bltypegroup = new BLtypegroup(blcategory);
-            BLevetype blevetype = new BLevetype(bltypegroup);
             int run = 0;
             //add categories
             JSONArray jsoncategories = Swagger.getCategories();

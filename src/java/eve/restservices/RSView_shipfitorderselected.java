@@ -1,7 +1,7 @@
 /*
  * RSView_shipfitorderselected.java
  *
- * Generated on 14.0.2022 16:56
+ * Generated on 22.1.2022 10:57
  *
  */
 
@@ -95,11 +95,23 @@ public class RSView_shipfitorderselected {
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
             IView_shipfitorderselected view_shipfitorderselected;
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            blview_shipfitorderselected.setAuthenticated(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operationtype) {
                 case DataServlet.OPERATIONTYPE_SELECT:
+                    switch(operation) {
+                        case IView_shipfitorderselectedOperation.SELECT_ALL:
+                            result = JSONView_shipfitorderselected.toJSONArray(blview_shipfitorderselected.getView_shipfitorderselecteds()).toJSONString();
+                            break;
+//Custom code, do not change this line
+//add here custom operations
+//Custom code, do not change this line   
+                    }
+                case DataServlet.OPERATIONTYPE_SECURESELECT:
                     switch(operation) {
                         case IView_shipfitorderselectedOperation.SELECT_ALL:
                             result = JSONView_shipfitorderselected.toJSONArray(blview_shipfitorderselected.getView_shipfitorderselecteds()).toJSONString();

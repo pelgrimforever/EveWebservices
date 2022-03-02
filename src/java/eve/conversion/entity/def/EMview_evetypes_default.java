@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 31.0.2022 17:49
+ * Generated on 22.1.2022 10:55
  *
  */
 package eve.conversion.entity.def;
@@ -49,6 +49,7 @@ public class EMview_evetypes_default implements ViewMapper {
                 view_evetypes.setTypegroupname(dbresult.getString("typegroupname"));
                 view_evetypes.setId(dbresult.getLong("id"));
                 view_evetypes.setName(dbresult.getString("name"));
+                view_evetypes.setConfiguredbp(dbresult.getBoolean("configuredbp"));
             }
             catch(SQLException sqle) {
                 throw sqle;

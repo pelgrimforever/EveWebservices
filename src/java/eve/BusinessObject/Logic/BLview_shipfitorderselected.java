@@ -36,6 +36,7 @@ public class BLview_shipfitorderselected extends Bview_shipfitorderselected {
      * Constructor, sets View_shipfitorderselected as default Entity
      */
     public BLview_shipfitorderselected() {
+        this.setLogginrequired(true);
     }
 
     /**

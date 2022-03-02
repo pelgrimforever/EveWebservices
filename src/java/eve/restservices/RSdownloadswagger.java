@@ -4,8 +4,11 @@
 package eve.restservices;
 
 import base.servlets.Securitycheck;
+import eve.BusinessObject.Logic.BLfrontendpage;
+import eve.BusinessObject.Logic.BLfrontendpage_auth;
 import eve.BusinessObject.service.MarketService;
 import eve.BusinessObject.service.MarketService.MarketStatus;
+import general.exception.DBException;
 import general.exception.DatahandlerException;
 import java.io.IOException;
 import java.util.Iterator;
@@ -65,9 +68,13 @@ public class RSdownloadswagger {
             jsonstatus.put("done", true);
             JSONObject json = (JSONObject)parser.parse(jsonstring);
             boolean loggedin = RSsecurity.check(json);
+            String auth = (String)json.get("auth");
+            String username = Securitycheck.getUsername(auth);
+            BLfrontendpage_auth blfrontendpage_auth = new BLfrontendpage_auth();
+            blfrontendpage_auth.setAuthenticated(loggedin);
+            loggedin = loggedin && blfrontendpage_auth.checkAuth(username, BLfrontendpage.DOWNLOADTRADE);
+            
             if(loggedin && json.containsKey("start") && (Boolean)json.get("start")) {
-                String auth = (String)json.get("auth");
-                String username = Securitycheck.getUsername(auth);
                 keeprunning = true;
                 //reset if previous market upload was finished
                 if(market!=null && market.getStatus().isDone()) {
@@ -112,7 +119,7 @@ public class RSdownloadswagger {
             jsonstatus.put("status", "OK");
             result = jsonstatus.toJSONString();
         }
-        catch(ParseException | DatahandlerException | IOException e) {
+        catch(ParseException | DBException | DatahandlerException | IOException e) {
             result = returnstatus(e.getMessage());
         }
         return result;

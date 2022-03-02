@@ -29,6 +29,18 @@ import org.json.simple.JSONObject;
  */
 public class BLcategory extends Bcategory {
 //Metacoder: NO AUTHOMATIC UPDATE
+
+    //categories
+    public static final long MATERIAL = 4;
+    public static final long SHIP = 6;
+    public static final long MODULE = 7;
+    public static final long CHARGE = 8;
+    public static final long BLUEPRINT = 9;
+    public static final long COMMODITY = 17;
+    public static final long DRONE = 18;
+    public static final long DEPLOYABLE = 22;
+    public static final long PLANETARYCOMMODITY = 43;
+	
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
     /**

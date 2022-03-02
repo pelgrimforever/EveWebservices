@@ -15,11 +15,10 @@ import eve.BusinessObject.view.Bview_order;
 import eve.conversion.entity.EMview_order;
 import eve.entity.pk.EvetypePK;
 import eve.entity.pk.OrdersPK;
+import eve.entity.pk.RegionPK;
 import eve.entity.pk.SystemPK;
-import eve.interfaces.logicentity.ISettings;
 import eve.interfaces.logicentity.ISyssettings;
 import eve.logicentity.Syssettings;
-import eve.logicentity.Usersettings;
 import general.exception.DataException;
 import java.util.ArrayList;
 
@@ -40,6 +39,7 @@ public class BLview_order extends Bview_order {
      * Constructor, sets View_order as default Entity
      */
     public BLview_order() {
+        this.setLogginrequired(true);
     }
 
     public ArrayList getOrders4Wishlist(String username) throws DBException {
@@ -66,6 +66,17 @@ public class BLview_order extends Bview_order {
      */
     public ArrayList getView_orders4evetype_sell(EvetypePK evetypePK) throws DBException {
         return getEntities(EMview_order.SQLSelect4Evetypesell, evetypePK.getSQLprimarykey());
+    }
+
+    /**
+     * get all View_order sell orders for evetype / region
+     * @param evetypePK
+     * @return ArrayList of View_order objects
+     * @throws DBException
+     */
+    public ArrayList getView_orders4evetyperegion_sell(EvetypePK evetypePK, RegionPK regionPK) throws DBException {
+        SQLparameters sqlparameters = new SQLparameters(evetypePK.getSQLprimarykey(), regionPK.getSQLprimarykey());
+        return getEntities(EMview_order.SQLSelect4Evetyperegionsell, sqlparameters);
     }
 
     /**

@@ -27,6 +27,8 @@ public class EMview_order extends EMview_order_default {
     public static final String SQLorderbyprice_desc = " order by view_order.price desc";
     public static final String SQLSelect4Evetypebuy = SQLSelectAll + " where view_order.evetype = :evetype.id: and view_order.is_buy_order" + SQLorderbyprice_desc;
     public static final String SQLSelect4Evetypesell = SQLSelectAll + " where view_order.evetype = :evetype.id: and not view_order.is_buy_order" + SQLorderbyprice_asc;
+    public static final String SQLSelect4Evetyperegionsell = SQLSelectAll + 
+        " where view_order.evetype = :evetype.id: and view_order.region = :region.id: and not view_order.is_buy_order" + SQLorderbyprice_asc;
     public static final String SQLSelect4selllowprice = "select sj.jumpssafe AS startsystem_jumps, sj.jumpssafelowsec as startsystem_jumpslowsec, sj.jumpssafenullsec as startsystem_jumpsnullsec, view_order.* from view_order " + 
         "inner join evetype et on et.id = view_order.evetype join typegroup tg on tg.id = et.typegroup join category c on c.id = tg.category and c.name <> 'Blueprint' " +
         "inner join systemjumps sj on view_order.system = sj.system_end " +

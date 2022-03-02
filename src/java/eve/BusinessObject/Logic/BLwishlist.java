@@ -28,7 +28,7 @@ import general.exception.DataException;
  */
 public class BLwishlist extends Bwishlist {
 //Metacoder: NO AUTHOMATIC UPDATE
-    private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
+    private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data
 	
     /**
      * Constructor, sets Wishlist as default Entity

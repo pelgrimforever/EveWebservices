@@ -162,13 +162,6 @@ public class RSMaterialinput {
                             break;
 //Custom code, do not change this line
 //add here custom operations
-                        case IMaterialinputOperation.UPDATE_MATERIALUSAGE:
-                            String username = JSONConversion.getString(json, "username");
-                            long amount = JSONConversion.getlong(json, "amount");
-                            EvetypePK evetypePK = (EvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
-                            blmaterialinput.useMaterial(username, evetypePK, amount);
-                            result = returnstatus("OK");
-                            break;
 //Custom code, do not change this line   
                     }
                     break;
@@ -241,6 +234,14 @@ public class RSMaterialinput {
                             break;
 //Custom code, do not change this line
 //add here custom operations
+                        case IMaterialinputOperation.UPDATE_MATERIALUSAGE:
+                            String username = JSONConversion.getString(json, "username");
+                            long amount = JSONConversion.getlong(json, "amount");
+                            EvetypePK evetypePK = (EvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+                            blmaterialinput.useMaterial(username, evetypePK, amount);
+                            blmaterialinput.Commit2DB();
+                            result = returnstatus("OK");
+                            break;
 //Custom code, do not change this line   
                     }
                     break;

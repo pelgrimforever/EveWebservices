@@ -38,6 +38,7 @@ public class BLview_tradecombined_sell extends Bview_tradecombined_sell {
      * Constructor, sets View_tradecombined_sell as default Entity
      */
     public BLview_tradecombined_sell() {
+        this.setLogginrequired(true);
     }
     
     /**
@@ -48,6 +49,8 @@ public class BLview_tradecombined_sell extends Bview_tradecombined_sell {
      */
     public ArrayList getView_tradecombined_sells(TradecombinedPK tradecombinedPK) throws DBException {
         BLview_order blview_order = new BLview_order();
+        blview_order.setAuthenticated(this.isAuthenticated());
+        
         ArrayList<View_tradecombined_sell> tradelines = getEntities(EMview_tradecombined_sell.SQLSelect4Tradecombined_sell, tradecombinedPK.getSQLprimarykey());
         OrdersPK sellordersPK;
         OrdersPK buyordersPK;
@@ -79,6 +82,8 @@ public class BLview_tradecombined_sell extends Bview_tradecombined_sell {
      */
     public ArrayList getView_tradecombined_sells(SystemPK sell_systemPK, SystemPK buy_systemPK) throws DBException {
         BLview_order blview_order = new BLview_order();
+        blview_order.setAuthenticated(this.isAuthenticated());
+        
         Object[][] systemparameters = { { "sell_system", sell_systemPK.getId() }, { "buy_system", buy_systemPK.getId() } };
         SQLparameters sqlparameters = new SQLparameters(systemparameters);
         ArrayList<View_tradecombined_sell> tradelines = getEntities(EMview_tradecombined_sell.SQLSelect4sellbuysystem, sqlparameters);

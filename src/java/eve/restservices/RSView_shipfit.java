@@ -1,7 +1,7 @@
 /*
  * RSView_shipfit.java
  *
- * Generated on 14.0.2022 16:56
+ * Generated on 22.1.2022 10:57
  *
  */
 
@@ -95,11 +95,23 @@ public class RSView_shipfit {
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
             IView_shipfit view_shipfit;
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            blview_shipfit.setAuthenticated(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operationtype) {
                 case DataServlet.OPERATIONTYPE_SELECT:
+                    switch(operation) {
+                        case IView_shipfitOperation.SELECT_ALL:
+                            result = JSONView_shipfit.toJSONArray(blview_shipfit.getView_shipfits()).toJSONString();
+                            break;
+//Custom code, do not change this line
+//add here custom operations
+//Custom code, do not change this line   
+                    }
+                case DataServlet.OPERATIONTYPE_SECURESELECT:
                     switch(operation) {
                         case IView_shipfitOperation.SELECT_ALL:
                             result = JSONView_shipfit.toJSONArray(blview_shipfit.getView_shipfits()).toJSONString();

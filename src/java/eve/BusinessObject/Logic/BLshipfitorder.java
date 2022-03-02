@@ -33,7 +33,7 @@ import java.util.ArrayList;
  */
 public class BLshipfitorder extends Bshipfitorder {
 //Metacoder: NO AUTHOMATIC UPDATE
-    private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
+    private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data
 	
     /**
      * Constructor, sets Shipfitorder as default Entity
@@ -85,7 +85,7 @@ public class BLshipfitorder extends Bshipfitorder {
                     delShipfitorder(delsqlparameters, "and");
                 }
                 //initialize
-                ordercomplete = true;
+                ordercomplete = shipfitorder.getAmountwanted()<=shipfitorder.getAmountinstock();
             }
             previousshipfitpk = shipfitpk;
         }

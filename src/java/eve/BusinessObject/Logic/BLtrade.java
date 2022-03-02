@@ -32,7 +32,7 @@ import java.util.Iterator;
  */
 public class BLtrade extends Btrade {
 //Metacoder: NO AUTHOMATIC UPDATE
-    private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
+    private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data
 	
     /**
      * Constructor, sets Trade as default Entity
@@ -109,7 +109,7 @@ public class BLtrade extends Btrade {
         trade.setProfit(trade.getBuy_order_value()*0.95 - trade.getSell_order_value());
         trade.setProfit_per_jump(trade.getProfit() / trade.getJumps());
         if(trade.getRuns()>1) {
-            trade.setRuns(0);
+            trade.setRuns(1);
             trade.setSinglerun_profit_per_jump(0);
         }
     }

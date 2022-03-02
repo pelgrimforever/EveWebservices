@@ -32,7 +32,7 @@ import java.util.ArrayList;
  */
 public class BLmaterialinput extends Bmaterialinput {
 //Metacoder: NO AUTHOMATIC UPDATE
-    private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
+    private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data
 	
     /**
      * Constructor, sets Materialinput as default Entity
@@ -78,7 +78,6 @@ public class BLmaterialinput extends Bmaterialinput {
                 break;
             }
         }
-        this.Commit2DB();
     }
     
     /**

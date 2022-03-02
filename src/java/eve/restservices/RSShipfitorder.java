@@ -170,14 +170,6 @@ public class RSShipfitorder {
                             break;
 //Custom code, do not change this line
 //add here custom operations
-                        case IShipfitorderOperation.UPDATE_ORDERAMOUNT:
-                            shipfitorderPK = (IShipfitorderPK)JSONShipfitorder.toShipfitorderPK((JSONObject)json.get("shipfitorderpk"));
-                            int amount = JSONConversion.getint(json, "amount");
-                            blshipfitorder.updateAmount(shipfitorderPK, amount);
-                            blshipfitorder.Commit2DB();
-                            blshipfitorder.removeCompleteorders(shipfitorderPK.getUsername());
-                            result = returnstatus("OK");
-                            break;
 //Custom code, do not change this line   
                     }
                     break;
@@ -258,6 +250,14 @@ public class RSShipfitorder {
                             break;
 //Custom code, do not change this line
 //add here custom operations
+                        case IShipfitorderOperation.UPDATE_ORDERAMOUNT:
+                            shipfitorderPK = (IShipfitorderPK)JSONShipfitorder.toShipfitorderPK((JSONObject)json.get("shipfitorderpk"));
+                            int amount = JSONConversion.getint(json, "amount");
+                            blshipfitorder.updateAmount(shipfitorderPK, amount);
+                            blshipfitorder.Commit2DB();
+                            blshipfitorder.removeCompleteorders(shipfitorderPK.getUsername());
+                            result = returnstatus("OK");
+                            break;
 //Custom code, do not change this line   
                     }
                     break;

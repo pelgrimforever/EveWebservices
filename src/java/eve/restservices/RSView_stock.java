@@ -1,7 +1,7 @@
 /*
  * RSView_stock.java
  *
- * Generated on 14.0.2022 16:56
+ * Generated on 22.1.2022 10:57
  *
  */
 
@@ -95,11 +95,23 @@ public class RSView_stock {
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
             IView_stock view_stock;
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            blview_stock.setAuthenticated(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operationtype) {
                 case DataServlet.OPERATIONTYPE_SELECT:
+                    switch(operation) {
+                        case IView_stockOperation.SELECT_ALL:
+                            result = JSONView_stock.toJSONArray(blview_stock.getView_stocks()).toJSONString();
+                            break;
+//Custom code, do not change this line
+//add here custom operations
+//Custom code, do not change this line   
+                    }
+                case DataServlet.OPERATIONTYPE_SECURESELECT:
                     switch(operation) {
                         case IView_stockOperation.SELECT_ALL:
                             result = JSONView_stock.toJSONArray(blview_stock.getView_stocks()).toJSONString();

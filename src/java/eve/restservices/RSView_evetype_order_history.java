@@ -1,7 +1,7 @@
 /*
  * RSView_evetype_order_history.java
  *
- * Generated on 14.0.2022 16:56
+ * Generated on 22.1.2022 10:57
  *
  */
 
@@ -95,6 +95,9 @@ public class RSView_evetype_order_history {
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
             IView_evetype_order_history view_evetype_order_history;
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            blview_evetype_order_history.setAuthenticated(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
@@ -110,6 +113,15 @@ public class RSView_evetype_order_history {
                             EvetypePK evetypePK = (EvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
                             result = JSONView_evetype_order_history.toJSONArray(blview_evetype_order_history.getView_evetype_order_historys(evetypePK)).toJSONString();
                             break;
+//Custom code, do not change this line   
+                    }
+                case DataServlet.OPERATIONTYPE_SECURESELECT:
+                    switch(operation) {
+                        case IView_evetype_order_historyOperation.SELECT_ALL:
+                            result = JSONView_evetype_order_history.toJSONArray(blview_evetype_order_history.getView_evetype_order_historys()).toJSONString();
+                            break;
+//Custom code, do not change this line
+//add here custom operations
 //Custom code, do not change this line   
                     }
             }

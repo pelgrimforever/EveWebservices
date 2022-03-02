@@ -13,6 +13,7 @@ import db.SQLparameters;
 import eve.logicview.View_evetypes;
 import eve.BusinessObject.view.Bview_evetypes;
 import eve.conversion.entity.EMview_evetypes;
+import eve.searchentity.View_evetypessearch;
 import java.util.ArrayList;
 
 /**
@@ -28,21 +29,11 @@ import java.util.ArrayList;
 public class BLview_evetypes extends Bview_evetypes {
 //Metacoder: NO AUTHOMATIC UPDATE
     
-    //categories
-    private static final long SHIP = 6;
-    private static final long MODULE = 7;
-    private static final long BLUEPRINT = 9;
-    private static final long CHARGE = 8;
-    private static final long DRONE = 18;
-    private static final long DEPLOYABLE = 22;
-    //typegroups
-    private static final long MINERALS = 18;
-    private static final long SALVAGEDMATERIAL = 754;
-	
     /**
      * Constructor, sets View_evetypes as default Entity
      */
     public BLview_evetypes() {
+        this.setLogginrequired(true);
     }
 
     /**
@@ -51,7 +42,7 @@ public class BLview_evetypes extends Bview_evetypes {
      * @throws DBException
      */
     public ArrayList<View_evetypes> getShips() throws DBException {
-        Object[][] parameter = {{ "category", SHIP }};
+        Object[][] parameter = {{ "category", BLcategory.SHIP }};
         SQLparameters sqlparameters = new SQLparameters(parameter);
         return getEntities(EMview_evetypes.SQLSelect4Category, sqlparameters);
     }
@@ -62,7 +53,7 @@ public class BLview_evetypes extends Bview_evetypes {
      * @throws DBException
      */
     public ArrayList<View_evetypes> getModules() throws DBException {
-        Object[][] parameter = {{ "category", MODULE }};
+        Object[][] parameter = {{ "category", BLcategory.MODULE }};
         SQLparameters sqlparameters = new SQLparameters(parameter);
         return getEntities(EMview_evetypes.SQLSelect4Category, sqlparameters);
     }
@@ -73,7 +64,7 @@ public class BLview_evetypes extends Bview_evetypes {
      * @throws DBException
      */
     public ArrayList<View_evetypes> getCharges() throws DBException {
-        Object[][] parameter = {{ "category", CHARGE }};
+        Object[][] parameter = {{ "category", BLcategory.CHARGE }};
         SQLparameters sqlparameters = new SQLparameters(parameter);
         return getEntities(EMview_evetypes.SQLSelect4Category, sqlparameters);
     }
@@ -84,7 +75,7 @@ public class BLview_evetypes extends Bview_evetypes {
      * @throws DBException
      */
     public ArrayList<View_evetypes> getDrones() throws DBException {
-        Object[][] parameter = {{ "category", DRONE }};
+        Object[][] parameter = {{ "category", BLcategory.DRONE }};
         SQLparameters sqlparameters = new SQLparameters(parameter);
         return getEntities(EMview_evetypes.SQLSelect4Category, sqlparameters);
     }
@@ -95,7 +86,7 @@ public class BLview_evetypes extends Bview_evetypes {
      * @throws DBException
      */
     public ArrayList<View_evetypes> getDeployables() throws DBException {
-        Object[][] parameter = {{ "category", DEPLOYABLE }};
+        Object[][] parameter = {{ "category", BLcategory.DEPLOYABLE }};
         SQLparameters sqlparameters = new SQLparameters(parameter);
         return getEntities(EMview_evetypes.SQLSelect4Category, sqlparameters);
     }
@@ -106,7 +97,7 @@ public class BLview_evetypes extends Bview_evetypes {
      * @throws DBException
      */
     public ArrayList<View_evetypes> getMinerals() throws DBException {
-        Object[][] parameter = {{ "typegroupid", MINERALS }};
+        Object[][] parameter = {{ "typegroupid", BLtypegroup.MINERALS }};
         SQLparameters sqlparameters = new SQLparameters(parameter);
         return getEntities(EMview_evetypes.SQLSelect4Typegroup, sqlparameters);
     }
@@ -117,7 +108,7 @@ public class BLview_evetypes extends Bview_evetypes {
      * @throws DBException
      */
     public ArrayList<View_evetypes> getSalvagedmaterials() throws DBException {
-        Object[][] parameter = {{ "typegroupid", SALVAGEDMATERIAL }};
+        Object[][] parameter = {{ "typegroupid", BLtypegroup.SALVAGEDMATERIAL }};
         SQLparameters sqlparameters = new SQLparameters(parameter);
         return getEntities(EMview_evetypes.SQLSelect4Typegroup, sqlparameters);
     }
@@ -128,8 +119,64 @@ public class BLview_evetypes extends Bview_evetypes {
      * @throws DBException
      */
     public ArrayList<View_evetypes> getBlueprints(String searchstring) throws DBException {
-        Object[][] parameter = {{ "category", BLUEPRINT }, { "searchstring", searchstring }};
+        Object[][] parameter = {{ "category", BLcategory.BLUEPRINT }, { "searchstring", searchstring }};
         SQLparameters sqlparameters = new SQLparameters(parameter);
         return getEntities(EMview_evetypes.SQLSelect4Categorysearch, sqlparameters);
     }
+
+    /**
+     * get result evetype from a blueprint
+     * @param bpview: View_evetypes blueprint
+     * @return View_evetypes result
+     * @throws DBException 
+     */
+    public View_evetypes getBlueprintresult(View_evetypes bpview) throws DBException {
+        int bpsuffixlength = 10; //" Blueprint" at end of a BP name 
+        String bpname = bpview.getName();
+        String name = bpname.substring(0, bpname.length() - bpsuffixlength);
+        View_evetypessearch search = new View_evetypessearch();
+        String[] names = { name };
+        search.name(names);
+        ArrayList<View_evetypes> viewevetypes = this.search(search);
+        View_evetypes result = null;
+        if(viewevetypes.size()>0) {
+            result = viewevetypes.get(0);
+        }
+        return result;
+    }
+    
+    /**
+     * get all evetypes of category commodity matching searchstring
+     * @return ArrayList of View_evetypes objects
+     * @throws DBException
+     */
+    public ArrayList<View_evetypes> getCommodities(String searchstring) throws DBException {
+        Object[][] parameter = {{ "category", BLcategory.COMMODITY }, { "searchstring", searchstring }};
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        return getEntities(EMview_evetypes.SQLSelect4Categorysearch, sqlparameters);
+    }
+
+    /**
+     * get all evetypes of category material
+     * @return ArrayList of View_evetypes objects
+     * @throws DBException
+     */
+    public ArrayList<View_evetypes> getMaterials() throws DBException {
+        Object[][] parameter = {{ "category", BLcategory.MATERIAL }};
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        return getEntities(EMview_evetypes.SQLSelect4Category, sqlparameters);
+    }
+    
+    /**
+     * get all evetypes of category planetary commodity
+     * @return ArrayList of View_evetypes objects
+     * @throws DBException
+     */
+    public ArrayList<View_evetypes> getPlanetarycommodities() throws DBException {
+        Object[][] parameter = {{ "category", BLcategory.PLANETARYCOMMODITY }};
+        SQLparameters sqlparameters = new SQLparameters(parameter);
+        return getEntities(EMview_evetypes.SQLSelect4Category, sqlparameters);
+    }
+    
+    
 }

@@ -83,6 +83,15 @@ public class Markethistory implements Runnable {
     
     @Override
     public void run() {
+        BLorder_history blorderhistory = new BLorder_history();
+        blorderhistory.setAuthenticated(true);
+        BLview_order_region_evetype blview_order_region_evetype = new BLview_order_region_evetype();
+        blview_order_region_evetype.setAuthenticated(true);
+        BLorder_history_maxdate blorder_history_maxdate = new BLorder_history_maxdate();
+        blorder_history_maxdate.setAuthenticated(true);
+        BLevetype blevetype = new BLevetype();
+        blevetype.setAuthenticated(true);
+
         markethistorystatus.addMessage("Download market history");
 
         long start = System.currentTimeMillis();
@@ -94,10 +103,6 @@ public class Markethistory implements Runnable {
             JSONArray jsonhistory;
             Iterator<JSONObject> jsonhistoryI;
             JSONObject jsonline;
-            BLorder_history blorderhistory = new BLorder_history();
-            BLview_order_region_evetype blview_order_region_evetype = new BLview_order_region_evetype();
-            BLorder_history_maxdate blorder_history_maxdate = new BLorder_history_maxdate();
-            BLevetype blevetype = new BLevetype();
             Date maxdate = blorder_history_maxdate.getOrder_history_maxdates().get(0).getMaxdate();
             Date swaggerdate;
 

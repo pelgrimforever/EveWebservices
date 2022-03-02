@@ -32,6 +32,7 @@ public class BLview_contractitem extends Bview_contractitem {
      * Constructor, sets View_contractitem as default Entity
      */
     public BLview_contractitem() {
+        this.setLogginrequired(true);
     }
 
     /**

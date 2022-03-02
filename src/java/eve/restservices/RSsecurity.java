@@ -11,6 +11,9 @@ import base.servlets.DataHandler;
 import base.servlets.Securitycheck;
 import general.exception.DatahandlerException;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import org.json.simple.JSONObject;
 
 /**
@@ -18,6 +21,7 @@ import org.json.simple.JSONObject;
  * @author Franky Laseure
  */
 public class RSsecurity {
+//Metacoder: NO AUTHOMATIC UPDATE
     
     public static boolean check(JSONObject json) throws DatahandlerException {
 //Custom code, do not change this line   
@@ -57,4 +61,31 @@ public class RSsecurity {
 */
 //Custom code, do not change this line   
     }
+
+    public static boolean register(String auth1, String username) throws DatahandlerException {
+        if(username!=null) {
+            DataHandler.SERVER = "http://localhost:8080/";
+            return Securitycheck.register(auth1, username, username);
+        } else return false;
+    }
+
+    public static boolean reset(String auth1, String username) throws DatahandlerException {
+        if(username!=null) {
+            DataHandler.SERVER = "http://localhost:8080/";
+            return Securitycheck.reset(auth1, username);
+        } else return false;
+    }
+
+    public static boolean isadmin(String auth1) throws DatahandlerException {
+        DataHandler.SERVER = "http://localhost:8080/";
+        return Securitycheck.isadmin(auth1);
+    }
+
+    public static boolean updatepass(String auth1, String auth2) throws DatahandlerException {
+        if(auth1!=null && auth2!=null) {
+            DataHandler.SERVER = "http://localhost:8080/";
+            return Securitycheck.updatepass(auth1, auth2);
+        } else return false;
+    }
+
 }

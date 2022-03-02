@@ -21,7 +21,9 @@ import java.sql.SQLException;
 public class EMview_evetype_order_history_month extends EMview_evetype_order_history_month_default {
 //Metacoder: NO AUTHOMATIC UPDATE
     
+    public static final String SQLselectmaxyearmonth = SQLSelectAll + " where year = (select max(year) from order_history_month) order by month desc";
     public static final String SQLselect4evetype = SQLSelectAll + " where evetype = :evetype.id: order by year, month";
+    public static final String SQLselect4evetypeYM = SQLSelectAll + " where evetype = :evetype.id: and year = :year: and month = :month:";
     
     /**
      * Map ResultSet Field values to View_evetype_order_history_month

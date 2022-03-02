@@ -1,7 +1,7 @@
 /*
  * RSView_contractitem.java
  *
- * Generated on 14.0.2022 16:56
+ * Generated on 22.1.2022 10:57
  *
  */
 
@@ -95,11 +95,23 @@ public class RSView_contractitem {
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
             IView_contractitem view_contractitem;
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            blview_contractitem.setAuthenticated(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operationtype) {
                 case DataServlet.OPERATIONTYPE_SELECT:
+                    switch(operation) {
+                        case IView_contractitemOperation.SELECT_ALL:
+                            result = JSONView_contractitem.toJSONArray(blview_contractitem.getView_contractitems()).toJSONString();
+                            break;
+//Custom code, do not change this line
+//add here custom operations
+//Custom code, do not change this line   
+                    }
+                case DataServlet.OPERATIONTYPE_SECURESELECT:
                     switch(operation) {
                         case IView_contractitemOperation.SELECT_ALL:
                             result = JSONView_contractitem.toJSONArray(blview_contractitem.getView_contractitems()).toJSONString();

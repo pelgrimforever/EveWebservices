@@ -31,6 +31,7 @@ public class BLview_shipfitmodule extends Bview_shipfitmodule {
      * Constructor, sets View_shipfitmodule as default Entity
      */
     public BLview_shipfitmodule() {
+        this.setLogginrequired(true);
     }
 
     public ArrayList getview_shipfitmodules(String username, String shipname) throws DBException {

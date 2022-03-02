@@ -32,6 +32,7 @@ public class BLview_userbp extends Bview_userbp {
      * Constructor, sets View_userbp as default Entity
      */
     public BLview_userbp() {
+        this.setLogginrequired(true);
     }
 
     /**
@@ -43,5 +44,18 @@ public class BLview_userbp extends Bview_userbp {
         Object[][] parameters = {{ "username", username}};
         SQLparameters sqlparameters = new SQLparameters(parameters);
         return getEntities(EMview_userbp.SQLSelect4user, sqlparameters);
+    }
+
+    /**
+     * get all View_userbp objects for username / blueprint type
+     * @param username user name
+     * @param bp blueprint id
+     * @return ArrayList of View_userbp objects
+     * @throws DBException
+     */
+    public ArrayList<View_userbp> getView_userbps(String username, long bp) throws DBException {
+        Object[][] parameters = {{ "username", username}, { "bp", bp }};
+        SQLparameters sqlparameters = new SQLparameters(parameters);
+        return getEntities(EMview_userbp.SQLSelect4userbp, sqlparameters);
     }
 }

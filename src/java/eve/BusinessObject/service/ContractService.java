@@ -184,8 +184,10 @@ public class ContractService implements Runnable {
 
     @Override
     public void run() {
+        BLcontract blcontract = new BLcontract();
+        blcontract.setAuthenticated(true);
+        
         try {
-            BLcontract blcontract = new BLcontract();
             //more contracts to order_hist
             contractstatus.addMessage("Deactivate contracts");
             if(blcontract.count()>0) {
@@ -224,7 +226,6 @@ public class ContractService implements Runnable {
         catch(InterruptedException e) {
         }
         try {
-            BLcontract blcontract = new BLcontract();
             contractstatus.addMessage("Cleanup Deactivated contracts");
             blcontract.deletedeactivatedcontracts();
         }

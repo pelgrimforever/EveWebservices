@@ -147,11 +147,6 @@ public class RSUserbp {
                             break;
 //Custom code, do not change this line
 //add here custom operations
-                        case IUserbpOperation.INSERT_ADDBP:
-                            userbp = (IUserbp)JSONUserbp.toUserbp((JSONObject)json.get("userbp"));
-                            bluserbp.insertNewbp(userbp);
-                            result = returnstatus("OK");
-                            break;
 //Custom code, do not change this line   
                     }
                     break;
@@ -167,12 +162,6 @@ public class RSUserbp {
                             break;
 //Custom code, do not change this line
 //add here custom operations
-                        case IUserbpOperation.UPDATE_PROPERTIES:
-                            JSONObject jsonuserbpprop = (JSONObject)json.get("userbp");
-                            userbp = JSONUserbp.toUserbp((JSONObject)jsonuserbpprop);
-                            bluserbp.updateProperties(userbp);
-                            result = returnstatus("OK");
-                            break;
 //Custom code, do not change this line   
                     }
                     break;
@@ -230,6 +219,11 @@ public class RSUserbp {
                             break;
 //Custom code, do not change this line
 //add here custom operations
+                        case IUserbpOperation.INSERT_ADDBP:
+                            userbp = (IUserbp)JSONUserbp.toUserbp((JSONObject)json.get("userbp"));
+                            bluserbp.insertNewbp(userbp);
+                            result = returnstatus("OK");
+                            break;
 //Custom code, do not change this line   
                     }
                     break;
@@ -245,6 +239,18 @@ public class RSUserbp {
                             break;
 //Custom code, do not change this line
 //add here custom operations
+                        case IUserbpOperation.UPDATE_PROPERTIES:
+                            JSONObject jsonuserbpprop = (JSONObject)json.get("userbp");
+                            userbp = JSONUserbp.toUserbp((JSONObject)jsonuserbpprop);
+                            bluserbp.updateProperties(userbp);
+                            result = returnstatus("OK");
+                            break;
+                        case IUserbpOperation.UPDATE_RUNBP:
+                            UserbpPK userbpPK_torun = (UserbpPK)JSONUserbp.toUserbpPK((JSONObject)json.get("userbppk"));
+                            int amount = JSONConversion.getint(json, "amount");
+                            bluserbp.runbp(userbpPK_torun, amount);
+                            result = returnstatus("OK");
+                            break;
 //Custom code, do not change this line   
                     }
                     break;

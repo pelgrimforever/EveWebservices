@@ -38,7 +38,10 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSContractitem.class);
         resources.add(eve.restservices.RSCorporation.class);
         resources.add(eve.restservices.RSEvetype.class);
+        resources.add(eve.restservices.RSEveuser.class);
         resources.add(eve.restservices.RSFaction.class);
+        resources.add(eve.restservices.RSFrontendpage.class);
+        resources.add(eve.restservices.RSFrontendpage_auth.class);
         resources.add(eve.restservices.RSGraphic.class);
         resources.add(eve.restservices.RSJson_orders.class);
         resources.add(eve.restservices.RSLoadorderupdate.class);
@@ -75,11 +78,13 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSUserbp.class);
         resources.add(eve.restservices.RSUsersettings.class);
         resources.add(eve.restservices.RSView_activemodules.class);
+        resources.add(eve.restservices.RSView_bp_profitperregion.class);
         resources.add(eve.restservices.RSView_bpmaterial.class);
         resources.add(eve.restservices.RSView_contractitem.class);
         resources.add(eve.restservices.RSView_contractswithprofit.class);
         resources.add(eve.restservices.RSView_evetype_order_history.class);
         resources.add(eve.restservices.RSView_evetype_order_history_month.class);
+        resources.add(eve.restservices.RSView_evetype_order_history_region_month.class);
         resources.add(eve.restservices.RSView_evetypes.class);
         resources.add(eve.restservices.RSView_materialinput.class);
         resources.add(eve.restservices.RSView_materialinputavg.class);
@@ -106,6 +111,7 @@ public class ApplicationConfig extends Application {
         resources.add(eve.restservices.RSView_wishlist.class);
         resources.add(eve.restservices.RSWishlist.class);
         resources.add(eve.restservices.RSbpproduction.class);
+        resources.add(eve.restservices.RSbpsimulatemarket.class);
         resources.add(eve.restservices.RScalculatesystemjumps.class);
         resources.add(eve.restservices.RScreatenodes.class);
         resources.add(eve.restservices.RScreateroutes.class);

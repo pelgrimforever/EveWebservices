@@ -6,6 +6,7 @@ package eve.restservices;
 import eve.BusinessObject.service.SystemjumpsService;
 import eve.BusinessObject.service.UniverseService;
 import eve.BusinessObject.service.UniverseService.UniverseStatus;
+import general.exception.DatahandlerException;
 import java.util.Iterator;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -63,7 +64,10 @@ public class RScalculatesystemjumps {
             jsonstatus.put("done", true);
             
             JSONObject json = (JSONObject)parser.parse(jsonstring);
-            if(json.containsKey("start") && (Boolean)json.get("start")) {
+            boolean loggedin = RSsecurity.check(json);
+            String auth = (String)json.get("auth");
+            boolean isadmin = RSsecurity.isadmin(auth);
+            if(isadmin && json.containsKey("start") && (Boolean)json.get("start")) {
                 keeprunning = true;
                 //reset if previous systemjumpsservice upload was finished
                 if(systemjumpsservice!=null && systemjumpsservice.getStatus().isDone()) {
@@ -101,7 +105,7 @@ public class RScalculatesystemjumps {
             jsonstatus.put("status", "OK");
             result = jsonstatus.toJSONString();
         }
-        catch(ParseException e) {
+        catch(ParseException | DatahandlerException e) {
             result = returnstatus(e.getMessage());
         }
         return result;

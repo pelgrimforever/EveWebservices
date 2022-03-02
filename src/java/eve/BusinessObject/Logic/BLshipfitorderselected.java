@@ -41,7 +41,7 @@ import javafx.util.Pair;
  */
 public class BLshipfitorderselected extends Bshipfitorderselected {
 //Metacoder: NO AUTHOMATIC UPDATE
-    private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
+    private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data
 	
     /**
      * Constructor, sets Shipfitorderselected as default Entity
@@ -52,11 +52,13 @@ public class BLshipfitorderselected extends Bshipfitorderselected {
 
     public void addOrderid(IShipfitorderPK shipfitorderPK, IOrdersPK ordersPK) throws CustomException {
         BLorders blorders = new BLorders();
+        blorders.setAuthenticated(this.isAuthenticated());
         Orders sellorder = blorders.getOrders(ordersPK);
         long availableamount = sellorder.getVolume_remain();
         
         //get the shipfitorder
         BLshipfitorder blshipfitorder = new BLshipfitorder();
+        blshipfitorder.setAuthenticated(this.isAuthenticated());
         Shipfitorder shipfitorder = blshipfitorder.getShipfitorder(shipfitorderPK);
         int amountwanted = shipfitorder.getAmountwanted()-shipfitorder.getAmountinstock();
         
@@ -99,6 +101,9 @@ public class BLshipfitorderselected extends Bshipfitorderselected {
      * @throws DataException 
      */
     public void confirmOrder(IShipfitorderselectedPK shipfitorderselectedPK, int amount) throws DBException, DataException, CustomException {
+        BLshipfitorder blshipfitorder = new BLshipfitorder(this);
+        blshipfitorder.setAuthenticated(this.isAuthenticated());
+
         Shipfitorderselected shipfitorderselected = this.getShipfitorderselected(shipfitorderselectedPK);
         int amountleft = Math.max(shipfitorderselected.getAmount()-amount, 0);
         if(amountleft>0) {
@@ -107,7 +112,6 @@ public class BLshipfitorderselected extends Bshipfitorderselected {
         } else {
             this.trans_deleteShipfitorderselected(shipfitorderselected);
         }
-        BLshipfitorder blshipfitorder = new BLshipfitorder(this);
         Shipfitorder shipfitorder = blshipfitorder.getShipfitorderselected(shipfitorderselectedPK);
         blshipfitorder.updateAmount(shipfitorderselectedPK.getShipfitorderPK(), amount);
         this.Commit2DB();
@@ -117,11 +121,16 @@ public class BLshipfitorderselected extends Bshipfitorderselected {
     
     public ArrayList<View_system> calculateroute(String username, long startsystem, long endsystem) throws DBException {
         BLsystem blsystem = new BLsystem();
+        blsystem.setAuthenticated(this.isAuthenticated());
+        BLsystemjumps blsystemjumps = new BLsystemjumps();
+        blsystemjumps.setAuthenticated(this.isAuthenticated());
+        BLview_system blview_system = new BLview_system();
+        blview_system.setAuthenticated(this.isAuthenticated());
+        
         System start = blsystem.getSystem(new SystemPK(startsystem));
         System end = blsystem.getSystem(new SystemPK(endsystem));
         ArrayList<System> usedsystems = blsystem.getSystems4shipfitorderselected(username);
         
-        BLsystemjumps blsystemjumps = new BLsystemjumps();
         ArrayList<Systemjumps> systemjumps = blsystemjumps.getSystemjumps4shiporderselected(username, startsystem, endsystem);
         HashMap<Pair<Long,Long>, Systemjumps> jumptable = new HashMap<>();
         for(Systemjumps systemjump: systemjumps) {
@@ -135,7 +144,6 @@ public class BLshipfitorderselected extends Bshipfitorderselected {
         route.add(end);
         
         //load View_system lines for every System
-        BLview_system blview_system = new BLview_system();
         ArrayList<View_system> routesystems = new ArrayList<>();
         System prevsystem = start;
         for(System system: route) {

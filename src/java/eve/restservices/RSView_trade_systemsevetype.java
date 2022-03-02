@@ -1,7 +1,7 @@
 /*
  * RSView_trade_systemsevetype.java
  *
- * Generated on 14.0.2022 16:56
+ * Generated on 22.1.2022 10:57
  *
  */
 
@@ -95,11 +95,23 @@ public class RSView_trade_systemsevetype {
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
             IView_trade_systemsevetype view_trade_systemsevetype;
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            blview_trade_systemsevetype.setAuthenticated(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operationtype) {
                 case DataServlet.OPERATIONTYPE_SELECT:
+                    switch(operation) {
+                        case IView_trade_systemsevetypeOperation.SELECT_ALL:
+                            result = JSONView_trade_systemsevetype.toJSONArray(blview_trade_systemsevetype.getView_trade_systemsevetypes()).toJSONString();
+                            break;
+//Custom code, do not change this line
+//add here custom operations
+//Custom code, do not change this line   
+                    }
+                case DataServlet.OPERATIONTYPE_SECURESELECT:
                     switch(operation) {
                         case IView_trade_systemsevetypeOperation.SELECT_ALL:
                             result = JSONView_trade_systemsevetype.toJSONArray(blview_trade_systemsevetype.getView_trade_systemsevetypes()).toJSONString();

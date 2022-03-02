@@ -71,12 +71,18 @@ public class RSLoadorderupdate {
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         String result = "";
-        BLview_order blview_order = new BLview_order();
-        BLsystem blsystem = new BLsystem();
-        BLconstellation blconstellation = new BLconstellation();
         JSONParser parser = new JSONParser();
         try {
             JSONObject json = (JSONObject)parser.parse(jsonstring);
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            BLview_order blview_order = new BLview_order();
+            blview_order.setAuthenticated(loggedin);
+            BLsystem blsystem = new BLsystem();
+            blsystem.setAuthenticated(loggedin);
+            BLconstellation blconstellation = new BLconstellation();
+            blconstellation.setAuthenticated(loggedin);
+
             OrdersPK sellordersPK = new OrdersPK(JSONConversion.getlong(json, "sellorderid"));
             OrdersPK buyordersPK = new OrdersPK(JSONConversion.getlong(json, "buyorderid"));
             View_order sellorder = blview_order.getView_order(sellordersPK);

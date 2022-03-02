@@ -143,10 +143,6 @@ public class RSShipfit {
                             break;
 //Custom code, do not change this line
 //add here custom operations
-                        case IShipfitOperation.SELECT_ADDORDERShipfit:
-                            shipfitPK = (IShipfitPK)JSONShipfit.toShipfitPK((JSONObject)json.get("shipfitpk"));
-                            blshipfit.addOrder(shipfitPK);
-                            break;
 //Custom code, do not change this line   
                     }
                     break;
@@ -227,6 +223,10 @@ public class RSShipfit {
                             break;
 //Custom code, do not change this line
 //add here custom operations
+                        case IShipfitOperation.SELECT_ADDORDERShipfit:
+                            shipfitPK = (IShipfitPK)JSONShipfit.toShipfitPK((JSONObject)json.get("shipfitpk"));
+                            blshipfit.addOrder(shipfitPK);
+                            break;
 //Custom code, do not change this line   
                     }
                     break;

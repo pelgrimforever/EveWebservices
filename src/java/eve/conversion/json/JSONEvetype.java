@@ -2,7 +2,7 @@
  * JSONEvetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 28.0.2022 15:59
+ * Generated on 21.1.2022 18:41
  *
  */
  
@@ -84,6 +84,8 @@ public class JSONEvetype {
         json.put("highest", evetype.getHighest());
         json.put("lowest", evetype.getLowest());
         json.put("order_count", String.valueOf(evetype.getOrder_count()));
+        json.put("configuredbp", evetype.getConfiguredbp());
+        json.put("estimatedproductioncost", evetype.getEstimatedproductioncost());
 //Custom code, do not change this line
 //Custom code, do not change this line
         return json;
@@ -349,6 +351,18 @@ public class JSONEvetype {
             byte andor = JSONConversion.getbyte(field, "andor");
             evetypesearch.order_count(valuearray, operators, andor);
         }
+        field = (JSONObject)fss.get("configuredbp");
+        if(field!=null) {
+            boolean value = JSONConversion.getBooleanvalue(field);
+            evetypesearch.configuredbp(value);
+        }
+        field = (JSONObject)fss.get("estimatedproductioncost");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            evetypesearch.estimatedproductioncost(valuearray, operators, andor);
+        }
         JSONObject kss = (JSONObject)json.get("keysearch");
         JSONArray keysearch;
         keysearch = (JSONArray)kss.get("market_groupsearcher");
@@ -532,6 +546,8 @@ public class JSONEvetype {
         evetype.setHighest(JSONConversion.getdouble(json, "highest"));
         evetype.setLowest(JSONConversion.getdouble(json, "lowest"));
         evetype.setOrder_count(JSONConversion.getlong(json, "order_count"));
+        evetype.setConfiguredbp(JSONConversion.getboolean(json, "configuredbp"));
+        evetype.setEstimatedproductioncost(JSONConversion.getdouble(json, "estimatedproductioncost"));
     }
 
     public static Evetype initEvetype(JSONObject json) {
@@ -559,6 +575,8 @@ public class JSONEvetype {
         evetype.initHighest(JSONConversion.getdouble(json, "highest"));
         evetype.initLowest(JSONConversion.getdouble(json, "lowest"));
         evetype.initOrder_count(JSONConversion.getlong(json, "order_count"));
+        evetype.initConfiguredbp(JSONConversion.getboolean(json, "configuredbp"));
+        evetype.initEstimatedproductioncost(JSONConversion.getdouble(json, "estimatedproductioncost"));
         return evetype;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * RSView_materialinput.java
  *
- * Generated on 17.0.2022 13:34
+ * Generated on 22.1.2022 10:57
  *
  */
 
@@ -95,11 +95,23 @@ public class RSView_materialinput {
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
             IView_materialinput view_materialinput;
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            blview_materialinput.setAuthenticated(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operationtype) {
                 case DataServlet.OPERATIONTYPE_SELECT:
+                    switch(operation) {
+                        case IView_materialinputOperation.SELECT_ALL:
+                            result = JSONView_materialinput.toJSONArray(blview_materialinput.getView_materialinputs()).toJSONString();
+                            break;
+//Custom code, do not change this line
+//add here custom operations
+//Custom code, do not change this line   
+                    }
+                case DataServlet.OPERATIONTYPE_SECURESELECT:
                     switch(operation) {
                         case IView_materialinputOperation.SELECT_ALL:
                             result = JSONView_materialinput.toJSONArray(blview_materialinput.getView_materialinputs()).toJSONString();

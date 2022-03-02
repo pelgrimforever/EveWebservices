@@ -3,7 +3,6 @@
  */
 package eve.restservices;
 
-import data.conversion.JSONConversion;
 import eve.BusinessObject.Logic.BLuserbp;
 import eve.BusinessObject.Logic.BLview_userbpmaterial;
 import eve.BusinessObject.service.AllnodesService;
@@ -12,6 +11,7 @@ import eve.conversion.json.JSONView_userbpmaterial;
 import eve.logicview.View_userbp;
 import eve.logicview.View_userbpmaterial;
 import general.exception.DBException;
+import general.exception.DatahandlerException;
 import java.util.ArrayList;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -56,14 +56,19 @@ public class RSbpproduction {
         try {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject)parser.parse(jsonstring);
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+
             View_userbp view_userbp = JSONView_userbp.toView_userbp((JSONObject)json.get("viewuserbp"));
             
             JSONObject production = new JSONObject();
             //gather material data
             BLview_userbpmaterial blview_userbpmaterial = new BLview_userbpmaterial();
-            ArrayList<View_userbpmaterial> view_userbpmaterials = blview_userbpmaterial.getView_userbpmaterials();
+            blview_userbpmaterial.setAuthenticated(loggedin);
+            ArrayList<View_userbpmaterial> view_userbpmaterials = blview_userbpmaterial.getView_userbpmaterials(view_userbp.getBp(), view_userbp.getSerialnumber(), view_userbp.getUsername());
             production.put("material", JSONView_userbpmaterial.toJSONArray(view_userbpmaterials));
             BLuserbp bluserbp = new BLuserbp();
+            bluserbp.setAuthenticated(loggedin);
             production.put("totalprice_market", bluserbp.calculateproductionprice_market(view_userbp, view_userbpmaterials));
             production.put("totalprice_user", bluserbp.calculateproductionprice4user(view_userbp, view_userbpmaterials));
             
@@ -72,7 +77,7 @@ public class RSbpproduction {
         catch(ParseException e) {
             result = returnstatus(e.getMessage());
         }
-        catch(DBException e) {
+        catch(DBException | DatahandlerException e) {
             result = returnstatus(e.getMessage());
         }
         return result;

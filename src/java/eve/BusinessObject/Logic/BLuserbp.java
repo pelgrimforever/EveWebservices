@@ -15,9 +15,13 @@ import eve.interfaces.logicentity.IUserbp;
 import eve.logicentity.Userbp;
 import eve.BusinessObject.table.Buserbp;
 import eve.conversion.entity.EMuserbp;
+import eve.entity.pk.EvetypePK;
 import eve.entity.pk.UserbpPK;
+import eve.logicentity.Bpmaterial;
+import eve.logicentity.Materialinput;
 import eve.logicview.View_userbp;
 import eve.logicview.View_userbpmaterial;
+import general.exception.CustomException;
 import general.exception.DataException;
 import java.util.ArrayList;
 
@@ -33,7 +37,7 @@ import java.util.ArrayList;
  */
 public class BLuserbp extends Buserbp {
 //Metacoder: NO AUTHOMATIC UPDATE
-    private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
+    private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data
 	
     /**
      * Constructor, sets Userbp as default Entity
@@ -64,7 +68,8 @@ public class BLuserbp extends Buserbp {
         double totalprice = view_userbp.getStationfee();
         int me = view_userbp.getMaterialefficiency();
         for(View_userbpmaterial mat: view_userbpmaterials) {
-            totalprice += mat.getMarketaverage() * Math.ceil(mat.getAmount() / 100 * (100-me));
+            //put division last to avoid rounding errors, all numbers are type long
+            totalprice += mat.getMarketaverage() * Math.ceil(mat.getAmount() * (100-me) / 100);
         }
         return totalprice;
     }
@@ -87,7 +92,8 @@ public class BLuserbp extends Buserbp {
             } else {
                 matprice = mat.getMaterialinputaverage();
             }
-            totalprice += matprice * Math.ceil(mat.getAmount() / 100 * (100-me));
+            //put division last to avoid rounding errors, all numbers are type long
+            totalprice += matprice * Math.ceil(mat.getAmount() * (100-me) / 100);
         }
         return totalprice;
     }
@@ -126,6 +132,26 @@ public class BLuserbp extends Buserbp {
         newuserbp.setAmountproduced(0);
         newuserbp.setMaterialefficiency(0);
         this.insertUserbp(newuserbp);
+    }
+    
+    public void runbp(UserbpPK userbpPK, int amount) throws DBException, DataException, CustomException {
+        BLbpmaterial blbpmaterial = new BLbpmaterial(this);
+        BLmaterialinput blmaterialinput = new BLmaterialinput(this);
+        Userbp userbp = this.getUserbp(userbpPK);
+        ArrayList<Bpmaterial> bpmaterials = blbpmaterial.getBpmaterials4evetypeBp(userbpPK.getEvetypePK());
+        ArrayList<Materialinput> materialinputlist;
+        Materialinput materialinput;
+        long totamount;
+        //update material usage in bpmaterial
+        for(Bpmaterial bpmaterial: bpmaterials) {
+            //put division last to avoid rounding errors, all numbers are type long
+            totamount = Double.valueOf(Math.ceil(bpmaterial.getAmount() * amount * (100-userbp.getMaterialefficiency()) / 100)).longValue();
+            blmaterialinput.useMaterial(userbpPK.getUsername(), (EvetypePK)bpmaterial.getPrimaryKey().getEvetypematerialPK(), totamount);
+        }
+        //update amount produced in userbp
+        userbp.setAmountproduced(userbp.getAmountproduced() + amount);
+        this.trans_updateUserbp(userbp);
+        this.Commit2DB();
     }
     
     /**

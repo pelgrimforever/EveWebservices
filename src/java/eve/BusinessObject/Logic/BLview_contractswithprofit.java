@@ -33,6 +33,7 @@ public class BLview_contractswithprofit extends Bview_contractswithprofit {
      * Constructor, sets View_contractswithprofit as default Entity
      */
     public BLview_contractswithprofit() {
+        this.setLogginrequired(true);
     }
 
 }

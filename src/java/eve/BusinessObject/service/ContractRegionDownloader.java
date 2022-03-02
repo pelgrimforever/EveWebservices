@@ -63,8 +63,11 @@ public class ContractRegionDownloader implements Runnable {
     @Override
     public void run() {
         BLregion blregion = new BLregion();
+        blregion.setAuthenticated(true);
         BLcontract blcontract = new BLcontract();
+        blcontract.setAuthenticated(true);
         BLcontractitem blcontractitem = new BLcontractitem();
+        blcontractitem.setAuthenticated(true);
 
         int pagenr;
         StringBuilder sqlb = new StringBuilder();
@@ -269,10 +272,16 @@ public class ContractRegionDownloader implements Runnable {
     public void correctTypeError(ArrayList<TransactionOutput.TransactionOutputLine> sqlstatements, ArrayList<Long> type_statements) throws DBException, DataException {
         Swagger swagger = new Swagger();
         BLmarket_group blmarketgroup = new BLmarket_group();
+        blmarketgroup.setAuthenticated(true);
         BLtypegroup bltypegroup = new BLtypegroup();
+        bltypegroup.setAuthenticated(true);
         BLgraphic blgraphic = new BLgraphic();
+        blgraphic.setAuthenticated(true);
         BLevetype blevetype = new BLevetype();
+        blevetype.setAuthenticated(true);
         BLorders blorders = new BLorders();
+        blorders.setAuthenticated(true);
+        
         Evetype evetype;
         JSONObject jsonmarketgroup;
         Market_groupPK marketgroupPK;

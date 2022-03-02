@@ -1,7 +1,7 @@
 /*
  * RSView_activemodules.java
  *
- * Generated on 14.0.2022 16:56
+ * Generated on 22.1.2022 10:57
  *
  */
 
@@ -95,11 +95,23 @@ public class RSView_activemodules {
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
             IView_activemodules view_activemodules;
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            blview_activemodules.setAuthenticated(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operationtype) {
                 case DataServlet.OPERATIONTYPE_SELECT:
+                    switch(operation) {
+                        case IView_activemodulesOperation.SELECT_ALL:
+                            result = JSONView_activemodules.toJSONArray(blview_activemodules.getView_activemoduless()).toJSONString();
+                            break;
+//Custom code, do not change this line
+//add here custom operations
+//Custom code, do not change this line   
+                    }
+                case DataServlet.OPERATIONTYPE_SECURESELECT:
                     switch(operation) {
                         case IView_activemodulesOperation.SELECT_ALL:
                             result = JSONView_activemodules.toJSONArray(blview_activemodules.getView_activemoduless()).toJSONString();

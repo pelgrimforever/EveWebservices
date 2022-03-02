@@ -36,6 +36,7 @@ public class BLview_materialinputavg extends Bview_materialinputavg {
      * Constructor, sets View_materialinputavg as default Entity
      */
     public BLview_materialinputavg() {
+        this.setLogginrequired(true);
     }
 
     /**

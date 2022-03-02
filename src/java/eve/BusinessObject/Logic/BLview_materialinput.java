@@ -32,6 +32,7 @@ public class BLview_materialinput extends Bview_materialinput {
      * Constructor, sets View_materialinput as default Entity
      */
     public BLview_materialinput() {
+        this.setLogginrequired(true);
     }
 
     /**

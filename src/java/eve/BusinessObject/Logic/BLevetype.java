@@ -19,9 +19,13 @@ import eve.conversion.entity.EMevetype;
 import eve.entity.pk.GraphicPK;
 import eve.entity.pk.Market_groupPK;
 import eve.entity.pk.TypegroupPK;
+import eve.interfaces.entity.pk.IEvetypePK;
 import general.exception.DataException;
 import eve.interfaces.entity.pk.ITypegroupPK;
+import eve.logicentity.Bpmaterial;
+import eve.logicview.View_bpmaterial;
 import general.exception.CustomException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import org.json.simple.JSONObject;
 
@@ -76,6 +80,12 @@ public class BLevetype extends Bevetype {
         return evetype;
     }
 
+    public void toggleConfiguredbp(IEvetypePK evetypepk) throws DBException, DataException {
+        Evetype evetype = this.getEvetype(evetypepk);
+        evetype.setConfiguredbp(!evetype.getConfiguredbp());
+        this.updateEvetype(evetype);
+    }
+    
     /**
      * @param typegroupPK: foreign key for typegroup
      * @return count of all evetypes linked to typegroup
@@ -112,6 +122,41 @@ public class BLevetype extends Bevetype {
         Object[][] parameters = {{ "year", year }, { "month", month+1 }};
         SQLparameters sqlparameters = new SQLparameters(parameters);
         this.addStatement(EMevetype.SQLUpdateAverages, sqlparameters);
+    }
+    
+    /**
+     * calculate a theoretical cost of producing one item with all configured blueprints
+     * @throws DBException
+     * @throws DataException 
+     */
+    public void calculateBpproductioncost() throws DBException, DataException, CustomException {
+        int materialefficiency = 10;
+        int breakevenproduction = 20;
+        double researchcostperc = 0.2;
+        double stationfeeperc = 0.1;
+        double totalcostperc = 1 + researchcostperc + stationfeeperc;
+        BLview_bpmaterial blview_bpmaterial = new BLview_bpmaterial();
+        //get configured blueprints
+        ArrayList<Evetype> blueprints = this.getEntities(EMevetype.SQLSelect4configuredbp, null);
+        ArrayList<View_bpmaterial> bpmaterials;
+        int transactioncounter = 0;
+        for(Evetype blueprint: blueprints) {
+            double totalprice = 0;
+            bpmaterials = blview_bpmaterial.getView_bpmaterials(blueprint.getPrimaryKey().getId());
+            for(View_bpmaterial mat: bpmaterials) {
+                //put division last to avoid rounding errors, all numbers are type long
+                totalprice += mat.getAverage() * Math.ceil((double)mat.getAmount() * (100-materialefficiency) / 100);
+            }
+            //part of BPO cost + research cost + station fee
+            totalprice += blueprint.getAverage() * totalcostperc / breakevenproduction;
+            blueprint.setEstimatedproductioncost(totalprice);
+            this.trans_updateEvetype(blueprint);
+            if(transactioncounter==100) {
+                this.Commit2DB();
+                transactioncounter = 0;
+            }
+        }
+        this.Commit2DB();
     }
     
     /**

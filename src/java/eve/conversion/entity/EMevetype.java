@@ -23,6 +23,7 @@ public class EMevetype extends EMevetype_default {
     
     public static final String SQLSelectAll = SQLSelect + OrderBy;
     public static final String SQLSelect4typegroupCount = "select count(*) as count from evetype where " + SQLWheretypegroup;
+    public static final String SQLSelect4configuredbp = SQLSelect + " where configuredbp";
     
     public static final String SQLUpdateSellprices = 
         "update evetype set avg_sellorder = orders.avgprice, min_selorder = orders.min_price, max_selorder = orders.max_price " +

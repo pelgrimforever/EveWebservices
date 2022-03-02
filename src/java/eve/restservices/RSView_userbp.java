@@ -1,7 +1,7 @@
 /*
  * RSView_userbp.java
  *
- * Generated on 28.0.2022 15:57
+ * Generated on 22.1.2022 10:57
  *
  */
 
@@ -95,6 +95,9 @@ public class RSView_userbp {
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
             IView_userbp view_userbp;
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            blview_userbp.setAuthenticated(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
@@ -106,9 +109,23 @@ public class RSView_userbp {
                             break;
 //Custom code, do not change this line
 //add here custom operations
+//Custom code, do not change this line   
+                    }
+                case DataServlet.OPERATIONTYPE_SECURESELECT:
+                    switch(operation) {
+                        case IView_userbpOperation.SELECT_ALL:
+                            result = JSONView_userbp.toJSONArray(blview_userbp.getView_userbps()).toJSONString();
+                            break;
+//Custom code, do not change this line
+//add here custom operations
                         case IView_userbpOperation.SELECT4USER:
                             String username = JSONConversion.getString(json, "username");
                             result = JSONView_userbp.toJSONArray(blview_userbp.getView_userbps(username)).toJSONString();
+                            break;
+                        case IView_userbpOperation.SELECT4USERBP:
+                            String username2 = JSONConversion.getString(json, "username");
+                            long bp = JSONConversion.getlong(json, "bp");
+                            result = JSONView_userbp.toJSONArray(blview_userbp.getView_userbps(username2, bp)).toJSONString();
                             break;
 //Custom code, do not change this line   
                     }

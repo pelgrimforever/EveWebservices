@@ -33,6 +33,7 @@ public class BLview_tradesystem extends Bview_tradesystem {
      * Constructor, sets View_tradesystem as default Entity
      */
     public BLview_tradesystem() {
+        this.setLogginrequired(true);
     }
 
     /**

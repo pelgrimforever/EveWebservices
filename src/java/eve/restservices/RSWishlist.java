@@ -162,12 +162,6 @@ public class RSWishlist {
                             break;
 //Custom code, do not change this line
 //add here custom operations
-                        case IWishlistOperation.UPDATE_ADDWISHLIST:
-                            JSONObject jsonaddwishlist = (JSONObject)json.get("wishlist");
-                            wishlist = JSONWishlist.toWishlist(jsonaddwishlist);
-                            blwishlist.addWishlist(wishlist);
-                            result = returnstatus("OK");
-                            break;
 //Custom code, do not change this line   
                     }
                     break;
@@ -240,6 +234,12 @@ public class RSWishlist {
                             break;
 //Custom code, do not change this line
 //add here custom operations
+                        case IWishlistOperation.UPDATE_ADDWISHLIST:
+                            JSONObject jsonaddwishlist = (JSONObject)json.get("wishlist");
+                            wishlist = JSONWishlist.toWishlist(jsonaddwishlist);
+                            blwishlist.addWishlist(wishlist);
+                            result = returnstatus("OK");
+                            break;
 //Custom code, do not change this line   
                     }
                     break;

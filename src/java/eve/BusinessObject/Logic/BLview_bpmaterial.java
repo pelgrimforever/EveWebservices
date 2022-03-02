@@ -32,6 +32,7 @@ public class BLview_bpmaterial extends Bview_bpmaterial {
      * Constructor, sets View_bpmaterial as default Entity
      */
     public BLview_bpmaterial() {
+        this.setLogginrequired(true);
     }
 
     /**

@@ -32,6 +32,7 @@ public class BLview_userbpmaterial extends Bview_userbpmaterial {
      * Constructor, sets View_userbpmaterial as default Entity
      */
     public BLview_userbpmaterial() {
+        this.setLogginrequired(true);
     }
 
     /**
@@ -41,10 +42,22 @@ public class BLview_userbpmaterial extends Bview_userbpmaterial {
      * @return ArrayList of View_userbpmaterial objects
      * @throws DBException
      */
-    public ArrayList<View_userbpmaterial> getView_userbpmaterials(long bp, String username) throws DBException {
-        Object[][] parameters = {{ "bp", bp}, { "username", username}};
+    public ArrayList<View_userbpmaterial> getView_userbpmaterials(long bp, int serialnumber, String username) throws DBException {
+        Object[][] parameters = {{ "bp", bp}, { "serialnumber", serialnumber}, { "username", username}};
         SQLparameters sqlparameters = new SQLparameters(parameters);
         return getEntities(EMview_userbpmaterial.SQLSelect4bp_user, sqlparameters);
     }
 
+    /**
+     * get all View_userbpmaterial for a blueprint / username materialinput
+     * @param bp blueprint id (evetype)
+     * @param username user name
+     * @return ArrayList of View_userbpmaterial objects
+     * @throws DBException 
+     */
+    public ArrayList<View_userbpmaterial> getView_userbpmaterials(long bp, String username) throws DBException {
+        Object[][] parameters = {{ "bp", bp}, { "username", username}};
+        SQLparameters sqlparameters = new SQLparameters(parameters);
+        return getEntities(EMview_userbpmaterial.SQLSimulate4bp_user, sqlparameters);
+    }
 }

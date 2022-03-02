@@ -30,7 +30,7 @@ import java.util.ArrayList;
  */
 public class BLusersettings extends Busersettings {
 //Metacoder: NO AUTHOMATIC UPDATE
-    private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
+    private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data
 	
     /**
      * Constructor, sets Usersettings as default Entity

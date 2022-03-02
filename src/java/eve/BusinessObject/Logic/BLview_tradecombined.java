@@ -33,6 +33,7 @@ public class BLview_tradecombined extends Bview_tradecombined {
      * Constructor, sets View_tradecombined as default Entity
      */
     public BLview_tradecombined() {
+        this.setLogginrequired(true);;
     }
 
     /**

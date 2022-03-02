@@ -22,6 +22,7 @@ public class EMview_userbp extends EMview_userbp_default {
 //Metacoder: NO AUTHOMATIC UPDATE
     
     public static final String SQLSelect4user = SQLSelectAll + " where username = :username:";
+    public static final String SQLSelect4userbp = SQLSelectAll + " where username = :username: and bp = :bp:";
 
     /**
      * Map ResultSet Field values to View_userbp

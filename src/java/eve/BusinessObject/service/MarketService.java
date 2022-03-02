@@ -76,6 +76,8 @@ public class MarketService implements Runnable {
         
         public MarketStatus() throws DBException {
             BLregion blregion = new BLregion();
+            blregion.setAuthenticated(true);
+            
             Iterator<Region> regionI = blregion.getAll().iterator();
             Region region;
             while(regionI.hasNext()) {
@@ -163,9 +165,11 @@ public class MarketService implements Runnable {
     
     public MarketService(String username) {
         this.username = username;
+        BLregion blregion = new BLregion();
+        blregion.setAuthenticated(true);
+        
         try {
             marketstatus = new MarketStatus();
-            BLregion blregion = new BLregion();
             data = new Marketdata(blregion.getAll());
         }
         catch(DBException e) {
@@ -207,6 +211,8 @@ public class MarketService implements Runnable {
     public void run() {
         try {
             BLorders blorders = new BLorders();
+            blorders.setAuthenticated(true);
+            
             //more orders to order_hist
             marketstatus.addMessage("Delete orders");
             if(blorders.count()>0) {
@@ -293,13 +299,21 @@ public class MarketService implements Runnable {
     private void processView_tradeorders() throws DataException, DBException, CustomException {
         long start = System.currentTimeMillis();
         BLorders blorders = new BLorders();
+        blorders.setAuthenticated(true);
         BLregion blregion = new BLregion();
+        blregion.setAuthenticated(true);
         BLevetype blevetype = new BLevetype();
+        blevetype.setAuthenticated(true);
         BLsystem blsystem = new BLsystem();
+        blsystem.setAuthenticated(true);
         BLtrade bltrade = new BLtrade();
+        bltrade.setAuthenticated(true);
         //BLview_tradeorders blviewtradeorders = new BLview_tradeorders();
         BLview_tradeorders_lowsec blviewtradeorders_lowsec = new BLview_tradeorders_lowsec();
+        blviewtradeorders_lowsec.setAuthenticated(true);
         BLsyssettings blsyssettings = new BLsyssettings();
+        blsyssettings.setAuthenticated(true);
+        
 
         //calculate average, min and max price for buy/sell orders for each evetype
         marketstatus.addMessage("Update average prices");
@@ -414,11 +428,17 @@ public class MarketService implements Runnable {
         long start = System.currentTimeMillis();
         marketstatus.addMessage("Combine trade orders");
         BLview_trade_systemsevetype blview_trade_systemsevetype = new BLview_trade_systemsevetype();
+        blview_trade_systemsevetype.setAuthenticated(true);
         BLorders blorders = new BLorders();
+        blorders.setAuthenticated(true);
         BLusersettings blusersettings = new BLusersettings();
+        blusersettings.setAuthenticated(true);
         BLtradecombined bltradecombined = new BLtradecombined();
+        bltradecombined.setAuthenticated(true);
         BLtradecombined_sell bltradecombined_sell = new BLtradecombined_sell();
+        bltradecombined_sell.setAuthenticated(true);
         BLsyssettings blsyssettings = new BLsyssettings();
+        blsyssettings.setAuthenticated(true);
         //load usersettings
         Syssettings set_brokerfee = blsyssettings.getSyssettings(ISyssettings.BROKER_FEE);
         float perc_tax = Float.valueOf(set_brokerfee.getValue());
@@ -539,9 +559,14 @@ public class MarketService implements Runnable {
     private void processStock() throws DBException, DataException {
         marketstatus.addMessage("Construct stocktrade table");
         BLorders blorders = new BLorders();
+        blorders.setAuthenticated(true);
         BLstock blstock = new BLstock();
+        blstock.setAuthenticated(true);
         BLstocktrade blstocktrade = new BLstocktrade();
+        blstocktrade.setAuthenticated(true);
         BLusersettings blusersettings = new BLusersettings();
+        blusersettings.setAuthenticated(true);
+        
         blstocktrade.deletestocktrade(username);
         blstocktrade.Commit2DB();
         //Security_islandPK security_islandPK = new Security_islandPK(1);

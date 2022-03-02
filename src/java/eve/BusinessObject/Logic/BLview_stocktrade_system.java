@@ -36,6 +36,7 @@ public class BLview_stocktrade_system extends Bview_stocktrade_system {
      * Constructor, sets View_stocktrade_system as default Entity
      */
     public BLview_stocktrade_system() {
+        this.setLogginrequired(true);
     }
 
     /**
@@ -48,7 +49,10 @@ public class BLview_stocktrade_system extends Bview_stocktrade_system {
      */
     public ArrayList getView_stocktrade_system4username(String username) throws DBException, DataException {
         BLusersettings blusersettings = new BLusersettings();
+        blusersettings.setAuthenticated(true);
         BLsyssettings blsyssettings = new BLsyssettings();
+        blsyssettings.setAuthenticated(true);
+        
         ArrayList<Usersettings> usersettings = blusersettings.getUsersettings(username);
         Usersettings usersettingStocksystemid = blusersettings.getUsersetting(usersettings, Settings.STOCKSYSTEMID);
         Syssettings syssettingBrokerfee = blsyssettings.getSyssettings(Syssettings.BROKER_FEE);

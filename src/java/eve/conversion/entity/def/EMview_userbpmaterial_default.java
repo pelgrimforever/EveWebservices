@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 31.0.2022 17:49
+ * Generated on 22.1.2022 10:55
  *
  */
 package eve.conversion.entity.def;
@@ -44,6 +44,8 @@ public class EMview_userbpmaterial_default implements ViewMapper {
         View_userbpmaterial view_userbpmaterial = new View_userbpmaterial();
         if(dbresult!=null) {
             try {
+                view_userbpmaterial.setUsername(dbresult.getString("username"));
+                view_userbpmaterial.setSerialnumber(dbresult.getInt("serialnumber"));
                 view_userbpmaterial.setBp(dbresult.getLong("bp"));
                 view_userbpmaterial.setMaterial(dbresult.getLong("material"));
                 view_userbpmaterial.setAmount(dbresult.getLong("amount"));
@@ -52,7 +54,6 @@ public class EMview_userbpmaterial_default implements ViewMapper {
                 view_userbpmaterial.setTypegroupname(dbresult.getString("typegroupname"));
                 view_userbpmaterial.setName(dbresult.getString("name"));
                 view_userbpmaterial.setMarketaverage(dbresult.getDouble("marketaverage"));
-                view_userbpmaterial.setUsername(dbresult.getString("username"));
                 view_userbpmaterial.setMaterialinputaverage(dbresult.getDouble("materialinputaverage"));
             }
             catch(SQLException sqle) {

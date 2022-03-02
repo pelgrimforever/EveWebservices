@@ -2,7 +2,7 @@
  * XMLEvetype.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 9.0.2022 17:5
+ * Generated on 21.1.2022 18:41
  *
  */
  
@@ -81,6 +81,8 @@ public class XMLEvetype {
         EvetypeXML.addContent(XMLElement.newContent("highest", evetype.getHighest()));
         EvetypeXML.addContent(XMLElement.newContent("lowest", evetype.getLowest()));
         EvetypeXML.addContent(XMLElement.newContent("order_count", evetype.getOrder_count()));
+        EvetypeXML.addContent(XMLElement.newContent("configuredbp", evetype.getConfiguredbp()));
+        EvetypeXML.addContent(XMLElement.newContent("estimatedproductioncost", evetype.getEstimatedproductioncost()));
     }
 }
 

@@ -8,6 +8,7 @@ import eve.BusinessObject.Logic.BLshipfitorderselected;
 import eve.conversion.json.JSONView_system;
 import eve.logicview.View_system;
 import general.exception.DBException;
+import general.exception.DatahandlerException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.ws.rs.Consumes;
@@ -54,17 +55,22 @@ public class RScreateshipfitroute {
         try {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject)parser.parse(jsonstring);
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            
+            BLshipfitorderselected blshipfitorderselected = new BLshipfitorderselected();
+            blshipfitorderselected.setAuthenticated(loggedin);
+            
             String username = JSONConversion.getString(json, "username");
             long origin = JSONConversion.getlong(json, "origin");
             long destination = JSONConversion.getlong(json, "destination");
-            BLshipfitorderselected blshipfitorderselected = new BLshipfitorderselected();
             ArrayList<View_system> systems = blshipfitorderselected.calculateroute(username, origin, destination);
             result = JSONView_system.toJSONArray(systems).toJSONString();
         }
         catch(ParseException e) {
             result = returnstatus(e.getMessage());
         }
-        catch(DBException e) {
+        catch(DBException | DatahandlerException e) {
             result = returnstatus(e.getMessage());
         }
         return result;

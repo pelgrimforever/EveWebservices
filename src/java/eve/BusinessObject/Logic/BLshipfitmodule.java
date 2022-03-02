@@ -31,7 +31,7 @@ import java.sql.SQLException;
  */
 public class BLshipfitmodule extends Bshipfitmodule {
 //Metacoder: NO AUTHOMATIC UPDATE
-    private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
+    private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data
 	
     /**
      * Constructor, sets Shipfitmodule as default Entity

@@ -33,7 +33,7 @@ import java.util.ArrayList;
  */
 public class BLshipfit extends Bshipfit {
 //Metacoder: NO AUTHOMATIC UPDATE
-    private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
+    private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data
 	
     /**
      * Constructor, sets Shipfit as default Entity
@@ -55,7 +55,9 @@ public class BLshipfit extends Bshipfit {
 
     public void addOrder(IShipfitPK shipfitPK) throws CustomException {
         BLshipfitmodule blshipfitmodule = new BLshipfitmodule();
+        blshipfitmodule.setAuthenticated(this.isAuthenticated());
         BLshipfitorder blshipfitorder = new BLshipfitorder();
+        blshipfitorder.setAuthenticated(this.isAuthenticated());
         Shipfitorder shipfitorder;
         
         //order ship

@@ -1,7 +1,7 @@
 /*
  * RSView_evetypes.java
  *
- * Generated on 14.0.2022 16:56
+ * Generated on 22.1.2022 10:57
  *
  */
 
@@ -95,11 +95,23 @@ public class RSView_evetypes {
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
             IView_evetypes view_evetypes;
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            blview_evetypes.setAuthenticated(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operationtype) {
                 case DataServlet.OPERATIONTYPE_SELECT:
+                    switch(operation) {
+                        case IView_evetypesOperation.SELECT_ALL:
+                            result = JSONView_evetypes.toJSONArray(blview_evetypes.getView_evetypess()).toJSONString();
+                            break;
+//Custom code, do not change this line
+//add here custom operations
+//Custom code, do not change this line   
+                    }
+                case DataServlet.OPERATIONTYPE_SECURESELECT:
                     switch(operation) {
                         case IView_evetypesOperation.SELECT_ALL:
                             result = JSONView_evetypes.toJSONArray(blview_evetypes.getView_evetypess()).toJSONString();
@@ -130,6 +142,20 @@ public class RSView_evetypes {
                         case IView_evetypesOperation.SELECT_BLEUPRINT:
                             String searchstring = JSONConversion.getString(json, "searchstring");
                             result = JSONView_evetypes.toJSONArray(blview_evetypes.getBlueprints(searchstring)).toJSONString();
+                            break;
+                        case IView_evetypesOperation.SELECT_BLEUPRINTRESULT:
+                            View_evetypes viewevetype = JSONView_evetypes.toView_evetypes((JSONObject)json.get("viewblueprint"));
+                            result = JSONView_evetypes.toJSON(blview_evetypes.getBlueprintresult(viewevetype)).toJSONString();
+                            break;
+                        case IView_evetypesOperation.SELECT_COMMODITY:
+                            String searchstring2 = JSONConversion.getString(json, "searchstring");
+                            result = JSONView_evetypes.toJSONArray(blview_evetypes.getCommodities(searchstring2)).toJSONString();
+                            break;
+                        case IView_evetypesOperation.SELECT_MATERIAL:
+                            result = JSONView_evetypes.toJSONArray(blview_evetypes.getMaterials()).toJSONString();
+                            break;
+                        case IView_evetypesOperation.SELECT_PLANETARYCOMMODITY:
+                            result = JSONView_evetypes.toJSONArray(blview_evetypes.getPlanetarycommodities()).toJSONString();
                             break;
 //Custom code, do not change this line   
                     }

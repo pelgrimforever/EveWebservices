@@ -2,7 +2,7 @@
  * JSONView_evetypes.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 18.11.2021 18:23
+ * Generated on 21.1.2022 12:5
  *
  */
  
@@ -47,6 +47,7 @@ public class JSONView_evetypes {
         json.put("typegroupname", view_evetypes.getTypegroupname());
         json.put("id", String.valueOf(view_evetypes.getId()));
         json.put("name", view_evetypes.getName());
+        json.put("configuredbp", view_evetypes.getConfiguredbp());
 //Custom code, do not change this line
 //Custom code, do not change this line
         return json;
@@ -59,6 +60,7 @@ public class JSONView_evetypes {
         view_evetypes.setTypegroupname(JSONConversion.getString(json, "typegroupname"));
         view_evetypes.setId(JSONConversion.getlong(json, "id"));
         view_evetypes.setName(JSONConversion.getString(json, "name"));
+        view_evetypes.setConfiguredbp(JSONConversion.getboolean(json, "configuredbp"));
         return view_evetypes;
     }
 
@@ -108,6 +110,11 @@ public class JSONView_evetypes {
             byte compareoperator = JSONConversion.getbyte(field, "compareoperator");
             byte andor = JSONConversion.getbyte(field, "andor");
             view_evetypessearch.name(valuearray, compareoperator, andor);
+        }
+        field = (JSONObject)fss.get("configuredbp");
+        if(field!=null) {
+            boolean value = JSONConversion.getBooleanvalue(field);
+            view_evetypessearch.configuredbp(value);
         }
         return view_evetypessearch;
     }

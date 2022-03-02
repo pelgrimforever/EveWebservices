@@ -85,12 +85,13 @@ public class Market_groupService implements Runnable {
     @Override
     public void run() {
         market_groupstatus.addMessage("Download market groups");
+        BLmarket_group blmarketgroup = new BLmarket_group();
+        blmarketgroup.setAuthenticated(true);
 
         long start = System.currentTimeMillis();
         TransactionOutput toutput;
 
         try {
-            BLmarket_group blmarketgroup = new BLmarket_group();
             int run = 0;
             //add/update marketgroups
             JSONArray jsonmarketgroup = Swagger.getMarketgroups();

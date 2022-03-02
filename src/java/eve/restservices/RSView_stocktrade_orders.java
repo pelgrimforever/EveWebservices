@@ -1,7 +1,7 @@
 /*
  * RSView_stocktrade_orders.java
  *
- * Generated on 14.0.2022 16:56
+ * Generated on 22.1.2022 10:57
  *
  */
 
@@ -95,6 +95,9 @@ public class RSView_stocktrade_orders {
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
             IView_stocktrade_orders view_stocktrade_orders;
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            blview_stocktrade_orders.setAuthenticated(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
@@ -111,6 +114,15 @@ public class RSView_stocktrade_orders {
                             long system = JSONConversion.getlong(json, "system");
                             result = JSONView_stocktrade_orders.toJSONArray(blview_stocktrade_orders.getView_stocktrade_orders4usernamesystem(username, system)).toJSONString();
                             break;
+//Custom code, do not change this line   
+                    }
+                case DataServlet.OPERATIONTYPE_SECURESELECT:
+                    switch(operation) {
+                        case IView_stocktrade_ordersOperation.SELECT_ALL:
+                            result = JSONView_stocktrade_orders.toJSONArray(blview_stocktrade_orders.getView_stocktrade_orderss()).toJSONString();
+                            break;
+//Custom code, do not change this line
+//add here custom operations
 //Custom code, do not change this line   
                     }
             }

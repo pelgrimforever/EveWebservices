@@ -1,7 +1,7 @@
 /*
  * RSEvetype.java
  *
- * Generated on 28.0.2022 15:59
+ * Generated on 3.1.2022 10:20
  *
  */
 
@@ -338,6 +338,15 @@ public class RSEvetype {
                             break;
 //Custom code, do not change this line
 //add here custom operations
+                        case IEvetypeOperation.UPDATE_TOGGLE_CONFIGUREDBP:
+                            evetypePK = JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+                            blevetype.toggleConfiguredbp(evetypePK);
+                            result = returnstatus("OK");
+                            break;
+                        case IEvetypeOperation.CALCULATE_ESTIMATEDPRODUCTIONCOSTS:
+                            blevetype.calculateBpproductioncost();
+                            result = returnstatus("OK");
+                            break;
 //Custom code, do not change this line   
                     }
                     break;

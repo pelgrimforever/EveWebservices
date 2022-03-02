@@ -31,6 +31,7 @@ public class BLview_stock extends Bview_stock {
      * Constructor, sets View_stock as default Entity
      */
     public BLview_stock() {
+        this.setLogginrequired(true);
     }
 
     public ArrayList getView_stock4username(String username) throws DBException {

@@ -33,6 +33,11 @@ import org.json.simple.JSONObject;
  */
 public class BLtypegroup extends Btypegroup {
 //Metacoder: NO AUTHOMATIC UPDATE
+
+    //typegroups
+    public static final long MINERALS = 18;
+    public static final long SALVAGEDMATERIAL = 754;
+
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
 	
     /**

@@ -1,7 +1,7 @@
 /*
  * RSView_trade.java
  *
- * Generated on 14.0.2022 16:56
+ * Generated on 22.1.2022 10:57
  *
  */
 
@@ -95,6 +95,9 @@ public class RSView_trade {
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
             IView_trade view_trade;
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            blview_trade.setAuthenticated(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
@@ -115,6 +118,15 @@ public class RSView_trade {
                             eve.entity.pk.SystemPK endsystemPK = (eve.entity.pk.SystemPK)JSONSystem.toSystemPK((JSONObject)json.get("endsystempk"));
                             result = JSONView_trade.toJSONArray(blview_trade.getView_trades_Startendsystem(startsystemPK, endsystemPK)).toJSONString();
                             break;
+//Custom code, do not change this line   
+                    }
+                case DataServlet.OPERATIONTYPE_SECURESELECT:
+                    switch(operation) {
+                        case IView_tradeOperation.SELECT_ALL:
+                            result = JSONView_trade.toJSONArray(blview_trade.getView_trades()).toJSONString();
+                            break;
+//Custom code, do not change this line
+//add here custom operations
 //Custom code, do not change this line   
                     }
             }

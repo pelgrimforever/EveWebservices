@@ -5,6 +5,7 @@ package eve.restservices;
 
 import eve.BusinessObject.service.Markethistory;
 import eve.BusinessObject.service.Markethistory.MarkethistoryStatus;
+import general.exception.DatahandlerException;
 import java.util.Iterator;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -62,7 +63,10 @@ public class RSdownloadmarkethistory {
             jsonstatus.put("done", true);
             
             JSONObject json = (JSONObject)parser.parse(jsonstring);
-            if(json.containsKey("start") && (Boolean)json.get("start")) {
+            boolean loggedin = RSsecurity.check(json);
+            String auth = (String)json.get("auth");
+            boolean isadmin = RSsecurity.isadmin(auth);
+            if(isadmin && json.containsKey("start") && (Boolean)json.get("start")) {
                 keeprunning = true;
                 //reset if previous history upload was finished
                 if(history!=null && history.getStatus().isDone()) {
@@ -100,7 +104,7 @@ public class RSdownloadmarkethistory {
             jsonstatus.put("status", "OK");
             result = jsonstatus.toJSONString();
         }
-        catch(ParseException e) {
+        catch(ParseException | DatahandlerException e) {
             result = returnstatus(e.getMessage());
         }
         return result;

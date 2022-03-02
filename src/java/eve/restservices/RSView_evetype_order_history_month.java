@@ -1,7 +1,7 @@
 /*
  * RSView_evetype_order_history_month.java
  *
- * Generated on 14.0.2022 16:56
+ * Generated on 22.1.2022 10:57
  *
  */
 
@@ -95,6 +95,9 @@ public class RSView_evetype_order_history_month {
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
             IView_evetype_order_history_month view_evetype_order_history_month;
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            blview_evetype_order_history_month.setAuthenticated(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
@@ -106,9 +109,22 @@ public class RSView_evetype_order_history_month {
                             break;
 //Custom code, do not change this line
 //add here custom operations
+//Custom code, do not change this line   
+                    }
+                case DataServlet.OPERATIONTYPE_SECURESELECT:
+                    switch(operation) {
+                        case IView_evetype_order_history_monthOperation.SELECT_ALL:
+                            result = JSONView_evetype_order_history_month.toJSONArray(blview_evetype_order_history_month.getView_evetype_order_history_months()).toJSONString();
+                            break;
+//Custom code, do not change this line
+//add here custom operations
                         case IView_evetype_order_history_monthOperation.SELECT_EVETYPE:
                             EvetypePK evetypePK = (EvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
                             result = JSONView_evetype_order_history_month.toJSONArray(blview_evetype_order_history_month.getView_evetype_order_history_months(evetypePK)).toJSONString();
+                            break;
+                        case IView_evetype_order_history_monthOperation.SELECT_EVETYPEYM:
+                            EvetypePK evetypePKym = (EvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+                            result = JSONView_evetype_order_history_month.toJSONArray(blview_evetype_order_history_month.getView_evetype_order_history_monthsYM(evetypePKym)).toJSONString();
                             break;
 //Custom code, do not change this line   
                     }

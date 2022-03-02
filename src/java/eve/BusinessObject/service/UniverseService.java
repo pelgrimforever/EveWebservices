@@ -85,15 +85,31 @@ public class UniverseService implements Runnable {
         private boolean done = false;
         
         public UniverseStatus() {
+            BLgraphic blgraphic = new BLgraphic();
+            blgraphic.setAuthenticated(true);
+            BLrace blrace = new BLrace();
+            blrace.setAuthenticated(true);
+            BLconstellation blconstellation = new BLconstellation();
+            blconstellation.setAuthenticated(true);
+            BLsystem blsystem = new BLsystem();
+            blsystem.setAuthenticated(true);
+            BLstation blstation = new BLstation();
+            blstation.setAuthenticated(true);
+            BLstargate blstargate = new BLstargate();
+            blstargate.setAuthenticated(true);
+            BLcorporation blcorporation = new BLcorporation();
+            blcorporation.setAuthenticated(true);
+            BLalliance blalliance = new BLalliance();
+            blalliance.setAuthenticated(true);
             try {
-                totalgraphics = (new BLgraphic()).count();
-                totalraces = (new BLrace()).count()-1;
-                totalconstellations = (new BLconstellation()).count();
-                totalsystems = (new BLsystem()).count();
-                totalstations = (new BLstation()).count();
-                totalstargates = (new BLstargate()).count();
-                totalcorporations = (new BLcorporation()).count();
-                totalalliances = (new BLalliance()).count();
+                totalgraphics = blgraphic.count();
+                totalraces = blrace.count()-1;
+                totalconstellations = blconstellation.count();
+                totalsystems = blsystem.count();
+                totalstations = blstation.count();
+                totalstargates = blstargate.count();
+                totalcorporations = blcorporation.count();
+                totalalliances = blalliance.count();
             }
             catch(DBException e) {
                 
@@ -238,8 +254,10 @@ public class UniverseService implements Runnable {
     private void downloadGraphics() {
         universestatus.addMessage("Download Graphics");
         TransactionOutput toutput;
+        BLgraphic blgraphic = new BLgraphic();
+        blgraphic.setAuthenticated(true);
+        
         try {
-            BLgraphic blgraphic = new BLgraphic();
             int run = 0;
             //add graphics
             JSONArray jsongraphics = Swagger.getGraphics();
@@ -282,8 +300,10 @@ public class UniverseService implements Runnable {
     private void downloadRaces() {
         universestatus.addMessage("Download Races");
         TransactionOutput toutput;
+        BLrace blrace = new BLrace();
+        blrace.setAuthenticated(true);
+        
         try {
-            BLrace blrace = new BLrace();
             //add races
             JSONArray jsonfaction = Swagger.getRaces();
             Iterator<JSONObject> jsonfactionI = jsonfaction.iterator();
@@ -310,15 +330,23 @@ public class UniverseService implements Runnable {
     private void downloadSystems() {
         universestatus.addMessage("Download Systems");
         TransactionOutput toutput;
+        BLregion blregion = new BLregion();
+        blregion.setAuthenticated(true);
+        BLconstellation blconstellation = new BLconstellation();
+        blconstellation.setAuthenticated(true);
+        BLsystem blsystem = new BLsystem();
+        blsystem.setAuthenticated(true);
+        BLstation blstation = new BLstation(blsystem);
+        blstation.setAuthenticated(true);
+        BLstargate blstargate = new BLstargate(blsystem);
+        blstargate.setAuthenticated(true);
+        BLstation_service blstationservice = new BLstation_service(blsystem);
+        blstationservice.setAuthenticated(true);
+        BLrace blrace_check = new BLrace();
+        blrace_check.setAuthenticated(true);
+        
         try {
             long start = System.currentTimeMillis();
-            BLregion blregion = new BLregion();
-            BLconstellation blconstellation = new BLconstellation();
-            BLsystem blsystem = new BLsystem();
-            BLstation blstation = new BLstation(blsystem);
-            BLstargate blstargate = new BLstargate(blsystem);
-            BLstation_service blstationservice = new BLstation_service(blsystem);
-            BLrace blrace_check = new BLrace();
             int run = 0;
 
             universestatus.addMessage("Download Regions");
@@ -502,10 +530,14 @@ public class UniverseService implements Runnable {
 
     private void processDevsystems() {
         universestatus.addMessage("Mark development Systems");
+        BLregion blregion = new BLregion();
+        blregion.setAuthenticated(true);
+        BLconstellation blconstellation = new BLconstellation();
+        blconstellation.setAuthenticated(true);
+        BLsystem blsystem = new BLsystem();
+        blsystem.setAuthenticated(true);
+
         try {
-            BLregion blregion = new BLregion();
-            BLconstellation blconstellation = new BLconstellation();
-            BLsystem blsystem = new BLsystem();
             //mark all systems/constellations/regions with no stargates as dev systems
             blsystem.postprocess();
             blconstellation.postprocess();
@@ -519,8 +551,10 @@ public class UniverseService implements Runnable {
     public void downloadFactions() {
         universestatus.addMessage("Download Factions");
         TransactionOutput toutput;
+        BLfaction blfaction = new BLfaction();
+        blfaction.setAuthenticated(true);
+        
         try {
-            BLfaction blfaction = new BLfaction();
             //add factions
             JSONArray jsonfaction = Swagger.getFactions();
             Iterator<JSONObject> jsonfactionI = jsonfaction.iterator();
@@ -543,8 +577,10 @@ public class UniverseService implements Runnable {
     public void downloadCorporations() {
         universestatus.addMessage("Download Corporations");
         TransactionOutput toutput;
+        BLcorporation blcorporation = new BLcorporation();
+        blcorporation.setAuthenticated(true);
+        
         try {
-            BLcorporation blcorporation = new BLcorporation();
             int run = 0;
             //adds/updates corporation
             JSONArray jsoncorporations = Swagger.getNpccorps();
@@ -586,10 +622,13 @@ public class UniverseService implements Runnable {
     public void downloadAlliances() {
         universestatus.addMessage("Download Alliances");
         TransactionOutput toutput;
+        BLalliance blalliance = new BLalliance();
+        blalliance.setAuthenticated(true);
+        BLcorporation blcorporation = new BLcorporation();
+        blcorporation.setAuthenticated(true);
+
         try {
             //adds/updates alliance
-            BLalliance blalliance = new BLalliance();
-            BLcorporation blcorporation = new BLcorporation();
             int run = 0;
             JSONArray jsonalliances = Swagger.getAlliances();
             Iterator<Long> jsonalliancesI = jsonalliances.iterator();
@@ -655,8 +694,10 @@ public class UniverseService implements Runnable {
         universestatus.corporations = 0;
         TransactionOutput toutput;
         int corporationcounter = 0;
+        BLcorporation blcorporation = new BLcorporation();
+        blcorporation.setAuthenticated(true);
+
         try {
-            BLcorporation blcorporation = new BLcorporation();
             //adds/updates corporation
             ArrayList<Corporation> corporationlist = blcorporation.getAll();
             JSONObject jsoncorporationdetails;
@@ -688,10 +729,15 @@ public class UniverseService implements Runnable {
 
     public void createSecurityislands() throws DataException, DBException, CustomException {
         BLsystem blsystem = new BLsystem();
+        blsystem.setAuthenticated(true);
         BLstargate blstargate = new BLstargate(blsystem);
+        blstargate.setAuthenticated(true);
         BLconstellation_neighbour blconstellationneighbour = new BLconstellation_neighbour();
+        blconstellationneighbour.setAuthenticated(true);
         BLregion_neighbour blregionneighbour = new BLregion_neighbour();
+        blregionneighbour.setAuthenticated(true);
         BLsecurity_island blsecurityisland = new BLsecurity_island();
+        blsecurityisland.setAuthenticated(true);
         
         //set isconstellationborder and isregionborder on stargates
         //create security_islands

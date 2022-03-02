@@ -7,6 +7,7 @@ import eve.BusinessObject.service.CategoryService;
 import eve.BusinessObject.service.CategoryService.CategoryStatus;
 import eve.BusinessObject.service.Market_groupService;
 import eve.BusinessObject.service.Market_groupService.Market_groupStatus;
+import general.exception.DatahandlerException;
 import java.util.Iterator;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -68,7 +69,10 @@ public class RSdownloadmarkettypes {
             jsonstatus.put("done", true);
             
             JSONObject json = (JSONObject)parser.parse(jsonstring);
-            if(json.containsKey("start") && (Boolean)json.get("start")) {
+            boolean loggedin = RSsecurity.check(json);
+            String auth = (String)json.get("auth");
+            boolean isadmin = RSsecurity.isadmin(auth);
+            if(isadmin && json.containsKey("start") && (Boolean)json.get("start")) {
                 keeprunning = true;
                 //reset if previous market_group upload was finished
                 if(market_group!=null && market_group.getStatus().isDone() &&
@@ -130,7 +134,7 @@ public class RSdownloadmarkettypes {
             jsonstatus.put("status", "OK");
             result = jsonstatus.toJSONString();
         }
-        catch(ParseException e) {
+        catch(ParseException | DatahandlerException e) {
             result = returnstatus(e.getMessage());
         }
         return result;

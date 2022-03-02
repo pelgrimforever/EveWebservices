@@ -1,7 +1,7 @@
 /*
  * RSOrder_history_maxdate.java
  *
- * Generated on 14.0.2022 16:56
+ * Generated on 22.1.2022 10:57
  *
  */
 
@@ -95,11 +95,23 @@ public class RSOrder_history_maxdate {
             byte operationtype = JSONConversion.getbyte(jsonoperation, "type");
             byte operation = JSONConversion.getbyte(jsonoperation, "operation");
             IOrder_history_maxdate order_history_maxdate;
+//Security parameters
+            boolean loggedin = RSsecurity.check(json);
+            blorder_history_maxdate.setAuthenticated(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operationtype) {
                 case DataServlet.OPERATIONTYPE_SELECT:
+                    switch(operation) {
+                        case IOrder_history_maxdateOperation.SELECT_ALL:
+                            result = JSONOrder_history_maxdate.toJSONArray(blorder_history_maxdate.getOrder_history_maxdates()).toJSONString();
+                            break;
+//Custom code, do not change this line
+//add here custom operations
+//Custom code, do not change this line   
+                    }
+                case DataServlet.OPERATIONTYPE_SECURESELECT:
                     switch(operation) {
                         case IOrder_history_maxdateOperation.SELECT_ALL:
                             result = JSONOrder_history_maxdate.toJSONArray(blorder_history_maxdate.getOrder_history_maxdates()).toJSONString();
