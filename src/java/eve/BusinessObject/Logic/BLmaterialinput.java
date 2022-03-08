@@ -103,6 +103,7 @@ public class BLmaterialinput extends Bmaterialinput {
      * @throws general.exception.DataException
      */
     public void secureinsertMaterialinput(IMaterialinput materialinput) throws DBException, DataException {
+        materialinput.getPrimaryKey().setAddtimestamp(new Timestamp(System.currentTimeMillis()));
         trans_insertMaterialinput(materialinput);
         super.Commit2DB();
     }
