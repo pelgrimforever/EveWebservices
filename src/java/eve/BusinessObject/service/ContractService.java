@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eve.BusinessObject.service;
 
 import eve.BusinessObject.Logic.BLcontract;
@@ -24,43 +19,33 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * Market loader service
- * @author pelgrim
+ * @author Franky Laseure
  */
 public class ContractService implements Runnable {
     
-    private String username;
     private ContractStatus contractstatus;
-    private boolean keeprunning = true;
-    private int maxtransactions = 50;
     
     protected Marketdata data;
     protected ArrayList<ContractRegionDownloader> downloaders;
     protected ArrayList<Thread> marketthreads;
 
     public void stoprunning() {
-        this.keeprunning = false;
         this.AskStopthreads();
     }
     
     public ContractStatus getStatus() {
         return contractstatus;
     }
-    
+
     public class ContractStatus {
 
         private HashMap<Long, RegionStatus> regions = new HashMap<>();
         private ArrayList<String> messages = new ArrayList<>();
         private boolean done = false;
         
-        public ContractStatus() throws DBException {
-            BLregion blregion = new BLregion();
-            Iterator<Region> regionI = blregion.getAll().iterator();
-            Region region;
-            while(regionI.hasNext()) {
-                region = regionI.next();
+        public ContractStatus(ArrayList<Region> regionsarray) throws DBException {
+            for(Region region: regionsarray)
                 regions.put(region.getPrimaryKey().getId(), new RegionStatus(region));
-            }
         }
         
         public void updateStatus(long regionid, int page, long contracts) {
@@ -141,11 +126,12 @@ public class ContractService implements Runnable {
     }
     
     public ContractService(String username) {
-        this.username = username;
         try {
-            contractstatus = new ContractStatus();
             BLregion blregion = new BLregion();
-            data = new Marketdata(blregion.getAll());
+            blregion.setAuthenticated(true);
+            ArrayList<Region> regions = blregion.getAll_Contractpages();
+            contractstatus = new ContractStatus(regions);
+            data = new Marketdata(regions);
         }
         catch(DBException e) {
             System.out.println(e.getMessage());
@@ -156,75 +142,31 @@ public class ContractService implements Runnable {
     private static int processors = Runtime.getRuntime().availableProcessors(); //max number of available processors
     private static int maxprocessors = 4; //max number of available processors
     
-    /**
-     * Get number of processors
-     * @return amount of processors
-     */
     public static int getProcessors() {
         return processors;
     }
     
     public int processorsasked = processors;
     
-    /**
-     * Processors (threads) currently working
-     */
     private static int processorsactive = 0;
     public static int getProcessorsactive() {
         return processorsactive;
     }
-    /**
-     * set activeprocessors
-     * set the cpu text used in GUI
-     * @param value 
-     */
     protected static void setProcessorsactive(int value) {
         processorsactive = value;
     }
 
+    private BLcontract blcontract;
+    
     @Override
     public void run() {
-        BLcontract blcontract = new BLcontract();
-        blcontract.setAuthenticated(true);
+        blcontract = new BLcontract();
+        blcontract.setAuthenticated(true);        
+        deactivate_contracts_in_database();
         
-        try {
-            //more contracts to order_hist
-            contractstatus.addMessage("Deactivate contracts");
-            if(blcontract.count()>0) {
-                blcontract.deactivatecontracts();
-            }
-        }
-        catch(DBException e) {
-            contractstatus.addMessage(e.getMessage());
-        }
         contractstatus.addMessage("Download contracts");
-
-        downloaders = new ArrayList<>();
-        marketthreads = new ArrayList<>();
-        ContractRegionDownloader downloader;
-        Thread marketthread;
-        int p;
-        //start all threads
         long start = System.currentTimeMillis();
-        try {
-            if(processorsasked>maxprocessors) processors = maxprocessors;
-            for(p=0; p<processorsasked && p<processors; p++) {
-                downloader = new ContractRegionDownloader(data, contractstatus, p);
-                downloaders.add(downloader);
-                marketthread = new Thread(downloader);
-                marketthreads.add(marketthread);
-                marketthread.setPriority(Thread.MIN_PRIORITY);
-                marketthread.start();
-            }
-            setProcessorsactive(processors);
-            //wait untill all threads are finished
-            for(p=0; p<processorsasked && p<processors; p++) {
-                marketthread = marketthreads.get(p);
-                marketthread.join();
-            }
-        }
-        catch(InterruptedException e) {
-        }
+        download_contracts();
         try {
             contractstatus.addMessage("Cleanup Deactivated contracts");
             blcontract.deletedeactivatedcontracts();
@@ -237,16 +179,60 @@ public class ContractService implements Runnable {
         contractstatus.setDone();
     }
 
+    private void download_contracts() {
+        downloaders = new ArrayList<>();
+        marketthreads = new ArrayList<>();
+        ContractRegionDownloader downloader;
+        Thread marketthread;
+        int p;
+        try {
+            if(processorsasked>maxprocessors) processors = maxprocessors;
+            for(p=0; p<processorsasked && p<processors; p++)
+                start_contractregiondownloaderthread(p);
+            setProcessorsactive(processors);
+            for(p=0; p<processorsasked && p<processors; p++)
+                join_started_threads(p);
+        }
+        catch(InterruptedException e) {
+        }
+    }
+
+    private void join_started_threads(int p) throws InterruptedException {
+        Thread marketthread;
+        marketthread = marketthreads.get(p);
+        marketthread.join();
+    }
+
+    private void start_contractregiondownloaderthread(int p) {
+        ContractRegionDownloader downloader;
+        Thread marketthread;
+        downloader = new ContractRegionDownloader(data, contractstatus, p);
+        downloaders.add(downloader);
+        marketthread = new Thread(downloader);
+        marketthreads.add(marketthread);
+        marketthread.setPriority(Thread.MIN_PRIORITY);
+        marketthread.start();
+    }
+
+    private void deactivate_contracts_in_database() {
+        try {
+            contractstatus.addMessage("Deactivate contracts");
+            if(blcontract.count()>0)
+                blcontract.deactivatecontracts();
+        }
+        catch(DBException e) {
+            contractstatus.addMessage(e.getMessage());
+        }
+    }
+
     /**
      * Shut down all downloads
      */
     public void AskStopthreads() {
-        for(int i=0, l=downloaders.size(); i<l; i++) {
+        for(int i=0, l=downloaders.size(); i<l; i++)
             downloaders.get(i).stoprunning();
-        }
-        for(int i=0, l=marketthreads.size(); i<l; i++) {
+        for(int i=0, l=marketthreads.size(); i<l; i++)
             marketthreads.get(i).interrupt();
-        }
         downloaders = new ArrayList<>();
         marketthreads = new ArrayList<>();
     }

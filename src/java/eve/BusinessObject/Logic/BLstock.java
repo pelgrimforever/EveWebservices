@@ -16,6 +16,7 @@ import db.SQLparameters;
 import eve.BusinessObject.table.Bstock;
 import eve.conversion.entity.EMstock;
 import eve.entity.pk.StockPK;
+import eve.interfaces.logicentity.IStocktrade;
 import eve.logicentity.Stocktrade;
 import general.exception.DataException;
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class BLstock extends Bstock {
      * @throws DBException
      * @throws DataException 
      */
-    public void addStock(IStock newstock) throws DBException, DataException {
+    public void add_to_Stock(IStock newstock) throws DBException, DataException {
         Stock stock = getStock(newstock.getPrimaryKey());
         if(stock==null) {
             this.trans_insertStock(newstock);
@@ -85,7 +86,7 @@ public class BLstock extends Bstock {
      * @throws DBException
      * @throws DataException 
      */
-    public void removeStock(IStock newstock) throws DBException, DataException {
+    public void remove_from_stock(IStock newstock) throws DBException, DataException {
         BLstocktrade blstocktrade = new BLstocktrade(this);
         Stock stock = getStock(newstock.getPrimaryKey());
         if(stock!=null) {
@@ -105,11 +106,11 @@ public class BLstock extends Bstock {
      * @throws DBException
      * @throws DataException 
      */
-    public void sellStocktrade(Stocktrade stocktrade) throws DBException, DataException {
+    public void sell_from_Stocktrade(IStocktrade stocktrade) throws DBException, DataException {
         BLstocktrade blstocktrade = new BLstocktrade(this);
         Stock newstock = new Stock((StockPK)stocktrade.getPrimaryKey().getStockPK());
         newstock.setAmount(stocktrade.getSellamount());
-        this.removeStock(newstock);
+        this.remove_from_stock(newstock);
         blstocktrade.trans_deleteStocktrade(stocktrade); 
         this.Commit2DB();
     }
@@ -129,7 +130,7 @@ public class BLstock extends Bstock {
         for(Stocktrade stocktrade: stocktradelist) {
             newstock = new Stock((StockPK)stocktrade.getPrimaryKey().getStockPK());
             newstock.setAmount(stocktrade.getSellamount());
-            this.removeStock(newstock);
+            this.remove_from_stock(newstock);
             blstocktrade.trans_deleteStocktrade(stocktrade);
         }
         this.Commit2DB();

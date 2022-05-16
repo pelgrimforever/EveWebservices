@@ -2,7 +2,7 @@
  * Shipfitmodule.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 14.0.2022 16:56
+ * Generated on 11.4.2022 9:13
  *
  */
 
@@ -51,7 +51,7 @@ public class Shipfitmodule extends SecurityDataServlet {
 //Custom code, do not change this line   
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     IShipfitmodulePK shipfitmodulePK;
                     IShipfitmodule shipfitmodule;
                     switch(this.operation) {
@@ -84,7 +84,7 @@ public class Shipfitmodule extends SecurityDataServlet {
                     }
                     break;
 
-                case DataServlet.OPERATIONTYPE_INSERT:
+                case DataServlet.INSERT:
                     switch(this.operation) {
                         case IShipfitmoduleOperation.INSERT_SHIPFITMODULE:
                             shipfitmodule = (IShipfitmodule)parser.getJavaObject("shipfitmodule");
@@ -95,7 +95,7 @@ public class Shipfitmodule extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_UPDATE:
+                case DataServlet.UPDATE:
                     switch(this.operation) {
                         case IShipfitmoduleOperation.UPDATE_SHIPFITMODULE:
                             shipfitmodule = (IShipfitmodule)parser.getJavaObject("shipfitmodule");
@@ -106,7 +106,7 @@ public class Shipfitmodule extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_DELETE:
+                case DataServlet.DELETE:
                     switch(this.operation) {
                         case IShipfitmoduleOperation.DELETE_SHIPFITMODULE:
                             shipfitmodule = (IShipfitmodule)parser.getJavaObject("shipfitmodule");
@@ -125,7 +125,7 @@ public class Shipfitmodule extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_BACKUP:
+                case DataServlet.BACKUP:
                     switch(this.operation) {
 //Custom code, do not change this line
 //add here custom operations

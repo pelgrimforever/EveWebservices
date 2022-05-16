@@ -2,7 +2,7 @@
  * Region.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 14.0.2022 16:56
+ * Generated on 11.4.2022 9:13
  *
  */
 
@@ -51,7 +51,7 @@ public class Region extends SecurityDataServlet {
 //Custom code, do not change this line   
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     IRegionPK regionPK;
                     IRegion region;
                     switch(this.operation) {
@@ -92,7 +92,7 @@ public class Region extends SecurityDataServlet {
                     }
                     break;
 
-                case DataServlet.OPERATIONTYPE_INSERT:
+                case DataServlet.INSERT:
                     switch(this.operation) {
                         case IRegionOperation.INSERT_REGION:
                             region = (IRegion)parser.getJavaObject("region");
@@ -103,7 +103,7 @@ public class Region extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_UPDATE:
+                case DataServlet.UPDATE:
                     switch(this.operation) {
                         case IRegionOperation.UPDATE_REGION:
                             region = (IRegion)parser.getJavaObject("region");
@@ -114,7 +114,7 @@ public class Region extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_DELETE:
+                case DataServlet.DELETE:
                     switch(this.operation) {
                         case IRegionOperation.DELETE_REGION:
                             region = (IRegion)parser.getJavaObject("region");
@@ -125,7 +125,7 @@ public class Region extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_BACKUP:
+                case DataServlet.BACKUP:
                     switch(this.operation) {
 //Custom code, do not change this line
 //add here custom operations

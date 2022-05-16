@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eve.BusinessObject.service;
 
 import java.util.ArrayList;
@@ -10,23 +5,26 @@ import java.util.Collection;
 import java.util.HashMap;
 
 /**
- *
- * @author pelgrim
+ * @author Franky Laseure
  */
 public class Systemdata {
     
+    public final static byte STARTROUTE = 0;
+    public final static byte ENDROUTE = 1;
+    
     private eve.logicentity.System system;
     private HashMap<Long, Systemdata> connections = new HashMap<>();
-    //calculated data for 1 route
     private ArrayList<Long> route = new ArrayList<>();
     private int lowsec = 0;
     private int nullsec = 0;
     private boolean used = false;
     private boolean avoid = false;
-    private boolean[] usedroute = { false, false}; //usedroute[0] route from starting system, usedroute[1] route from end system
+    private boolean[] usedroute = { false, false};
     
     public Systemdata(eve.logicentity.System system) {
         this.system = system;
+        usedroute[STARTROUTE] = false;
+        usedroute[ENDROUTE] = false;
     }
     
     public eve.logicentity.System getSystem() {
@@ -37,8 +35,9 @@ public class Systemdata {
         return system.getPrimaryKey().getId();
     }
     
-    public void addConnection(Systemdata systemdata) {
+    public HashMap<Long, Systemdata> addConnection(Systemdata systemdata) {
         connections.put(systemdata.getId(), systemdata);
+        return connections;
     }
     
     public void forceroute(ArrayList<Long> route, int lowsecjumps, int nullsecjumps) {
@@ -52,21 +51,23 @@ public class Systemdata {
         lowsec = 0;
         nullsec = 0;
         used = false;
-        usedroute[0] = false;
-        usedroute[1] = false;
+        usedroute[STARTROUTE] = false;
+        usedroute[ENDROUTE] = false;
         avoid = false;
     }
     
     public void setStartingpoint(byte route) {
         used = true;
         usedroute[route] = true;
-        if(system.getSecurity_status()<0.45) {
-            if(!(system.getSecurity_status()>0)) {
-                this.nullsec++;
-            } else {
-                this.lowsec++;
-            }
-        }
+        if(system.getSecurity_status()<0.45)
+            set_lowsec_and_nullsec_counter();
+    }
+
+    private void set_lowsec_and_nullsec_counter() {
+        if(!(system.getSecurity_status()>0))
+            this.nullsec++;
+        else
+            this.lowsec++;
     }
     
     public void avoid() {
@@ -74,23 +75,26 @@ public class Systemdata {
     }
     
     public void setRoute(Systemdata previousnode) {
-        this.route.addAll(previousnode.getRoute());
-        this.route.add(this.getId());
-        this.lowsec = previousnode.getLowsecjumps();
-        this.nullsec = previousnode.getNullsecjumps();
-        if(system.getSecurity_status()<0.45) {
-            if(!(system.getSecurity_status()>0)) {
-                this.nullsec++;
-            } else {
-                this.lowsec++;
-            }
-        }
+        create_route_from_previousnode(previousnode);
+        set_total_lowsec_nullsec_jumps_in_route(previousnode);
         used = true;
         usedroute[0] = previousnode.getUsedroute()[0];
         usedroute[1] = previousnode.getUsedroute()[1];
     }
+
+    private void set_total_lowsec_nullsec_jumps_in_route(Systemdata previousnode) {
+        this.lowsec = previousnode.getLowsecjumps();
+        this.nullsec = previousnode.getNullsecjumps();
+        if(system.getSecurity_status()<0.45)
+            set_lowsec_and_nullsec_counter();
+    }
+
+    private void create_route_from_previousnode(Systemdata previousnode) {
+        this.route.addAll(previousnode.getRoute());
+        this.route.add(this.getId());
+    }
     
-    public Collection<Systemdata> getConnections() {
+    public Collection<Systemdata> getConnectedsystems() {
         return connections.values();
     }
     
@@ -114,7 +118,7 @@ public class Systemdata {
         return used;
     }
     
-    public boolean[] getUsedroute() {
+    private boolean[] getUsedroute() {
         return usedroute;
     }
     

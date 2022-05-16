@@ -1,0 +1,138 @@
+/*
+ * Generated on 13.4.2022 19:13
+ */
+
+package eve.restservices.region_neighbour;
+
+import base.restservices.RS_json_login;
+import data.conversion.JSONConversion;
+import data.gis.shape.GISConversion;
+import data.gis.shape.piPoint;
+import eve.conversion.json.*;
+import eve.entity.pk.*;
+import eve.usecases.Region_neighbour_usecases;
+import eve.interfaces.entity.pk.*;
+import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.IRegion_neighboursearch;
+import eve.interfaces.servlet.IRegion_neighbourOperation;
+import eve.logicentity.Region_neighbour;
+import eve.searchentity.Region_neighboursearch;
+import eve.servlets.DataServlet;
+import eve.usecases.Security_usecases;
+import general.exception.CustomException;
+import general.exception.DataException;
+import general.exception.DBException;
+import java.sql.Date;
+import java.sql.Time;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
+
+/**
+ * @author Franky Laseure
+ */
+@Path("rsregion_neighbour_select")
+public class RSRegion_neighbour_select extends RS_json_login {
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String post(String jsonstring) {
+        try {
+            Consume_jsonstring(jsonstring);
+            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            IRegion_neighbourPK region_neighbourPK;
+            IRegion_neighbour region_neighbour;
+            Region_neighbour_usecases region_neighbourusecases = new Region_neighbour_usecases(loggedin);
+//Custom code, do not change this line
+//add here custom operations
+//Custom code, do not change this line   
+            switch(operation) {
+                case IRegion_neighbourOperation.SELECT_COUNT:
+                    result = count_records(region_neighbourusecases);
+                    break;
+                case IRegion_neighbourOperation.SELECT_ALL:
+                    result = get_all_region_neighbour(region_neighbourusecases);
+                    break;
+                case IRegion_neighbourOperation.SELECT_REGION_NEIGHBOUR:
+                    result = get_region_neighbour_with_primarykey(region_neighbourusecases, json);
+                    break;
+                case IRegion_neighbourOperation.SELECT_Regionregion:
+                    result = get_region_neighbour_with_foreignkey_regionRegion(region_neighbourusecases, json);
+                    break;
+                case IRegion_neighbourOperation.SELECT_Regionneighbour:
+                    result = get_region_neighbour_with_foreignkey_regionNeighbour(region_neighbourusecases, json);
+                    break;
+                case IRegion_neighbourOperation.SELECT_SEARCH:
+                    result = search_region_neighbour(region_neighbourusecases, json);
+                    break;
+                case IRegion_neighbourOperation.SELECT_SEARCHCOUNT:
+                    result = search_region_neighbour_count(region_neighbourusecases, json);
+                    break;
+//Custom code, do not change this line
+//add here custom operations
+//Custom code, do not change this line   
+            }
+        }
+        catch(ParseException | CustomException | IOException e) {
+            setReturnstatus(e.getMessage());
+        }
+        return result;
+    }
+
+//Custom code, do not change this line
+//add here custom operations
+//Custom code, do not change this line   
+
+    private String count_records(Region_neighbour_usecases region_neighbourusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", region_neighbourusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_region_neighbour(Region_neighbour_usecases region_neighbourusecases) throws ParseException, CustomException {
+    	return JSONRegion_neighbour.toJSONArray(region_neighbourusecases.get_all()).toJSONString();
+    }
+    
+    private String get_region_neighbour_with_primarykey(Region_neighbour_usecases region_neighbourusecases, JSONObject json) throws ParseException, CustomException {
+        IRegion_neighbourPK region_neighbourPK = (IRegion_neighbourPK)JSONRegion_neighbour.toRegion_neighbourPK((JSONObject)json.get("region_neighbourpk"));
+	return JSONRegion_neighbour.toJSON(region_neighbourusecases.get_region_neighbour_by_primarykey(region_neighbourPK)).toJSONString();
+    }
+    
+    private String get_region_neighbour_with_foreignkey_regionRegion(Region_neighbour_usecases region_neighbourusecases, JSONObject json) throws ParseException, CustomException {
+        IRegionPK regionRegionPK = (IRegionPK)JSONRegion.toRegionPK((JSONObject)json.get("regionpk"));
+        return JSONRegion_neighbour.toJSONArray(region_neighbourusecases.get_region_neighbour_with_foreignkey_regionRegion(regionRegionPK)).toJSONString();
+    }
+    
+    private String get_region_neighbour_with_foreignkey_regionNeighbour(Region_neighbour_usecases region_neighbourusecases, JSONObject json) throws ParseException, CustomException {
+        IRegionPK regionNeighbourPK = (IRegionPK)JSONRegion.toRegionPK((JSONObject)json.get("regionpk"));
+        return JSONRegion_neighbour.toJSONArray(region_neighbourusecases.get_region_neighbour_with_foreignkey_regionNeighbour(regionNeighbourPK)).toJSONString();
+    }
+    
+    private String search_region_neighbour(Region_neighbour_usecases region_neighbourusecases, JSONObject json) throws ParseException, CustomException {
+        IRegion_neighboursearch search = (IRegion_neighboursearch)JSONRegion_neighbour.toRegion_neighboursearch((JSONObject)json.get("search"));
+        return JSONRegion_neighbour.toJSONArray(region_neighbourusecases.search_region_neighbour(search)).toJSONString();
+    }
+    
+    private String search_region_neighbour_count(Region_neighbour_usecases region_neighbourusecases, JSONObject json) throws ParseException, CustomException {
+        IRegion_neighboursearch region_neighboursearch = (IRegion_neighboursearch)JSONRegion_neighbour.toRegion_neighboursearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", region_neighbourusecases.search_region_neighbour_count(region_neighboursearch));
+        return jsonsearchcount.toJSONString();
+    }
+}
+

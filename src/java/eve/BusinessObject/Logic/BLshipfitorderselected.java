@@ -50,7 +50,7 @@ public class BLshipfitorderselected extends Bshipfitorderselected {
         this.setLogginrequired(isprivatetable);
     }
 
-    public void addOrderid(IShipfitorderPK shipfitorderPK, IOrdersPK ordersPK) throws CustomException {
+    public void link_shipfitorder_to_order(IShipfitorderPK shipfitorderPK, IOrdersPK ordersPK) throws CustomException {
         BLorders blorders = new BLorders();
         blorders.setAuthenticated(this.isAuthenticated());
         Orders sellorder = blorders.getOrders(ordersPK);
@@ -100,7 +100,7 @@ public class BLshipfitorderselected extends Bshipfitorderselected {
      * @throws DBException
      * @throws DataException 
      */
-    public void confirmOrder(IShipfitorderselectedPK shipfitorderselectedPK, int amount) throws DBException, DataException, CustomException {
+    public void update_shipfitorderselected_with_bought_amount(IShipfitorderselectedPK shipfitorderselectedPK, int amount) throws DBException, DataException, CustomException {
         BLshipfitorder blshipfitorder = new BLshipfitorder(this);
         blshipfitorder.setAuthenticated(this.isAuthenticated());
 
@@ -120,37 +120,75 @@ public class BLshipfitorderselected extends Bshipfitorderselected {
     }
     
     public ArrayList<View_system> calculateroute(String username, long startsystem, long endsystem) throws DBException {
-        BLsystem blsystem = new BLsystem();
-        blsystem.setAuthenticated(this.isAuthenticated());
-        BLsystemjumps blsystemjumps = new BLsystemjumps();
-        blsystemjumps.setAuthenticated(this.isAuthenticated());
-        BLview_system blview_system = new BLview_system();
-        blview_system.setAuthenticated(this.isAuthenticated());
+        Shipfit_routecalculator shipfit_routecalculator = new Shipfit_routecalculator(this.isAuthenticated());
+        return shipfit_routecalculator.calculateroute(username, startsystem, endsystem);
+    }
+    
+    private class Shipfit_routecalculator {
+        private BLsystem blsystem;
+        private BLsystemjumps blsystemjumps;
+        private BLview_system blview_system;
+        private System calculateroute_start;
+        private System calculateroute_end;
+        private System prevsystem;
         
-        System start = blsystem.getSystem(new SystemPK(startsystem));
-        System end = blsystem.getSystem(new SystemPK(endsystem));
-        ArrayList<System> usedsystems = blsystem.getSystems4shipfitorderselected(username);
-        
-        ArrayList<Systemjumps> systemjumps = blsystemjumps.getSystemjumps4shiporderselected(username, startsystem, endsystem);
-        HashMap<Pair<Long,Long>, Systemjumps> jumptable = new HashMap<>();
-        for(Systemjumps systemjump: systemjumps) {
-            jumptable.put(new Pair(systemjump.getPrimaryKey().getSystem_start(), systemjump.getPrimaryKey().getSystem_end()), systemjump);
+        public Shipfit_routecalculator(boolean isauthenticated) {
+            initialize(isauthenticated);
         }
         
-        Systempermutation permutation = new Systempermutation(usedsystems, jumptable, startsystem, endsystem);
-        ArrayList<System> route = new ArrayList<>();
-        route.add(start);
-        route.addAll(permutation.findroute());
-        route.add(end);
-        
-        //load View_system lines for every System
-        ArrayList<View_system> routesystems = new ArrayList<>();
-        System prevsystem = start;
-        for(System system: route) {
-            routesystems.add(blview_system.getView_systems(prevsystem.getPrimaryKey().getId(), system.getPrimaryKey().getId()));
+        public ArrayList<View_system> calculateroute(String username, long startsystem, long endsystem) throws DBException {
+            initialize_start_end_system(startsystem, endsystem);
+            ArrayList<System> route = buildroute(username, startsystem, endsystem);
+            return getextra_route_information(route);
+        }
+
+        private ArrayList<View_system> getextra_route_information(ArrayList<System> route) throws DBException {
+            ArrayList<View_system> routesystems = new ArrayList<>();
+            prevsystem = calculateroute_start;
+            for(System system: route)
+                routesystems.add(add_route_information_for_system_with_previousystem_as_startpoint(system));
+            return routesystems;
+        }
+
+        private View_system add_route_information_for_system_with_previousystem_as_startpoint(System system) throws DBException {
+            View_system result = blview_system.getView_systems(prevsystem.getPrimaryKey().getId(), system.getPrimaryKey().getId());
             prevsystem = system;
+            return result;
         }
-        return routesystems;
+
+        private ArrayList<System> buildroute(String username, long startsystem, long endsystem) throws DBException {
+            Systempermutation permutation = build_systempermutations(username, startsystem, endsystem);
+            ArrayList<System> route = new ArrayList<>();
+            route.add(calculateroute_start);
+            route.addAll(permutation.findroute());
+            route.add(calculateroute_end);
+            return route;
+        }
+
+        private Systempermutation build_systempermutations(String username, long startsystem, long endsystem) throws DBException {
+            ArrayList<System> usedsystems = blsystem.getSystems4shipfitorderselected(username);
+            ArrayList<Systemjumps> systemjumps = blsystemjumps.getSystemjumps4shiporderselected(username, startsystem, endsystem);
+            HashMap<Pair<Long,Long>, Systemjumps> jumptable = new HashMap<>();
+
+            for(Systemjumps systemjump: systemjumps)
+                jumptable.put(new Pair(systemjump.getPrimaryKey().getSystem_start(), systemjump.getPrimaryKey().getSystem_end()), systemjump);
+            Systempermutation permutation = new Systempermutation(usedsystems, jumptable, startsystem, endsystem);
+            return permutation;
+        }
+
+        private void initialize_start_end_system(long startsystem, long endsystem) throws DBException {
+            calculateroute_start = blsystem.getSystem(new SystemPK(startsystem));
+            calculateroute_end = blsystem.getSystem(new SystemPK(endsystem));
+        }
+
+        private void initialize(boolean isauthenticated) {
+            blsystem = new BLsystem();
+            blsystem.setAuthenticated(isauthenticated);
+            blsystemjumps = new BLsystemjumps();
+            blsystemjumps.setAuthenticated(isauthenticated);
+            blview_system = new BLview_system();
+            blview_system.setAuthenticated(isauthenticated);
+        }
     }
     
     /**

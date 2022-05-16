@@ -57,6 +57,7 @@ public class Swagger {
     private static final String URL_corporations_corporations = URL_server + "corporations/";
     private static final String URL_alliances_alliances = URL_server + "alliances/";
     private static final String URL_universe_systemkills = URL_server + "universe/system_kills/";
+    private static final String URL_universe_systemjumps = URL_server + "universe/system_jumps/";
     
     //market data
     private static final String URL_markets = URL_server + "markets/";
@@ -248,6 +249,10 @@ public class Swagger {
     
     public static JSONArray getSystemkills() {
         return jsonrequest.requestJSONArray(URL_universe_systemkills + URL_Datasource);
+    }
+
+    public static JSONArray getSystemjumpss() {
+        return jsonrequest.requestJSONArray(URL_universe_systemjumps + URL_Datasource);
     }
 
     public static JSONObject getEveGatecheck(ArrayList systems) {

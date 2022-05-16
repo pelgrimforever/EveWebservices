@@ -2,7 +2,7 @@
  * JSONView_stocktrade_orders.java
  *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 14.0.2022 16:56
+ * Generated on 15.3.2022 8:46
  *
  */
  
@@ -53,6 +53,8 @@ public class JSONView_stocktrade_orders {
         json.put("min_volume", view_stocktrade_orders.getMin_volume());
         json.put("orderid", String.valueOf(view_stocktrade_orders.getOrderid()));
         json.put("sellamount", String.valueOf(view_stocktrade_orders.getSellamount()));
+        json.put("price", view_stocktrade_orders.getPrice());
+        json.put("totalprice", view_stocktrade_orders.getTotalprice());
 //Custom code, do not change this line
 //Custom code, do not change this line
         return json;
@@ -71,6 +73,8 @@ public class JSONView_stocktrade_orders {
         view_stocktrade_orders.setMin_volume(JSONConversion.getint(json, "min_volume"));
         view_stocktrade_orders.setOrderid(JSONConversion.getlong(json, "orderid"));
         view_stocktrade_orders.setSellamount(JSONConversion.getlong(json, "sellamount"));
+        view_stocktrade_orders.setPrice(JSONConversion.getdouble(json, "price"));
+        view_stocktrade_orders.setTotalprice(JSONConversion.getdouble(json, "totalprice"));
         return view_stocktrade_orders;
     }
 
@@ -162,6 +166,20 @@ public class JSONView_stocktrade_orders {
             byte[] operators = JSONConversion.getNumberoperators(field);
             byte andor = JSONConversion.getbyte(field, "andor");
             view_stocktrade_orderssearch.sellamount(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("price");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            view_stocktrade_orderssearch.price(valuearray, operators, andor);
+        }
+        field = (JSONObject)fss.get("totalprice");
+        if(field!=null) {
+            Double[] valuearray = JSONConversion.getDoublevalues(field);
+            byte[] operators = JSONConversion.getNumberoperators(field);
+            byte andor = JSONConversion.getbyte(field, "andor");
+            view_stocktrade_orderssearch.totalprice(valuearray, operators, andor);
         }
         return view_stocktrade_orderssearch;
     }

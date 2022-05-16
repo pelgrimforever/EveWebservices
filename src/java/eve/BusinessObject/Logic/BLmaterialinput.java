@@ -15,7 +15,7 @@ import eve.interfaces.logicentity.IMaterialinput;
 import eve.logicentity.Materialinput;
 import eve.BusinessObject.table.Bmaterialinput;
 import eve.conversion.entity.EMmaterialinput;
-import eve.entity.pk.EvetypePK;
+import eve.interfaces.entity.pk.IEvetypePK;
 import general.exception.DataException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class BLmaterialinput extends Bmaterialinput {
      * @throws DBException
      * @throws DataException 
      */
-    public void useMaterial(String username, EvetypePK evetypepk, long amount) throws DBException, DataException {
+    public void useMaterial(String username, IEvetypePK evetypepk, long amount) throws DBException, DataException {
         //get all material in stock for username / evetype
         Object[][] parameters = {{ "username", username }};
         SQLparameters sqlparameters = new SQLparameters(parameters);

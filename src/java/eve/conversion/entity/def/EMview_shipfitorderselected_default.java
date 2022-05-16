@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 22.1.2022 10:55
+ * Generated on 13.4.2022 19:13
  *
  */
 package eve.conversion.entity.def;

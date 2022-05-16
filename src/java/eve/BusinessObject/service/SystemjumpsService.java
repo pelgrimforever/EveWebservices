@@ -1,21 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eve.BusinessObject.service;
 
 import db.TransactionOutput;
 import eve.BusinessObject.Logic.BLsystem;
 import eve.BusinessObject.Logic.BLsystemjumps;
-import eve.conversion.entity.EMsystemjumps;
-import eve.searchentity.Systemsearch;
+import eve.usecases.Loadroute_parameters;
 import general.exception.DBException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
- * Market loader service
- * @author pelgrim
+ * @author Franky Laseure
  */
 public class SystemjumpsService implements Runnable {
     
@@ -82,69 +76,94 @@ public class SystemjumpsService implements Runnable {
     @Override
     public void run() {
         long start = System.currentTimeMillis();
-
         calculate();
-        
         long end = System.currentTimeMillis();
         systemjumpsstatus.addMessage("Calculation time " + ((end - start)/1000) + "sec.");
         systemjumpsstatus.setDone();
     }
 
+    private BLsystem blsystem;
+    private BLsystemjumps blsystemjumps;
+    private RouteService routeservice;
+    private ArrayList<eve.logicentity.System> systems;
+    private TransactionOutput toutput;
+    private int startcounter;
+    private int endcounter;
+    private int insertcounter;
+    private int jumps;
+    private int jumpssafe;
+    private long startid, endid;
+    private ArrayList<Long> dummy;
+    
     private void calculate() {
         try {
-            BLsystem blsystem = new BLsystem();
-            BLsystemjumps blsystemjumps = new BLsystemjumps();
-            RouteService routeservice = new RouteService();
-            ArrayList<eve.logicentity.System> systems = blsystem.getSystemLowHisec();
-            systemjumpsstatus.addMessage("Calculate all combinations of " + systems.size() + " systems");
-            //jump to same systems don't need to be recalculated
-            systemjumpsstatus.combinations += systems.size();
-            TransactionOutput toutput;
-            int startcounter = 0;
-            int endcounter = 0;
-            int insertcounter = 0;
-            int jumps = 0;
-            int jumpssafe = 0;
-            long startid, endid;
-            ArrayList<Long> dummy = new ArrayList<>();
-            for(eve.logicentity.System start: systems) {
-                startid = start.getPrimaryKey().getId();
-                endcounter = 0;
-                if(!keeprunning) break;
-                for(eve.logicentity.System end: systems) {
-                    if(endcounter==startcounter) {
-                        break;
-                    }
-                    endid = end.getPrimaryKey().getId();
-                    Systemdata route = routeservice.getRoute(startid, endid, dummy, dummy, false);
-                    Systemdata routesafe = routeservice.getRoute(startid, endid, dummy, dummy, true);
-                    blsystemjumps.addStatement(composeSQLupdate(startid, endid, route, routesafe));
-                    blsystemjumps.addStatement(composeSQLupdate(endid, startid, route, routesafe));
-                    systemjumpsstatus.incCombinations();
-                    systemjumpsstatus.incCombinations();
-                    insertcounter++;
-                    if(insertcounter==200) {
-                        insertcounter = 0;
-                        if(!keeprunning) break;
-                        toutput = blsystemjumps.Commit2DB();
-                        if(toutput.getHaserror()) {
-                            systemjumpsstatus.addMessage("Jump calculator " + toutput.getErrormessage());
-                        }
-                    }
-                    endcounter++;
-                }
-                startcounter++;
-            }
-            if(keeprunning) {
-                toutput = blsystemjumps.Commit2DB();
-                if(toutput.getHaserror()) {
-                    systemjumpsstatus.addMessage("Jump calculator " + toutput.getErrormessage());
-                }
-            }
+            initialize();
+            Iterator<eve.logicentity.System> systemsstartI = systems.iterator();
+            while(systemsstartI.hasNext() && keeprunning)
+                calculate_jumps_from_startsystem_to_each_system(systemsstartI.next());
+            if(keeprunning)
+                commit_calculationresult_to_database();
         }
         catch(DBException e) {
             systemjumpsstatus.addMessage(e.getMessage());
         }
+    }
+
+    private void commit_calculationresult_to_database() throws DBException {
+        toutput = blsystemjumps.Commit2DB();
+        if(toutput.getHaserror())
+            systemjumpsstatus.addMessage("Jump calculator " + toutput.getErrormessage());
+    }
+
+    private void calculate_jumps_from_startsystem_to_each_system(eve.logicentity.System start) throws DBException {
+        startid = start.getPrimaryKey().getId();
+        endcounter = 0;
+        Iterator<eve.logicentity.System> systemsendI = systems.iterator();
+        while(systemsendI.hasNext() && keeprunning && endcounter!=startcounter)
+            calculate_jumps_between_start_end_system(systemsendI.next());
+        startcounter++;
+    }
+
+    private void calculate_jumps_between_start_end_system(eve.logicentity.System end) throws DBException {
+        endid = end.getPrimaryKey().getId();
+        Loadroute_parameters routeparameters = new Loadroute_parameters();
+        routeparameters.setOrigin(startid);
+        routeparameters.setDestination(endid);
+        routeparameters.setAvoidsystems(dummy);
+        routeparameters.setRoutesegmentlist(dummy);
+        routeparameters.setSecure(false);
+        Systemdata route = routeservice.getRoute_Systemdata(routeparameters);
+        routeparameters.setSecure(true);
+        Systemdata routesafe = routeservice.getRoute_Systemdata(routeparameters);
+        blsystemjumps.addStatement(composeSQLupdate(startid, endid, route, routesafe));
+        blsystemjumps.addStatement(composeSQLupdate(endid, startid, route, routesafe));
+        systemjumpsstatus.incCombinations();
+        systemjumpsstatus.incCombinations();
+        insertcounter++;
+        if(insertcounter==200) {
+            insertcounter = 0;
+            if(keeprunning)
+                commit_calculationresult_to_database();
+        }
+        endcounter++;
+    }
+
+    private void initialize() throws DBException {
+        blsystem = new BLsystem();
+        blsystem.setAuthenticated(true);
+        blsystemjumps = new BLsystemjumps();
+        blsystemjumps.setAuthenticated(true);
+        routeservice = new RouteService();
+        systems = blsystem.getSystemLowHisec();
+        systemjumpsstatus.addMessage("Calculate all combinations of " + systems.size() + " systems");
+        //jump to same systems don't need to be recalculated
+        systemjumpsstatus.combinations += systems.size();
+        startcounter = 0;
+        endcounter = 0;
+        insertcounter = 0;
+        jumps = 0;
+        jumpssafe = 0;
+        dummy = new ArrayList<>();
     }
     
     private String composeSQLupdate(long startid, long endid, Systemdata route, Systemdata routesafe) {

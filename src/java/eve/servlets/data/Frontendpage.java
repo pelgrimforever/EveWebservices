@@ -2,7 +2,7 @@
  * Frontendpage.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 16.1.2022 20:54
+ * Generated on 11.4.2022 9:13
  *
  */
 
@@ -51,7 +51,7 @@ public class Frontendpage extends SecurityDataServlet {
 //Custom code, do not change this line   
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     IFrontendpagePK frontendpagePK;
                     IFrontendpage frontendpage;
                     switch(this.operation) {
@@ -80,7 +80,7 @@ public class Frontendpage extends SecurityDataServlet {
                     }
                     break;
 
-                case DataServlet.OPERATIONTYPE_INSERT:
+                case DataServlet.INSERT:
                     switch(this.operation) {
                         case IFrontendpageOperation.INSERT_FRONTENDPAGE:
                             frontendpage = (IFrontendpage)parser.getJavaObject("frontendpage");
@@ -91,7 +91,7 @@ public class Frontendpage extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_UPDATE:
+                case DataServlet.UPDATE:
                     switch(this.operation) {
                         case IFrontendpageOperation.UPDATE_FRONTENDPAGE:
                             frontendpage = (IFrontendpage)parser.getJavaObject("frontendpage");
@@ -102,7 +102,7 @@ public class Frontendpage extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_DELETE:
+                case DataServlet.DELETE:
                     switch(this.operation) {
                         case IFrontendpageOperation.DELETE_FRONTENDPAGE:
                             frontendpage = (IFrontendpage)parser.getJavaObject("frontendpage");
@@ -113,7 +113,7 @@ public class Frontendpage extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_BACKUP:
+                case DataServlet.BACKUP:
                     switch(this.operation) {
 //Custom code, do not change this line
 //add here custom operations

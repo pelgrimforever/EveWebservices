@@ -22,8 +22,10 @@ public class EMregion extends EMregion_default {
 //Metacoder: NO AUTHOMATIC UPDATE
     
     public static final String OrderByPages = " order by orderpages desc";
+    public static final String OrderByContractpages = " order by contractpages desc";
     public static final String SQLwhereaccess = "not noaccess";
-    public static final String SQLSelectAllaccess = SQLSelect + " where " + SQLwhereaccess + OrderByPages;
+    public static final String SQLSelectAllaccessOrderpages = SQLSelect + " where " + SQLwhereaccess + OrderByPages;
+    public static final String SQLSelectAllaccessContractpages = SQLSelect + " where " + SQLwhereaccess + OrderByContractpages;
 
     public static final String updateNoaccess1 = "update region set noaccess = :noaccess: where id not in (select region from constellation where noaccess = :constellationnoaccess: group by region)";
     public static final String updateNoaccess2 = "update region set noaccess = :noaccess: where id in (select region from constellation where noaccess = :constellationnoaccess: group by region)";

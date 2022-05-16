@@ -47,7 +47,7 @@ public class View_shipfitorderselected extends SecurityDataServlet {
         //boolean privateaccess = userprofile!=null && userprofile.privateaccess();
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     switch(this.operation) {
                         case IView_shipfitorderselectedOperation.SELECT_ALL:
                             dataobject = blview_shipfitorderselected.getView_shipfitorderselecteds();

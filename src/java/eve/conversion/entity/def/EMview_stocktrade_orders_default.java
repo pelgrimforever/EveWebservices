@@ -2,7 +2,7 @@
  * EMalliance_default.java
  *
  * Created on Okt 8, 2021
- * Generated on 22.1.2022 10:55
+ * Generated on 13.4.2022 19:13
  *
  */
 package eve.conversion.entity.def;
@@ -55,6 +55,8 @@ public class EMview_stocktrade_orders_default implements ViewMapper {
                 view_stocktrade_orders.setMin_volume(dbresult.getInt("min_volume"));
                 view_stocktrade_orders.setOrderid(dbresult.getLong("orderid"));
                 view_stocktrade_orders.setSellamount(dbresult.getLong("sellamount"));
+                view_stocktrade_orders.setPrice(dbresult.getDouble("price"));
+                view_stocktrade_orders.setTotalprice(dbresult.getDouble("totalprice"));
             }
             catch(SQLException sqle) {
                 throw sqle;

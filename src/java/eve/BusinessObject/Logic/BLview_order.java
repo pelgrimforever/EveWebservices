@@ -14,9 +14,9 @@ import eve.logicview.View_order;
 import eve.BusinessObject.view.Bview_order;
 import eve.conversion.entity.EMview_order;
 import eve.entity.pk.EvetypePK;
-import eve.entity.pk.OrdersPK;
 import eve.entity.pk.RegionPK;
 import eve.entity.pk.SystemPK;
+import eve.interfaces.entity.pk.IOrdersPK;
 import eve.interfaces.logicentity.ISyssettings;
 import eve.logicentity.Syssettings;
 import general.exception.DataException;
@@ -54,7 +54,7 @@ public class BLview_order extends Bview_order {
      * @return View_order
      * @throws DBException
      */
-    public View_order getView_order(OrdersPK orderPK) throws DBException {
+    public View_order getView_order(IOrdersPK orderPK) throws DBException {
         return (View_order)getEntity(EMview_order.SQLSelectOne, orderPK.getSQLprimarykey());
     }
 

@@ -188,6 +188,7 @@ public class BLuserbp extends Buserbp {
      */
     public void updateProperties(IUserbp userbp) throws DBException, DataException {
         Userbp original = this.getUserbp(userbp.getPrimaryKey());
+        original.setTotalamount(userbp.getTotalamount());
         original.setBpprice(userbp.getBpprice());
         original.setAmountproduced(userbp.getAmountproduced());
         original.setMaterialefficiency(userbp.getMaterialefficiency());

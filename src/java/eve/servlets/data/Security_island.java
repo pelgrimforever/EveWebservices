@@ -2,7 +2,7 @@
  * Security_island.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 14.0.2022 16:56
+ * Generated on 11.4.2022 9:13
  *
  */
 
@@ -51,7 +51,7 @@ public class Security_island extends SecurityDataServlet {
 //Custom code, do not change this line   
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     ISecurity_islandPK security_islandPK;
                     ISecurity_island security_island;
                     switch(this.operation) {
@@ -76,7 +76,7 @@ public class Security_island extends SecurityDataServlet {
                     }
                     break;
 
-                case DataServlet.OPERATIONTYPE_INSERT:
+                case DataServlet.INSERT:
                     switch(this.operation) {
                         case ISecurity_islandOperation.INSERT_SECURITY_ISLAND:
                             security_island = (ISecurity_island)parser.getJavaObject("security_island");
@@ -87,7 +87,7 @@ public class Security_island extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_UPDATE:
+                case DataServlet.UPDATE:
                     switch(this.operation) {
                         case ISecurity_islandOperation.UPDATE_SECURITY_ISLAND:
                             security_island = (ISecurity_island)parser.getJavaObject("security_island");
@@ -98,7 +98,7 @@ public class Security_island extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_DELETE:
+                case DataServlet.DELETE:
                     switch(this.operation) {
                         case ISecurity_islandOperation.DELETE_SECURITY_ISLAND:
                             security_island = (ISecurity_island)parser.getJavaObject("security_island");
@@ -109,7 +109,7 @@ public class Security_island extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_BACKUP:
+                case DataServlet.BACKUP:
                     switch(this.operation) {
 //Custom code, do not change this line
 //add here custom operations

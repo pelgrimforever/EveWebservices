@@ -47,7 +47,7 @@ public class View_tradecombined_sell extends SecurityDataServlet {
         //boolean privateaccess = userprofile!=null && userprofile.privateaccess();
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     switch(this.operation) {
                         case IView_tradecombined_sellOperation.SELECT_ALL:
                             dataobject = blview_tradecombined_sell.getView_tradecombined_sells();

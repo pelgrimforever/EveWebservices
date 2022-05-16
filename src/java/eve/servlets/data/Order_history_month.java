@@ -2,7 +2,7 @@
  * Order_history_month.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 14.0.2022 16:56
+ * Generated on 11.4.2022 9:13
  *
  */
 
@@ -51,7 +51,7 @@ public class Order_history_month extends SecurityDataServlet {
 //Custom code, do not change this line   
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     IOrder_history_monthPK order_history_monthPK;
                     IOrder_history_month order_history_month;
                     switch(this.operation) {
@@ -84,7 +84,7 @@ public class Order_history_month extends SecurityDataServlet {
                     }
                     break;
 
-                case DataServlet.OPERATIONTYPE_INSERT:
+                case DataServlet.INSERT:
                     switch(this.operation) {
                         case IOrder_history_monthOperation.INSERT_ORDER_HISTORY_MONTH:
                             order_history_month = (IOrder_history_month)parser.getJavaObject("order_history_month");
@@ -95,7 +95,7 @@ public class Order_history_month extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_UPDATE:
+                case DataServlet.UPDATE:
                     switch(this.operation) {
                         case IOrder_history_monthOperation.UPDATE_ORDER_HISTORY_MONTH:
                             order_history_month = (IOrder_history_month)parser.getJavaObject("order_history_month");
@@ -106,7 +106,7 @@ public class Order_history_month extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_DELETE:
+                case DataServlet.DELETE:
                     switch(this.operation) {
                         case IOrder_history_monthOperation.DELETE_ORDER_HISTORY_MONTH:
                             order_history_month = (IOrder_history_month)parser.getJavaObject("order_history_month");
@@ -125,7 +125,7 @@ public class Order_history_month extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_BACKUP:
+                case DataServlet.BACKUP:
                     switch(this.operation) {
 //Custom code, do not change this line
 //add here custom operations

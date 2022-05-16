@@ -23,6 +23,10 @@ public class EMcontract extends EMcontract_default {
     
 //Custom code, do not change this line
     public static final String SQLSelectAll = SQLSelect + OrderBy;
+    public static final String SQLSelect4Region = SQLSelect + " left join station ON station.id = contract.start_location_id " +
+        "left join system on system.id = station.system_id " +
+        "left join constellation on constellation.id = system.constellation " +
+        "where constellation.region = :region.id: or constellation.region is null";
     public static final String SQLtruncate = "truncate contractitem, contract";
     public static final String SQLdeactivate = "update contract set active = false";
     public static final String SQLactivatecontract = "update contract set active = true where " + SQLWhere1;

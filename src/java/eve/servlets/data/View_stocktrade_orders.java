@@ -47,7 +47,7 @@ public class View_stocktrade_orders extends SecurityDataServlet {
         //boolean privateaccess = userprofile!=null && userprofile.privateaccess();
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     switch(this.operation) {
                         case IView_stocktrade_ordersOperation.SELECT_ALL:
                             dataobject = blview_stocktrade_orders.getView_stocktrade_orderss();

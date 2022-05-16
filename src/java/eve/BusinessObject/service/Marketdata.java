@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eve.BusinessObject.service;
 
 import eve.logicentity.Region;
@@ -11,8 +6,7 @@ import java.util.Iterator;
 import org.json.simple.JSONArray;
 
 /**
- *
- * @author pelgrim
+ * @author Franky Laseure
  */
 public class Marketdata {
     
@@ -34,6 +28,5 @@ public class Marketdata {
         } else {
             return null;
         }
-    }
-    
+    }    
 }

@@ -47,7 +47,7 @@ public class View_order_region_evetype extends SecurityDataServlet {
         //boolean privateaccess = userprofile!=null && userprofile.privateaccess();
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     switch(this.operation) {
                         case IView_order_region_evetypeOperation.SELECT_ALL:
                             dataobject = blview_order_region_evetype.getView_order_region_evetypes();

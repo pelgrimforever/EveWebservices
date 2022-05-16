@@ -47,7 +47,7 @@ public class View_trade_systemsevetype extends SecurityDataServlet {
         //boolean privateaccess = userprofile!=null && userprofile.privateaccess();
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     switch(this.operation) {
                         case IView_trade_systemsevetypeOperation.SELECT_ALL:
                             dataobject = blview_trade_systemsevetype.getView_trade_systemsevetypes();

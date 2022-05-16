@@ -47,7 +47,7 @@ public class View_security_island_systemcount extends SecurityDataServlet {
         //boolean privateaccess = userprofile!=null && userprofile.privateaccess();
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     switch(this.operation) {
                         case IView_security_island_systemcountOperation.SELECT_ALL:
                             dataobject = blview_security_island_systemcount.getView_security_island_systemcounts();

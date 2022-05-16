@@ -87,14 +87,12 @@ public class BLregion extends Bregion {
         this.Commit2DB();
     }
     
-    /**
-     * Get all Regions that are accessible
-     * @return ArrayList of all Entities
-     * @throws DBException
-     */
-    @Override
-    public ArrayList getAll() throws DBException {
-        return getEntities(EMregion.SQLSelectAllaccess);
+    public ArrayList getAll_Orderpages() throws DBException {
+        return getEntities(EMregion.SQLSelectAllaccessOrderpages);
+    }
+    
+    public ArrayList getAll_Contractpages() throws DBException {
+        return getEntities(EMregion.SQLSelectAllaccessContractpages);
     }
     
     /**

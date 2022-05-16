@@ -47,7 +47,7 @@ public class View_tradeorders_lowsec extends SecurityDataServlet {
         //boolean privateaccess = userprofile!=null && userprofile.privateaccess();
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     switch(this.operation) {
                         case IView_tradeorders_lowsecOperation.SELECT_ALL:
                             dataobject = blview_tradeorders_lowsec.getView_tradeorders_lowsecs();

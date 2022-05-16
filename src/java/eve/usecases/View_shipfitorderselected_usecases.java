@@ -1,0 +1,51 @@
+/*
+ * Generated on 13.4.2022 19:13
+ */
+
+package eve.usecases;
+
+import data.conversion.JSONConversion;
+import eve.interfaces.searchentity.*;
+import eve.logicview.*;
+import eve.BusinessObject.Logic.*;
+import eve.entity.pk.*;
+import eve.logicview.View_shipfitorderselected;
+import general.exception.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import org.json.simple.parser.ParseException;
+
+/**
+ * @author Franky Laseure
+ */
+public class View_shipfitorderselected_usecases {
+
+    private boolean loggedin = false;
+    private BLview_shipfitorderselected blview_shipfitorderselected = new BLview_shipfitorderselected();
+    
+    public View_shipfitorderselected_usecases() {
+        this(false);
+    }
+    
+    public View_shipfitorderselected_usecases(boolean loggedin) {
+        this.loggedin = loggedin;
+        blview_shipfitorderselected.setAuthenticated(loggedin);
+    }
+    
+    public ArrayList<View_shipfitorderselected> get_all() throws DBException {
+        return blview_shipfitorderselected.getView_shipfitorderselecteds();
+    }
+    
+//Custom code, do not change this line
+//add here custom operations
+    public ArrayList<View_shipfitorderselected> blview_shipfitorderselected_for_user_usecase(String username) throws DBException {
+        return blview_shipfitorderselected.getView_shipfitorderselecteds(username);
+    }
+
+    public ArrayList<View_shipfitorderselected> blview_shipfitorderselected_for_user_system_usecase(String username, long systemid) throws DBException {
+        return blview_shipfitorderselected.getView_shipfitorderselecteds(username, systemid);
+    }
+//Custom code, do not change this line   
+
+}
+

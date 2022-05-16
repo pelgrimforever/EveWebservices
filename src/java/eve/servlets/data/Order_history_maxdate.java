@@ -47,7 +47,7 @@ public class Order_history_maxdate extends SecurityDataServlet {
         //boolean privateaccess = userprofile!=null && userprofile.privateaccess();
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     switch(this.operation) {
                         case IOrder_history_maxdateOperation.SELECT_ALL:
                             dataobject = blorder_history_maxdate.getOrder_history_maxdates();

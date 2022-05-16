@@ -53,7 +53,7 @@ public class BLshipfit extends Bshipfit {
         this.setLogginrequired(isprivatetable);
     }
 
-    public void addOrder(IShipfitPK shipfitPK) throws CustomException {
+    public void order_ship_and_all_modules(IShipfitPK shipfitPK) throws CustomException {
         BLshipfitmodule blshipfitmodule = new BLshipfitmodule();
         blshipfitmodule.setAuthenticated(this.isAuthenticated());
         BLshipfitorder blshipfitorder = new BLshipfitorder();

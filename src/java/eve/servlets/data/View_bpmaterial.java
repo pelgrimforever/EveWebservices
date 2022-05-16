@@ -47,7 +47,7 @@ public class View_bpmaterial extends SecurityDataServlet {
         //boolean privateaccess = userprofile!=null && userprofile.privateaccess();
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     switch(this.operation) {
                         case IView_bpmaterialOperation.SELECT_ALL:
                             dataobject = blview_bpmaterial.getView_bpmaterials();

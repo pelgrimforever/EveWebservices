@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eve.BusinessObject.service;
 
 import eve.BusinessObject.Logic.BLcategory;
@@ -21,8 +16,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * Market loader service
- * @author pelgrim
+ * @author Franky Laseure
  */
 public class CategoryService implements Runnable {
     
@@ -115,86 +109,38 @@ public class CategoryService implements Runnable {
         categorystatus = new CategoryStatus();
     }
     
+    private BLcategory blcategory;
+    private BLtypegroup bltypegroup;
+    private BLevetype blevetype;
+    private int run;
+    private JSONArray jsoncategories;
+    private JSONArray jsontypegroups;
+    private JSONArray jsonevetypes;
+    private Iterator<Long> jsoncategoriesI;
+    private Iterator<Long> jsontypegroupsI;
+    private Iterator<Long> jsonevetypesI;
+    private Long categoryid;
+    private Long typegroupid;
+    private Long evetypeid;
+    private JSONObject jsoncategorydetails;
+    private JSONObject jsontypegroupdetails;
+    private JSONObject jsonevetypedetails;
+    private int typegrouprun;
+    private int evetyperun;
+    private int evetypecounter;
+    
     @Override
     public void run() {
         categorystatus.addMessage("Download Categories/Type groups/Types");
-        BLcategory blcategory = new BLcategory();
-        blcategory.setAuthenticated(true);
-        BLtypegroup bltypegroup = new BLtypegroup(blcategory);
-        bltypegroup.setAuthenticated(true);
-        BLevetype blevetype = new BLevetype(bltypegroup);
-        blevetype.setAuthenticated(true);
-
+        initialize_businesslogic();
         long start = System.currentTimeMillis();
-
         try {
-            int run = 0;
-            //add categories
-            JSONArray jsoncategories = Swagger.getCategories();
-            JSONArray jsontypegroups;
-            JSONArray jsonevetypes;
-            Iterator<Long> jsoncategoriesI = jsoncategories.iterator();
-            Iterator<Long> jsontypegroupsI;
-            Iterator<Long> jsonevetypesI;
-            Long categoryid;
-            Long typegroupid;
-            Long evetypeid;
-            JSONObject jsoncategorydetails;
-            JSONObject jsontypegroupdetails;
-            JSONObject jsonevetypedetails;
-            int typegrouprun;
-            int evetyperun;
-            int evetypecounter;
-
-            do {
-                while(keeprunning && jsoncategoriesI.hasNext()) {
-                    categoryid = (Long)jsoncategoriesI.next();
-                    jsoncategorydetails = Swagger.getCategory(categoryid);
-                    //get typegroups
-                    jsontypegroups = (JSONArray)jsoncategorydetails.get("groups");
-                    typegrouprun = 0;
-                    //do {
-                        if(run==0 || !blcategory.getCategoryExists(new CategoryPK(categoryid))) {
-                            blcategory.updateCategory(jsoncategorydetails);
-                            blcategory.Commit2DB();
-                        }
-                        jsontypegroupsI = jsontypegroups.iterator();
-                        while(keeprunning && jsontypegroupsI.hasNext()) {
-                            typegroupid = (Long)jsontypegroupsI.next();
-                            jsontypegroupdetails = Swagger.getGroup(typegroupid);
-                            jsonevetypes = (JSONArray)jsontypegroupdetails.get("types");
-                            evetyperun = 0;
-                            //do {
-                                if(typegrouprun==0 || !bltypegroup.getTypegroupExists(new TypegroupPK(typegroupid))) {
-                                    bltypegroup.updateTypegroup(jsontypegroupdetails);
-                                    bltypegroup.Commit2DB();
-                                }
-                                jsonevetypesI = jsonevetypes.iterator();
-                                evetypecounter = 0;
-                                while(keeprunning && jsonevetypesI.hasNext()) {
-                                    evetypeid = (Long)jsonevetypesI.next();
-                                    if(evetyperun==0 || !blevetype.getEvetypeExists(new EvetypePK(evetypeid))) {
-                                        jsonevetypedetails = Swagger.getType(evetypeid);
-                                        blevetype.updateEvetype(jsonevetypedetails);
-                                        evetypecounter++;
-                                        if(evetypecounter==100) {
-                                            blevetype.Commit2DB();
-                                            evetypecounter = 0;
-                                        }
-                                    }
-                                    categorystatus.incTypes();
-                                }
-                                blevetype.Commit2DB();
-                                evetyperun++;
-                            //} while(keeprunning && blevetype.getEvetypes4typegroupcount(new TypegroupPK(typegroupid))<jsonevetypes.size());
-                            categorystatus.incTypegroups();
-                        }
-                        typegrouprun++;
-                    //} while(keeprunning && bltypegroup.getTypegroup4categorycount(new CategoryPK(categoryid))<jsontypegroups.size());
-                    categorystatus.incCategories();
-                }
-                run++;
-            } while(keeprunning && blcategory.count()<jsoncategories.size());
+            run = 0;
+            jsoncategories = Swagger.getCategories();
+            jsoncategoriesI = jsoncategories.iterator();
+            do
+                update_categories();
+            while(keeprunning && less_categories_in_database_then_loaded());
         }
         catch(DBException e) {
             categorystatus.addMessage(e.getMessage());
@@ -206,6 +152,104 @@ public class CategoryService implements Runnable {
         long end = System.currentTimeMillis();
         categorystatus.addMessage("Download time Categories/Type groups/Types " + ((end - start)/1000) + "sec.");
         categorystatus.setDone();
+    }
+
+    private boolean less_categories_in_database_then_loaded() throws DBException {
+        return blcategory.count()<jsoncategories.size();
+    }
+
+    private void update_categories() throws DataException, DBException {
+        while(keeprunning && jsoncategoriesI.hasNext())
+            update_category();
+        run++;
+    }
+
+    private void update_category() throws DataException, DBException {
+        load_and_save_category_details();
+        load_typegroups_for_category();
+        while(keeprunning && jsontypegroupsI.hasNext())
+            load_and_save_typegroup();
+        typegrouprun++;
+        categorystatus.incCategories();
+    }
+
+    private void load_and_save_typegroup() throws DBException, DataException {
+        load_and_save_typegroup_details();
+        load_evetypes_for_typegroup();
+        while(keeprunning && jsonevetypesI.hasNext())
+            load_and_save_evetype_details_if_not_in_database();
+        blevetype.Commit2DB();
+        evetyperun++;
+        categorystatus.incTypegroups();
+    }
+
+    private void load_and_save_evetype_details_if_not_in_database() throws DBException, DataException {
+        evetypeid = (Long)jsonevetypesI.next();
+        boolean evetype_not_in_database = !blevetype.getEvetypeExists(new EvetypePK(evetypeid));
+        if(evetyperun==0 || evetype_not_in_database)
+            load_and_save_evetype_details();
+        categorystatus.incTypes();
+    }
+
+    private void load_and_save_evetype_details() throws DBException, DataException {
+        jsonevetypedetails = Swagger.getType(evetypeid);
+        blevetype.updateEvetype(jsonevetypedetails);
+        evetypecounter++;
+        if(evetypecounter==100)
+            save_evetype_buffer();
+    }
+
+    private void save_evetype_buffer() throws DBException {
+        blevetype.Commit2DB();
+        evetypecounter = 0;
+    }
+
+    private void load_evetypes_for_typegroup() {
+        jsonevetypes = (JSONArray)jsontypegroupdetails.get("types");
+        evetyperun = 0;
+        jsonevetypesI = jsonevetypes.iterator();
+        evetypecounter = 0;
+    }
+
+    private void load_and_save_typegroup_details() throws DBException, DataException {
+        typegroupid = (Long)jsontypegroupsI.next();
+        jsontypegroupdetails = Swagger.getGroup(typegroupid);
+        boolean typegroup_not_in_database = !bltypegroup.getTypegroupExists(new TypegroupPK(typegroupid));
+        if(typegrouprun==0 || typegroup_not_in_database)
+            save_typegroup();
+    }
+
+    private void save_typegroup() throws DBException, DataException {
+        bltypegroup.updateTypegroup(jsontypegroupdetails);
+        bltypegroup.Commit2DB();
+    }
+
+    private void load_typegroups_for_category() {
+        jsontypegroups = (JSONArray)jsoncategorydetails.get("groups");
+        jsontypegroupsI = jsontypegroups.iterator();
+        typegrouprun = 0;
+    }
+
+    private void load_and_save_category_details() throws DBException, DataException {
+        categoryid = (Long)jsoncategoriesI.next();
+        jsoncategorydetails = Swagger.getCategory(categoryid);
+        boolean category_not_in_database = !blcategory.getCategoryExists(new CategoryPK(categoryid));
+        if(run==0 || category_not_in_database)
+            save_category();
+    }
+
+    private void save_category() throws DBException, DataException {
+        blcategory.updateCategory(jsoncategorydetails);
+        blcategory.Commit2DB();
+    }
+
+    private void initialize_businesslogic() {
+        blcategory = new BLcategory();
+        blcategory.setAuthenticated(true);
+        bltypegroup = new BLtypegroup(blcategory);
+        bltypegroup.setAuthenticated(true);
+        blevetype = new BLevetype(bltypegroup);
+        blevetype.setAuthenticated(true);
     }
 
 }

@@ -2,7 +2,7 @@
  * Frontendpage_auth.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 16.1.2022 20:54
+ * Generated on 11.4.2022 9:13
  *
  */
 
@@ -51,7 +51,7 @@ public class Frontendpage_auth extends SecurityDataServlet {
 //Custom code, do not change this line   
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     IFrontendpage_authPK frontendpage_authPK;
                     IFrontendpage_auth frontendpage_auth;
                     switch(this.operation) {
@@ -84,7 +84,7 @@ public class Frontendpage_auth extends SecurityDataServlet {
                     }
                     break;
 
-                case DataServlet.OPERATIONTYPE_INSERT:
+                case DataServlet.INSERT:
                     switch(this.operation) {
                         case IFrontendpage_authOperation.INSERT_FRONTENDPAGE_AUTH:
                             frontendpage_auth = (IFrontendpage_auth)parser.getJavaObject("frontendpage_auth");
@@ -95,7 +95,7 @@ public class Frontendpage_auth extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_UPDATE:
+                case DataServlet.UPDATE:
                     switch(this.operation) {
                         case IFrontendpage_authOperation.UPDATE_FRONTENDPAGE_AUTH:
                             frontendpage_auth = (IFrontendpage_auth)parser.getJavaObject("frontendpage_auth");
@@ -106,7 +106,7 @@ public class Frontendpage_auth extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_DELETE:
+                case DataServlet.DELETE:
                     switch(this.operation) {
                         case IFrontendpage_authOperation.DELETE_FRONTENDPAGE_AUTH:
                             frontendpage_auth = (IFrontendpage_auth)parser.getJavaObject("frontendpage_auth");
@@ -125,7 +125,7 @@ public class Frontendpage_auth extends SecurityDataServlet {
 //Custom code, do not change this line   
                     }
                     break;
-                case DataServlet.OPERATIONTYPE_BACKUP:
+                case DataServlet.BACKUP:
                     switch(this.operation) {
 //Custom code, do not change this line
 //add here custom operations

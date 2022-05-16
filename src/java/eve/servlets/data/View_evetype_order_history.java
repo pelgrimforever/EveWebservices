@@ -47,7 +47,7 @@ public class View_evetype_order_history extends SecurityDataServlet {
         //boolean privateaccess = userprofile!=null && userprofile.privateaccess();
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     switch(this.operation) {
                         case IView_evetype_order_historyOperation.SELECT_ALL:
                             dataobject = blview_evetype_order_history.getView_evetype_order_historys();

@@ -2,14 +2,14 @@
  * DataServlet.java
  *
  * Created on Dec 23, 2012, 6:30 PM
- * Generated on 14.0.2022 16:56
+ * Generated on 11.4.2022 9:13
  *
  */
 
 package eve.servlets;
 
 import eve.HTTPtools.fileUpload.Requesthandler;
-import base.interfaces.servlet.IDataServlet;
+import base.interfaces.servlet.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -28,7 +28,7 @@ import org.apache.commons.codec.binary.Base64;
  *
  * @author Franky Laseure
  */
- public abstract class DataServlet extends javax.servlet.http.HttpServlet implements IDataServlet, SingleThreadModel {
+ public abstract class DataServlet extends javax.servlet.http.HttpServlet implements HTTPOperationtypes, SingleThreadModel {
 
     //Respnose content type
     protected static final String CONTENT_TYPE = "text/html";
@@ -134,8 +134,8 @@ import org.apache.commons.codec.binary.Base64;
 
     protected void getOperationalVariables(HttpServletRequest request) throws IOException {
         this.parser = new Requesthandler(request);
-        this.operationtype = parser.getByteParameter(this.VAR_OPERATIONTYPE);
-        this.operation = parser.getByteParameter(this.VAR_OPERATION);
+        this.operationtype = parser.getByteParameter(HTTPOperationconstants.VAR_OPERATIONTYPE);
+        this.operation = parser.getByteParameter(HTTPOperationconstants.VAR_OPERATION);
     }
 
     /* (non-Javadoc)

@@ -16,6 +16,7 @@ import eve.logicentity.Contract;
 import eve.BusinessObject.table.Bcontract;
 import eve.conversion.entity.EMcontract;
 import eve.conversion.entity.EMcontractitem;
+import eve.entity.pk.RegionPK;
 import general.exception.DataException;
 import java.util.ArrayList;
 
@@ -51,6 +52,10 @@ public class BLcontract extends Bcontract {
         this.setLogginrequired(isprivatetable);
     }
 
+    public ArrayList getContracts_for_region(RegionPK regionPK) throws DBException {
+        return this.getEntities(EMcontract.SQLSelect4Region, regionPK.getSQLprimarykey());
+    }
+    
     public ArrayList getItem_exchanges() throws DBException {
         Object[][] parameters = {{ "type", "item_exchange" }};
         SQLparameters sqlparameters = new SQLparameters(parameters);

@@ -8,7 +8,6 @@ package eve.BusinessObject.service;
 import data.conversion.JSONConversion;
 import db.SQLMapper;
 import db.TransactionOutput;
-import db.TransactionOutput.TransactionOutputLine;
 import eve.BusinessObject.Logic.BLcontract;
 import eve.BusinessObject.Logic.BLcontractitem;
 import eve.BusinessObject.Logic.BLevetype;
@@ -25,6 +24,7 @@ import eve.entity.pk.EvetypePK;
 import eve.entity.pk.GraphicPK;
 import eve.entity.pk.Market_groupPK;
 import eve.entity.pk.TypegroupPK;
+import eve.logicentity.Contract;
 import eve.logicentity.Evetype;
 import eve.logicentity.Graphic;
 import eve.logicentity.Market_group;
@@ -40,8 +40,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
- * @author pelgrim
+ * @author Franky Laseure
  */
 public class ContractRegionDownloader implements Runnable {
     
@@ -60,132 +59,42 @@ public class ContractRegionDownloader implements Runnable {
         this.keeprunning = false;
     }
 
+    private BLregion blregion;
+    private BLcontract blcontract;
+    private BLcontractitem blcontractitem;
+    private BLmarket_group blmarketgroup;
+    private BLtypegroup bltypegroup;
+    private BLgraphic blgraphic;
+    private BLevetype blevetype;
+    private BLorders blorders;
+    private Region region;
+    private int pagenr;
+    private TransactionOutput toutput;
+    private JSONArray jsoncontracts;
+    private Iterator<JSONObject> jsoncontractsI;
+    private JSONArray jsoncontractitems;
+    private Iterator<JSONObject> jsoncontractitemsI;
+    private int contractcounter;
+    private int contractitemcounter;
+    private int errorcounter;
+    private int contractbatch;
+    private long contractid;
+    private ContractPK contractpk;
+    private HashMap<Long, Contract> contracts_in_database;
+    private ArrayList<Long> type_statements;
+    private ArrayList<Contract> contracts;
+    private final Contract emptycontract = new Contract();
+    private boolean swaggerpage_contracts_is_not_empty;
+    private boolean validregion;
+    
     @Override
     public void run() {
-        BLregion blregion = new BLregion();
-        blregion.setAuthenticated(true);
-        BLcontract blcontract = new BLcontract();
-        blcontract.setAuthenticated(true);
-        BLcontractitem blcontractitem = new BLcontractitem();
-        blcontractitem.setAuthenticated(true);
-
-        int pagenr;
-        StringBuilder sqlb = new StringBuilder();
-        JSONObject jsoncontractdetails, jsoncontractitem;
-        TransactionOutput toutput;
-        JSONArray jsoncontracts;
-        Iterator<JSONObject> jsoncontractsI;
-        JSONArray jsoncontractitems;
-        Iterator<JSONObject> jsoncontractitemsI;
-        int contractcounter = 0;
-        int contractitemcounter = 0;
-        int errorcounter = 0;
-        int contractbatch = 0;
-        int rangenumber = 0;
-        long contractid;
-        ContractPK contractpk = new ContractPK();
-        String sqlcontract, sqlitem;
-        HashMap<Long, Boolean> contractids = new HashMap<>();
-        ArrayList<String> sqlstatements = new ArrayList<>();
-        ArrayList<Long> type_statements = new ArrayList<>();
-
+        initialize();
         try {
-            Region region = data.getNextregion();
-            while(keeprunning && region!=null) {
-                pagenr = 0;
-                contractbatch = 0;
-                errorcounter = 0;
-                contractids.clear();
-                do {
-                    pagenr++;
-                    jsoncontracts = Swagger.getPubliccontracts_region(region.getPrimaryKey().getId(), pagenr);
-                    contractbatch += jsoncontracts.size();
-                    jsoncontractsI = jsoncontracts.iterator();
-                    while(keeprunning && jsoncontractsI.hasNext()) {
-                        jsoncontractdetails = jsoncontractsI.next();
-                        contractid = JSONConversion.getLong(jsoncontractdetails, "contract_id");
-                        contractpk.setId(contractid);
-                        if(contractids.get(contractid)==null) {
-                            if(blcontract.getContractExists(contractpk)) {
-                                blcontract.addStatement(EMcontract.SQLactivatecontract, contractpk.getSQLprimarykey());
-                                contractcounter++;
-                                if(contractcounter>=100) {
-                                    contractcounter = 0;
-                                    toutput = blcontract.Commit2DB();
-                                    if(toutput.getHaserror()) {
-                                        contractstatus.addMessage("ContractRegionDownloader Error " + toutput.getErrormessage());
-                                        errorcounter++;
-                                    }
-                                    contractitemcounter = 0;
-                                    toutput = blcontractitem.Commit2DB();
-                                    if(toutput.getHaserror()) {
-                                        correctTypeError(toutput.getSqllist(), type_statements);
-                                        errorcounter++;
-                                    }
-                                    type_statements = new ArrayList<>();
-                                }
-                            } else {
-                                contractids.put(contractid, true);
-                                sqlcontract = composeSQLinsert(jsoncontractdetails, pagenr);
-                                blcontract.addStatement(sqlcontract);
-                                contractcounter++;
-                                jsoncontractitems = Swagger.getPubliccontractitems(contractid);
-                                jsoncontractitemsI = jsoncontractitems.iterator();
-                                while(keeprunning && jsoncontractitemsI.hasNext()) {
-                                    jsoncontractitem = jsoncontractitemsI.next();
-                                    sqlitem = composeSQLinsertitem(contractid, jsoncontractitem);
-                                    blcontractitem.addStatement(sqlitem);
-                                    type_statements.add(JSONConversion.getLong(jsoncontractitem, "type_id"));
-                                    contractitemcounter++;
-                                    if(contractcounter>=100 || contractitemcounter>=100) {
-                                        contractcounter = 0;
-                                        toutput = blcontract.Commit2DB();
-                                        if(toutput.getHaserror()) {
-                                            contractstatus.addMessage("ContractRegionDownloader Error " + toutput.getErrormessage());
-                                            errorcounter++;
-                                        }
-                                        contractitemcounter = 0;
-                                        toutput = blcontractitem.Commit2DB();
-                                        if(toutput.getHaserror()) {
-                                            correctTypeError(toutput.getSqllist(), type_statements);
-                                            errorcounter++;
-                                        }
-                                        type_statements = new ArrayList<>();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    //don't attempt to commit to database if keeprunning flag is off
-                    if(keeprunning && jsoncontracts.size()>0) {
-                        contractcounter = 0;
-                        toutput = blcontract.Commit2DB();
-                        if(toutput.getHaserror()) {
-                            contractstatus.addMessage("ContractRegionDownloader Error (Page end) " + toutput.getErrormessage());
-                            errorcounter++;
-                        }
-                        contractitemcounter = 0;
-                        toutput = blcontractitem.Commit2DB();
-                        if(toutput.getHaserror()) {
-                            correctTypeError(toutput.getSqllist(), type_statements);
-                            errorcounter++;
-                        }
-                        contractstatus.updateStatus(region.getPrimaryKey().getId(), pagenr, contractbatch);
-                    }
-                    type_statements = new ArrayList<>();
-                } while(keeprunning && jsoncontracts.size()>0);
-                pagenr--;
-                contractstatus.updateStatus(region.getPrimaryKey().getId(), Math.max(1, pagenr), contractbatch);
-                contractstatus.setDone(region.getPrimaryKey().getId());
-                //don't attempt to commit to database if keeprunning flag is off
-                if(keeprunning) {
-                    region.setContractpages(pagenr);
-                    region.setContracterrors(errorcounter);
-                    blregion.updateRegion(region);
-
-                    region = data.getNextregion();
-                }
-            }         
+            initialize_region();
+            validregion = region!=null;
+            while(keeprunning && validregion)
+                download_contracts_for_region(region);
         }
         catch(DBException e) {
             contractstatus.addMessage("ContractRegionDownloader " + e.getMessage());
@@ -196,6 +105,183 @@ public class ContractRegionDownloader implements Runnable {
         return;
     }    
 
+    private void download_contracts_for_region(Region region) throws DBException, DataException {
+        initialize_download_contracts_for_region();
+        do
+            download_next_swaggerpage_contracts_for_region(region);
+        while(keeprunning && swaggerpage_contracts_is_not_empty);
+        update_process_status(region);
+        if(keeprunning)
+            update_region_in_database(region);            
+        initialize_region();
+    }    
+
+    private void initialize_region() throws DBException {
+        region = data.getNextregion();
+        validregion = region!=null;
+        if(validregion)
+            load_contracts_from_database(region);
+    }
+
+    private void update_region_in_database(Region region) throws DBException, DataException {
+        region.setContractpages(pagenr);
+        region.setContracterrors(errorcounter);
+        blregion.updateRegion(region);
+    }
+
+    private void update_process_status(Region region) {
+        pagenr--;
+        contractstatus.updateStatus(region.getPrimaryKey().getId(), Math.max(1, pagenr), contractbatch);
+        contractstatus.setDone(region.getPrimaryKey().getId());
+    }
+
+    private void download_next_swaggerpage_contracts_for_region(Region region) throws DBException, DataException {
+        download_prepare_next_swaggerpage(region);
+        while(keeprunning && jsoncontractsI.hasNext())
+            write_contract_to_database(jsoncontractsI.next());
+        if(keeprunning && swaggerpage_contracts_is_not_empty)
+            write_contractbuffer_to_database_initialize_for_next_swaggerpage(region);
+        type_statements = new ArrayList<>();
+    }
+
+    private void download_prepare_next_swaggerpage(Region region) {
+        pagenr++;
+        jsoncontracts = Swagger.getPubliccontracts_region(region.getPrimaryKey().getId(), pagenr);
+        swaggerpage_contracts_is_not_empty = jsoncontracts.size()>0;
+        contractbatch += jsoncontracts.size();
+        jsoncontractsI = jsoncontracts.iterator();
+    }
+
+    private void write_contractbuffer_to_database_initialize_for_next_swaggerpage(Region region) throws DataException, DBException {
+        contractcounter = 0;
+        toutput = blcontract.Commit2DB();
+        if(toutput.getHaserror())
+            process_blcontract_error();
+        contractitemcounter = 0;
+        toutput = blcontractitem.Commit2DB();
+        if(toutput.getHaserror())
+            process_blcontractitem_error();
+        contractstatus.updateStatus(region.getPrimaryKey().getId(), pagenr, contractbatch);
+    }
+
+    private void process_blcontractitem_error() throws DataException, DBException {
+        correctTypeError(toutput.getSqllist(), type_statements);
+        errorcounter++;
+    }
+
+    private void process_blcontract_error() {
+        contractstatus.addMessage("ContractRegionDownloader Error (Page end) " + toutput.getErrormessage());
+        errorcounter++;
+    }
+
+    private void write_contract_to_database(JSONObject jsoncontractdetails) throws DBException, DataException {
+        contractid = JSONConversion.getLong(jsoncontractdetails, "contract_id");
+        contractpk.setId(contractid);
+        if(contracts_in_database.get(contractid)!=null)
+            reactivate_contract_in_database();
+        else
+            insert_contract_in_database(jsoncontractdetails);
+    }
+
+    private void reactivate_contract_in_database() throws DataException, DBException {
+        blcontract.addStatement(EMcontract.SQLactivatecontract, contractpk.getSQLprimarykey());
+        contractcounter++;
+        if(contractbuffer_is_full())
+            write_contractbuffer_to_database();
+    }
+
+    private void insert_contract_in_database(JSONObject jsoncontractdetails) throws DataException, DBException {
+        insert_contract_header_in_database(jsoncontractdetails);
+        download_contract_details_from_swagger();
+        while(keeprunning && jsoncontractitemsI.hasNext())
+            insert_contract_details_in_database(jsoncontractitemsI.next());
+    }
+    
+    private void insert_contract_details_in_database(JSONObject jsoncontractitem) throws DataException, DBException {
+        blcontractitem.addStatement(composeSQLinsertitem(contractid, jsoncontractitem));
+        type_statements.add(JSONConversion.getLong(jsoncontractitem, "type_id"));
+        contractitemcounter++;
+        if(contractbuffer_is_full() || contractitembuffer_is_full())
+            write_contractbuffer_to_database();
+    }
+
+    private boolean contractbuffer_is_full() {
+        return contractcounter>=100;
+    }
+    
+    private boolean contractitembuffer_is_full() {
+        return contractitemcounter>=100;
+    }
+    
+    private void download_contract_details_from_swagger() {
+        jsoncontractitems = Swagger.getPubliccontractitems(contractid);
+        jsoncontractitemsI = jsoncontractitems.iterator();
+    }
+
+    private void insert_contract_header_in_database(JSONObject jsoncontractdetails) {
+        contracts_in_database.put(contractid, emptycontract);
+        blcontract.addStatement(composeSQLinsert(jsoncontractdetails, pagenr));
+        contractcounter++;
+    }
+
+    private void write_contractbuffer_to_database() throws DataException, DBException {
+        toutput = blcontract.Commit2DB();
+        if(toutput.getHaserror())
+            process_write_contractbuffer_to_database_error();
+        toutput = blcontractitem.Commit2DB();
+        if(toutput.getHaserror())
+            process_blcontractitem_error();
+        reset_contractbuffer_parameters();
+    }
+
+    private void reset_contractbuffer_parameters() {
+        contractcounter = 0;
+        contractitemcounter = 0;
+        type_statements = new ArrayList<>();
+    }
+
+    private void process_write_contractbuffer_to_database_error() {
+        contractstatus.addMessage("ContractRegionDownloader Error " + toutput.getErrormessage());
+        errorcounter++;
+    }
+
+    private void initialize_download_contracts_for_region() {
+        pagenr = 0;
+        contractbatch = 0;
+        errorcounter = 0;
+    }
+
+    private void load_contracts_from_database(Region region) throws DBException {
+        contracts = blcontract.getContracts_for_region(region.getPrimaryKey());
+        for(Contract contract: contracts)
+            contracts_in_database.put(contract.getPrimaryKey().getId(), contract);
+        contracts.clear();
+    }
+
+    private void initialize() {
+        blregion = new BLregion();
+        blregion.setAuthenticated(true);
+        blcontract = new BLcontract();
+        blcontract.setAuthenticated(true);
+        blcontractitem = new BLcontractitem();
+        blcontractitem.setAuthenticated(true);
+        blmarketgroup = new BLmarket_group();
+        blmarketgroup.setAuthenticated(true);
+        bltypegroup = new BLtypegroup();
+        bltypegroup.setAuthenticated(true);
+        blgraphic = new BLgraphic();
+        blgraphic.setAuthenticated(true);
+        blevetype = new BLevetype();
+        blevetype.setAuthenticated(true);
+        blorders = new BLorders();
+        blorders.setAuthenticated(true);
+        errorcounter = 0;
+        contractbatch = 0;
+        contractpk = new ContractPK();
+        contracts_in_database = new HashMap<>();
+        reset_contractbuffer_parameters();
+    }
+
     //put as local variable, got results that did not make sence when using SQLMapper.DATETIMEFORMATTER
     private final SimpleDateFormat datetimeformat = new SimpleDateFormat(SQLMapper.DATETIMEFORMAT);    
     
@@ -203,20 +289,18 @@ public class ContractRegionDownloader implements Runnable {
         StringBuilder sqlb = new StringBuilder();
         sqlb.append("insert into contract values (");
         sqlb.append(JSONConversion.getLong(jsoncontractdetails, "contract_id")).append(",");
-        if(jsoncontractdetails.containsKey("collateral")) {
+        if(jsoncontractdetails.containsKey("collateral"))
             sqlb.append(JSONConversion.getDouble(jsoncontractdetails, "collateral")).append(",");
-        } else {
+        else
             sqlb.append("0,");
-        }
         sqlb.append("'").append(datetimeformat.format(Swagger.datetimestring2Timestamp(JSONConversion.getString(jsoncontractdetails, "date_expired")))).append("',");
         sqlb.append("'").append(datetimeformat.format(Swagger.datetimestring2Timestamp(JSONConversion.getString(jsoncontractdetails, "date_issued")))).append("',");
         sqlb.append(JSONConversion.getint(jsoncontractdetails, "days_to_complete")).append(",");
         sqlb.append(JSONConversion.getLong(jsoncontractdetails, "end_location_id")).append(",");
-        if(jsoncontractdetails.containsKey("for_corporation")) {
+        if(jsoncontractdetails.containsKey("for_corporation"))
             sqlb.append(JSONConversion.getboolean(jsoncontractdetails, "for_corporation")).append(",");
-        } else {
+        else
             sqlb.append("false,");
-        }
         sqlb.append(JSONConversion.getDouble(jsoncontractdetails, "price")).append(",");
         sqlb.append(JSONConversion.getDouble(jsoncontractdetails, "reward")).append(",");
         sqlb.append(JSONConversion.getLong(jsoncontractdetails, "start_location_id")).append(",");
@@ -235,29 +319,25 @@ public class ContractRegionDownloader implements Runnable {
         sqlb.append("insert into contractitem values (");
         sqlb.append(JSONConversion.getLong(jsoncontractitem, "record_id")).append(",");
         sqlb.append(contractid).append(",");
-        if(jsoncontractitem.containsKey("is_blueprint_copy")) {
+        if(jsoncontractitem.containsKey("is_blueprint_copy"))
             sqlb.append(JSONConversion.getboolean(jsoncontractitem, "is_blueprint_copy")).append(",");
-        } else {
+        else
             sqlb.append("false,");
-        }
         sqlb.append(JSONConversion.getboolean(jsoncontractitem, "is_included")).append(",");
         sqlb.append(JSONConversion.getint(jsoncontractitem, "quantity")).append(",");
         sqlb.append(JSONConversion.getLong(jsoncontractitem, "type_id")).append(",");
-        if(jsoncontractitem.containsKey("material_efficiency")) {
+        if(jsoncontractitem.containsKey("material_efficiency"))
             sqlb.append(JSONConversion.getint(jsoncontractitem, "material_efficiency")).append(",");
-        } else {
+        else
             sqlb.append("0,");            
-        }
-        if(jsoncontractitem.containsKey("runs")) {
+        if(jsoncontractitem.containsKey("runs"))
             sqlb.append(JSONConversion.getint(jsoncontractitem, "runs")).append(",");
-        } else {
+        else
             sqlb.append("0,");            
-        }
-        if(jsoncontractitem.containsKey("time_efficiency")) {
+        if(jsoncontractitem.containsKey("time_efficiency"))
             sqlb.append(JSONConversion.getint(jsoncontractitem, "time_efficiency"));
-        } else {
+        else
             sqlb.append("0");            
-        }
         sqlb.append(")");
         return sqlb.toString();
     }
@@ -268,84 +348,97 @@ public class ContractRegionDownloader implements Runnable {
         sqlb.append("where orderid = ").append(JSONConversion.getLong(jsonorderdetails, "order_id"));
         return sqlb.toString();
     }
-    
-    public void correctTypeError(ArrayList<TransactionOutput.TransactionOutputLine> sqlstatements, ArrayList<Long> type_statements) throws DBException, DataException {
-        Swagger swagger = new Swagger();
-        BLmarket_group blmarketgroup = new BLmarket_group();
-        blmarketgroup.setAuthenticated(true);
-        BLtypegroup bltypegroup = new BLtypegroup();
-        bltypegroup.setAuthenticated(true);
-        BLgraphic blgraphic = new BLgraphic();
-        blgraphic.setAuthenticated(true);
-        BLevetype blevetype = new BLevetype();
-        blevetype.setAuthenticated(true);
-        BLorders blorders = new BLorders();
-        blorders.setAuthenticated(true);
         
-        Evetype evetype;
-        JSONObject jsonmarketgroup;
-        Market_groupPK marketgroupPK;
-        Market_group marketgroup;
-        JSONObject jsongraphic;
-        GraphicPK graphicPK;
-        Graphic graphic;
-        JSONObject jsontypegroup;
-        TypegroupPK typegroupPK;
-        Typegroup typegroup;
-        TransactionOutput toutputtest;
-        int l = sqlstatements.size();
-        HashMap<Long, Boolean> evetypehash = new HashMap<>();
-        for(int s=0; s<l; s++) {
-            if(!blevetype.getEntityExists(new EvetypePK(type_statements.get(s)))) {
-                if(!evetypehash.containsKey(type_statements.get(s))) {
-                    JSONObject jsonevetypedetails = Swagger.getType(type_statements.get(s));
-                    evetype = blevetype.updateEvetype(jsonevetypedetails);
-                    marketgroupPK = evetype.getMarket_groupPK();
-                    graphicPK = evetype.getGraphicPK();
-                    typegroupPK = evetype.getTypegroupPK();
-                    if(graphicPK!=null && !blgraphic.getEntityExists(graphicPK)) {
-                        jsongraphic = Swagger.getGraphic(graphicPK.getId());
-                        graphic = blgraphic.updateGraphic(jsongraphic);
-                        toutputtest = blgraphic.Commit2DB();
-                        if(toutputtest.getHaserror()) {
-                            contractstatus.addMessage("Graphic " + graphicPK.getId() + " could not be added");
-                        } else {
-                            contractstatus.addMessage("Graphic added " + graphic.getGraphic_file());
-                        }
-                    }
-                    if(marketgroupPK!=null && !blmarketgroup.getEntityExists(marketgroupPK)) {
-                        jsonmarketgroup = Swagger.getMarketgroup(marketgroupPK.getId());
-                        marketgroup = blmarketgroup.updateMarket_group(jsonmarketgroup);
-                        toutputtest = blmarketgroup.Commit2DB();
-                        if(toutputtest.getHaserror()) {
-                            contractstatus.addMessage("Marketgroup " + marketgroupPK.getId() + " could not be added");
-                        } else {
-                            contractstatus.addMessage("Marketgroup added " + marketgroup.getName());
-                        }
-                    }
-                    if(typegroupPK!=null && !bltypegroup.getEntityExists(typegroupPK)) {
-                        jsontypegroup = Swagger.getGroup(typegroupPK.getId());
-                        typegroup = bltypegroup.updateTypegroup(jsontypegroup);
-                        toutputtest = bltypegroup.Commit2DB();
-                        if(toutputtest.getHaserror()) {
-                            contractstatus.addMessage("Typegroup " + typegroupPK.getId() + " could not be added");
-                        } else {
-                            contractstatus.addMessage("Typegroup added " + typegroup.getName());
-                        }
-                    }
-                    toutputtest = blevetype.Commit2DB();
-                    if(toutputtest.getHaserror()) {
-                        contractstatus.addMessage("Type " + type_statements.get(s) + " could not be added");
-                    } else {
-                        contractstatus.addMessage("Type added " + evetype.getName());
-                    }
-                }                                    
-            }
-            blorders.addStatement(sqlstatements.get(s).getSql());
-            TransactionOutput toutput2 = blorders.Commit2DB();
-            if(toutput2.getHaserror()) {
-                contractstatus.addMessage("MarketRegionDownloader correctTypeError " + toutput2.getErrormessage());
-            }
+    private Evetype evetype;
+    private JSONObject jsonmarketgroup;
+    private Market_groupPK marketgroupPK;
+    private Market_group marketgroup;
+    private JSONObject jsongraphic;
+    private GraphicPK graphicPK;
+    private Graphic graphic;
+    private JSONObject jsontypegroup;
+    private TypegroupPK typegroupPK;
+    private Typegroup typegroup;
+    private TransactionOutput toutputtest;
+    private int l;
+    private HashMap<Long, Boolean> evetypehash;
+    
+    private void correctTypeError(ArrayList<TransactionOutput.TransactionOutputLine> sqlstatements, ArrayList<Long> type_statements) throws DBException, DataException {
+        l = sqlstatements.size();
+        evetypehash = new HashMap<>();
+        for(int s=0; s<l; s++)
+            evaluate_sql_type_statement(type_statements.get(s), sqlstatements.get(s));
+    }
+    
+    private void evaluate_sql_type_statement(long type_statement, TransactionOutput.TransactionOutputLine sqlstatement) throws DBException, DataException {    
+        boolean evetype_not_in_database = !blevetype.getEntityExists(new EvetypePK(type_statement));
+        boolean evetype_not_already_processed = !evetypehash.containsKey(type_statement);
+        if(evetype_not_in_database) {
+            if(evetype_not_already_processed) {
+                process_evetype_statement(type_statement);
+            }                                    
+        }
+        blorders.addStatement(sqlstatement.getSql());
+        TransactionOutput toutput2 = blorders.Commit2DB();
+        if(toutput2.getHaserror()) {
+            contractstatus.addMessage("MarketRegionDownloader correctTypeError " + toutput2.getErrormessage());
+        }
+    }
+
+    private void process_evetype_statement(long type_statement) throws DataException, DBException {
+        JSONObject jsonevetypedetails = Swagger.getType(type_statement);
+        evetype = blevetype.updateEvetype(jsonevetypedetails);
+        graphicPK = evetype.getGraphicPK();
+        boolean graphic_not_in_database = !blgraphic.getEntityExists(graphicPK);
+        if(graphicPK!=null && graphic_not_in_database)
+            update_graphic_in_database();
+        marketgroupPK = evetype.getMarket_groupPK();
+        boolean marketgroup_not_in_database = !blmarketgroup.getEntityExists(marketgroupPK);
+        if(marketgroupPK!=null && marketgroup_not_in_database)
+            update_marketgroup_in_database();
+        typegroupPK = evetype.getTypegroupPK();
+        boolean typegroup_not_in_database = !bltypegroup.getEntityExists(typegroupPK);
+        if(typegroupPK!=null && typegroup_not_in_database)
+            update_typegroup_in_database();
+        commit_evetype_to_database(type_statement);
+    }
+
+    private void commit_evetype_to_database(long type_statement) throws DBException {
+        toutputtest = blevetype.Commit2DB();
+        if(toutputtest.getHaserror())
+            contractstatus.addMessage("Type " + type_statement + " could not be added");
+        else
+            contractstatus.addMessage("Type added " + evetype.getName());
+    }
+
+    private void update_typegroup_in_database() throws DataException, DBException {
+        jsontypegroup = Swagger.getGroup(typegroupPK.getId());
+        typegroup = bltypegroup.updateTypegroup(jsontypegroup);
+        toutputtest = bltypegroup.Commit2DB();
+        if(toutputtest.getHaserror())
+            contractstatus.addMessage("Typegroup " + typegroupPK.getId() + " could not be added");
+        else
+            contractstatus.addMessage("Typegroup added " + typegroup.getName());
+    }
+
+    private void update_marketgroup_in_database() throws DataException, DBException {
+        jsonmarketgroup = Swagger.getMarketgroup(marketgroupPK.getId());
+        marketgroup = blmarketgroup.updateMarket_group(jsonmarketgroup);
+        toutputtest = blmarketgroup.Commit2DB();
+        if(toutputtest.getHaserror())
+            contractstatus.addMessage("Marketgroup " + marketgroupPK.getId() + " could not be added");
+        else
+            contractstatus.addMessage("Marketgroup added " + marketgroup.getName());
+    }
+
+    private void update_graphic_in_database() throws DBException, DataException {
+        jsongraphic = Swagger.getGraphic(graphicPK.getId());
+        graphic = blgraphic.updateGraphic(jsongraphic);
+        toutputtest = blgraphic.Commit2DB();
+        if(toutputtest.getHaserror()) {
+            contractstatus.addMessage("Graphic " + graphicPK.getId() + " could not be added");
+        } else {
+            contractstatus.addMessage("Graphic added " + graphic.getGraphic_file());
         }
     }
 }

@@ -47,7 +47,7 @@ public class View_materialinput extends SecurityDataServlet {
         //boolean privateaccess = userprofile!=null && userprofile.privateaccess();
         try {
             switch(this.operationtype) {
-                case DataServlet.OPERATIONTYPE_SELECT:
+                case DataServlet.SELECT:
                     switch(this.operation) {
                         case IView_materialinputOperation.SELECT_ALL:
                             dataobject = blview_materialinput.getView_materialinputs();
