@@ -1,10 +1,12 @@
 /*
- * Generated on 13.4.2022 19:13
+ * Generated on 20.4.2022 10:3
  */
 
 package eve.usecases;
 
 import data.conversion.JSONConversion;
+import data.interfaces.db.Filedata;
+import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
@@ -12,10 +14,9 @@ import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.logicentity.Security_island;
-import eve.logicview.*;
 import general.exception.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.sql.Date;
+import java.util.*;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
@@ -56,11 +57,11 @@ public class Security_island_usecases {
         return blsecurity_island.getSecurity_island(security_islandPK);
     }
 
-    public ArrayList<Security_island> search_security_island(ISecurity_islandsearch security_islandsearch) throws ParseException, CustomException {
+    public ArrayList<Security_island> search_security_island(ISecurity_islandsearch security_islandsearch) throws CustomException {
         return blsecurity_island.search(security_islandsearch);
     }
     
-    public long search_security_island_count(ISecurity_islandsearch security_islandsearch) throws ParseException, CustomException {
+    public long search_security_island_count(ISecurity_islandsearch security_islandsearch) throws CustomException {
         return blsecurity_island.searchcount(security_islandsearch);
     }
 

@@ -1,10 +1,12 @@
 /*
- * Generated on 13.4.2022 19:13
+ * Generated on 20.4.2022 10:3
  */
 
 package eve.usecases;
 
 import data.conversion.JSONConversion;
+import data.interfaces.db.Filedata;
+import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
@@ -12,10 +14,9 @@ import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.logicentity.Shipfitorderselected;
-import eve.logicview.*;
 import general.exception.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.sql.Date;
+import java.util.*;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
@@ -38,7 +39,7 @@ public class Shipfitorderselected_usecases {
     
 //Custom code, do not change this line
 //add here custom operations
-    public ArrayList<View_system> calculateroute_usecase(String username, long startsystem, long endsystem) throws DBException {
+    public ArrayList<eve.logicview.View_system> calculateroute_usecase(String username, long startsystem, long endsystem) throws DBException {
         return blshipfitorderselected.calculateroute(username, startsystem, endsystem);
     }
 
@@ -75,11 +76,11 @@ public class Shipfitorderselected_usecases {
         return blshipfitorderselected.getShipfitorderselecteds4shipfitorder(shipfitorderPK);
     }
     
-    public ArrayList<Shipfitorderselected> search_shipfitorderselected(IShipfitorderselectedsearch shipfitorderselectedsearch) throws ParseException, CustomException {
+    public ArrayList<Shipfitorderselected> search_shipfitorderselected(IShipfitorderselectedsearch shipfitorderselectedsearch) throws CustomException {
         return blshipfitorderselected.search(shipfitorderselectedsearch);
     }
     
-    public long search_shipfitorderselected_count(IShipfitorderselectedsearch shipfitorderselectedsearch) throws ParseException, CustomException {
+    public long search_shipfitorderselected_count(IShipfitorderselectedsearch shipfitorderselectedsearch) throws CustomException {
         return blshipfitorderselected.searchcount(shipfitorderselectedsearch);
     }
 

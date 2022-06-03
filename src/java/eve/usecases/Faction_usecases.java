@@ -1,10 +1,12 @@
 /*
- * Generated on 13.4.2022 19:13
+ * Generated on 20.4.2022 10:3
  */
 
 package eve.usecases;
 
 import data.conversion.JSONConversion;
+import data.interfaces.db.Filedata;
+import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
@@ -12,10 +14,9 @@ import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.logicentity.Faction;
-import eve.logicview.*;
 import general.exception.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.sql.Date;
+import java.util.*;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
@@ -60,11 +61,11 @@ public class Faction_usecases {
         return blfaction.getFactions4system(systemPK);
     }
     
-    public ArrayList<Faction> search_faction(IFactionsearch factionsearch) throws ParseException, CustomException {
+    public ArrayList<Faction> search_faction(IFactionsearch factionsearch) throws CustomException {
         return blfaction.search(factionsearch);
     }
     
-    public long search_faction_count(IFactionsearch factionsearch) throws ParseException, CustomException {
+    public long search_faction_count(IFactionsearch factionsearch) throws CustomException {
         return blfaction.searchcount(factionsearch);
     }
 

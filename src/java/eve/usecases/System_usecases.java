@@ -1,10 +1,12 @@
 /*
- * Generated on 13.4.2022 19:13
+ * Generated on 20.4.2022 10:3
  */
 
 package eve.usecases;
 
 import data.conversion.JSONConversion;
+import data.interfaces.db.Filedata;
+import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
@@ -12,10 +14,9 @@ import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.logicentity.System;
-import eve.logicview.*;
 import general.exception.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.sql.Date;
+import java.util.*;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
@@ -80,11 +81,11 @@ public class System_usecases {
         return blsystem.getTradecombinedsell_system(tradecombinedSell_systemPK);
     }
     
-    public ArrayList<System> search_system(ISystemsearch systemsearch) throws ParseException, CustomException {
+    public ArrayList<System> search_system(ISystemsearch systemsearch) throws CustomException {
         return blsystem.search(systemsearch);
     }
     
-    public long search_system_count(ISystemsearch systemsearch) throws ParseException, CustomException {
+    public long search_system_count(ISystemsearch systemsearch) throws CustomException {
         return blsystem.searchcount(systemsearch);
     }
 

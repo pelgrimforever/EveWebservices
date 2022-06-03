@@ -2,7 +2,7 @@
  * DataServlet.java
  *
  * Created on Dec 23, 2012, 6:30 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 1.5.2022 20:24
  *
  */
 
@@ -28,7 +28,7 @@ import org.apache.commons.codec.binary.Base64;
  *
  * @author Franky Laseure
  */
- public abstract class DataServlet extends javax.servlet.http.HttpServlet implements HTTPOperationtypes, SingleThreadModel {
+ public abstract class DataServlet extends javax.servlet.http.HttpServlet implements SingleThreadModel {
 
     //Respnose content type
     protected static final String CONTENT_TYPE = "text/html";
@@ -134,7 +134,6 @@ import org.apache.commons.codec.binary.Base64;
 
     protected void getOperationalVariables(HttpServletRequest request) throws IOException {
         this.parser = new Requesthandler(request);
-        this.operationtype = parser.getByteParameter(HTTPOperationconstants.VAR_OPERATIONTYPE);
         this.operation = parser.getByteParameter(HTTPOperationconstants.VAR_OPERATION);
     }
 

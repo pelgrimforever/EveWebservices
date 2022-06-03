@@ -1,10 +1,12 @@
 /*
- * Generated on 13.4.2022 19:13
+ * Generated on 20.4.2022 10:3
  */
 
 package eve.usecases;
 
 import data.conversion.JSONConversion;
+import data.interfaces.db.Filedata;
+import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
@@ -12,10 +14,9 @@ import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.logicentity.Order_history_month;
-import eve.logicview.*;
 import general.exception.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.sql.Date;
+import java.util.*;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
@@ -64,11 +65,11 @@ public class Order_history_month_usecases {
         return blorder_history_month.getOrder_history_months4region(regionPK);
     }
     
-    public ArrayList<Order_history_month> search_order_history_month(IOrder_history_monthsearch order_history_monthsearch) throws ParseException, CustomException {
+    public ArrayList<Order_history_month> search_order_history_month(IOrder_history_monthsearch order_history_monthsearch) throws CustomException {
         return blorder_history_month.search(order_history_monthsearch);
     }
     
-    public long search_order_history_month_count(IOrder_history_monthsearch order_history_monthsearch) throws ParseException, CustomException {
+    public long search_order_history_month_count(IOrder_history_monthsearch order_history_monthsearch) throws CustomException {
         return blorder_history_month.searchcount(order_history_monthsearch);
     }
 

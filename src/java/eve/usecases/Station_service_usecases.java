@@ -1,10 +1,12 @@
 /*
- * Generated on 13.4.2022 19:13
+ * Generated on 20.4.2022 10:3
  */
 
 package eve.usecases;
 
 import data.conversion.JSONConversion;
+import data.interfaces.db.Filedata;
+import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
@@ -12,10 +14,9 @@ import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.logicentity.Station_service;
-import eve.logicview.*;
 import general.exception.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.sql.Date;
+import java.util.*;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
@@ -60,11 +61,11 @@ public class Station_service_usecases {
         return blstation_service.getStation_services4station(stationPK);
     }
     
-    public ArrayList<Station_service> search_station_service(IStation_servicesearch station_servicesearch) throws ParseException, CustomException {
+    public ArrayList<Station_service> search_station_service(IStation_servicesearch station_servicesearch) throws CustomException {
         return blstation_service.search(station_servicesearch);
     }
     
-    public long search_station_service_count(IStation_servicesearch station_servicesearch) throws ParseException, CustomException {
+    public long search_station_service_count(IStation_servicesearch station_servicesearch) throws CustomException {
         return blstation_service.searchcount(station_servicesearch);
     }
 

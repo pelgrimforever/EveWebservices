@@ -1,10 +1,12 @@
 /*
- * Generated on 13.4.2022 19:13
+ * Generated on 20.4.2022 10:3
  */
 
 package eve.usecases;
 
 import data.conversion.JSONConversion;
+import data.interfaces.db.Filedata;
+import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
@@ -12,10 +14,9 @@ import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.logicentity.Frontendpage_auth;
-import eve.logicview.*;
 import general.exception.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.sql.Date;
+import java.util.*;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
@@ -68,11 +69,11 @@ public class Frontendpage_auth_usecases {
         return blfrontendpage_auth.getFrontendpage_auths4eveuser(eveuserPK);
     }
     
-    public ArrayList<Frontendpage_auth> search_frontendpage_auth(IFrontendpage_authsearch frontendpage_authsearch) throws ParseException, CustomException {
+    public ArrayList<Frontendpage_auth> search_frontendpage_auth(IFrontendpage_authsearch frontendpage_authsearch) throws CustomException {
         return blfrontendpage_auth.search(frontendpage_authsearch);
     }
     
-    public long search_frontendpage_auth_count(IFrontendpage_authsearch frontendpage_authsearch) throws ParseException, CustomException {
+    public long search_frontendpage_auth_count(IFrontendpage_authsearch frontendpage_authsearch) throws CustomException {
         return blfrontendpage_auth.searchcount(frontendpage_authsearch);
     }
 

@@ -11,6 +11,7 @@ import java.io.IOException;
  * @author Franky Laseure
  */
 public class Security_usecases {
+//Metacoder: NO AUTHOMATIC UPDATE
 
     public static String getUsername(String encryptedstring) throws IOException {
         String decoded = decode(encryptedstring);

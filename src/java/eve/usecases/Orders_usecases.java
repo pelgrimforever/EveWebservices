@@ -1,10 +1,12 @@
 /*
- * Generated on 13.4.2022 19:13
+ * Generated on 20.4.2022 10:3
  */
 
 package eve.usecases;
 
 import data.conversion.JSONConversion;
+import data.interfaces.db.Filedata;
+import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
@@ -12,10 +14,9 @@ import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.logicentity.Orders;
-import eve.logicview.*;
 import general.exception.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.sql.Date;
+import java.util.*;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
@@ -48,7 +49,7 @@ public class Orders_usecases {
     private long get_order_amount_from_swagger(IOrdersPK ordersPK) throws DBException {
         BLview_order blview_order = new BLview_order();
         blview_order.setAuthenticated(loggedin);
-        View_order order = blview_order.getView_order(ordersPK);
+        eve.logicview.View_order order = blview_order.getView_order(ordersPK);
         org.json.simple.JSONObject jsonsellorder = Swaggerorder.findOrder(order.getRegion(), order.getPage(), ordersPK.getId());
         if(jsonsellorder!=null)
             return JSONConversion.getLong(jsonsellorder, "volume_remain");
@@ -137,11 +138,11 @@ public class Orders_usecases {
         return blorders.getTradebuy_order_id(tradeBuy_order_idPK);
     }
     
-    public ArrayList<Orders> search_orders(IOrderssearch orderssearch) throws ParseException, CustomException {
+    public ArrayList<Orders> search_orders(IOrderssearch orderssearch) throws CustomException {
         return blorders.search(orderssearch);
     }
     
-    public long search_orders_count(IOrderssearch orderssearch) throws ParseException, CustomException {
+    public long search_orders_count(IOrderssearch orderssearch) throws CustomException {
         return blorders.searchcount(orderssearch);
     }
 

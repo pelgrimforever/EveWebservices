@@ -1,10 +1,12 @@
 /*
- * Generated on 13.4.2022 19:13
+ * Generated on 20.4.2022 10:3
  */
 
 package eve.usecases;
 
 import data.conversion.JSONConversion;
+import data.interfaces.db.Filedata;
+import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
@@ -12,10 +14,9 @@ import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.logicentity.Constellation_neighbour;
-import eve.logicview.*;
 import general.exception.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.sql.Date;
+import java.util.*;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
@@ -64,11 +65,11 @@ public class Constellation_neighbour_usecases {
         return blconstellation_neighbour.getConstellation_neighbours4constellationConstellation(constellationConstellationPK);
     }
     
-    public ArrayList<Constellation_neighbour> search_constellation_neighbour(IConstellation_neighboursearch constellation_neighboursearch) throws ParseException, CustomException {
+    public ArrayList<Constellation_neighbour> search_constellation_neighbour(IConstellation_neighboursearch constellation_neighboursearch) throws CustomException {
         return blconstellation_neighbour.search(constellation_neighboursearch);
     }
     
-    public long search_constellation_neighbour_count(IConstellation_neighboursearch constellation_neighboursearch) throws ParseException, CustomException {
+    public long search_constellation_neighbour_count(IConstellation_neighboursearch constellation_neighboursearch) throws CustomException {
         return blconstellation_neighbour.searchcount(constellation_neighboursearch);
     }
 

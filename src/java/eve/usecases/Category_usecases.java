@@ -1,10 +1,12 @@
 /*
- * Generated on 13.4.2022 19:13
+ * Generated on 20.4.2022 10:3
  */
 
 package eve.usecases;
 
 import data.conversion.JSONConversion;
+import data.interfaces.db.Filedata;
+import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
@@ -12,10 +14,9 @@ import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.logicentity.Category;
-import eve.logicview.*;
 import general.exception.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.sql.Date;
+import java.util.*;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
@@ -56,11 +57,11 @@ public class Category_usecases {
         return blcategory.getCategory(categoryPK);
     }
 
-    public ArrayList<Category> search_category(ICategorysearch categorysearch) throws ParseException, CustomException {
+    public ArrayList<Category> search_category(ICategorysearch categorysearch) throws CustomException {
         return blcategory.search(categorysearch);
     }
     
-    public long search_category_count(ICategorysearch categorysearch) throws ParseException, CustomException {
+    public long search_category_count(ICategorysearch categorysearch) throws CustomException {
         return blcategory.searchcount(categorysearch);
     }
 

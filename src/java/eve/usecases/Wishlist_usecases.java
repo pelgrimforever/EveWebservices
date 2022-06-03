@@ -1,10 +1,12 @@
 /*
- * Generated on 13.4.2022 19:13
+ * Generated on 20.4.2022 10:3
  */
 
 package eve.usecases;
 
 import data.conversion.JSONConversion;
+import data.interfaces.db.Filedata;
+import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
@@ -12,10 +14,9 @@ import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.logicentity.Wishlist;
-import eve.logicview.*;
 import general.exception.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.sql.Date;
+import java.util.*;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
@@ -63,11 +64,11 @@ public class Wishlist_usecases {
         return blwishlist.getWishlists4evetype(evetypePK);
     }
     
-    public ArrayList<Wishlist> search_wishlist(IWishlistsearch wishlistsearch) throws ParseException, CustomException {
+    public ArrayList<Wishlist> search_wishlist(IWishlistsearch wishlistsearch) throws CustomException {
         return blwishlist.search(wishlistsearch);
     }
     
-    public long search_wishlist_count(IWishlistsearch wishlistsearch) throws ParseException, CustomException {
+    public long search_wishlist_count(IWishlistsearch wishlistsearch) throws CustomException {
         return blwishlist.searchcount(wishlistsearch);
     }
 

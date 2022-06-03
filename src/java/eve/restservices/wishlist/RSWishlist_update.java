@@ -1,5 +1,5 @@
 /*
- * Generated on 12.4.2022 18:26
+ * Generated on 20.4.2022 10:3
  */
 
 package eve.restservices.wishlist;

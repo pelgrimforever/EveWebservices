@@ -1,10 +1,12 @@
 /*
- * Generated on 13.4.2022 19:13
+ * Generated on 20.4.2022 10:3
  */
 
 package eve.usecases;
 
 import data.conversion.JSONConversion;
+import data.interfaces.db.Filedata;
+import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
@@ -12,10 +14,9 @@ import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.logicentity.Market_group;
-import eve.logicview.*;
 import general.exception.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.sql.Date;
+import java.util.*;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
@@ -60,11 +61,11 @@ public class Market_group_usecases {
         return blmarket_group.getMarket_groups4market_groupParent_id(market_groupParent_idPK);
     }
     
-    public ArrayList<Market_group> search_market_group(IMarket_groupsearch market_groupsearch) throws ParseException, CustomException {
+    public ArrayList<Market_group> search_market_group(IMarket_groupsearch market_groupsearch) throws CustomException {
         return blmarket_group.search(market_groupsearch);
     }
     
-    public long search_market_group_count(IMarket_groupsearch market_groupsearch) throws ParseException, CustomException {
+    public long search_market_group_count(IMarket_groupsearch market_groupsearch) throws CustomException {
         return blmarket_group.searchcount(market_groupsearch);
     }
 

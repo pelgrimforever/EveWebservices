@@ -1,10 +1,12 @@
 /*
- * Generated on 13.4.2022 19:13
+ * Generated on 20.4.2022 10:3
  */
 
 package eve.usecases;
 
 import data.conversion.JSONConversion;
+import data.interfaces.db.Filedata;
+import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
@@ -12,10 +14,9 @@ import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.logicentity.Trade;
-import eve.logicview.*;
 import general.exception.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.sql.Date;
+import java.util.*;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
@@ -67,11 +68,11 @@ public class Trade_usecases {
         return bltrade.getTrades4ordersBuy_order_id(ordersBuy_order_idPK);
     }
     
-    public ArrayList<Trade> search_trade(ITradesearch tradesearch) throws ParseException, CustomException {
+    public ArrayList<Trade> search_trade(ITradesearch tradesearch) throws CustomException {
         return bltrade.search(tradesearch);
     }
     
-    public long search_trade_count(ITradesearch tradesearch) throws ParseException, CustomException {
+    public long search_trade_count(ITradesearch tradesearch) throws CustomException {
         return bltrade.searchcount(tradesearch);
     }
 
