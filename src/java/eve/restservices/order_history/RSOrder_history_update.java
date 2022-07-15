@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.order_history;
@@ -18,10 +18,9 @@ import eve.interfaces.servlet.IOrder_historyOperation;
 import eve.logicentity.Order_history;
 import eve.searchentity.Order_historysearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,13 +47,15 @@ import org.json.simple.parser.ParseException;
 @Path("rsorder_history_update")
 public class RSOrder_history_update extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Order_history_usecases order_historyusecases = new Order_history_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
@@ -80,7 +81,7 @@ public class RSOrder_history_update extends RS_json_login {
 
     private void update_order_history(Order_history_usecases order_historyusecases, JSONObject json) throws ParseException, CustomException {
         IOrder_history order_history = (IOrder_history)JSONOrder_history.toOrder_history((JSONObject)json.get("order_history"));
-        order_historyusecases.secureupdateOrder_history(order_history);
+        order_historyusecases.updateOrder_history(order_history);
         setReturnstatus("OK");
     }
 }

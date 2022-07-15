@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.contract;
@@ -61,7 +61,7 @@ public class Contract_delete extends SecurityDataServlet {
 
     private void delete_contract(Contract_usecases contractusecases) throws CustomException {
         IContract contract = (IContract)parser.getJavaObject("contract");
-        contractusecases.securedeleteContract(contract);
+        contractusecases.deleteContract(contract);
     }
     
     @Override

@@ -1,22 +1,14 @@
 package eve.BusinessObject.service;
 
+import db.SQLTwriter;
+import db.SQLTqueue;
+import db.SQLreader;
 import eve.BusinessObject.Logic.BLcontract;
-import eve.BusinessObject.Logic.BLcontractitem;
-import eve.BusinessObject.Logic.BLevetype;
 import eve.BusinessObject.Logic.BLregion;
-import eve.BusinessObject.Logic.BLsyssettings;
-import eve.BusinessObject.Logic.BLsystem;
-import eve.interfaces.logicentity.ISyssettings;
-import eve.logicentity.Contract;
-import eve.logicentity.Contractitem;
 import eve.logicentity.Region;
-import eve.logicentity.Syssettings;
-import general.exception.CustomException;
 import general.exception.DBException;
-import general.exception.DataException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * @author Franky Laseure
@@ -43,9 +35,7 @@ public class ContractService implements Runnable {
         private ArrayList<String> messages = new ArrayList<>();
         private boolean done = false;
         
-        public ContractStatus(ArrayList<Region> regionsarray) throws DBException {
-            for(Region region: regionsarray)
-                regions.put(region.getPrimaryKey().getId(), new RegionStatus(region));
+        public ContractStatus() {
         }
         
         public void updateStatus(long regionid, int page, long contracts) {
@@ -125,17 +115,10 @@ public class ContractService implements Runnable {
         }
     }
     
-    public ContractService(String username) {
-        try {
-            BLregion blregion = new BLregion();
-            blregion.setAuthenticated(true);
-            ArrayList<Region> regions = blregion.getAll_Contractpages();
-            contractstatus = new ContractStatus(regions);
-            data = new Marketdata(regions);
-        }
-        catch(DBException e) {
-            System.out.println(e.getMessage());
-        }
+    public ContractService(String username, SQLreader sqlreader, SQLTwriter sqlwriter) {
+        this.sqlreader = sqlreader;
+        this.sqlwriter = sqlwriter;
+        contractstatus = new ContractStatus();
     }
     
     protected boolean locktoONEprocessor = false;
@@ -156,20 +139,23 @@ public class ContractService implements Runnable {
         processorsactive = value;
     }
 
+    private SQLreader sqlreader;
+    private SQLTwriter sqlwriter;
+    private SQLTqueue transactionqueue;
     private BLcontract blcontract;
     
     @Override
     public void run() {
-        blcontract = new BLcontract();
-        blcontract.setAuthenticated(true);        
-        deactivate_contracts_in_database();
-        
-        contractstatus.addMessage("Download contracts");
         long start = System.currentTimeMillis();
-        download_contracts();
         try {
+            initialize();        
+            deactivate_contracts_in_database();
+
+            contractstatus.addMessage("Download contracts");
+            download_contracts();
             contractstatus.addMessage("Cleanup Deactivated contracts");
-            blcontract.deletedeactivatedcontracts();
+            blcontract.deletedeactivatedcontracts(transactionqueue);
+            sqlwriter.Commit2DB(transactionqueue);
         }
         catch(DBException e) {
             contractstatus.addMessage(e.getMessage());
@@ -177,6 +163,18 @@ public class ContractService implements Runnable {
         long end = System.currentTimeMillis();
         contractstatus.addMessage("Download time Swagger -> contracts " + ((end - start)/1000) + "sec.");
         contractstatus.setDone();
+    }
+
+    private void initialize() throws DBException {
+        transactionqueue = new SQLTqueue();
+        BLregion blregion = new BLregion(sqlreader);
+        blregion.setAuthenticated(true);
+        ArrayList<Region> regionsarray = blregion.getAll_Contractpages();
+        for(Region region: regionsarray)
+            contractstatus.regions.put(region.getPrimaryKey().getId(), new RegionStatus(region));
+        data = new Marketdata(regionsarray);
+        blcontract = new BLcontract(sqlreader);
+        blcontract.setAuthenticated(true);
     }
 
     private void download_contracts() {
@@ -206,7 +204,7 @@ public class ContractService implements Runnable {
     private void start_contractregiondownloaderthread(int p) {
         ContractRegionDownloader downloader;
         Thread marketthread;
-        downloader = new ContractRegionDownloader(data, contractstatus, p);
+        downloader = new ContractRegionDownloader(sqlreader, sqlwriter, data, contractstatus, p);
         downloaders.add(downloader);
         marketthread = new Thread(downloader);
         marketthreads.add(marketthread);
@@ -217,8 +215,10 @@ public class ContractService implements Runnable {
     private void deactivate_contracts_in_database() {
         try {
             contractstatus.addMessage("Deactivate contracts");
-            if(blcontract.count()>0)
-                blcontract.deactivatecontracts();
+            if(blcontract.count()>0) {
+                blcontract.deactivatecontracts(transactionqueue);
+                sqlwriter.Commit2DB(transactionqueue);
+            }
         }
         catch(DBException e) {
             contractstatus.addMessage(e.getMessage());

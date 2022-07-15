@@ -1,16 +1,19 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.gis.shape.piPoint;
 import eve.interfaces.searchentity.*;
 import eve.logicview.*;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
-import eve.logicview.View_materialinputavg;
+import eve.logicentity.*;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -23,7 +26,8 @@ import org.json.simple.parser.ParseException;
 public class View_materialinputavg_usecases {
 
     private boolean loggedin = false;
-    private BLview_materialinputavg blview_materialinputavg = new BLview_materialinputavg();
+    private SQLreader sqlreader = new SQLreader();
+    private BLview_materialinputavg blview_materialinputavg = new BLview_materialinputavg(sqlreader);
     
     public View_materialinputavg_usecases() {
         this(false);

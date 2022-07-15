@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.order_history_maxdate;
@@ -16,10 +16,8 @@ import eve.interfaces.servlet.IOrder_history_maxdateOperation;
 import eve.usecases.Order_history_maxdate_usecases;
 import eve.logicview.Order_history_maxdate;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -46,14 +44,15 @@ import org.json.simple.parser.ParseException;
 @Path("rsorder_history_maxdate_select")
 public class RSOrder_history_maxdate_select extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
-            IOrder_history_maxdate order_history_maxdate;
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Order_history_maxdate_usecases order_history_maxdateusecases = new Order_history_maxdate_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations

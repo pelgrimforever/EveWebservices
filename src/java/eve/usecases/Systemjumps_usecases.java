@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Systemjumps;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Systemjumps_usecases {
 
     private boolean loggedin = false;
-    private BLsystemjumps blsystemjumps = new BLsystemjumps();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLsystemjumps blsystemjumps = new BLsystemjumps(sqlreader);
     
     public Systemjumps_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Systemjumps_usecases {
     }
     
     public boolean getSystemjumpsExists(ISystemjumpsPK systemjumpsPK) throws DBException {
-        return blsystemjumps.getEntityExists(systemjumpsPK);
+        return blsystemjumps.getSystemjumpsExists(systemjumpsPK);
     }
     
     public Systemjumps get_systemjumps_by_primarykey(ISystemjumpsPK systemjumpsPK) throws DBException {
@@ -73,16 +79,35 @@ public class Systemjumps_usecases {
         return blsystemjumps.searchcount(systemjumpssearch);
     }
 
-    public void secureinsertSystemjumps(ISystemjumps systemjumps) throws DBException, DataException {
-        blsystemjumps.secureinsertSystemjumps(systemjumps);
+    public void insertSystemjumps(ISystemjumps systemjumps) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blsystemjumps.insertSystemjumps(tq, systemjumps);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateSystemjumps(ISystemjumps systemjumps) throws DBException, DataException {
-        blsystemjumps.secureupdateSystemjumps(systemjumps);
+    public void updateSystemjumps(ISystemjumps systemjumps) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blsystemjumps.updateSystemjumps(tq, systemjumps);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteSystemjumps(ISystemjumps systemjumps) throws DBException, DataException {
-        blsystemjumps.securedeleteSystemjumps(systemjumps);
+    public void deleteSystemjumps(ISystemjumps systemjumps) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blsystemjumps.deleteSystemjumps(tq, systemjumps);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Systemsystem_end(ISystemPK systemSystem_endPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blsystemjumps.delete4systemSystem_end(tq, systemSystem_endPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Systemsystem_start(ISystemPK systemSystem_startPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blsystemjumps.delete4systemSystem_start(tq, systemSystem_startPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

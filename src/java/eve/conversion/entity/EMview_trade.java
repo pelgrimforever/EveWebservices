@@ -1,21 +1,16 @@
 /*
- * EMview_trade.java
- *
  * Created on Okt 8, 2021
  * Generated on 9.9.2021 18:23
- *
  */
 package eve.conversion.entity;
 
-import data.interfaces.db.LogicEntity;
+import data.interfaces.db.View;
 import eve.conversion.entity.def.EMview_trade_default;
 import eve.logicview.View_trade;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * EMview_trade
- * Custom transformation from ResultSet to Logic Entity
  * @author Franky Laseure
  */
 public class EMview_trade extends EMview_trade_default {
@@ -29,14 +24,8 @@ public class EMview_trade extends EMview_trade_default {
     public static final String SQLSelectAll4Startendsystem = "select view_trade.* from view_trade " + 
         "where view_trade.sell_systemid = :startsystemid: and view_trade.buy_systemid = :endsystemid:";
     
-    /**
-     * Map ResultSet Field values to View_trade
-     * @param dbresult: Database ResultSet
-     * @return 
-     * @throws java.sql.SQLException
-     */
     @Override
-    public Object mapResultSet2Entity(ResultSet dbresult) throws SQLException {
+    public View mapResultSet2Entity(ResultSet dbresult) throws SQLException {
         View_trade view_trade = (View_trade)super.mapResultSet2Entity(dbresult);
         try {
             view_trade.setStart_system(dbresult.getLong("startsystem_id"));

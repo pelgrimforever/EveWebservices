@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Allnodes_system;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Allnodes_system_usecases {
 
     private boolean loggedin = false;
-    private BLallnodes_system blallnodes_system = new BLallnodes_system();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLallnodes_system blallnodes_system = new BLallnodes_system(sqlreader);
     
     public Allnodes_system_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Allnodes_system_usecases {
     }
     
     public boolean getAllnodes_systemExists(IAllnodes_systemPK allnodes_systemPK) throws DBException {
-        return blallnodes_system.getEntityExists(allnodes_systemPK);
+        return blallnodes_system.getAllnodes_systemExists(allnodes_systemPK);
     }
     
     public Allnodes_system get_allnodes_system_by_primarykey(IAllnodes_systemPK allnodes_systemPK) throws DBException {
@@ -65,16 +71,23 @@ public class Allnodes_system_usecases {
         return blallnodes_system.searchcount(allnodes_systemsearch);
     }
 
-    public void secureinsertAllnodes_system(IAllnodes_system allnodes_system) throws DBException, DataException {
-        blallnodes_system.secureinsertAllnodes_system(allnodes_system);
+    public void insertAllnodes_system(IAllnodes_system allnodes_system) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blallnodes_system.insertAllnodes_system(tq, allnodes_system);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateAllnodes_system(IAllnodes_system allnodes_system) throws DBException, DataException {
-        blallnodes_system.secureupdateAllnodes_system(allnodes_system);
+    public void updateAllnodes_system(IAllnodes_system allnodes_system) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blallnodes_system.updateAllnodes_system(tq, allnodes_system);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteAllnodes_system(IAllnodes_system allnodes_system) throws DBException, DataException {
-        blallnodes_system.securedeleteAllnodes_system(allnodes_system);
+    public void deleteAllnodes_system(IAllnodes_system allnodes_system) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blallnodes_system.deleteAllnodes_system(tq, allnodes_system);
+        sqlwriter.Commit2DB(tq);
     }
+
 }
 

@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.shipfit;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IShipfitOperation;
 import eve.logicentity.Shipfit;
 import eve.searchentity.Shipfitsearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,19 +46,24 @@ import org.json.simple.parser.ParseException;
 @Path("rsshipfit_delete")
 public class RSShipfit_delete extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Shipfit_usecases shipfitusecases = new Shipfit_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operation) {
                 case IShipfitOperation.DELETE_SHIPFIT:
+                    delete_shipfit(shipfitusecases, json);
+                    break;
+                case IShipfitOperation.DELETE_Evetype:
                     delete_shipfit(shipfitusecases, json);
                     break;
 //Custom code, do not change this line
@@ -80,8 +83,15 @@ public class RSShipfit_delete extends RS_json_login {
 
     private void delete_shipfit(Shipfit_usecases shipfitusecases, JSONObject json) throws ParseException, CustomException {
         IShipfit shipfit = (IShipfit)JSONShipfit.toShipfit((JSONObject)json.get("shipfit"));
-        shipfitusecases.securedeleteShipfit(shipfit);
+        shipfitusecases.deleteShipfit(shipfit);
         setReturnstatus("OK");
     }
+
+    private void delete_all_containing_Evetype(Shipfit_usecases shipfitusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        shipfitusecases.delete_all_containing_Evetype(evetypePK);
+        setReturnstatus("OK");
+    }
+
 }
 

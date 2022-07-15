@@ -1,9 +1,6 @@
 /*
- * JSONView_evetype_order_history_region_month.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 11.1.2022 21:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_evetype_order_history_region_month {
@@ -36,10 +32,6 @@ public class JSONView_evetype_order_history_region_month {
         return jsonview_evetype_order_history_region_months;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_evetype_order_history_region_month view_evetype_order_history_region_month) {
         JSONObject json = new JSONObject();
         json.put("region", String.valueOf(view_evetype_order_history_region_month.getRegion()));
@@ -72,11 +64,6 @@ public class JSONView_evetype_order_history_region_month {
         return view_evetype_order_history_region_month;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_evetype_order_history_region_monthsearch parameters
-     * @return 
-     */
     public static View_evetype_order_history_region_monthsearch toView_evetype_order_history_region_monthsearch(JSONObject json) {
         View_evetype_order_history_region_monthsearch view_evetype_order_history_region_monthsearch = new View_evetype_order_history_region_monthsearch();
         view_evetype_order_history_region_monthsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

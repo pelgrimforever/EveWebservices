@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Bpmaterial;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Bpmaterial_usecases {
 
     private boolean loggedin = false;
-    private BLbpmaterial blbpmaterial = new BLbpmaterial();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLbpmaterial blbpmaterial = new BLbpmaterial(sqlreader);
     
     public Bpmaterial_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Bpmaterial_usecases {
     }
     
     public boolean getBpmaterialExists(IBpmaterialPK bpmaterialPK) throws DBException {
-        return blbpmaterial.getEntityExists(bpmaterialPK);
+        return blbpmaterial.getBpmaterialExists(bpmaterialPK);
     }
     
     public Bpmaterial get_bpmaterial_by_primarykey(IBpmaterialPK bpmaterialPK) throws DBException {
@@ -73,16 +79,35 @@ public class Bpmaterial_usecases {
         return blbpmaterial.searchcount(bpmaterialsearch);
     }
 
-    public void secureinsertBpmaterial(IBpmaterial bpmaterial) throws DBException, DataException {
-        blbpmaterial.secureinsertBpmaterial(bpmaterial);
+    public void insertBpmaterial(IBpmaterial bpmaterial) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blbpmaterial.insertBpmaterial(tq, bpmaterial);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateBpmaterial(IBpmaterial bpmaterial) throws DBException, DataException {
-        blbpmaterial.secureupdateBpmaterial(bpmaterial);
+    public void updateBpmaterial(IBpmaterial bpmaterial) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blbpmaterial.updateBpmaterial(tq, bpmaterial);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteBpmaterial(IBpmaterial bpmaterial) throws DBException, DataException {
-        blbpmaterial.securedeleteBpmaterial(bpmaterial);
+    public void deleteBpmaterial(IBpmaterial bpmaterial) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blbpmaterial.deleteBpmaterial(tq, bpmaterial);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Evetypebp(IEvetypePK evetypeBpPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blbpmaterial.delete4evetypeBp(tq, evetypeBpPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Evetypematerial(IEvetypePK evetypeMaterialPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blbpmaterial.delete4evetypeMaterial(tq, evetypeMaterialPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

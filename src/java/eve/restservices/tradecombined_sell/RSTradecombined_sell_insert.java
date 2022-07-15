@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.tradecombined_sell;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.ITradecombined_sellOperation;
 import eve.logicentity.Tradecombined_sell;
 import eve.searchentity.Tradecombined_sellsearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,13 +46,15 @@ import org.json.simple.parser.ParseException;
 @Path("rstradecombined_sell_insert")
 public class RSTradecombined_sell_insert extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Tradecombined_sell_usecases tradecombined_sellusecases = new Tradecombined_sell_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
@@ -80,7 +80,7 @@ public class RSTradecombined_sell_insert extends RS_json_login {
 
     private void insert_tradecombined_sell(Tradecombined_sell_usecases tradecombined_sellusecases, JSONObject json) throws ParseException, CustomException {
         ITradecombined_sell tradecombined_sell = (ITradecombined_sell)JSONTradecombined_sell.toTradecombined_sell((JSONObject)json.get("tradecombined_sell"));
-        tradecombined_sellusecases.secureinsertTradecombined_sell(tradecombined_sell);
+        tradecombined_sellusecases.insertTradecombined_sell(tradecombined_sell);
         setReturnstatus("OK");
     }
 }

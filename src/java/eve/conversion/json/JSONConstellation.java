@@ -1,9 +1,6 @@
 /*
- * JSONConstellation.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONConstellation {
@@ -41,10 +37,6 @@ public class JSONConstellation {
         return jsonconstellations;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IConstellationPK constellationPK) {
         JSONObject json = null;
         if(constellationPK!=null) {
@@ -54,10 +46,6 @@ public class JSONConstellation {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IConstellation constellation) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(constellation.getPrimaryKey()));
@@ -69,10 +57,6 @@ public class JSONConstellation {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Constellationsearch constellationsearch) {
         JSONObject json = new JSONObject();
         if(constellationsearch.used()) {
@@ -117,11 +101,6 @@ public class JSONConstellation {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Constellationsearch toConstellationsearch(JSONObject json) {
         Constellationsearch constellationsearch = new Constellationsearch();
         constellationsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

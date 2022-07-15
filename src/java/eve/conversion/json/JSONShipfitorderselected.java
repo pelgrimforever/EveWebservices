@@ -1,9 +1,6 @@
 /*
- * JSONShipfitorderselected.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 20.11.2021 17:22
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONShipfitorderselected {
@@ -41,10 +37,6 @@ public class JSONShipfitorderselected {
         return jsonshipfitorderselecteds;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IShipfitorderselectedPK shipfitorderselectedPK) {
         JSONObject json = null;
         if(shipfitorderselectedPK!=null) {
@@ -57,10 +49,6 @@ public class JSONShipfitorderselected {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IShipfitorderselected shipfitorderselected) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(shipfitorderselected.getPrimaryKey()));
@@ -70,10 +58,6 @@ public class JSONShipfitorderselected {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Shipfitorderselectedsearch shipfitorderselectedsearch) {
         JSONObject json = new JSONObject();
         if(shipfitorderselectedsearch.used()) {
@@ -115,11 +99,6 @@ public class JSONShipfitorderselected {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Shipfitorderselectedsearch toShipfitorderselectedsearch(JSONObject json) {
         Shipfitorderselectedsearch shipfitorderselectedsearch = new Shipfitorderselectedsearch();
         shipfitorderselectedsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

@@ -1,9 +1,6 @@
 /*
- * JSONStation.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.0.2022 19:32
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONStation {
@@ -41,10 +37,6 @@ public class JSONStation {
         return jsonstations;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IStationPK stationPK) {
         JSONObject json = null;
         if(stationPK!=null) {
@@ -54,10 +46,6 @@ public class JSONStation {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IStation station) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(station.getPrimaryKey()));
@@ -78,10 +66,6 @@ public class JSONStation {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Stationsearch stationsearch) {
         JSONObject json = new JSONObject();
         if(stationsearch.used()) {
@@ -129,11 +113,6 @@ public class JSONStation {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Stationsearch toStationsearch(JSONObject json) {
         Stationsearch stationsearch = new Stationsearch();
         stationsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

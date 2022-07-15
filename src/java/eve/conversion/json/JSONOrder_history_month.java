@@ -1,9 +1,6 @@
 /*
- * JSONOrder_history_month.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONOrder_history_month {
@@ -41,10 +37,6 @@ public class JSONOrder_history_month {
         return jsonorder_history_months;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IOrder_history_monthPK order_history_monthPK) {
         JSONObject json = null;
         if(order_history_monthPK!=null) {
@@ -57,10 +49,6 @@ public class JSONOrder_history_month {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IOrder_history_month order_history_month) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(order_history_month.getPrimaryKey()));
@@ -74,10 +62,6 @@ public class JSONOrder_history_month {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Order_history_monthsearch order_history_monthsearch) {
         JSONObject json = new JSONObject();
         if(order_history_monthsearch.used()) {
@@ -119,11 +103,6 @@ public class JSONOrder_history_month {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Order_history_monthsearch toOrder_history_monthsearch(JSONObject json) {
         Order_history_monthsearch order_history_monthsearch = new Order_history_monthsearch();
         order_history_monthsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

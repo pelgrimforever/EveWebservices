@@ -5,6 +5,9 @@
  */
 package eve.BusinessObject.service;
 
+import db.SQLTwriter;
+import db.SQLTqueue;
+import db.SQLreader;
 import eve.BusinessObject.Logic.BLallnodes_stargate;
 import eve.BusinessObject.Logic.BLallnodes_system;
 import eve.BusinessObject.Logic.BLsystem;
@@ -21,17 +24,21 @@ import java.util.HashMap;
  */
 public class AllnodesService {
     
+    SQLreader sqlreader;
+    SQLTwriter sqlwriter;
     HashMap<Long, Allnodesdata> systemhash = new HashMap<>();
     
     public AllnodesService() {
         try {
-            BLallnodes_system blsystem = new BLallnodes_system();
+            sqlreader = new SQLreader();
+            sqlwriter = new SQLTwriter();
+            BLallnodes_system blsystem = new BLallnodes_system(sqlreader);
             ArrayList<Allnodes_system> systems = blsystem.getAllnodes_systems();
             for(Allnodes_system system: systems) {
                 systemhash.put(system.getPrimaryKey().getId(), new Allnodesdata(system));
             }
-            BLallnodes_stargate blstargate = new BLallnodes_stargate();
-            ArrayList<Allnodes_stargate> stargates = blstargate.getAll();
+            BLallnodes_stargate blstargate = new BLallnodes_stargate(sqlreader);
+            ArrayList<Allnodes_stargate> stargates = blstargate.getAllnodes_stargates();
             Allnodesdata systemdata;
             for(Allnodes_stargate stargate: stargates) {
                 systemdata = systemhash.get(stargate.getSystem());
@@ -48,19 +55,20 @@ public class AllnodesService {
 
     public void performAlgorithmDB() {
         try {
-            BLallnodes_system blsystem = new BLallnodes_system();
+            SQLTqueue transactionqueue = new SQLTqueue();
+            BLallnodes_system blsystem = new BLallnodes_system(sqlreader);
             BLallnodes_stargate blstargate = new BLallnodes_stargate(blsystem);
             //reload all data
-            blsystem.reload();
-            blstargate.reload();
-            blsystem.Commit2DB();
+            blsystem.reload(transactionqueue);
+            blstargate.reload(transactionqueue);
+            sqlwriter.Commit2DB(transactionqueue);
             //find dead ends until none found
             long deadends = 0;
             long previousdeadends = 0;
             do {
-                blsystem.markdeadends();
-                blstargate.markdeadends();
-                blsystem.Commit2DB();
+                blsystem.markdeadends(transactionqueue);
+                blstargate.markdeadends(transactionqueue);
+                sqlwriter.Commit2DB(transactionqueue);
                 previousdeadends = deadends;
                 deadends = blsystem.getDeadendscount();
             } while(previousdeadends<deadends);
@@ -100,7 +108,7 @@ public class AllnodesService {
 if(debug) {
     try {
         eve.logicentity.System deadendsystem;
-        BLsystem blsystem = new BLsystem();
+        BLsystem blsystem = new BLsystem(sqlreader);
         for(Allnodesdata system: systemhash.values()) {
             if(system.isConnectedToDeadend()) {
                 deadendsystem = blsystem.getSystem(new SystemPK(system.getId()));
@@ -185,7 +193,7 @@ if(debug) {
 if(debug) {
     System.out.println("CIRCLES");
     try {
-        BLsystem blsystem = new BLsystem();
+        BLsystem blsystem = new BLsystem(sqlreader);
         eve.logicentity.System evesystem = blsystem.getSystem(new SystemPK(system.getId()));
         if(circlefound) {
             System.out.println(evesystem.getPrimaryKey().getId() + " " + evesystem.getName());

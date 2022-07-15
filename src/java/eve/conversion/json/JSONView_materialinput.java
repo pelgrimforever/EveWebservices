@@ -1,9 +1,6 @@
 /*
- * JSONView_materialinput.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 19.0.2022 21:56
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_materialinput {
@@ -36,10 +32,6 @@ public class JSONView_materialinput {
         return jsonview_materialinputs;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_materialinput view_materialinput) {
         JSONObject json = new JSONObject();
         json.put("username", view_materialinput.getUsername());
@@ -76,11 +68,6 @@ public class JSONView_materialinput {
         return view_materialinput;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_materialinputsearch parameters
-     * @return 
-     */
     public static View_materialinputsearch toView_materialinputsearch(JSONObject json) {
         View_materialinputsearch view_materialinputsearch = new View_materialinputsearch();
         view_materialinputsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

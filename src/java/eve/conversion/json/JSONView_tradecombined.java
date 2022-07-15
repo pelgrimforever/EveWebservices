@@ -1,9 +1,6 @@
 /*
- * JSONView_tradecombined.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_tradecombined {
@@ -36,10 +32,6 @@ public class JSONView_tradecombined {
         return jsonview_tradecombineds;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_tradecombined view_tradecombined) {
         JSONObject json = new JSONObject();
         json.put("sell_regionid", String.valueOf(view_tradecombined.getSell_regionid()));
@@ -88,11 +80,6 @@ public class JSONView_tradecombined {
         return view_tradecombined;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_tradecombinedsearch parameters
-     * @return 
-     */
     public static View_tradecombinedsearch toView_tradecombinedsearch(JSONObject json) {
         View_tradecombinedsearch view_tradecombinedsearch = new View_tradecombinedsearch();
         view_tradecombinedsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

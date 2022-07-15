@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Typegroup;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Typegroup_usecases {
 
     private boolean loggedin = false;
-    private BLtypegroup bltypegroup = new BLtypegroup();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLtypegroup bltypegroup = new BLtypegroup(sqlreader);
     
     public Typegroup_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Typegroup_usecases {
     }
     
     public boolean getTypegroupExists(ITypegroupPK typegroupPK) throws DBException {
-        return bltypegroup.getEntityExists(typegroupPK);
+        return bltypegroup.getTypegroupExists(typegroupPK);
     }
     
     public Typegroup get_typegroup_by_primarykey(ITypegroupPK typegroupPK) throws DBException {
@@ -69,16 +75,29 @@ public class Typegroup_usecases {
         return bltypegroup.searchcount(typegroupsearch);
     }
 
-    public void secureinsertTypegroup(ITypegroup typegroup) throws DBException, DataException {
-        bltypegroup.secureinsertTypegroup(typegroup);
+    public void insertTypegroup(ITypegroup typegroup) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        bltypegroup.insertTypegroup(tq, typegroup);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateTypegroup(ITypegroup typegroup) throws DBException, DataException {
-        bltypegroup.secureupdateTypegroup(typegroup);
+    public void updateTypegroup(ITypegroup typegroup) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        bltypegroup.updateTypegroup(tq, typegroup);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteTypegroup(ITypegroup typegroup) throws DBException, DataException {
-        bltypegroup.securedeleteTypegroup(typegroup);
+    public void deleteTypegroup(ITypegroup typegroup) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        bltypegroup.deleteTypegroup(tq, typegroup);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Category(ICategoryPK categoryPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        bltypegroup.delete4category(tq, categoryPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

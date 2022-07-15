@@ -1,9 +1,6 @@
 /*
- * JSONMarket_group.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.0.2022 19:32
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONMarket_group {
@@ -41,10 +37,6 @@ public class JSONMarket_group {
         return jsonmarket_groups;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IMarket_groupPK market_groupPK) {
         JSONObject json = null;
         if(market_groupPK!=null) {
@@ -54,10 +46,6 @@ public class JSONMarket_group {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IMarket_group market_group) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(market_group.getPrimaryKey()));
@@ -69,10 +57,6 @@ public class JSONMarket_group {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Market_groupsearch market_groupsearch) {
         JSONObject json = new JSONObject();
         if(market_groupsearch.used()) {
@@ -111,11 +95,6 @@ public class JSONMarket_group {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Market_groupsearch toMarket_groupsearch(JSONObject json) {
         Market_groupsearch market_groupsearch = new Market_groupsearch();
         market_groupsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

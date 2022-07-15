@@ -1,7 +1,10 @@
 package eve.BusinessObject.service;
 
+import db.SQLTwriter;
 import data.conversion.JSONConversion;
-import db.TransactionOutput;
+import db.SQLToutput;
+import db.SQLTqueue;
+import db.SQLreader;
 import eve.BusinessObject.Logic.BLevetype;
 import eve.BusinessObject.Logic.BLorder_history;
 import eve.BusinessObject.Logic.BLorder_history_maxdate;
@@ -72,15 +75,20 @@ public class Markethistory implements Runnable {
         }
     }
     
-    public Markethistory() {
+    public Markethistory(SQLreader sqlreader, SQLTwriter sqlwriter) {
+        this.sqlreader = sqlreader;
+        this.sqlwriter = sqlwriter;
         markethistorystatus = new MarkethistoryStatus();
     }
     
+    private SQLreader sqlreader;
+    private SQLTwriter sqlwriter;
+    private SQLTqueue transactionqueue;
     private BLorder_history blorderhistory;
     private BLview_order_region_evetype blview_order_region_evetype;
     private BLorder_history_maxdate blorder_history_maxdate;
     private BLevetype blevetype;
-    private TransactionOutput toutput;
+    private SQLToutput toutput;
     private JSONObject json;
     private JSONArray jsonhistory;
     private Iterator<JSONObject> jsonhistoryI;
@@ -96,6 +104,7 @@ public class Markethistory implements Runnable {
     @Override
     public void run() {
         try {
+            transactionqueue = new SQLTqueue();
             initialize_businesslogic();
             markethistorystatus.addMessage("Download market history");
             initialize();
@@ -118,17 +127,18 @@ public class Markethistory implements Runnable {
 
     private void update_priceaverages_based_on_lastmonth() throws DBException, DataException {
         markethistorystatus.addMessage("Update type averages");
-        blevetype.updateHistoryaverages();
-        toutput = blevetype.Commit2DB();
+        blevetype.updateHistoryaverages(transactionqueue);
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             markethistorystatus.addMessage("Update type averages " + toutput.getErrormessage());
     }
 
     private void build_markethistory_per_month() throws DBException {
-        BLorder_history_month blorderhistorymonth = new BLorder_history_month();
-        blorderhistorymonth.deleteall();
-        blorderhistorymonth.buildfromMarkethistory();
-        toutput = blorderhistorymonth.Commit2DB();
+        BLorder_history_month blorderhistorymonth = new BLorder_history_month(sqlreader);
+        blorderhistorymonth.deleteall(transactionqueue);
+        sqlwriter.Commit2DB(transactionqueue);
+        blorderhistorymonth.buildfromMarkethistory(transactionqueue);
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             markethistorystatus.addMessage("Markethistory Downloader " + toutput.getErrormessage());
     }
@@ -139,7 +149,7 @@ public class Markethistory implements Runnable {
         jsonhistoryI = jsonhistory.iterator();
         while(jsonhistoryI.hasNext())
             process_swagger_history_line(region_evetype, jsonhistoryI.next());
-        toutput = blorderhistory.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             markethistorystatus.addMessage("Markethistory Downloader " + toutput.getErrormessage());
     }
@@ -151,7 +161,7 @@ public class Markethistory implements Runnable {
     }
 
     private void add_orderhistory_line_to_database(View_order_region_evetype region_evetype, JSONObject jsonline1) throws DBException {
-        blorderhistory.addStatement(build_orderhistory_insert(region_evetype, jsonline1).toString());
+        blorderhistory.addStatement(transactionqueue, build_orderhistory_insert(region_evetype, jsonline1).toString());
         historycounter++;
         if(historycounter==100)
             commit_orderhistory_buffer_to_database();
@@ -159,7 +169,7 @@ public class Markethistory implements Runnable {
 
     private void commit_orderhistory_buffer_to_database() throws DBException {
         historycounter = 0;
-        toutput = blorderhistory.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             markethistorystatus.addMessage("Markethistory Downloader " + toutput.getErrormessage());
     }
@@ -182,20 +192,20 @@ public class Markethistory implements Runnable {
     private void initialize() throws DBException {
         start = System.currentTimeMillis();
         maxdate = blorder_history_maxdate.getOrder_history_maxdates().get(0).getMaxdate();
-        view_order_region_evetypes = blview_order_region_evetype.getAll();
+        view_order_region_evetypes = blview_order_region_evetype.getView_order_region_evetypes();
         markethistorystatus.totalhistorylines = view_order_region_evetypes.size();
         historycounter = 0;
         sqlb = new StringBuilder();
     }
 
     private void initialize_businesslogic() {
-        blorderhistory = new BLorder_history();
+        blorderhistory = new BLorder_history(sqlreader);
         blorderhistory.setAuthenticated(true);
-        blview_order_region_evetype = new BLview_order_region_evetype();
+        blview_order_region_evetype = new BLview_order_region_evetype(sqlreader);
         blview_order_region_evetype.setAuthenticated(true);
-        blorder_history_maxdate = new BLorder_history_maxdate();
+        blorder_history_maxdate = new BLorder_history_maxdate(sqlreader);
         blorder_history_maxdate.setAuthenticated(true);
-        blevetype = new BLevetype();
+        blevetype = new BLevetype(sqlreader);
         blevetype.setAuthenticated(true);
     }
 

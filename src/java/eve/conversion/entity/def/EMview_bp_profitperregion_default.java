@@ -1,16 +1,14 @@
 /*
- * EMalliance_default.java
- *
  * Created on Okt 8, 2021
- * Generated on 20.4.2022 10:3
- *
+ * Generated on 13.6.2022 11:21
  */
 package eve.conversion.entity.def;
 
 import data.gis.shape.*;
-import data.interfaces.db.View;
+import data.interfaces.db.*;
 import data.json.piJson;
 import db.ViewMapper;
+import eve.eveDatabaseproperties;
 import eve.logicview.View_bp_profitperregion;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -20,27 +18,26 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
- * EMview_bp_profitperregion_default
- * Maps SQL ResultSet to eve.logicentity objects
  * @author Franky Laseure
  */
-public class EMview_bp_profitperregion_default implements ViewMapper {
+public class EMview_bp_profitperregion_default implements eveDatabaseproperties, ViewMapper {
     
     public static final String SQLSelectAll = "select view_bp_profitperregion.* from view_bp_profitperregion";
 	  
-    /**
-     * 
-     * @return SQL select statement for all View_bp_profitperregions
-     */
+    @Override
+    public String getDbtool() { return databasetool; }
+    
+    @Override
+    public String getConnectionpool() { return connectionpool; }
+    
+    @Override
+    public String getTable() { return "view_bp_profitperregion"; }
+
     @Override
     public String getSQLSelectAll() { return SQLSelectAll; };
 
-    /**
-     * Map ResultSet Field values to View_bp_profitperregion
-     * @param dbresult: Database ResultSet
-     */
     @Override
-    public Object mapResultSet2Entity(ResultSet dbresult) throws SQLException {
+    public View mapResultSet2Entity(ResultSet dbresult) throws SQLException {
         View_bp_profitperregion view_bp_profitperregion = new View_bp_profitperregion();
         if(dbresult!=null) {
             try {

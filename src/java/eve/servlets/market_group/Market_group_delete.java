@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.market_group;
@@ -61,7 +61,7 @@ public class Market_group_delete extends SecurityDataServlet {
 
     private void delete_market_group(Market_group_usecases market_groupusecases) throws CustomException {
         IMarket_group market_group = (IMarket_group)parser.getJavaObject("market_group");
-        market_groupusecases.securedeleteMarket_group(market_group);
+        market_groupusecases.deleteMarket_group(market_group);
     }
     
     @Override

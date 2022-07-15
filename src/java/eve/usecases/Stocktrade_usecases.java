@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Stocktrade;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Stocktrade_usecases {
 
     private boolean loggedin = false;
-    private BLstocktrade blstocktrade = new BLstocktrade();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLstocktrade blstocktrade = new BLstocktrade(sqlreader);
     
     public Stocktrade_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Stocktrade_usecases {
     }
     
     public boolean getStocktradeExists(IStocktradePK stocktradePK) throws DBException {
-        return blstocktrade.getEntityExists(stocktradePK);
+        return blstocktrade.getStocktradeExists(stocktradePK);
     }
     
     public Stocktrade get_stocktrade_by_primarykey(IStocktradePK stocktradePK) throws DBException {
@@ -69,16 +75,29 @@ public class Stocktrade_usecases {
         return blstocktrade.searchcount(stocktradesearch);
     }
 
-    public void secureinsertStocktrade(IStocktrade stocktrade) throws DBException, DataException {
-        blstocktrade.secureinsertStocktrade(stocktrade);
+    public void insertStocktrade(IStocktrade stocktrade) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blstocktrade.insertStocktrade(tq, stocktrade);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateStocktrade(IStocktrade stocktrade) throws DBException, DataException {
-        blstocktrade.secureupdateStocktrade(stocktrade);
+    public void updateStocktrade(IStocktrade stocktrade) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blstocktrade.updateStocktrade(tq, stocktrade);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteStocktrade(IStocktrade stocktrade) throws DBException, DataException {
-        blstocktrade.securedeleteStocktrade(stocktrade);
+    public void deleteStocktrade(IStocktrade stocktrade) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blstocktrade.deleteStocktrade(tq, stocktrade);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Stock(IStockPK stockPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blstocktrade.delete4stock(tq, stockPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

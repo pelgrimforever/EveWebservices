@@ -2,23 +2,25 @@
  * WSCorporation.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 13.6.2022 18:20
  *
  */
 
 package eve.webservices;
 
+import base.restservices.RS_json_login;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.ICorporationsearch;
 import eve.interfaces.webservice.WSICorporation;
 import eve.logicentity.Corporation;
 import eve.searchentity.Corporationsearch;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import general.exception.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.jws.WebMethod;
@@ -27,14 +29,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import eve.usecases.custom.Security_usecases;
 
 /**
  *
  * @author Franky Laseure
  */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSICorporation")
-public class WSCorporation implements WSICorporation {
+public class WSCorporation extends RS_json_login implements WSICorporation {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     private JSONArray toJSONArray(ArrayList corporations) {
         JSONArray jsoncorporations = new JSONArray();
         Iterator corporationsI = corporations.iterator();
@@ -44,226 +49,244 @@ public class WSCorporation implements WSICorporation {
         return jsoncorporations;
     }
 
-    /**
-     * Web service operation
-     */
     //@WebMethod(operationName = "getCorporations")
     @Override
     public String getCorporations() {
         try {
-            BLcorporation blcorporation = new BLcorporation();
-            ArrayList corporations = blcorporation.getAll();
-            JSONArray jsoncorporations = toJSONArray(corporations);
-            return jsoncorporations.toJSONString();
+            Corporation_usecases corporationusecases = new Corporation_usecases(loggedin);
+            return get_all_corporation(corporationusecases);
         }
-        catch(DBException e) {
+        catch(CustomException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "search")
     @Override
-    public String search(String json) {
-        BLcorporation blcorporation = new BLcorporation();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Corporation corporation;
+    public String search(String jsonstring) {
         try {
-            Corporationsearch corporationsearch = JSONCorporation.toCorporationsearch((JSONObject)parser.parse(json));
-            ArrayList corporations = blcorporation.search(corporationsearch);
-            JSONArray jsoncorporations = toJSONArray(corporations);
-            result = jsoncorporations.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Corporation_usecases corporationusecases = new Corporation_usecases(loggedin);
+            return search_corporation(corporationusecases, json);
         }
-        catch(ParseException e) {
-            result = "";
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-            result = "";
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "getCorporation")
     @Override
-    public String getCorporation(String json) {
-        BLcorporation blcorporation = new BLcorporation();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Corporation corporation;
+    public String getCorporation(String jsonstring) {
         try {
-            CorporationPK corporationPK = JSONCorporation.toCorporationPK((JSONObject)parser.parse(json));
-            corporation = blcorporation.getCorporation(corporationPK);
-            if(corporation!=null) {
-                result = JSONCorporation.toJSON(corporation).toJSONString();
-            }
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Corporation_usecases corporationusecases = new Corporation_usecases(loggedin);
+            return get_corporation_with_primarykey(corporationusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "insertCorporation")
     @Override
-    public void insertCorporation(String json) {
-        BLcorporation blcorporation = new BLcorporation();
-        JSONParser parser = new JSONParser();
+    public void insertCorporation(String jsonstring) {
         try {
-            ICorporation corporation = JSONCorporation.toCorporation((JSONObject)parser.parse(json));
-            blcorporation.insertCorporation(corporation);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Corporation_usecases corporationusecases = new Corporation_usecases(loggedin);
+            insert_corporation(corporationusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "updateCorporation")
     @Override
-    public void updateCorporation(String json) {
-        BLcorporation blcorporation = new BLcorporation();
-        JSONParser parser = new JSONParser();
+    public void updateCorporation(String jsonstring) {
         try {
-            ICorporation corporation = JSONCorporation.toCorporation((JSONObject)parser.parse(json));
-            blcorporation.updateCorporation(corporation);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Corporation_usecases corporationusecases = new Corporation_usecases(loggedin);
+            update_corporation(corporationusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "deleteCorporation")
     @Override
-    public void deleteCorporation(String json) {
-        BLcorporation blcorporation = new BLcorporation();
-        JSONParser parser = new JSONParser();
+    public void deleteCorporation(String jsonstring) {
         try {
-            ICorporation corporation = JSONCorporation.toCorporation((JSONObject)parser.parse(json));
-            blcorporation.deleteCorporation(corporation);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Corporation_usecases corporationusecases = new Corporation_usecases(loggedin);
+            delete_corporation(corporationusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getCorporations4station")
     @Override
-    public String getCorporations4station(String json) {
-        BLcorporation blcorporation = new BLcorporation();
-        JSONParser parser = new JSONParser();
-        Corporation corporation;
+    public String getCorporations4station(String jsonstring) {
         try {
-            IStationPK stationPK = JSONStation.toStationPK((JSONObject)parser.parse(json));
-            ArrayList corporations = blcorporation.getCorporations4station(stationPK);
-            JSONArray jsoncorporations = toJSONArray(corporations);
-            return jsoncorporations.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Corporation_usecases corporationusecases = new Corporation_usecases(loggedin);
+            return get_corporation_with_foreignkey_station(corporationusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4station")
     @Override
-    public void delete4station(String json) {
-        BLcorporation blcorporation = new BLcorporation();
-        JSONParser parser = new JSONParser();
-        Corporation corporation;
+    public void delete4station(String jsonstring) {
         try {
-            IStationPK stationPK = JSONStation.toStationPK((JSONObject)parser.parse(json));
-            blcorporation.delete4station(stationPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Corporation_usecases corporationusecases = new Corporation_usecases(loggedin);
+            delete_corporation(corporationusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getCorporations4faction")
     @Override
-    public String getCorporations4faction(String json) {
-        BLcorporation blcorporation = new BLcorporation();
-        JSONParser parser = new JSONParser();
-        Corporation corporation;
+    public String getCorporations4faction(String jsonstring) {
         try {
-            IFactionPK factionPK = JSONFaction.toFactionPK((JSONObject)parser.parse(json));
-            ArrayList corporations = blcorporation.getCorporations4faction(factionPK);
-            JSONArray jsoncorporations = toJSONArray(corporations);
-            return jsoncorporations.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Corporation_usecases corporationusecases = new Corporation_usecases(loggedin);
+            return get_corporation_with_foreignkey_faction(corporationusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4faction")
     @Override
-    public void delete4faction(String json) {
-        BLcorporation blcorporation = new BLcorporation();
-        JSONParser parser = new JSONParser();
-        Corporation corporation;
+    public void delete4faction(String jsonstring) {
         try {
-            IFactionPK factionPK = JSONFaction.toFactionPK((JSONObject)parser.parse(json));
-            blcorporation.delete4faction(factionPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Corporation_usecases corporationusecases = new Corporation_usecases(loggedin);
+            delete_corporation(corporationusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getCorporations4alliance")
     @Override
-    public String getCorporations4alliance(String json) {
-        BLcorporation blcorporation = new BLcorporation();
-        JSONParser parser = new JSONParser();
-        Corporation corporation;
+    public String getCorporations4alliance(String jsonstring) {
         try {
-            IAlliancePK alliancePK = JSONAlliance.toAlliancePK((JSONObject)parser.parse(json));
-            ArrayList corporations = blcorporation.getCorporations4alliance(alliancePK);
-            JSONArray jsoncorporations = toJSONArray(corporations);
-            return jsoncorporations.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Corporation_usecases corporationusecases = new Corporation_usecases(loggedin);
+            return get_corporation_with_foreignkey_alliance(corporationusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4alliance")
     @Override
-    public void delete4alliance(String json) {
-        BLcorporation blcorporation = new BLcorporation();
-        JSONParser parser = new JSONParser();
-        Corporation corporation;
+    public void delete4alliance(String jsonstring) {
         try {
-            IAlliancePK alliancePK = JSONAlliance.toAlliancePK((JSONObject)parser.parse(json));
-            blcorporation.delete4alliance(alliancePK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Corporation_usecases corporationusecases = new Corporation_usecases(loggedin);
+            delete_corporation(corporationusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
+
+    private String count_records(Corporation_usecases corporationusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", corporationusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_corporation(Corporation_usecases corporationusecases) throws ParseException, CustomException {
+    	return JSONCorporation.toJSONArray(corporationusecases.get_all()).toJSONString();
+    }
+    
+    private String get_corporation_with_primarykey(Corporation_usecases corporationusecases, JSONObject json) throws ParseException, CustomException {
+        ICorporationPK corporationPK = (ICorporationPK)JSONCorporation.toCorporationPK((JSONObject)json.get("corporationpk"));
+	return JSONCorporation.toJSON(corporationusecases.get_corporation_by_primarykey(corporationPK)).toJSONString();
+    }
+    
+    private String get_corporation_with_foreignkey_station(Corporation_usecases corporationusecases, JSONObject json) throws ParseException, CustomException {
+        IStationPK stationPK = (IStationPK)JSONStation.toStationPK((JSONObject)json.get("stationpk"));
+        return JSONCorporation.toJSONArray(corporationusecases.get_corporation_with_foreignkey_station(stationPK)).toJSONString();
+    }
+    
+    private String get_corporation_with_foreignkey_faction(Corporation_usecases corporationusecases, JSONObject json) throws ParseException, CustomException {
+        IFactionPK factionPK = (IFactionPK)JSONFaction.toFactionPK((JSONObject)json.get("factionpk"));
+        return JSONCorporation.toJSONArray(corporationusecases.get_corporation_with_foreignkey_faction(factionPK)).toJSONString();
+    }
+    
+    private String get_corporation_with_foreignkey_alliance(Corporation_usecases corporationusecases, JSONObject json) throws ParseException, CustomException {
+        IAlliancePK alliancePK = (IAlliancePK)JSONAlliance.toAlliancePK((JSONObject)json.get("alliancepk"));
+        return JSONCorporation.toJSONArray(corporationusecases.get_corporation_with_foreignkey_alliance(alliancePK)).toJSONString();
+    }
+    
+    private String search_corporation(Corporation_usecases corporationusecases, JSONObject json) throws ParseException, CustomException {
+        ICorporationsearch search = (ICorporationsearch)JSONCorporation.toCorporationsearch((JSONObject)json.get("search"));
+        return JSONCorporation.toJSONArray(corporationusecases.search_corporation(search)).toJSONString();
+    }
+    
+    private String search_corporation_count(Corporation_usecases corporationusecases, JSONObject json) throws ParseException, CustomException {
+        ICorporationsearch corporationsearch = (ICorporationsearch)JSONCorporation.toCorporationsearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", corporationusecases.search_corporation_count(corporationsearch));
+        return jsonsearchcount.toJSONString();
+    }
+
+    private void insert_corporation(Corporation_usecases corporationusecases, JSONObject json) throws ParseException, CustomException {
+        ICorporation corporation = (ICorporation)JSONCorporation.toCorporation((JSONObject)json.get("corporation"));
+        corporationusecases.insertCorporation(corporation);
+        setReturnstatus("OK");
+    }
+
+    private void update_corporation(Corporation_usecases corporationusecases, JSONObject json) throws ParseException, CustomException {
+        ICorporation corporation = (ICorporation)JSONCorporation.toCorporation((JSONObject)json.get("corporation"));
+        corporationusecases.updateCorporation(corporation);
+        setReturnstatus("OK");
+    }
+
+    private void delete_corporation(Corporation_usecases corporationusecases, JSONObject json) throws ParseException, CustomException {
+        ICorporation corporation = (ICorporation)JSONCorporation.toCorporation((JSONObject)json.get("corporation"));
+        corporationusecases.deleteCorporation(corporation);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Station(Corporation_usecases corporationusecases, JSONObject json) throws ParseException, CustomException {
+        IStationPK stationPK = (IStationPK)JSONStation.toStationPK((JSONObject)json.get("stationpk"));
+        corporationusecases.delete_all_containing_Station(stationPK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Faction(Corporation_usecases corporationusecases, JSONObject json) throws ParseException, CustomException {
+        IFactionPK factionPK = (IFactionPK)JSONFaction.toFactionPK((JSONObject)json.get("factionpk"));
+        corporationusecases.delete_all_containing_Faction(factionPK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Alliance(Corporation_usecases corporationusecases, JSONObject json) throws ParseException, CustomException {
+        IAlliancePK alliancePK = (IAlliancePK)JSONAlliance.toAlliancePK((JSONObject)json.get("alliancepk"));
+        corporationusecases.delete_all_containing_Alliance(alliancePK);
+        setReturnstatus("OK");
+    }
 
 }
 

@@ -1,9 +1,6 @@
 /*
- * JSONFrontendpage.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.1.2022 20:54
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONFrontendpage {
@@ -41,10 +37,6 @@ public class JSONFrontendpage {
         return jsonfrontendpages;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IFrontendpagePK frontendpagePK) {
         JSONObject json = null;
         if(frontendpagePK!=null) {
@@ -54,10 +46,6 @@ public class JSONFrontendpage {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IFrontendpage frontendpage) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(frontendpage.getPrimaryKey()));
@@ -66,10 +54,6 @@ public class JSONFrontendpage {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Frontendpagesearch frontendpagesearch) {
         JSONObject json = new JSONObject();
         if(frontendpagesearch.used()) {
@@ -111,11 +95,6 @@ public class JSONFrontendpage {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Frontendpagesearch toFrontendpagesearch(JSONObject json) {
         Frontendpagesearch frontendpagesearch = new Frontendpagesearch();
         frontendpagesearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

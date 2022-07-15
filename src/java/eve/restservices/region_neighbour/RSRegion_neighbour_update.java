@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.region_neighbour;
@@ -18,10 +18,9 @@ import eve.interfaces.servlet.IRegion_neighbourOperation;
 import eve.logicentity.Region_neighbour;
 import eve.searchentity.Region_neighboursearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,13 +47,15 @@ import org.json.simple.parser.ParseException;
 @Path("rsregion_neighbour_update")
 public class RSRegion_neighbour_update extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Region_neighbour_usecases region_neighbourusecases = new Region_neighbour_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
@@ -80,7 +81,7 @@ public class RSRegion_neighbour_update extends RS_json_login {
 
     private void update_region_neighbour(Region_neighbour_usecases region_neighbourusecases, JSONObject json) throws ParseException, CustomException {
         IRegion_neighbour region_neighbour = (IRegion_neighbour)JSONRegion_neighbour.toRegion_neighbour((JSONObject)json.get("region_neighbour"));
-        region_neighbourusecases.secureupdateRegion_neighbour(region_neighbour);
+        region_neighbourusecases.updateRegion_neighbour(region_neighbour);
         setReturnstatus("OK");
     }
 }

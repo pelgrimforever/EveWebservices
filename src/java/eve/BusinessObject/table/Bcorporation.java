@@ -1,216 +1,142 @@
 /*
- * Bcorporation.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 11.4.2022 9:13
- *
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-import db.SQLMapperFactory;
-import db.SQLparameters;
-import data.gis.shape.*;
-import data.json.piJson;
-import data.json.psqlJsonobject;
-import db.SQLMapper_pgsql;
-import data.interfaces.db.Filedata;
-import eve.BusinessObject.Logic.*;
-import eve.conversion.json.JSONCorporation;
+import db.*;
+import data.interfaces.db.*;
 import eve.conversion.entity.EMcorporation;
+import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.ICorporationsearch;
 import eve.logicentity.Corporation;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import org.postgresql.geometric.PGpoint;
-import org.postgis.PGgeometry;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
- * Business Entity class Bcorporation
- *
- * Superclass for manipulating data- and database objects
- * for Entity Corporation and direct related data
- * This class is overwritten each time the code generator runs
- * and is not meant to be changed
- *
  * @author Franky Laseure
  */
-public abstract class Bcorporation extends BLtable {
+public abstract class Bcorporation extends TableBusinessrules {
 
-    /**
-     * Constructor, sets Corporation as default Entity
-     */
-    public Bcorporation() {
-        super(new Corporation(), new EMcorporation());
+    public Bcorporation(SQLreader sqlreader) {
+        super(new TableIO(sqlreader, new EMcorporation()));
     }
 
-    /**
-     * Constructor, sets Corporation as default Entity
-     * sets transaction queue from given GeneralEntityObject implementation
-     * all transactions will commit at same time
-     * @param transactionobject: GeneralEntityObjects that holds the transaction queue
-     */
-    public Bcorporation(BLtable transactionobject) {
-        super(transactionobject, new Corporation(), new EMcorporation());
+    public Bcorporation(TableBusinessrules businessrules) {
+        super(new TableIO(businessrules.getTableio(), new EMcorporation()));
+        this.tableio.setAuthenticated(tableio!=null && tableio.isAuthenticated());
     }
 
-    /**
-     * create new empty Corporation object
-     * @return empty ICorporation
-     */
     public ICorporation newCorporation() {
     	return new Corporation();
     }
     
-    /**
-     * create new empty Corporation object
-     * create new primary key with given parameters
-     * @param id primary key field
-     * @return ICorporation with primary key
-     */
     public ICorporation newCorporation(long id) {
         return new Corporation(id);
     }
 
-    /**
-     * create new empty Corporation object with given primary key
-     * @param corporationPK: primary key for Corporation
-     * @return ICorporation with primary key
-     */
     public ICorporation newCorporation(ICorporationPK corporationPK) {
         return new Corporation((CorporationPK)corporationPK);
     }
 
-    /**
-     * create new empty primary key
-     * @return empty CorporationPK
-     */
     public ICorporationPK newCorporationPK() {
         return new CorporationPK();
     }
 
-    /**
-     * create new primary key with given parameters
-     * @param id primary key field
-     * @return new ICorporationPK
-     */
     public ICorporationPK newCorporationPK(long id) {
         return new CorporationPK(id);
     }
 
-    /**
-     * get all Corporation objects from database
-     * @return ArrayList of Corporation objects
-     * @throws DBException
-     */
     public ArrayList<Corporation> getCorporations() throws DBException {
-        return (ArrayList<Corporation>)super.getEntities(EMcorporation.SQLSelectAll);
+        return (ArrayList<Corporation>)tableio.getEntities(EMcorporation.SQLSelectAll);
     }
 
-    /**
-     * search Corporation for primary key
-     * @param corporationPK: Corporation primary key
-     * @return Corporation object
-     * @throws DBException
-     */
     public Corporation getCorporation(ICorporationPK corporationPK) throws DBException {
-        return (Corporation)super.getEntity((CorporationPK)corporationPK);
+        return (Corporation)tableio.getEntity((CorporationPK)corporationPK);
     }
 
-    /**
-     * search corporation with ICorporationsearch parameters
-     * @param search ICorporationsearch
-     * @return ArrayList of Corporation
-     * @throws DBException 
-     */
     public ArrayList<Corporation> searchcorporations(ICorporationsearch search) throws DBException {
-        return (ArrayList<Corporation>)this.search(search);
+        return (ArrayList<Corporation>)tableio.search(search);
     }
 
-    /**
-     * search corporation with ICorporationsearch parameters, order by orderby sql clause
-     * @param search ICorporationsearch
-     * @param orderby sql order by string
-     * @return ArrayList of Corporation
-     * @throws DBException 
-     */
     public ArrayList<Corporation> searchcorporations(ICorporationsearch search, String orderby) throws DBException {
-        return (ArrayList<Corporation>)this.search(search, orderby);
+        return (ArrayList<Corporation>)tableio.search(search, orderby);
     }
 
-    /**
-     * Search corporation in database for corporationPK:
-     * @param corporationPK: Corporation Primary Key, only valid for the initialized Entity
-     * @return true if found in database
-     * @throws DBException
-     */
     public boolean getCorporationExists(ICorporationPK corporationPK) throws DBException {
-        return super.getEntityExists((CorporationPK)corporationPK);
+        return tableio.getEntityExists((CorporationPK)corporationPK);
     }
 
-    /**
-     * try to insert Corporation in database
-     * @param corporation Corporation object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertCorporation(ICorporation corporation) throws DBException, DataException {
-        super.insertEntity(corporation);
+    public Corporation getEntity(String sql) throws DBException {
+        return (Corporation)tableio.getEntity(sql);
+    }
+    
+    public Corporation getEntity(String sql, SQLparameters parameters) throws DBException {
+        return (Corporation)tableio.getEntity(sql, parameters);
+    }
+    
+    public ArrayList<Corporation> getEntities(String sql) throws DBException {
+        return tableio.getEntities(sql);
+    }
+    
+    public ArrayList<Corporation> getEntities(String sql, SQLparameters parameters) throws DBException {
+        return tableio.getEntities(sql, parameters);
     }
 
-    /**
-     * check if CorporationPK exists
-     * insert if not, update if found
-     * do not commit transaction
-     * @param corporation Corporation object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertupdateCorporation(ICorporation corporation) throws DBException, DataException {
+    public long count() throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+    
+    public long count(String sql, SQLparameters parameters) throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+
+    public ArrayList<Corporation> search(Tablesearcher search) throws DBException {
+        return tableio.search(search);
+    }
+
+    public ArrayList<Corporation> search(Tablesearcher search, String orderby) throws DBException {
+        return tableio.search(search, orderby);
+    }
+
+    public long searchcount(Tablesearcher search) throws DBException {
+        return tableio.searchcount(search);
+    }
+
+    public void insertCorporation(SQLTqueue transactionqueue, ICorporation corporation) throws DBException, DataException {
+        tableio.insertEntity(transactionqueue, corporation);
+    }
+
+    public void insertupdateCorporation(SQLTqueue transactionqueue, ICorporation corporation) throws DBException, DataException {
+    	checkDATA(corporation);
         if(this.getCorporationExists(corporation.getPrimaryKey())) {
-            super.updateEntity(corporation);
+            tableio.updateEntity(transactionqueue, corporation);
         } else {
-            super.insertEntity(corporation);
+            tableio.insertEntity(transactionqueue, corporation);
         }
     }
 
-    /**
-     * try to update Corporation in database
-     * @param corporation Corporation object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void updateCorporation(ICorporation corporation) throws DBException, DataException {
-        super.updateEntity(corporation);
+    public void updateCorporation(SQLTqueue transactionqueue, ICorporation corporation) throws DBException, DataException {
+    	checkDATA(corporation);
+        tableio.updateEntity(transactionqueue, corporation);
     }
 
-    /**
-     * try to delete Corporation in database
-     * @param corporation Corporation object
-     * @throws DBException
-     */
-    public void deleteCorporation(ICorporation corporation) throws DBException {
-        cascadedeleteCorporation(corporation.getPrimaryKey());
-        super.deleteEntity(corporation);
+    public void deleteCorporation(SQLTqueue transactionqueue, ICorporation corporation) throws DBException {
+        cascadedeleteCorporation(transactionqueue, corporation.getPrimaryKey());
+        tableio.deleteEntity(transactionqueue, corporation);
     }
 
-    /**
-     * check data rules in Corporation, throw DataException with customized message if rules do not apply
-     * @param corporation Corporation object
-     * @throws DataException
-     * @throws DBException
-     */
-    public void checkDATA(ICorporation corporation) throws DataException, DBException {
+    private void checkDATA(ICorporation corporation) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
         if(corporation.getName()!=null && corporation.getName().length()>ICorporation.SIZE_NAME) {
@@ -240,67 +166,31 @@ public abstract class Bcorporation extends BLtable {
      * delete all records in tables where corporationPK is used in a primary key
      * @param corporationPK: Corporation primary key
      */
-    public void cascadedeleteCorporation(ICorporationPK corporationPK) {
+    public void cascadedeleteCorporation(SQLTqueue transactionqueue, ICorporationPK corporationPK) {
     }
 
-    /**
-     * @param stationPK: foreign key for Station
-     * @delete all Corporation Entity objects for Station in database
-     */
-    public void delete4station(IStationPK stationPK) {
-        super.addStatement(EMcorporation.SQLDelete4station, stationPK.getSQLprimarykey());
+    public void delete4station(SQLTqueue transactionqueue, IStationPK stationPK) {
+        tableio.addStatement(transactionqueue, EMcorporation.SQLDelete4station, stationPK.getSQLprimarykey());
     }
 
-    /**
-     * @param stationPK: foreign key for Station
-     * @return all Corporation Entity objects for Station
-     * @throws CustomException
-     */
     public ArrayList<Corporation> getCorporations4station(IStationPK stationPK) throws CustomException {
-        return super.getEntities(EMcorporation.SQLSelect4station, stationPK.getSQLprimarykey());
+        return tableio.getEntities(EMcorporation.SQLSelect4station, stationPK.getSQLprimarykey());
     }
-    /**
-     * @param factionPK: foreign key for Faction
-     * @delete all Corporation Entity objects for Faction in database
-     */
-    public void delete4faction(IFactionPK factionPK) {
-        super.addStatement(EMcorporation.SQLDelete4faction, factionPK.getSQLprimarykey());
+    public void delete4faction(SQLTqueue transactionqueue, IFactionPK factionPK) {
+        tableio.addStatement(transactionqueue, EMcorporation.SQLDelete4faction, factionPK.getSQLprimarykey());
     }
 
-    /**
-     * @param factionPK: foreign key for Faction
-     * @return all Corporation Entity objects for Faction
-     * @throws CustomException
-     */
     public ArrayList<Corporation> getCorporations4faction(IFactionPK factionPK) throws CustomException {
-        return super.getEntities(EMcorporation.SQLSelect4faction, factionPK.getSQLprimarykey());
+        return tableio.getEntities(EMcorporation.SQLSelect4faction, factionPK.getSQLprimarykey());
     }
-    /**
-     * @param alliancePK: foreign key for Alliance
-     * @delete all Corporation Entity objects for Alliance in database
-     */
-    public void delete4alliance(IAlliancePK alliancePK) {
-        super.addStatement(EMcorporation.SQLDelete4alliance, alliancePK.getSQLprimarykey());
+    public void delete4alliance(SQLTqueue transactionqueue, IAlliancePK alliancePK) {
+        tableio.addStatement(transactionqueue, EMcorporation.SQLDelete4alliance, alliancePK.getSQLprimarykey());
     }
 
-    /**
-     * @param alliancePK: foreign key for Alliance
-     * @return all Corporation Entity objects for Alliance
-     * @throws CustomException
-     */
     public ArrayList<Corporation> getCorporations4alliance(IAlliancePK alliancePK) throws CustomException {
-        return super.getEntities(EMcorporation.SQLSelect4alliance, alliancePK.getSQLprimarykey());
+        return tableio.getEntities(EMcorporation.SQLSelect4alliance, alliancePK.getSQLprimarykey());
     }
 
-    /**
-     * get all Corporation objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @param sortlist sql sort string
-     * @param sortoperator asc/desc
-     * @return ArrayList of Corporation objects
-     * @throws DBException
-     */
     public ArrayList<Corporation> getCorporations(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
         StringBuilder sql = new StringBuilder(EMcorporation.SQLSelect);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
@@ -315,16 +205,10 @@ public abstract class Bcorporation extends BLtable {
         if(sortlist.length()>0) {
             sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return (ArrayList<Corporation>)super.getEntities(sql.toString(), sqlparameters);
+        return (ArrayList<Corporation>)tableio.getEntities(sql.toString(), sqlparameters);
     }
 
-    /**
-     * delete all Corporation objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @throws DBException
-     */
-    public void delCorporation(SQLparameters sqlparameters, String andoroperator) throws DBException {
+    public void delCorporation(SQLTqueue transactionqueue, SQLparameters sqlparameters, String andoroperator) throws DBException {
         StringBuilder sql = new StringBuilder("delete from ").append(Corporation.table);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
         int l = parameters.size();
@@ -335,7 +219,7 @@ public abstract class Bcorporation extends BLtable {
                 if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(sql.toString(), sqlparameters);
+        tableio.addStatement(transactionqueue, sql.toString(), sqlparameters);
     }
 
 

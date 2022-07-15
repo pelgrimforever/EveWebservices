@@ -2,23 +2,25 @@
  * WSBpmaterial.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 13.6.2022 18:20
  *
  */
 
 package eve.webservices;
 
+import base.restservices.RS_json_login;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.IBpmaterialsearch;
 import eve.interfaces.webservice.WSIBpmaterial;
 import eve.logicentity.Bpmaterial;
 import eve.searchentity.Bpmaterialsearch;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import general.exception.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.jws.WebMethod;
@@ -27,14 +29,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import eve.usecases.custom.Security_usecases;
 
 /**
  *
  * @author Franky Laseure
  */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSIBpmaterial")
-public class WSBpmaterial implements WSIBpmaterial {
+public class WSBpmaterial extends RS_json_login implements WSIBpmaterial {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     private JSONArray toJSONArray(ArrayList bpmaterials) {
         JSONArray jsonbpmaterials = new JSONArray();
         Iterator bpmaterialsI = bpmaterials.iterator();
@@ -44,189 +49,206 @@ public class WSBpmaterial implements WSIBpmaterial {
         return jsonbpmaterials;
     }
 
-    /**
-     * Web service operation
-     */
     //@WebMethod(operationName = "getBpmaterials")
     @Override
     public String getBpmaterials() {
         try {
-            BLbpmaterial blbpmaterial = new BLbpmaterial();
-            ArrayList bpmaterials = blbpmaterial.getAll();
-            JSONArray jsonbpmaterials = toJSONArray(bpmaterials);
-            return jsonbpmaterials.toJSONString();
+            Bpmaterial_usecases bpmaterialusecases = new Bpmaterial_usecases(loggedin);
+            return get_all_bpmaterial(bpmaterialusecases);
         }
-        catch(DBException e) {
+        catch(CustomException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "search")
     @Override
-    public String search(String json) {
-        BLbpmaterial blbpmaterial = new BLbpmaterial();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Bpmaterial bpmaterial;
+    public String search(String jsonstring) {
         try {
-            Bpmaterialsearch bpmaterialsearch = JSONBpmaterial.toBpmaterialsearch((JSONObject)parser.parse(json));
-            ArrayList bpmaterials = blbpmaterial.search(bpmaterialsearch);
-            JSONArray jsonbpmaterials = toJSONArray(bpmaterials);
-            result = jsonbpmaterials.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Bpmaterial_usecases bpmaterialusecases = new Bpmaterial_usecases(loggedin);
+            return search_bpmaterial(bpmaterialusecases, json);
         }
-        catch(ParseException e) {
-            result = "";
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-            result = "";
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "getBpmaterial")
     @Override
-    public String getBpmaterial(String json) {
-        BLbpmaterial blbpmaterial = new BLbpmaterial();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Bpmaterial bpmaterial;
+    public String getBpmaterial(String jsonstring) {
         try {
-            BpmaterialPK bpmaterialPK = JSONBpmaterial.toBpmaterialPK((JSONObject)parser.parse(json));
-            bpmaterial = blbpmaterial.getBpmaterial(bpmaterialPK);
-            if(bpmaterial!=null) {
-                result = JSONBpmaterial.toJSON(bpmaterial).toJSONString();
-            }
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Bpmaterial_usecases bpmaterialusecases = new Bpmaterial_usecases(loggedin);
+            return get_bpmaterial_with_primarykey(bpmaterialusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "insertBpmaterial")
     @Override
-    public void insertBpmaterial(String json) {
-        BLbpmaterial blbpmaterial = new BLbpmaterial();
-        JSONParser parser = new JSONParser();
+    public void insertBpmaterial(String jsonstring) {
         try {
-            IBpmaterial bpmaterial = JSONBpmaterial.toBpmaterial((JSONObject)parser.parse(json));
-            blbpmaterial.insertBpmaterial(bpmaterial);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Bpmaterial_usecases bpmaterialusecases = new Bpmaterial_usecases(loggedin);
+            insert_bpmaterial(bpmaterialusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "updateBpmaterial")
     @Override
-    public void updateBpmaterial(String json) {
-        BLbpmaterial blbpmaterial = new BLbpmaterial();
-        JSONParser parser = new JSONParser();
+    public void updateBpmaterial(String jsonstring) {
         try {
-            IBpmaterial bpmaterial = JSONBpmaterial.toBpmaterial((JSONObject)parser.parse(json));
-            blbpmaterial.updateBpmaterial(bpmaterial);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Bpmaterial_usecases bpmaterialusecases = new Bpmaterial_usecases(loggedin);
+            update_bpmaterial(bpmaterialusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "deleteBpmaterial")
     @Override
-    public void deleteBpmaterial(String json) {
-        BLbpmaterial blbpmaterial = new BLbpmaterial();
-        JSONParser parser = new JSONParser();
+    public void deleteBpmaterial(String jsonstring) {
         try {
-            IBpmaterial bpmaterial = JSONBpmaterial.toBpmaterial((JSONObject)parser.parse(json));
-            blbpmaterial.deleteBpmaterial(bpmaterial);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Bpmaterial_usecases bpmaterialusecases = new Bpmaterial_usecases(loggedin);
+            delete_bpmaterial(bpmaterialusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getBpmaterials4evetypeBp")
     @Override
-    public String getBpmaterials4evetypeBp(String json) {
-        BLbpmaterial blbpmaterial = new BLbpmaterial();
-        JSONParser parser = new JSONParser();
-        Bpmaterial bpmaterial;
+    public String getBpmaterials4evetypeBp(String jsonstring) {
         try {
-            IEvetypePK evetypeBpPK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            ArrayList bpmaterials = blbpmaterial.getBpmaterials4evetypeBp(evetypeBpPK);
-            JSONArray jsonbpmaterials = toJSONArray(bpmaterials);
-            return jsonbpmaterials.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Bpmaterial_usecases bpmaterialusecases = new Bpmaterial_usecases(loggedin);
+            return get_bpmaterial_with_foreignkey_evetypeBp(bpmaterialusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4evetypeBp")
     @Override
-    public void delete4evetypeBp(String json) {
-        BLbpmaterial blbpmaterial = new BLbpmaterial();
-        JSONParser parser = new JSONParser();
-        Bpmaterial bpmaterial;
+    public void delete4evetypeBp(String jsonstring) {
         try {
-            IEvetypePK evetypeBpPK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            blbpmaterial.delete4evetypeBp(evetypeBpPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Bpmaterial_usecases bpmaterialusecases = new Bpmaterial_usecases(loggedin);
+            delete_bpmaterial(bpmaterialusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getBpmaterials4evetypeMaterial")
     @Override
-    public String getBpmaterials4evetypeMaterial(String json) {
-        BLbpmaterial blbpmaterial = new BLbpmaterial();
-        JSONParser parser = new JSONParser();
-        Bpmaterial bpmaterial;
+    public String getBpmaterials4evetypeMaterial(String jsonstring) {
         try {
-            IEvetypePK evetypeMaterialPK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            ArrayList bpmaterials = blbpmaterial.getBpmaterials4evetypeMaterial(evetypeMaterialPK);
-            JSONArray jsonbpmaterials = toJSONArray(bpmaterials);
-            return jsonbpmaterials.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Bpmaterial_usecases bpmaterialusecases = new Bpmaterial_usecases(loggedin);
+            return get_bpmaterial_with_foreignkey_evetypeMaterial(bpmaterialusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4evetypeMaterial")
     @Override
-    public void delete4evetypeMaterial(String json) {
-        BLbpmaterial blbpmaterial = new BLbpmaterial();
-        JSONParser parser = new JSONParser();
-        Bpmaterial bpmaterial;
+    public void delete4evetypeMaterial(String jsonstring) {
         try {
-            IEvetypePK evetypeMaterialPK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            blbpmaterial.delete4evetypeMaterial(evetypeMaterialPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Bpmaterial_usecases bpmaterialusecases = new Bpmaterial_usecases(loggedin);
+            delete_bpmaterial(bpmaterialusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
+
+    private String count_records(Bpmaterial_usecases bpmaterialusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", bpmaterialusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_bpmaterial(Bpmaterial_usecases bpmaterialusecases) throws ParseException, CustomException {
+    	return JSONBpmaterial.toJSONArray(bpmaterialusecases.get_all()).toJSONString();
+    }
+    
+    private String get_bpmaterial_with_primarykey(Bpmaterial_usecases bpmaterialusecases, JSONObject json) throws ParseException, CustomException {
+        IBpmaterialPK bpmaterialPK = (IBpmaterialPK)JSONBpmaterial.toBpmaterialPK((JSONObject)json.get("bpmaterialpk"));
+	return JSONBpmaterial.toJSON(bpmaterialusecases.get_bpmaterial_by_primarykey(bpmaterialPK)).toJSONString();
+    }
+    
+    private String get_bpmaterial_with_foreignkey_evetypeBp(Bpmaterial_usecases bpmaterialusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypeBpPK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        return JSONBpmaterial.toJSONArray(bpmaterialusecases.get_bpmaterial_with_foreignkey_evetypeBp(evetypeBpPK)).toJSONString();
+    }
+    
+    private String get_bpmaterial_with_foreignkey_evetypeMaterial(Bpmaterial_usecases bpmaterialusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypeMaterialPK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        return JSONBpmaterial.toJSONArray(bpmaterialusecases.get_bpmaterial_with_foreignkey_evetypeMaterial(evetypeMaterialPK)).toJSONString();
+    }
+    
+    private String search_bpmaterial(Bpmaterial_usecases bpmaterialusecases, JSONObject json) throws ParseException, CustomException {
+        IBpmaterialsearch search = (IBpmaterialsearch)JSONBpmaterial.toBpmaterialsearch((JSONObject)json.get("search"));
+        return JSONBpmaterial.toJSONArray(bpmaterialusecases.search_bpmaterial(search)).toJSONString();
+    }
+    
+    private String search_bpmaterial_count(Bpmaterial_usecases bpmaterialusecases, JSONObject json) throws ParseException, CustomException {
+        IBpmaterialsearch bpmaterialsearch = (IBpmaterialsearch)JSONBpmaterial.toBpmaterialsearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", bpmaterialusecases.search_bpmaterial_count(bpmaterialsearch));
+        return jsonsearchcount.toJSONString();
+    }
+
+    private void insert_bpmaterial(Bpmaterial_usecases bpmaterialusecases, JSONObject json) throws ParseException, CustomException {
+        IBpmaterial bpmaterial = (IBpmaterial)JSONBpmaterial.toBpmaterial((JSONObject)json.get("bpmaterial"));
+        bpmaterialusecases.insertBpmaterial(bpmaterial);
+        setReturnstatus("OK");
+    }
+
+    private void update_bpmaterial(Bpmaterial_usecases bpmaterialusecases, JSONObject json) throws ParseException, CustomException {
+        IBpmaterial bpmaterial = (IBpmaterial)JSONBpmaterial.toBpmaterial((JSONObject)json.get("bpmaterial"));
+        bpmaterialusecases.updateBpmaterial(bpmaterial);
+        setReturnstatus("OK");
+    }
+
+    private void delete_bpmaterial(Bpmaterial_usecases bpmaterialusecases, JSONObject json) throws ParseException, CustomException {
+        IBpmaterial bpmaterial = (IBpmaterial)JSONBpmaterial.toBpmaterial((JSONObject)json.get("bpmaterial"));
+        bpmaterialusecases.deleteBpmaterial(bpmaterial);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Evetypebp(Bpmaterial_usecases bpmaterialusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypeBpPK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        bpmaterialusecases.delete_all_containing_Evetypebp(evetypeBpPK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Evetypematerial(Bpmaterial_usecases bpmaterialusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypeMaterialPK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        bpmaterialusecases.delete_all_containing_Evetypematerial(evetypeMaterialPK);
+        setReturnstatus("OK");
+    }
 
 }
 

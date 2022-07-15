@@ -1,9 +1,6 @@
 /*
- * JSONSystemactivity.java
- *
  * Created on March 26, 2007, 5:44 PM
  * Generated on 5.3.2022 17:21
- *
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONSystemactivity {
@@ -41,10 +37,6 @@ public class JSONSystemactivity {
         return jsonsystemactivitys;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ISystemactivityPK systemactivityPK) {
         JSONObject json = null;
         if(systemactivityPK!=null) {
@@ -57,10 +49,6 @@ public class JSONSystemactivity {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ISystemactivity systemactivity) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(systemactivity.getPrimaryKey()));
@@ -73,10 +61,6 @@ public class JSONSystemactivity {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Systemactivitysearch systemactivitysearch) {
         JSONObject json = new JSONObject();
         if(systemactivitysearch.used()) {
@@ -115,11 +99,6 @@ public class JSONSystemactivity {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Systemactivitysearch toSystemactivitysearch(JSONObject json) {
         Systemactivitysearch systemactivitysearch = new Systemactivitysearch();
         systemactivitysearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

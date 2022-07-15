@@ -1,9 +1,6 @@
 /*
- * JSONSyssettings.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONSyssettings {
@@ -41,10 +37,6 @@ public class JSONSyssettings {
         return jsonsyssettingss;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ISyssettingsPK syssettingsPK) {
         JSONObject json = null;
         if(syssettingsPK!=null) {
@@ -54,10 +46,6 @@ public class JSONSyssettings {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ISyssettings syssettings) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(syssettings.getPrimaryKey()));
@@ -67,10 +55,6 @@ public class JSONSyssettings {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Syssettingssearch syssettingssearch) {
         JSONObject json = new JSONObject();
         if(syssettingssearch.used()) {
@@ -106,11 +90,6 @@ public class JSONSyssettings {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Syssettingssearch toSyssettingssearch(JSONObject json) {
         Syssettingssearch syssettingssearch = new Syssettingssearch();
         syssettingssearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

@@ -1,8 +1,11 @@
 package eve.BusinessObject.service;
 
+import db.SQLTwriter;
 import data.conversion.JSONConversion;
 import db.SQLMapper;
-import db.TransactionOutput;
+import db.SQLToutput;
+import db.SQLTqueue;
+import db.SQLreader;
 import eve.BusinessObject.Logic.BLevetype;
 import eve.BusinessObject.Logic.BLgraphic;
 import eve.BusinessObject.Logic.BLmarket_group;
@@ -40,7 +43,9 @@ public class MarketRegionDownloader implements Runnable {
     private boolean keeprunning = true;
     private int id = 0;
     
-    public MarketRegionDownloader(Marketdata data, MarketStatus marketstatus, int id) {
+    public MarketRegionDownloader(SQLreader sqlreader, SQLTwriter sqlwriter, Marketdata data, MarketStatus marketstatus, int id) {
+        this.sqlreader = sqlreader;
+        this.sqlwriter = sqlwriter;
         this.data = data;
         this.marketstatus = marketstatus;
         this.id = id;
@@ -50,6 +55,9 @@ public class MarketRegionDownloader implements Runnable {
         this.keeprunning = false;
     }
 
+    private SQLTqueue transactionqueue;
+    private SQLreader sqlreader;
+    private SQLTwriter sqlwriter;
     private BLregion blregion;
     private BLorders blorders;
     private BLmarket_group blmarketgroup;
@@ -59,7 +67,7 @@ public class MarketRegionDownloader implements Runnable {
 
     private int pagenr;
     private StringBuilder sqlb;
-    private TransactionOutput toutput;
+    private SQLToutput toutput;
     private JSONArray jsonorders;
     private  Iterator<JSONObject> jsonordersI;
     private int ordercounter;
@@ -75,6 +83,7 @@ public class MarketRegionDownloader implements Runnable {
     
     @Override
     public void run() {
+        transactionqueue = new SQLTqueue();
         initialize_businesslogic();
         initialize();
         try {
@@ -101,7 +110,7 @@ public class MarketRegionDownloader implements Runnable {
     private Region update_region_in_database(Region region) throws DBException, DataException {
         region.setOrderpages(pagenr);
         region.setOrdererrors(errorcounter);
-        blregion.updateRegion(region);
+        blregion.updateRegion(transactionqueue, region);
         region = data.getNextregion();
         return region;
     }
@@ -121,7 +130,7 @@ public class MarketRegionDownloader implements Runnable {
     }
 
     private void save_orders_buffer(Region region) throws DBException, DataException {
-        toutput = blorders.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             handle_orders_commit_error();
         type_statements = new ArrayList<>();
@@ -145,7 +154,7 @@ public class MarketRegionDownloader implements Runnable {
 
     private void save_orders_buffer() throws DataException, DBException {
         ordercounter = 0;
-        toutput = blorders.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             handle_orders_commit_error();
         type_statements = new ArrayList<>();
@@ -154,7 +163,7 @@ public class MarketRegionDownloader implements Runnable {
     private void create_order_remember_used_evetype(JSONObject jsonorderdetails) {
         orderids.put(orderid, true);
         sqlstatement = composeSQLinsert(jsonorderdetails, pagenr);
-        blorders.addStatement(sqlstatement);
+        blorders.addStatement(transactionqueue, sqlstatement);
         type_statements.add(JSONConversion.getLong(jsonorderdetails, "type_id"));
         ordercounter++;
     }
@@ -192,17 +201,17 @@ public class MarketRegionDownloader implements Runnable {
     }
 
     private void initialize_businesslogic() {
-        blregion = new BLregion();
+        blregion = new BLregion(sqlreader);
         blregion.setAuthenticated(true);
-        blorders = new BLorders();
+        blorders = new BLorders(sqlreader);
         blorders.setAuthenticated(true);
-        blmarketgroup = new BLmarket_group();
+        blmarketgroup = new BLmarket_group(sqlreader);
         blmarketgroup.setAuthenticated(true);
-        bltypegroup = new BLtypegroup();
+        bltypegroup = new BLtypegroup(sqlreader);
         bltypegroup.setAuthenticated(true);
-        blgraphic = new BLgraphic();
+        blgraphic = new BLgraphic(sqlreader);
         blgraphic.setAuthenticated(true);
-        blevetype = new BLevetype();
+        blevetype = new BLevetype(sqlreader);
         blevetype.setAuthenticated(true);
     }
 
@@ -244,7 +253,7 @@ public class MarketRegionDownloader implements Runnable {
         private JSONObject jsonmarketgroup;
         private JSONObject jsongraphic;
         private JSONObject jsontypegroup;
-        private TransactionOutput toutputtest;
+        private SQLToutput toutputtest;
         private Market_groupPK marketgroupPK;
         private Market_group marketgroup;
         private GraphicPK graphicPK;
@@ -253,25 +262,25 @@ public class MarketRegionDownloader implements Runnable {
         private Typegroup typegroup;
         private HashMap<Long, Boolean> evetypehash;
         
-        private void process_statements(ArrayList<TransactionOutput.TransactionOutputLine> sqlstatements, ArrayList<Long> transactionoutputlines) throws DBException, DataException {
+        private void process_statements(ArrayList<SQLToutput.SQLToutputLine> sqlstatements, ArrayList<Long> transactionoutputlines) throws DBException, DataException {
             int l = sqlstatements.size();
             evetypehash = new HashMap<>();
             for(int s=0; s<l; s++)
                 save_evetype_if_not_in_database(transactionoutputlines.get(s), sqlstatements.get(s));
         }
 
-        private void save_evetype_if_not_in_database(long evetypeid, TransactionOutput.TransactionOutputLine transactionoutputline) throws DataException, DBException {
-            if(!blevetype.getEntityExists(new EvetypePK(evetypeid)))
+        private void save_evetype_if_not_in_database(long evetypeid, SQLToutput.SQLToutputLine transactionoutputline) throws DataException, DBException {
+            if(!blevetype.getEvetypeExists(new EvetypePK(evetypeid)))
                 save_evetype_if_not_previously_processed(evetypeid);
-            blorders.addStatement(transactionoutputline.getSql());
-            TransactionOutput toutput2 = blorders.Commit2DB();
+            blorders.addStatement(transactionqueue, transactionoutputline.getSql());
+            SQLToutput toutput2 = sqlwriter.Commit2DB(transactionqueue);
             if(toutput2.getHaserror())
                 handle_errormessage(toutput2);
         }
 
-        private void handle_errormessage(TransactionOutput toutput2) {
+        private void handle_errormessage(SQLToutput toutput2) {
             marketstatus.addMessage("MarketRegionDownloader correctTypeError " + toutput2.getErrormessage());
-            for(TransactionOutput.TransactionOutputLine line: toutput2.getSqllist())
+            for(SQLToutput.SQLToutputLine line: toutput2.getSqllist())
                 marketstatus.addMessage(line.getSql());
         }
 
@@ -291,20 +300,20 @@ public class MarketRegionDownloader implements Runnable {
         private void download_and_save_evetype(long evetypeid) throws DataException, DBException {
             evetypehash.put(evetypeid, true);
             JSONObject jsonevetypedetails = Swagger.getType(evetypeid);
-            evetype = blevetype.updateEvetype(jsonevetypedetails);
+            evetype = blevetype.updateEvetype(transactionqueue, jsonevetypedetails);
         }
 
         private void add_graphic_if_not_in_database() throws DataException, DBException {
             graphicPK = evetype.getGraphicPK();
             boolean evetype_has_graphic = graphicPK!=null;
-            if(evetype_has_graphic && !blgraphic.getEntityExists(graphicPK))
+            if(evetype_has_graphic && !blgraphic.getGraphicExists(graphicPK))
                 download_and_save_graphic();
         }
 
         private void download_and_save_graphic() throws DataException, DBException {
             jsongraphic = Swagger.getGraphic(graphicPK.getId());
-            graphic = blgraphic.updateGraphic(jsongraphic);
-            toutputtest = blgraphic.Commit2DB();
+            graphic = blgraphic.updateGraphic(transactionqueue, jsongraphic);
+            toutputtest = sqlwriter.Commit2DB(transactionqueue);
             if(toutputtest.getHaserror())
                 marketstatus.addMessage("Graphic " + graphicPK.getId() + " could not be added");
             else
@@ -314,14 +323,14 @@ public class MarketRegionDownloader implements Runnable {
         private void add_marketgroup_if_not_in_database() throws DBException, DataException {
             marketgroupPK = evetype.getMarket_groupPK();
             boolean evetype_has_marketgroup = marketgroupPK!=null;
-            if(evetype_has_marketgroup && !blmarketgroup.getEntityExists(marketgroupPK))
+            if(evetype_has_marketgroup && !blmarketgroup.getMarket_groupExists(marketgroupPK))
                 download_and_save_marketgroup();
         }
 
         private void download_and_save_marketgroup() throws DBException, DataException {
             jsonmarketgroup = Swagger.getMarketgroup(marketgroupPK.getId());
-            marketgroup = blmarketgroup.updateMarket_group(jsonmarketgroup);
-            toutputtest = blmarketgroup.Commit2DB();
+            marketgroup = blmarketgroup.updateMarket_group(transactionqueue, jsonmarketgroup);
+            toutputtest = sqlwriter.Commit2DB(transactionqueue);
             if(toutputtest.getHaserror())
                 marketstatus.addMessage("Marketgroup " + marketgroupPK.getId() + " could not be added");
             else
@@ -331,14 +340,14 @@ public class MarketRegionDownloader implements Runnable {
         private void add_typegroup_if_not_in_database() throws DBException, DataException {
             typegroupPK = evetype.getTypegroupPK();
             boolean evetype_has_typegroup = typegroupPK!=null;
-            if(evetype_has_typegroup && !bltypegroup.getEntityExists(typegroupPK))
+            if(evetype_has_typegroup && !bltypegroup.getTypegroupExists(typegroupPK))
                 download_and_save_typegroup();
         }
 
         private void download_and_save_typegroup() throws DataException, DBException {
             jsontypegroup = Swagger.getGroup(typegroupPK.getId());
-            typegroup = bltypegroup.updateTypegroup(jsontypegroup);
-            toutputtest = bltypegroup.Commit2DB();
+            typegroup = bltypegroup.updateTypegroup(transactionqueue, jsontypegroup);
+            toutputtest = sqlwriter.Commit2DB(transactionqueue);
             if(toutputtest.getHaserror())
                 marketstatus.addMessage("Typegroup " + typegroupPK.getId() + " could not be added");
             else
@@ -346,7 +355,7 @@ public class MarketRegionDownloader implements Runnable {
         }
 
         private void save_changes_to_database(long evetypeid) throws DBException {
-            toutputtest = blevetype.Commit2DB();
+            toutputtest = sqlwriter.Commit2DB(transactionqueue);
             if(toutputtest.getHaserror())
                 marketstatus.addMessage("Type " + evetypeid + " could not be added");
             else

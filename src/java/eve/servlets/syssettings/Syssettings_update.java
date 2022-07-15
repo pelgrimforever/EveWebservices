@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.syssettings;
@@ -61,7 +61,7 @@ public class Syssettings_update extends SecurityDataServlet {
 
     private void update_syssettings(Syssettings_usecases syssettingsusecases) throws CustomException {
         ISyssettings syssettings = (ISyssettings)parser.getJavaObject("syssettings");
-        syssettingsusecases.secureupdateSyssettings(syssettings);
+        syssettingsusecases.updateSyssettings(syssettings);
     }
     
     @Override

@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Constellation;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Constellation_usecases {
 
     private boolean loggedin = false;
-    private BLconstellation blconstellation = new BLconstellation();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLconstellation blconstellation = new BLconstellation(sqlreader);
     
     public Constellation_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Constellation_usecases {
     }
     
     public boolean getConstellationExists(IConstellationPK constellationPK) throws DBException {
-        return blconstellation.getEntityExists(constellationPK);
+        return blconstellation.getConstellationExists(constellationPK);
     }
     
     public Constellation get_constellation_by_primarykey(IConstellationPK constellationPK) throws DBException {
@@ -77,16 +83,29 @@ public class Constellation_usecases {
         return blconstellation.searchcount(constellationsearch);
     }
 
-    public void secureinsertConstellation(IConstellation constellation) throws DBException, DataException {
-        blconstellation.secureinsertConstellation(constellation);
+    public void insertConstellation(IConstellation constellation) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blconstellation.insertConstellation(tq, constellation);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateConstellation(IConstellation constellation) throws DBException, DataException {
-        blconstellation.secureupdateConstellation(constellation);
+    public void updateConstellation(IConstellation constellation) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blconstellation.updateConstellation(tq, constellation);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteConstellation(IConstellation constellation) throws DBException, DataException {
-        blconstellation.securedeleteConstellation(constellation);
+    public void deleteConstellation(IConstellation constellation) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blconstellation.deleteConstellation(tq, constellation);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Region(IRegionPK regionPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blconstellation.delete4region(tq, regionPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

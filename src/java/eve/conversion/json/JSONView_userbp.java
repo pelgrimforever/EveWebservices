@@ -1,9 +1,6 @@
 /*
- * JSONView_userbp.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 29.0.2022 18:3
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_userbp {
@@ -36,10 +32,6 @@ public class JSONView_userbp {
         return jsonview_userbps;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_userbp view_userbp) {
         JSONObject json = new JSONObject();
         json.put("blueprintname", view_userbp.getBlueprintname());
@@ -76,11 +68,6 @@ public class JSONView_userbp {
         return view_userbp;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_userbpsearch parameters
-     * @return 
-     */
     public static View_userbpsearch toView_userbpsearch(JSONObject json) {
         View_userbpsearch view_userbpsearch = new View_userbpsearch();
         view_userbpsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

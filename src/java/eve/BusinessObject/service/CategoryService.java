@@ -1,5 +1,8 @@
 package eve.BusinessObject.service;
 
+import db.SQLTwriter;
+import db.SQLTqueue;
+import db.SQLreader;
 import eve.BusinessObject.Logic.BLcategory;
 import eve.BusinessObject.Logic.BLevetype;
 import eve.BusinessObject.Logic.BLtypegroup;
@@ -7,7 +10,6 @@ import eve.data.Swagger;
 import eve.entity.pk.CategoryPK;
 import eve.entity.pk.EvetypePK;
 import eve.entity.pk.TypegroupPK;
-import general.exception.CustomException;
 import general.exception.DBException;
 import general.exception.DataException;
 import java.util.ArrayList;
@@ -42,14 +44,6 @@ public class CategoryService implements Runnable {
         private boolean done = false;
         
         public CategoryStatus() {
-            try {
-                totalcategories = (new BLcategory()).count();
-                totaltypegroups = (new BLtypegroup()).count();
-                totaltypes = (new BLevetype()).count();
-            }
-            catch(DBException e) {
-                
-            }
         }
         
         public void setDone() {
@@ -105,10 +99,14 @@ public class CategoryService implements Runnable {
         }
     }
     
-    public CategoryService() {
+    public CategoryService(SQLreader sqlreader, SQLTwriter sqlwriter) {
+        this.sqlreader = sqlreader;
         categorystatus = new CategoryStatus();
     }
     
+    private SQLreader sqlreader;
+    private SQLTwriter sqlwriter;
+    private SQLTqueue transactionqueue;
     private BLcategory blcategory;
     private BLtypegroup bltypegroup;
     private BLevetype blevetype;
@@ -132,9 +130,9 @@ public class CategoryService implements Runnable {
     @Override
     public void run() {
         categorystatus.addMessage("Download Categories/Type groups/Types");
-        initialize_businesslogic();
         long start = System.currentTimeMillis();
         try {
+            initialize_businesslogic();
             run = 0;
             jsoncategories = Swagger.getCategories();
             jsoncategoriesI = jsoncategories.iterator();
@@ -178,7 +176,7 @@ public class CategoryService implements Runnable {
         load_evetypes_for_typegroup();
         while(keeprunning && jsonevetypesI.hasNext())
             load_and_save_evetype_details_if_not_in_database();
-        blevetype.Commit2DB();
+        sqlwriter.Commit2DB(transactionqueue);
         evetyperun++;
         categorystatus.incTypegroups();
     }
@@ -193,14 +191,14 @@ public class CategoryService implements Runnable {
 
     private void load_and_save_evetype_details() throws DBException, DataException {
         jsonevetypedetails = Swagger.getType(evetypeid);
-        blevetype.updateEvetype(jsonevetypedetails);
+        blevetype.updateEvetype(transactionqueue, jsonevetypedetails);
         evetypecounter++;
         if(evetypecounter==100)
             save_evetype_buffer();
     }
 
     private void save_evetype_buffer() throws DBException {
-        blevetype.Commit2DB();
+        sqlwriter.Commit2DB(transactionqueue);
         evetypecounter = 0;
     }
 
@@ -220,8 +218,8 @@ public class CategoryService implements Runnable {
     }
 
     private void save_typegroup() throws DBException, DataException {
-        bltypegroup.updateTypegroup(jsontypegroupdetails);
-        bltypegroup.Commit2DB();
+        bltypegroup.updateTypegroup(transactionqueue, jsontypegroupdetails);
+        sqlwriter.Commit2DB(transactionqueue);
     }
 
     private void load_typegroups_for_category() {
@@ -239,12 +237,22 @@ public class CategoryService implements Runnable {
     }
 
     private void save_category() throws DBException, DataException {
-        blcategory.updateCategory(jsoncategorydetails);
-        blcategory.Commit2DB();
+        blcategory.updateCategory(transactionqueue, jsoncategorydetails);
+        sqlwriter.Commit2DB(transactionqueue);
     }
 
-    private void initialize_businesslogic() {
-        blcategory = new BLcategory();
+    private void initialize_businesslogic() throws DBException {
+        transactionqueue = new SQLTqueue();
+        BLcategory blcategory = new BLcategory(sqlreader);
+        blcategory.setAuthenticated(true);
+        categorystatus.totalcategories = blcategory.count();
+        BLtypegroup bltypegroup = new BLtypegroup(sqlreader);
+        bltypegroup.setAuthenticated(true);
+        categorystatus.totaltypegroups = bltypegroup.count();
+        BLevetype blevetype = new BLevetype(sqlreader);
+        blevetype.setAuthenticated(true);
+        categorystatus.totaltypes = blevetype.count();
+        blcategory = new BLcategory(sqlreader);
         blcategory.setAuthenticated(true);
         bltypegroup = new BLtypegroup(blcategory);
         bltypegroup.setAuthenticated(true);

@@ -1,9 +1,6 @@
 /*
- * JSONEveuser.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.1.2022 20:54
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONEveuser {
@@ -41,10 +37,6 @@ public class JSONEveuser {
         return jsoneveusers;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IEveuserPK eveuserPK) {
         JSONObject json = null;
         if(eveuserPK!=null) {
@@ -54,10 +46,6 @@ public class JSONEveuser {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IEveuser eveuser) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(eveuser.getPrimaryKey()));
@@ -70,10 +58,6 @@ public class JSONEveuser {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Eveusersearch eveusersearch) {
         JSONObject json = new JSONObject();
         if(eveusersearch.used()) {
@@ -115,11 +99,6 @@ public class JSONEveuser {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Eveusersearch toEveusersearch(JSONObject json) {
         Eveusersearch eveusersearch = new Eveusersearch();
         eveusersearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

@@ -1,218 +1,142 @@
 /*
- * Busersettings.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 11.4.2022 9:13
- *
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-import db.SQLMapperFactory;
-import db.SQLparameters;
-import data.gis.shape.*;
-import data.json.piJson;
-import data.json.psqlJsonobject;
-import db.SQLMapper_pgsql;
-import data.interfaces.db.Filedata;
-import eve.BusinessObject.Logic.*;
-import eve.conversion.json.JSONUsersettings;
+import db.*;
+import data.interfaces.db.*;
 import eve.conversion.entity.EMusersettings;
+import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IUsersettingssearch;
 import eve.logicentity.Usersettings;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import org.postgresql.geometric.PGpoint;
-import org.postgis.PGgeometry;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
- * Business Entity class Busersettings
- *
- * Superclass for manipulating data- and database objects
- * for Entity Usersettings and direct related data
- * This class is overwritten each time the code generator runs
- * and is not meant to be changed
- *
  * @author Franky Laseure
  */
-public abstract class Busersettings extends BLtable {
+public abstract class Busersettings extends TableBusinessrules {
 
-    /**
-     * Constructor, sets Usersettings as default Entity
-     */
-    public Busersettings() {
-        super(new Usersettings(), new EMusersettings());
+    public Busersettings(SQLreader sqlreader) {
+        super(new TableIO(sqlreader, new EMusersettings()));
     }
 
-    /**
-     * Constructor, sets Usersettings as default Entity
-     * sets transaction queue from given GeneralEntityObject implementation
-     * all transactions will commit at same time
-     * @param transactionobject: GeneralEntityObjects that holds the transaction queue
-     */
-    public Busersettings(BLtable transactionobject) {
-        super(transactionobject, new Usersettings(), new EMusersettings());
+    public Busersettings(TableBusinessrules businessrules) {
+        super(new TableIO(businessrules.getTableio(), new EMusersettings()));
+        this.tableio.setAuthenticated(tableio!=null && tableio.isAuthenticated());
     }
 
-    /**
-     * create new empty Usersettings object
-     * @return empty IUsersettings
-     */
     public IUsersettings newUsersettings() {
     	return new Usersettings();
     }
     
-    /**
-     * create new empty Usersettings object
-     * create new primary key with given parameters
-     * @param username primary key field
-     * @param name primary key field
-     * @return IUsersettings with primary key
-     */
     public IUsersettings newUsersettings(java.lang.String username, java.lang.String name) {
         return new Usersettings(username, name);
     }
 
-    /**
-     * create new empty Usersettings object with given primary key
-     * @param usersettingsPK: primary key for Usersettings
-     * @return IUsersettings with primary key
-     */
     public IUsersettings newUsersettings(IUsersettingsPK usersettingsPK) {
         return new Usersettings((UsersettingsPK)usersettingsPK);
     }
 
-    /**
-     * create new empty primary key
-     * @return empty UsersettingsPK
-     */
     public IUsersettingsPK newUsersettingsPK() {
         return new UsersettingsPK();
     }
 
-    /**
-     * create new primary key with given parameters
-     * @param username primary key field
-     * @param name primary key field
-     * @return new IUsersettingsPK
-     */
     public IUsersettingsPK newUsersettingsPK(java.lang.String username, java.lang.String name) {
         return new UsersettingsPK(username, name);
     }
 
-    /**
-     * get all Usersettings objects from database
-     * @return ArrayList of Usersettings objects
-     * @throws DBException
-     */
     public ArrayList<Usersettings> getUsersettingss() throws DBException {
-        return (ArrayList<Usersettings>)super.getEntities(EMusersettings.SQLSelectAll);
+        return (ArrayList<Usersettings>)tableio.getEntities(EMusersettings.SQLSelectAll);
     }
 
-    /**
-     * search Usersettings for primary key
-     * @param usersettingsPK: Usersettings primary key
-     * @return Usersettings object
-     * @throws DBException
-     */
     public Usersettings getUsersettings(IUsersettingsPK usersettingsPK) throws DBException {
-        return (Usersettings)super.getEntity((UsersettingsPK)usersettingsPK);
+        return (Usersettings)tableio.getEntity((UsersettingsPK)usersettingsPK);
     }
 
-    /**
-     * search usersettings with IUsersettingssearch parameters
-     * @param search IUsersettingssearch
-     * @return ArrayList of Usersettings
-     * @throws DBException 
-     */
     public ArrayList<Usersettings> searchusersettingss(IUsersettingssearch search) throws DBException {
-        return (ArrayList<Usersettings>)this.search(search);
+        return (ArrayList<Usersettings>)tableio.search(search);
     }
 
-    /**
-     * search usersettings with IUsersettingssearch parameters, order by orderby sql clause
-     * @param search IUsersettingssearch
-     * @param orderby sql order by string
-     * @return ArrayList of Usersettings
-     * @throws DBException 
-     */
     public ArrayList<Usersettings> searchusersettingss(IUsersettingssearch search, String orderby) throws DBException {
-        return (ArrayList<Usersettings>)this.search(search, orderby);
+        return (ArrayList<Usersettings>)tableio.search(search, orderby);
     }
 
-    /**
-     * Search usersettings in database for usersettingsPK:
-     * @param usersettingsPK: Usersettings Primary Key, only valid for the initialized Entity
-     * @return true if found in database
-     * @throws DBException
-     */
     public boolean getUsersettingsExists(IUsersettingsPK usersettingsPK) throws DBException {
-        return super.getEntityExists((UsersettingsPK)usersettingsPK);
+        return tableio.getEntityExists((UsersettingsPK)usersettingsPK);
     }
 
-    /**
-     * try to insert Usersettings in database
-     * @param usersettings Usersettings object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertUsersettings(IUsersettings usersettings) throws DBException, DataException {
-        super.insertEntity(usersettings);
+    public Usersettings getEntity(String sql) throws DBException {
+        return (Usersettings)tableio.getEntity(sql);
+    }
+    
+    public Usersettings getEntity(String sql, SQLparameters parameters) throws DBException {
+        return (Usersettings)tableio.getEntity(sql, parameters);
+    }
+    
+    public ArrayList<Usersettings> getEntities(String sql) throws DBException {
+        return tableio.getEntities(sql);
+    }
+    
+    public ArrayList<Usersettings> getEntities(String sql, SQLparameters parameters) throws DBException {
+        return tableio.getEntities(sql, parameters);
     }
 
-    /**
-     * check if UsersettingsPK exists
-     * insert if not, update if found
-     * do not commit transaction
-     * @param usersettings Usersettings object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertupdateUsersettings(IUsersettings usersettings) throws DBException, DataException {
+    public long count() throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+    
+    public long count(String sql, SQLparameters parameters) throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+
+    public ArrayList<Usersettings> search(Tablesearcher search) throws DBException {
+        return tableio.search(search);
+    }
+
+    public ArrayList<Usersettings> search(Tablesearcher search, String orderby) throws DBException {
+        return tableio.search(search, orderby);
+    }
+
+    public long searchcount(Tablesearcher search) throws DBException {
+        return tableio.searchcount(search);
+    }
+
+    public void insertUsersettings(SQLTqueue transactionqueue, IUsersettings usersettings) throws DBException, DataException {
+        tableio.insertEntity(transactionqueue, usersettings);
+    }
+
+    public void insertupdateUsersettings(SQLTqueue transactionqueue, IUsersettings usersettings) throws DBException, DataException {
+    	checkDATA(usersettings);
         if(this.getUsersettingsExists(usersettings.getPrimaryKey())) {
-            super.updateEntity(usersettings);
+            tableio.updateEntity(transactionqueue, usersettings);
         } else {
-            super.insertEntity(usersettings);
+            tableio.insertEntity(transactionqueue, usersettings);
         }
     }
 
-    /**
-     * try to update Usersettings in database
-     * @param usersettings Usersettings object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void updateUsersettings(IUsersettings usersettings) throws DBException, DataException {
-        super.updateEntity(usersettings);
+    public void updateUsersettings(SQLTqueue transactionqueue, IUsersettings usersettings) throws DBException, DataException {
+    	checkDATA(usersettings);
+        tableio.updateEntity(transactionqueue, usersettings);
     }
 
-    /**
-     * try to delete Usersettings in database
-     * @param usersettings Usersettings object
-     * @throws DBException
-     */
-    public void deleteUsersettings(IUsersettings usersettings) throws DBException {
-        cascadedeleteUsersettings(usersettings.getPrimaryKey());
-        super.deleteEntity(usersettings);
+    public void deleteUsersettings(SQLTqueue transactionqueue, IUsersettings usersettings) throws DBException {
+        cascadedeleteUsersettings(transactionqueue, usersettings.getPrimaryKey());
+        tableio.deleteEntity(transactionqueue, usersettings);
     }
 
-    /**
-     * check data rules in Usersettings, throw DataException with customized message if rules do not apply
-     * @param usersettings Usersettings object
-     * @throws DataException
-     * @throws DBException
-     */
-    public void checkDATA(IUsersettings usersettings) throws DataException, DBException {
+    private void checkDATA(IUsersettings usersettings) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //foreign key Usersettings.Name - Settings.Name
         //Primary key
@@ -228,35 +152,17 @@ public abstract class Busersettings extends BLtable {
      * delete all records in tables where usersettingsPK is used in a primary key
      * @param usersettingsPK: Usersettings primary key
      */
-    public void cascadedeleteUsersettings(IUsersettingsPK usersettingsPK) {
+    public void cascadedeleteUsersettings(SQLTqueue transactionqueue, IUsersettingsPK usersettingsPK) {
     }
 
-    /**
-     * @param settingsPK: foreign key for Settings
-     * @delete all Usersettings Entity objects for Settings in database
-     */
-    public void delete4settings(ISettingsPK settingsPK) {
-        super.addStatement(EMusersettings.SQLDelete4settings, settingsPK.getSQLprimarykey());
+    public void delete4settings(SQLTqueue transactionqueue, ISettingsPK settingsPK) {
+        tableio.addStatement(transactionqueue, EMusersettings.SQLDelete4settings, settingsPK.getSQLprimarykey());
     }
 
-    /**
-     * @param settingsPK: foreign key for Settings
-     * @return all Usersettings Entity objects for Settings
-     * @throws CustomException
-     */
     public ArrayList<Usersettings> getUsersettingss4settings(ISettingsPK settingsPK) throws CustomException {
-        return super.getEntities(EMusersettings.SQLSelect4settings, settingsPK.getSQLprimarykey());
+        return tableio.getEntities(EMusersettings.SQLSelect4settings, settingsPK.getSQLprimarykey());
     }
 
-    /**
-     * get all Usersettings objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @param sortlist sql sort string
-     * @param sortoperator asc/desc
-     * @return ArrayList of Usersettings objects
-     * @throws DBException
-     */
     public ArrayList<Usersettings> getUsersettingss(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
         StringBuilder sql = new StringBuilder(EMusersettings.SQLSelect);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
@@ -271,16 +177,10 @@ public abstract class Busersettings extends BLtable {
         if(sortlist.length()>0) {
             sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return (ArrayList<Usersettings>)super.getEntities(sql.toString(), sqlparameters);
+        return (ArrayList<Usersettings>)tableio.getEntities(sql.toString(), sqlparameters);
     }
 
-    /**
-     * delete all Usersettings objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @throws DBException
-     */
-    public void delUsersettings(SQLparameters sqlparameters, String andoroperator) throws DBException {
+    public void delUsersettings(SQLTqueue transactionqueue, SQLparameters sqlparameters, String andoroperator) throws DBException {
         StringBuilder sql = new StringBuilder("delete from ").append(Usersettings.table);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
         int l = parameters.size();
@@ -291,7 +191,7 @@ public abstract class Busersettings extends BLtable {
                 if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(sql.toString(), sqlparameters);
+        tableio.addStatement(transactionqueue, sql.toString(), sqlparameters);
     }
 
 

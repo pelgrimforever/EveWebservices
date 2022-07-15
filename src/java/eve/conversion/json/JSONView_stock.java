@@ -1,9 +1,6 @@
 /*
- * JSONView_stock.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_stock {
@@ -36,10 +32,6 @@ public class JSONView_stock {
         return jsonview_stocks;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_stock view_stock) {
         JSONObject json = new JSONObject();
         json.put("username", view_stock.getUsername());
@@ -60,11 +52,6 @@ public class JSONView_stock {
         return view_stock;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_stocksearch parameters
-     * @return 
-     */
     public static View_stocksearch toView_stocksearch(JSONObject json) {
         View_stocksearch view_stocksearch = new View_stocksearch();
         view_stocksearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

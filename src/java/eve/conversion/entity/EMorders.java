@@ -1,9 +1,6 @@
 /*
- * EMorders.java
- *
  * Created on Okt 8, 2021
  * Generated on 9.9.2021 15:35
- *
  */
 package eve.conversion.entity;
 
@@ -14,8 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * EMorders
- * Custom transformation from ResultSet to Logic Entity
  * @author Franky Laseure
  */
 public class EMorders extends EMorders_default {
@@ -81,12 +76,6 @@ public class EMorders extends EMorders_default {
         "order by o.evetype, o.system, o.volume_remain*o.price";
 */    
 
-    /**
-     * Map ResultSet Field values to Orders
-     * @param dbresult: Database ResultSet
-     * @return 
-     * @throws java.sql.SQLException
-     */
     @Override
     public LogicEntity mapResultSet2Entity(ResultSet dbresult) throws SQLException {
         Orders orders = (Orders)super.mapResultSet2Entity(dbresult);

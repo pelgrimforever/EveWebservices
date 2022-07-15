@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.bpmaterial;
@@ -18,10 +18,9 @@ import eve.interfaces.servlet.IBpmaterialOperation;
 import eve.logicentity.Bpmaterial;
 import eve.searchentity.Bpmaterialsearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,13 +47,15 @@ import org.json.simple.parser.ParseException;
 @Path("rsbpmaterial_update")
 public class RSBpmaterial_update extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Bpmaterial_usecases bpmaterialusecases = new Bpmaterial_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
@@ -80,7 +81,7 @@ public class RSBpmaterial_update extends RS_json_login {
 
     private void update_bpmaterial(Bpmaterial_usecases bpmaterialusecases, JSONObject json) throws ParseException, CustomException {
         IBpmaterial bpmaterial = (IBpmaterial)JSONBpmaterial.toBpmaterial((JSONObject)json.get("bpmaterial"));
-        bpmaterialusecases.secureupdateBpmaterial(bpmaterial);
+        bpmaterialusecases.updateBpmaterial(bpmaterial);
         setReturnstatus("OK");
     }
 }

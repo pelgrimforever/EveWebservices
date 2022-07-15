@@ -2,23 +2,25 @@
  * WSOrders.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 13.6.2022 18:20
  *
  */
 
 package eve.webservices;
 
+import base.restservices.RS_json_login;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.IOrderssearch;
 import eve.interfaces.webservice.WSIOrders;
 import eve.logicentity.Orders;
 import eve.searchentity.Orderssearch;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import general.exception.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.jws.WebMethod;
@@ -27,14 +29,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import eve.usecases.custom.Security_usecases;
 
 /**
  *
  * @author Franky Laseure
  */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSIOrders")
-public class WSOrders implements WSIOrders {
+public class WSOrders extends RS_json_login implements WSIOrders {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     private JSONArray toJSONArray(ArrayList orderss) {
         JSONArray jsonorderss = new JSONArray();
         Iterator orderssI = orderss.iterator();
@@ -44,319 +49,301 @@ public class WSOrders implements WSIOrders {
         return jsonorderss;
     }
 
-    /**
-     * Web service operation
-     */
     //@WebMethod(operationName = "getOrderss")
     @Override
     public String getOrderss() {
         try {
-            BLorders blorders = new BLorders();
-            ArrayList orderss = blorders.getAll();
-            JSONArray jsonorderss = toJSONArray(orderss);
-            return jsonorderss.toJSONString();
+            Orders_usecases ordersusecases = new Orders_usecases(loggedin);
+            return get_all_orders(ordersusecases);
         }
-        catch(DBException e) {
+        catch(CustomException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "search")
     @Override
-    public String search(String json) {
-        BLorders blorders = new BLorders();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Orders orders;
+    public String search(String jsonstring) {
         try {
-            Orderssearch orderssearch = JSONOrders.toOrderssearch((JSONObject)parser.parse(json));
-            ArrayList orderss = blorders.search(orderssearch);
-            JSONArray jsonorderss = toJSONArray(orderss);
-            result = jsonorderss.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Orders_usecases ordersusecases = new Orders_usecases(loggedin);
+            return search_orders(ordersusecases, json);
         }
-        catch(ParseException e) {
-            result = "";
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-            result = "";
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "getOrders")
     @Override
-    public String getOrders(String json) {
-        BLorders blorders = new BLorders();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Orders orders;
+    public String getOrders(String jsonstring) {
         try {
-            OrdersPK ordersPK = JSONOrders.toOrdersPK((JSONObject)parser.parse(json));
-            orders = blorders.getOrders(ordersPK);
-            if(orders!=null) {
-                result = JSONOrders.toJSON(orders).toJSONString();
-            }
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Orders_usecases ordersusecases = new Orders_usecases(loggedin);
+            return get_orders_with_primarykey(ordersusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "insertOrders")
     @Override
-    public void insertOrders(String json) {
-        BLorders blorders = new BLorders();
-        JSONParser parser = new JSONParser();
+    public void insertOrders(String jsonstring) {
         try {
-            IOrders orders = JSONOrders.toOrders((JSONObject)parser.parse(json));
-            blorders.insertOrders(orders);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Orders_usecases ordersusecases = new Orders_usecases(loggedin);
+            insert_orders(ordersusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "updateOrders")
     @Override
-    public void updateOrders(String json) {
-        BLorders blorders = new BLorders();
-        JSONParser parser = new JSONParser();
+    public void updateOrders(String jsonstring) {
         try {
-            IOrders orders = JSONOrders.toOrders((JSONObject)parser.parse(json));
-            blorders.updateOrders(orders);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Orders_usecases ordersusecases = new Orders_usecases(loggedin);
+            update_orders(ordersusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "deleteOrders")
     @Override
-    public void deleteOrders(String json) {
-        BLorders blorders = new BLorders();
-        JSONParser parser = new JSONParser();
+    public void deleteOrders(String jsonstring) {
         try {
-            IOrders orders = JSONOrders.toOrders((JSONObject)parser.parse(json));
-            blorders.deleteOrders(orders);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Orders_usecases ordersusecases = new Orders_usecases(loggedin);
+            delete_orders(ordersusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getOrderss4evetype")
     @Override
-    public String getOrderss4evetype(String json) {
-        BLorders blorders = new BLorders();
-        JSONParser parser = new JSONParser();
-        Orders orders;
+    public String getOrderss4evetype(String jsonstring) {
         try {
-            IEvetypePK evetypePK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            ArrayList orderss = blorders.getOrderss4evetype(evetypePK);
-            JSONArray jsonorderss = toJSONArray(orderss);
-            return jsonorderss.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Orders_usecases ordersusecases = new Orders_usecases(loggedin);
+            return get_orders_with_foreignkey_evetype(ordersusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4evetype")
     @Override
-    public void delete4evetype(String json) {
-        BLorders blorders = new BLorders();
-        JSONParser parser = new JSONParser();
-        Orders orders;
+    public void delete4evetype(String jsonstring) {
         try {
-            IEvetypePK evetypePK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            blorders.delete4evetype(evetypePK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Orders_usecases ordersusecases = new Orders_usecases(loggedin);
+            delete_orders(ordersusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getOrderss4system")
     @Override
-    public String getOrderss4system(String json) {
-        BLorders blorders = new BLorders();
-        JSONParser parser = new JSONParser();
-        Orders orders;
+    public String getOrderss4system(String jsonstring) {
         try {
-            ISystemPK systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            ArrayList orderss = blorders.getOrderss4system(systemPK);
-            JSONArray jsonorderss = toJSONArray(orderss);
-            return jsonorderss.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Orders_usecases ordersusecases = new Orders_usecases(loggedin);
+            return get_orders_with_foreignkey_system(ordersusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4system")
     @Override
-    public void delete4system(String json) {
-        BLorders blorders = new BLorders();
-        JSONParser parser = new JSONParser();
-        Orders orders;
+    public void delete4system(String jsonstring) {
         try {
-            ISystemPK systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blorders.delete4system(systemPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Orders_usecases ordersusecases = new Orders_usecases(loggedin);
+            delete_orders(ordersusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getOrderss4tradecombined_sellBuy_order_id")
     @Override
-    public String getOrderss4tradecombined_sellBuy_order_id(String json) {
-        BLorders blorders = new BLorders();
-        JSONParser parser = new JSONParser();
-        Orders orders;
+    public String getOrderss4tradecombined_sellBuy_order_id(String jsonstring) {
         try {
-            String result = null;
-            ITradecombined_sellPK tradecombined_sellBuy_order_idPK = JSONTradecombined_sell.toTradecombined_sellPK((JSONObject)parser.parse(json));
-            orders = (Orders)blorders.getTradecombined_sellbuy_order_id(tradecombined_sellBuy_order_idPK);
-            if(orders!=null) {
-                result = JSONOrders.toJSON(orders).toJSONString();
-            }
-            return result;
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Orders_usecases ordersusecases = new Orders_usecases(loggedin);
+            return get_orders_with_externalforeignkey_tradecombined_sellBuy_order_id(ordersusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "getOrderss4tradecombined_sellSell_order_id")
     @Override
-    public String getOrderss4tradecombined_sellSell_order_id(String json) {
-        BLorders blorders = new BLorders();
-        JSONParser parser = new JSONParser();
-        Orders orders;
+    public String getOrderss4tradecombined_sellSell_order_id(String jsonstring) {
         try {
-            String result = null;
-            ITradecombined_sellPK tradecombined_sellSell_order_idPK = JSONTradecombined_sell.toTradecombined_sellPK((JSONObject)parser.parse(json));
-            orders = (Orders)blorders.getTradecombined_sellsell_order_id(tradecombined_sellSell_order_idPK);
-            if(orders!=null) {
-                result = JSONOrders.toJSON(orders).toJSONString();
-            }
-            return result;
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Orders_usecases ordersusecases = new Orders_usecases(loggedin);
+            return get_orders_with_externalforeignkey_tradecombined_sellSell_order_id(ordersusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "getOrderss4shipfitorderselected")
     @Override
-    public String getOrderss4shipfitorderselected(String json) {
-        BLorders blorders = new BLorders();
-        JSONParser parser = new JSONParser();
-        Orders orders;
+    public String getOrderss4shipfitorderselected(String jsonstring) {
         try {
-            String result = null;
-            IShipfitorderselectedPK shipfitorderselectedPK = JSONShipfitorderselected.toShipfitorderselectedPK((JSONObject)parser.parse(json));
-            orders = (Orders)blorders.getShipfitorderselected(shipfitorderselectedPK);
-            if(orders!=null) {
-                result = JSONOrders.toJSON(orders).toJSONString();
-            }
-            return result;
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Orders_usecases ordersusecases = new Orders_usecases(loggedin);
+            return get_orders_with_externalforeignkey_shipfitorderselected(ordersusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "getOrderss4tradeSell_order_id")
     @Override
-    public String getOrderss4tradeSell_order_id(String json) {
-        BLorders blorders = new BLorders();
-        JSONParser parser = new JSONParser();
-        Orders orders;
+    public String getOrderss4tradeSell_order_id(String jsonstring) {
         try {
-            String result = null;
-            ITradePK tradeSell_order_idPK = JSONTrade.toTradePK((JSONObject)parser.parse(json));
-            orders = (Orders)blorders.getTradesell_order_id(tradeSell_order_idPK);
-            if(orders!=null) {
-                result = JSONOrders.toJSON(orders).toJSONString();
-            }
-            return result;
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Orders_usecases ordersusecases = new Orders_usecases(loggedin);
+            return get_orders_with_externalforeignkey_tradeSell_order_id(ordersusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "getOrderss4tradeBuy_order_id")
     @Override
-    public String getOrderss4tradeBuy_order_id(String json) {
-        BLorders blorders = new BLorders();
-        JSONParser parser = new JSONParser();
-        Orders orders;
+    public String getOrderss4tradeBuy_order_id(String jsonstring) {
         try {
-            String result = null;
-            ITradePK tradeBuy_order_idPK = JSONTrade.toTradePK((JSONObject)parser.parse(json));
-            orders = (Orders)blorders.getTradebuy_order_id(tradeBuy_order_idPK);
-            if(orders!=null) {
-                result = JSONOrders.toJSON(orders).toJSONString();
-            }
-            return result;
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Orders_usecases ordersusecases = new Orders_usecases(loggedin);
+            return get_orders_with_externalforeignkey_tradeBuy_order_id(ordersusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
+
+    private String count_records(Orders_usecases ordersusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", ordersusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_orders(Orders_usecases ordersusecases) throws ParseException, CustomException {
+    	return JSONOrders.toJSONArray(ordersusecases.get_all()).toJSONString();
+    }
+    
+    private String get_orders_with_primarykey(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        IOrdersPK ordersPK = (IOrdersPK)JSONOrders.toOrdersPK((JSONObject)json.get("orderspk"));
+	return JSONOrders.toJSON(ordersusecases.get_orders_by_primarykey(ordersPK)).toJSONString();
+    }
+    
+    private String get_orders_with_foreignkey_evetype(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        return JSONOrders.toJSONArray(ordersusecases.get_orders_with_foreignkey_evetype(evetypePK)).toJSONString();
+    }
+    
+    private String get_orders_with_foreignkey_system(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        return JSONOrders.toJSONArray(ordersusecases.get_orders_with_foreignkey_system(systemPK)).toJSONString();
+    }
+    
+    private String get_orders_with_externalforeignkey_tradecombined_sellBuy_order_id(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        ITradecombined_sellPK tradecombined_sellBuy_order_idPK = (ITradecombined_sellPK)JSONTradecombined_sell.toTradecombined_sellPK((JSONObject)json.get("tradecombined_sellpk"));
+        return JSONOrders.toJSON(ordersusecases.get_orders_with_externalforeignkey_tradecombined_sellBuy_order_id(tradecombined_sellBuy_order_idPK)).toJSONString();
+    }
+    
+    private String get_orders_with_externalforeignkey_tradecombined_sellSell_order_id(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        ITradecombined_sellPK tradecombined_sellSell_order_idPK = (ITradecombined_sellPK)JSONTradecombined_sell.toTradecombined_sellPK((JSONObject)json.get("tradecombined_sellpk"));
+        return JSONOrders.toJSON(ordersusecases.get_orders_with_externalforeignkey_tradecombined_sellSell_order_id(tradecombined_sellSell_order_idPK)).toJSONString();
+    }
+    
+    private String get_orders_with_externalforeignkey_shipfitorderselected(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        IShipfitorderselectedPK shipfitorderselectedPK = (IShipfitorderselectedPK)JSONShipfitorderselected.toShipfitorderselectedPK((JSONObject)json.get("shipfitorderselectedpk"));
+        return JSONOrders.toJSON(ordersusecases.get_orders_with_externalforeignkey_shipfitorderselected(shipfitorderselectedPK)).toJSONString();
+    }
+    
+    private String get_orders_with_externalforeignkey_tradeSell_order_id(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        ITradePK tradeSell_order_idPK = (ITradePK)JSONTrade.toTradePK((JSONObject)json.get("tradepk"));
+        return JSONOrders.toJSON(ordersusecases.get_orders_with_externalforeignkey_tradeSell_order_id(tradeSell_order_idPK)).toJSONString();
+    }
+    
+    private String get_orders_with_externalforeignkey_tradeBuy_order_id(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        ITradePK tradeBuy_order_idPK = (ITradePK)JSONTrade.toTradePK((JSONObject)json.get("tradepk"));
+        return JSONOrders.toJSON(ordersusecases.get_orders_with_externalforeignkey_tradeBuy_order_id(tradeBuy_order_idPK)).toJSONString();
+    }
+    
+    private String search_orders(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        IOrderssearch search = (IOrderssearch)JSONOrders.toOrderssearch((JSONObject)json.get("search"));
+        return JSONOrders.toJSONArray(ordersusecases.search_orders(search)).toJSONString();
+    }
+    
+    private String search_orders_count(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        IOrderssearch orderssearch = (IOrderssearch)JSONOrders.toOrderssearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", ordersusecases.search_orders_count(orderssearch));
+        return jsonsearchcount.toJSONString();
+    }
+
+    private void insert_orders(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        IOrders orders = (IOrders)JSONOrders.toOrders((JSONObject)json.get("orders"));
+        ordersusecases.insertOrders(orders);
+        setReturnstatus("OK");
+    }
+
+    private void update_orders(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        IOrders orders = (IOrders)JSONOrders.toOrders((JSONObject)json.get("orders"));
+        ordersusecases.updateOrders(orders);
+        setReturnstatus("OK");
+    }
+
+    private void delete_orders(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        IOrders orders = (IOrders)JSONOrders.toOrders((JSONObject)json.get("orders"));
+        ordersusecases.deleteOrders(orders);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Evetype(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        ordersusecases.delete_all_containing_Evetype(evetypePK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_System(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        ordersusecases.delete_all_containing_System(systemPK);
+        setReturnstatus("OK");
+    }
 
 }
 

@@ -1,9 +1,6 @@
 /*
- * JSONSettings.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONSettings {
@@ -41,10 +37,6 @@ public class JSONSettings {
         return jsonsettingss;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ISettingsPK settingsPK) {
         JSONObject json = null;
         if(settingsPK!=null) {
@@ -54,10 +46,6 @@ public class JSONSettings {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ISettings settings) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(settings.getPrimaryKey()));
@@ -67,10 +55,6 @@ public class JSONSettings {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Settingssearch settingssearch) {
         JSONObject json = new JSONObject();
         if(settingssearch.used()) {
@@ -109,11 +93,6 @@ public class JSONSettings {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Settingssearch toSettingssearch(JSONObject json) {
         Settingssearch settingssearch = new Settingssearch();
         settingssearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Region;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Region_usecases {
 
     private boolean loggedin = false;
-    private BLregion blregion = new BLregion();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLregion blregion = new BLregion(sqlreader);
     
     public Region_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Region_usecases {
     }
     
     public boolean getRegionExists(IRegionPK regionPK) throws DBException {
-        return blregion.getEntityExists(regionPK);
+        return blregion.getRegionExists(regionPK);
     }
     
     public Region get_region_by_primarykey(IRegionPK regionPK) throws DBException {
@@ -81,16 +87,23 @@ public class Region_usecases {
         return blregion.searchcount(regionsearch);
     }
 
-    public void secureinsertRegion(IRegion region) throws DBException, DataException {
-        blregion.secureinsertRegion(region);
+    public void insertRegion(IRegion region) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blregion.insertRegion(tq, region);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateRegion(IRegion region) throws DBException, DataException {
-        blregion.secureupdateRegion(region);
+    public void updateRegion(IRegion region) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blregion.updateRegion(tq, region);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteRegion(IRegion region) throws DBException, DataException {
-        blregion.securedeleteRegion(region);
+    public void deleteRegion(IRegion region) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blregion.deleteRegion(tq, region);
+        sqlwriter.Commit2DB(tq);
     }
+
 }
 

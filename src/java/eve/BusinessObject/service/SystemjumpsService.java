@@ -1,9 +1,14 @@
 package eve.BusinessObject.service;
 
-import db.TransactionOutput;
+import db.SQLTwriter;
+import db.SQLToutput;
+import db.SQLTqueue;
+import db.SQLreader;
+import eve.BusinessObject.Logic.BLstargate;
 import eve.BusinessObject.Logic.BLsystem;
 import eve.BusinessObject.Logic.BLsystemjumps;
-import eve.usecases.Loadroute_parameters;
+import eve.logicentity.Stargate;
+import eve.usecases.custom.Loadroute_parameters;
 import general.exception.DBException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,6 +18,7 @@ import java.util.Iterator;
  */
 public class SystemjumpsService implements Runnable {
     
+    private static RouteService routeservice = null;
     private SystemjumpsStatus systemjumpsstatus;
     private boolean keeprunning = true;
     
@@ -32,12 +38,6 @@ public class SystemjumpsService implements Runnable {
         private boolean done = false;
         
         public SystemjumpsStatus() {
-            try {
-                totalcombinations = (new BLsystemjumps()).count();
-            }
-            catch(DBException e) {
-                
-            }
         }
         
         public void setDone() {
@@ -69,7 +69,9 @@ public class SystemjumpsService implements Runnable {
         }
     }
     
-    public SystemjumpsService() {
+    public SystemjumpsService(SQLreader sqlreader, SQLTwriter sqlwriter) {
+        this.sqlreader = sqlreader;
+        this.sqlwriter = sqlwriter;
         systemjumpsstatus = new SystemjumpsStatus();
     }
     
@@ -82,11 +84,14 @@ public class SystemjumpsService implements Runnable {
         systemjumpsstatus.setDone();
     }
 
+    private SQLreader sqlreader;
+    private SQLTwriter sqlwriter;
+    private SQLTqueue transactionqueue;
     private BLsystem blsystem;
+    private BLstargate blstargate;
     private BLsystemjumps blsystemjumps;
-    private RouteService routeservice;
     private ArrayList<eve.logicentity.System> systems;
-    private TransactionOutput toutput;
+    private SQLToutput toutput;
     private int startcounter;
     private int endcounter;
     private int insertcounter;
@@ -97,6 +102,7 @@ public class SystemjumpsService implements Runnable {
     
     private void calculate() {
         try {
+            transactionqueue = new SQLTqueue();
             initialize();
             Iterator<eve.logicentity.System> systemsstartI = systems.iterator();
             while(systemsstartI.hasNext() && keeprunning)
@@ -110,9 +116,10 @@ public class SystemjumpsService implements Runnable {
     }
 
     private void commit_calculationresult_to_database() throws DBException {
-        toutput = blsystemjumps.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             systemjumpsstatus.addMessage("Jump calculator " + toutput.getErrormessage());
+        insertcounter = 0;
     }
 
     private void calculate_jumps_from_startsystem_to_each_system(eve.logicentity.System start) throws DBException {
@@ -135,35 +142,42 @@ public class SystemjumpsService implements Runnable {
         Systemdata route = routeservice.getRoute_Systemdata(routeparameters);
         routeparameters.setSecure(true);
         Systemdata routesafe = routeservice.getRoute_Systemdata(routeparameters);
-        blsystemjumps.addStatement(composeSQLupdate(startid, endid, route, routesafe));
-        blsystemjumps.addStatement(composeSQLupdate(endid, startid, route, routesafe));
+        blsystemjumps.addStatement(transactionqueue, composeSQLupdate(startid, endid, route, routesafe));
+        blsystemjumps.addStatement(transactionqueue, composeSQLupdate(endid, startid, route, routesafe));
         systemjumpsstatus.incCombinations();
         systemjumpsstatus.incCombinations();
         insertcounter++;
-        if(insertcounter==200) {
-            insertcounter = 0;
-            if(keeprunning)
-                commit_calculationresult_to_database();
-        }
+        if(insertcounter==200)
+            commit_calculationresult_to_database();
         endcounter++;
     }
 
     private void initialize() throws DBException {
-        blsystem = new BLsystem();
+        blsystem = new BLsystem(sqlreader);
         blsystem.setAuthenticated(true);
-        blsystemjumps = new BLsystemjumps();
+        blstargate = new BLstargate(sqlreader);
+        blstargate.setAuthenticated(true);
+        blsystemjumps = new BLsystemjumps(sqlreader);
         blsystemjumps.setAuthenticated(true);
-        routeservice = new RouteService();
+        if(routeservice==null)
+            loadRouteservice();
+        long systemcount = (new BLsystemjumps(sqlreader)).count();
         systems = blsystem.getSystemLowHisec();
         systemjumpsstatus.addMessage("Calculate all combinations of " + systems.size() + " systems");
         //jump to same systems don't need to be recalculated
-        systemjumpsstatus.combinations += systems.size();
+        systemjumpsstatus.totalcombinations = systemcount + systems.size();
         startcounter = 0;
         endcounter = 0;
         insertcounter = 0;
         jumps = 0;
         jumpssafe = 0;
         dummy = new ArrayList<>();
+    }
+
+    private void loadRouteservice() throws DBException {
+        ArrayList<eve.logicentity.System> systems = blsystem.getSystems();
+        ArrayList<Stargate> stargates = blstargate.getStargates();
+        routeservice = new RouteService(systems, stargates);
     }
     
     private String composeSQLupdate(long startid, long endid, Systemdata route, Systemdata routesafe) {

@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Orders;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Orders_usecases {
 
     private boolean loggedin = false;
-    private BLorders blorders = new BLorders();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLorders blorders = new BLorders(sqlreader);
     
     public Orders_usecases() {
         this(false);
@@ -39,18 +45,18 @@ public class Orders_usecases {
     
 //Custom code, do not change this line
 //add here custom operations
-    public Orderupdate_data get_ordersupdate_usecase(IOrdersPK sellordersPK, IOrdersPK buyordersPK) throws DBException {
+    public Orderupdate_data get_ordersupdate_usecase(OrdersPK sellordersPK, OrdersPK buyordersPK) throws DBException {
         Orderupdate_data orderupdate_data = new Orderupdate_data();
         orderupdate_data.setSellamount(get_order_amount_from_swagger(sellordersPK));
         orderupdate_data.setBuyamount(get_order_amount_from_swagger(buyordersPK));
         return orderupdate_data;
     }
     
-    private long get_order_amount_from_swagger(IOrdersPK ordersPK) throws DBException {
-        BLview_order blview_order = new BLview_order();
-        blview_order.setAuthenticated(loggedin);
-        eve.logicview.View_order order = blview_order.getView_order(ordersPK);
-        org.json.simple.JSONObject jsonsellorder = Swaggerorder.findOrder(order.getRegion(), order.getPage(), ordersPK.getId());
+    public long get_order_amount_from_swagger(OrdersPK ordersPK) throws DBException {
+        View_order_usecases view_order_usecases = new View_order_usecases(loggedin);
+        eve.logicview.View_order order = view_order_usecases.getView_order_for_primarykey_usecase(ordersPK);
+        eve.usecases.custom.Swagger_usecases swagger_usecases = new eve.usecases.custom.Swagger_usecases();
+        org.json.simple.JSONObject jsonsellorder = swagger_usecases.findOrder(order.getRegion(), order.getPage(), ordersPK.getId());
         if(jsonsellorder!=null)
             return JSONConversion.getLong(jsonsellorder, "volume_remain");
         else
@@ -103,7 +109,7 @@ public class Orders_usecases {
     }
     
     public boolean getOrdersExists(IOrdersPK ordersPK) throws DBException {
-        return blorders.getEntityExists(ordersPK);
+        return blorders.getOrdersExists(ordersPK);
     }
     
     public Orders get_orders_by_primarykey(IOrdersPK ordersPK) throws DBException {
@@ -146,16 +152,35 @@ public class Orders_usecases {
         return blorders.searchcount(orderssearch);
     }
 
-    public void secureinsertOrders(IOrders orders) throws DBException, DataException {
-        blorders.secureinsertOrders(orders);
+    public void insertOrders(IOrders orders) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blorders.insertOrders(tq, orders);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateOrders(IOrders orders) throws DBException, DataException {
-        blorders.secureupdateOrders(orders);
+    public void updateOrders(IOrders orders) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blorders.updateOrders(tq, orders);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteOrders(IOrders orders) throws DBException, DataException {
-        blorders.securedeleteOrders(orders);
+    public void deleteOrders(IOrders orders) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blorders.deleteOrders(tq, orders);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Evetype(IEvetypePK evetypePK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blorders.delete4evetype(tq, evetypePK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_System(ISystemPK systemPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blorders.delete4system(tq, systemPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

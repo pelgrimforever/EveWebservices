@@ -1,9 +1,6 @@
 /*
- * JSONTypegroup.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONTypegroup {
@@ -41,10 +37,6 @@ public class JSONTypegroup {
         return jsontypegroups;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ITypegroupPK typegroupPK) {
         JSONObject json = null;
         if(typegroupPK!=null) {
@@ -54,10 +46,6 @@ public class JSONTypegroup {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ITypegroup typegroup) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(typegroup.getPrimaryKey()));
@@ -69,10 +57,6 @@ public class JSONTypegroup {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Typegroupsearch typegroupsearch) {
         JSONObject json = new JSONObject();
         if(typegroupsearch.used()) {
@@ -111,11 +95,6 @@ public class JSONTypegroup {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Typegroupsearch toTypegroupsearch(JSONObject json) {
         Typegroupsearch typegroupsearch = new Typegroupsearch();
         typegroupsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

@@ -12,6 +12,8 @@ import data.interfaces.db.LogicEntity;
 import data.json.piJson;
 import db.TableMapper;
 import eve.entity.pk.*;
+import static eve.eveDatabaseproperties.connectionpool;
+import static eve.eveDatabaseproperties.databasetool;
 import eve.logicentity.Systemactivity;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -41,6 +43,15 @@ public class EMsystemactivity_default implements TableMapper {
 
     public static final String SQLSelect4system = "select * from systemactivity where " + SQLWheresystem + OrderBy;
     public static final String SQLDelete4system = "delete from systemactivity where " + SQLWheresystem;
+
+    @Override
+    public String getDbtool() { return databasetool; }
+    
+    @Override
+    public String getConnectionpool() { return connectionpool; }
+    
+    @Override
+    public String getTable() { return "systemactivity"; }
 
     /**
      * 
@@ -76,7 +87,7 @@ public class EMsystemactivity_default implements TableMapper {
      * @param dbresult: Database ResultSet
      */
     @Override
-    public Object mapResultSet2Entity(ResultSet dbresult) throws SQLException {
+    public LogicEntity mapResultSet2Entity(ResultSet dbresult) throws SQLException {
         SystemactivityPK systemactivityPK = null;
         Systemactivity systemactivity;
         if(dbresult==null) {

@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.routetype;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IRoutetypeOperation;
 import eve.logicentity.Routetype;
 import eve.searchentity.Routetypesearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,19 +46,24 @@ import org.json.simple.parser.ParseException;
 @Path("rsroutetype_delete")
 public class RSRoutetype_delete extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Routetype_usecases routetypeusecases = new Routetype_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operation) {
                 case IRoutetypeOperation.DELETE_ROUTETYPE:
+                    delete_routetype(routetypeusecases, json);
+                    break;
+                case IRoutetypeOperation.DELETE_Security_island:
                     delete_routetype(routetypeusecases, json);
                     break;
 //Custom code, do not change this line
@@ -80,8 +83,15 @@ public class RSRoutetype_delete extends RS_json_login {
 
     private void delete_routetype(Routetype_usecases routetypeusecases, JSONObject json) throws ParseException, CustomException {
         IRoutetype routetype = (IRoutetype)JSONRoutetype.toRoutetype((JSONObject)json.get("routetype"));
-        routetypeusecases.securedeleteRoutetype(routetype);
+        routetypeusecases.deleteRoutetype(routetype);
         setReturnstatus("OK");
     }
+
+    private void delete_all_containing_Security_island(Routetype_usecases routetypeusecases, JSONObject json) throws ParseException, CustomException {
+        ISecurity_islandPK security_islandPK = (ISecurity_islandPK)JSONSecurity_island.toSecurity_islandPK((JSONObject)json.get("security_islandpk"));
+        routetypeusecases.delete_all_containing_Security_island(security_islandPK);
+        setReturnstatus("OK");
+    }
+
 }
 

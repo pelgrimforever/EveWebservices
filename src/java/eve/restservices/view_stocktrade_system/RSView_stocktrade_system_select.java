@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.view_stocktrade_system;
@@ -16,10 +16,8 @@ import eve.interfaces.servlet.IView_stocktrade_systemOperation;
 import eve.usecases.View_stocktrade_system_usecases;
 import eve.logicview.View_stocktrade_system;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -46,14 +44,15 @@ import org.json.simple.parser.ParseException;
 @Path("rsview_stocktrade_system_select")
 public class RSView_stocktrade_system_select extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
-            IView_stocktrade_system view_stocktrade_system;
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             View_stocktrade_system_usecases view_stocktrade_systemusecases = new View_stocktrade_system_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations

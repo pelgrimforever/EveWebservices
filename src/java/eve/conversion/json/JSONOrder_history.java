@@ -1,9 +1,6 @@
 /*
- * JSONOrder_history.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONOrder_history {
@@ -41,10 +37,6 @@ public class JSONOrder_history {
         return jsonorder_historys;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IOrder_historyPK order_historyPK) {
         JSONObject json = null;
         if(order_historyPK!=null) {
@@ -58,10 +50,6 @@ public class JSONOrder_history {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IOrder_history order_history) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(order_history.getPrimaryKey()));
@@ -75,10 +63,6 @@ public class JSONOrder_history {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Order_historysearch order_historysearch) {
         JSONObject json = new JSONObject();
         if(order_historysearch.used()) {
@@ -120,11 +104,6 @@ public class JSONOrder_history {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Order_historysearch toOrder_historysearch(JSONObject json) {
         Order_historysearch order_historysearch = new Order_historysearch();
         order_historysearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

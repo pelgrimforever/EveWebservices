@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Stargate;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Stargate_usecases {
 
     private boolean loggedin = false;
-    private BLstargate blstargate = new BLstargate();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLstargate blstargate = new BLstargate(sqlreader);
     
     public Stargate_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Stargate_usecases {
     }
     
     public boolean getStargateExists(IStargatePK stargatePK) throws DBException {
-        return blstargate.getEntityExists(stargatePK);
+        return blstargate.getStargateExists(stargatePK);
     }
     
     public Stargate get_stargate_by_primarykey(IStargatePK stargatePK) throws DBException {
@@ -73,16 +79,35 @@ public class Stargate_usecases {
         return blstargate.searchcount(stargatesearch);
     }
 
-    public void secureinsertStargate(IStargate stargate) throws DBException, DataException {
-        blstargate.secureinsertStargate(stargate);
+    public void insertStargate(IStargate stargate) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blstargate.insertStargate(tq, stargate);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateStargate(IStargate stargate) throws DBException, DataException {
-        blstargate.secureupdateStargate(stargate);
+    public void updateStargate(IStargate stargate) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blstargate.updateStargate(tq, stargate);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteStargate(IStargate stargate) throws DBException, DataException {
-        blstargate.securedeleteStargate(stargate);
+    public void deleteStargate(IStargate stargate) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blstargate.deleteStargate(tq, stargate);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Systemsystem(ISystemPK systemSystemPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blstargate.delete4systemSystem(tq, systemSystemPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Systemto_system(ISystemPK systemTo_systemPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blstargate.delete4systemTo_system(tq, systemTo_systemPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

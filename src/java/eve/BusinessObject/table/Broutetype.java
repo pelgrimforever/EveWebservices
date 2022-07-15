@@ -1,216 +1,142 @@
 /*
- * Broutetype.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 11.4.2022 9:13
- *
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-import db.SQLMapperFactory;
-import db.SQLparameters;
-import data.gis.shape.*;
-import data.json.piJson;
-import data.json.psqlJsonobject;
-import db.SQLMapper_pgsql;
-import data.interfaces.db.Filedata;
-import eve.BusinessObject.Logic.*;
-import eve.conversion.json.JSONRoutetype;
+import db.*;
+import data.interfaces.db.*;
 import eve.conversion.entity.EMroutetype;
+import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IRoutetypesearch;
 import eve.logicentity.Routetype;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import org.postgresql.geometric.PGpoint;
-import org.postgis.PGgeometry;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
- * Business Entity class Broutetype
- *
- * Superclass for manipulating data- and database objects
- * for Entity Routetype and direct related data
- * This class is overwritten each time the code generator runs
- * and is not meant to be changed
- *
  * @author Franky Laseure
  */
-public abstract class Broutetype extends BLtable {
+public abstract class Broutetype extends TableBusinessrules {
 
-    /**
-     * Constructor, sets Routetype as default Entity
-     */
-    public Broutetype() {
-        super(new Routetype(), new EMroutetype());
+    public Broutetype(SQLreader sqlreader) {
+        super(new TableIO(sqlreader, new EMroutetype()));
     }
 
-    /**
-     * Constructor, sets Routetype as default Entity
-     * sets transaction queue from given GeneralEntityObject implementation
-     * all transactions will commit at same time
-     * @param transactionobject: GeneralEntityObjects that holds the transaction queue
-     */
-    public Broutetype(BLtable transactionobject) {
-        super(transactionobject, new Routetype(), new EMroutetype());
+    public Broutetype(TableBusinessrules businessrules) {
+        super(new TableIO(businessrules.getTableio(), new EMroutetype()));
+        this.tableio.setAuthenticated(tableio!=null && tableio.isAuthenticated());
     }
 
-    /**
-     * create new empty Routetype object
-     * @return empty IRoutetype
-     */
     public IRoutetype newRoutetype() {
     	return new Routetype();
     }
     
-    /**
-     * create new empty Routetype object
-     * create new primary key with given parameters
-     * @param id primary key field
-     * @return IRoutetype with primary key
-     */
     public IRoutetype newRoutetype(long id) {
         return new Routetype(id);
     }
 
-    /**
-     * create new empty Routetype object with given primary key
-     * @param routetypePK: primary key for Routetype
-     * @return IRoutetype with primary key
-     */
     public IRoutetype newRoutetype(IRoutetypePK routetypePK) {
         return new Routetype((RoutetypePK)routetypePK);
     }
 
-    /**
-     * create new empty primary key
-     * @return empty RoutetypePK
-     */
     public IRoutetypePK newRoutetypePK() {
         return new RoutetypePK();
     }
 
-    /**
-     * create new primary key with given parameters
-     * @param id primary key field
-     * @return new IRoutetypePK
-     */
     public IRoutetypePK newRoutetypePK(long id) {
         return new RoutetypePK(id);
     }
 
-    /**
-     * get all Routetype objects from database
-     * @return ArrayList of Routetype objects
-     * @throws DBException
-     */
     public ArrayList<Routetype> getRoutetypes() throws DBException {
-        return (ArrayList<Routetype>)super.getEntities(EMroutetype.SQLSelectAll);
+        return (ArrayList<Routetype>)tableio.getEntities(EMroutetype.SQLSelectAll);
     }
 
-    /**
-     * search Routetype for primary key
-     * @param routetypePK: Routetype primary key
-     * @return Routetype object
-     * @throws DBException
-     */
     public Routetype getRoutetype(IRoutetypePK routetypePK) throws DBException {
-        return (Routetype)super.getEntity((RoutetypePK)routetypePK);
+        return (Routetype)tableio.getEntity((RoutetypePK)routetypePK);
     }
 
-    /**
-     * search routetype with IRoutetypesearch parameters
-     * @param search IRoutetypesearch
-     * @return ArrayList of Routetype
-     * @throws DBException 
-     */
     public ArrayList<Routetype> searchroutetypes(IRoutetypesearch search) throws DBException {
-        return (ArrayList<Routetype>)this.search(search);
+        return (ArrayList<Routetype>)tableio.search(search);
     }
 
-    /**
-     * search routetype with IRoutetypesearch parameters, order by orderby sql clause
-     * @param search IRoutetypesearch
-     * @param orderby sql order by string
-     * @return ArrayList of Routetype
-     * @throws DBException 
-     */
     public ArrayList<Routetype> searchroutetypes(IRoutetypesearch search, String orderby) throws DBException {
-        return (ArrayList<Routetype>)this.search(search, orderby);
+        return (ArrayList<Routetype>)tableio.search(search, orderby);
     }
 
-    /**
-     * Search routetype in database for routetypePK:
-     * @param routetypePK: Routetype Primary Key, only valid for the initialized Entity
-     * @return true if found in database
-     * @throws DBException
-     */
     public boolean getRoutetypeExists(IRoutetypePK routetypePK) throws DBException {
-        return super.getEntityExists((RoutetypePK)routetypePK);
+        return tableio.getEntityExists((RoutetypePK)routetypePK);
     }
 
-    /**
-     * try to insert Routetype in database
-     * @param routetype Routetype object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertRoutetype(IRoutetype routetype) throws DBException, DataException {
-        super.insertEntity(routetype);
+    public Routetype getEntity(String sql) throws DBException {
+        return (Routetype)tableio.getEntity(sql);
+    }
+    
+    public Routetype getEntity(String sql, SQLparameters parameters) throws DBException {
+        return (Routetype)tableio.getEntity(sql, parameters);
+    }
+    
+    public ArrayList<Routetype> getEntities(String sql) throws DBException {
+        return tableio.getEntities(sql);
+    }
+    
+    public ArrayList<Routetype> getEntities(String sql, SQLparameters parameters) throws DBException {
+        return tableio.getEntities(sql, parameters);
     }
 
-    /**
-     * check if RoutetypePK exists
-     * insert if not, update if found
-     * do not commit transaction
-     * @param routetype Routetype object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertupdateRoutetype(IRoutetype routetype) throws DBException, DataException {
+    public long count() throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+    
+    public long count(String sql, SQLparameters parameters) throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+
+    public ArrayList<Routetype> search(Tablesearcher search) throws DBException {
+        return tableio.search(search);
+    }
+
+    public ArrayList<Routetype> search(Tablesearcher search, String orderby) throws DBException {
+        return tableio.search(search, orderby);
+    }
+
+    public long searchcount(Tablesearcher search) throws DBException {
+        return tableio.searchcount(search);
+    }
+
+    public void insertRoutetype(SQLTqueue transactionqueue, IRoutetype routetype) throws DBException, DataException {
+        tableio.insertEntity(transactionqueue, routetype);
+    }
+
+    public void insertupdateRoutetype(SQLTqueue transactionqueue, IRoutetype routetype) throws DBException, DataException {
+    	checkDATA(routetype);
         if(this.getRoutetypeExists(routetype.getPrimaryKey())) {
-            super.updateEntity(routetype);
+            tableio.updateEntity(transactionqueue, routetype);
         } else {
-            super.insertEntity(routetype);
+            tableio.insertEntity(transactionqueue, routetype);
         }
     }
 
-    /**
-     * try to update Routetype in database
-     * @param routetype Routetype object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void updateRoutetype(IRoutetype routetype) throws DBException, DataException {
-        super.updateEntity(routetype);
+    public void updateRoutetype(SQLTqueue transactionqueue, IRoutetype routetype) throws DBException, DataException {
+    	checkDATA(routetype);
+        tableio.updateEntity(transactionqueue, routetype);
     }
 
-    /**
-     * try to delete Routetype in database
-     * @param routetype Routetype object
-     * @throws DBException
-     */
-    public void deleteRoutetype(IRoutetype routetype) throws DBException {
-        cascadedeleteRoutetype(routetype.getPrimaryKey());
-        super.deleteEntity(routetype);
+    public void deleteRoutetype(SQLTqueue transactionqueue, IRoutetype routetype) throws DBException {
+        cascadedeleteRoutetype(transactionqueue, routetype.getPrimaryKey());
+        tableio.deleteEntity(transactionqueue, routetype);
     }
 
-    /**
-     * check data rules in Routetype, throw DataException with customized message if rules do not apply
-     * @param routetype Routetype object
-     * @throws DataException
-     * @throws DBException
-     */
-    public void checkDATA(IRoutetype routetype) throws DataException, DBException {
+    private void checkDATA(IRoutetype routetype) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
         if(routetype.getName()!=null && routetype.getName().length()>IRoutetype.SIZE_NAME) {
@@ -228,35 +154,17 @@ public abstract class Broutetype extends BLtable {
      * delete all records in tables where routetypePK is used in a primary key
      * @param routetypePK: Routetype primary key
      */
-    public void cascadedeleteRoutetype(IRoutetypePK routetypePK) {
+    public void cascadedeleteRoutetype(SQLTqueue transactionqueue, IRoutetypePK routetypePK) {
     }
 
-    /**
-     * @param security_islandPK: foreign key for Security_island
-     * @delete all Routetype Entity objects for Security_island in database
-     */
-    public void delete4security_island(ISecurity_islandPK security_islandPK) {
-        super.addStatement(EMroutetype.SQLDelete4security_island, security_islandPK.getSQLprimarykey());
+    public void delete4security_island(SQLTqueue transactionqueue, ISecurity_islandPK security_islandPK) {
+        tableio.addStatement(transactionqueue, EMroutetype.SQLDelete4security_island, security_islandPK.getSQLprimarykey());
     }
 
-    /**
-     * @param security_islandPK: foreign key for Security_island
-     * @return all Routetype Entity objects for Security_island
-     * @throws CustomException
-     */
     public ArrayList<Routetype> getRoutetypes4security_island(ISecurity_islandPK security_islandPK) throws CustomException {
-        return super.getEntities(EMroutetype.SQLSelect4security_island, security_islandPK.getSQLprimarykey());
+        return tableio.getEntities(EMroutetype.SQLSelect4security_island, security_islandPK.getSQLprimarykey());
     }
 
-    /**
-     * get all Routetype objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @param sortlist sql sort string
-     * @param sortoperator asc/desc
-     * @return ArrayList of Routetype objects
-     * @throws DBException
-     */
     public ArrayList<Routetype> getRoutetypes(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
         StringBuilder sql = new StringBuilder(EMroutetype.SQLSelect);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
@@ -271,16 +179,10 @@ public abstract class Broutetype extends BLtable {
         if(sortlist.length()>0) {
             sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return (ArrayList<Routetype>)super.getEntities(sql.toString(), sqlparameters);
+        return (ArrayList<Routetype>)tableio.getEntities(sql.toString(), sqlparameters);
     }
 
-    /**
-     * delete all Routetype objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @throws DBException
-     */
-    public void delRoutetype(SQLparameters sqlparameters, String andoroperator) throws DBException {
+    public void delRoutetype(SQLTqueue transactionqueue, SQLparameters sqlparameters, String andoroperator) throws DBException {
         StringBuilder sql = new StringBuilder("delete from ").append(Routetype.table);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
         int l = parameters.size();
@@ -291,7 +193,7 @@ public abstract class Broutetype extends BLtable {
                 if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(sql.toString(), sqlparameters);
+        tableio.addStatement(transactionqueue, sql.toString(), sqlparameters);
     }
 
 

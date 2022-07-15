@@ -1,9 +1,6 @@
 /*
- * EMregion_neighbour.java
- *
  * Created on Okt 8, 2021
  * Generated on 9.9.2021 15:35
- *
  */
 package eve.conversion.entity;
 
@@ -14,8 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * EMregion_neighbour
- * Custom transformation from ResultSet to Logic Entity
  * @author Franky Laseure
  */
 public class EMregion_neighbour extends EMregion_neighbour_default {
@@ -33,12 +28,6 @@ public class EMregion_neighbour extends EMregion_neighbour_default {
         "where sg.isregionborder and c1.region <> c2.region " +
         "group by c1.region, c2.region";
 
-    /**
-     * Map ResultSet Field values to Region_neighbour
-     * @param dbresult: Database ResultSet
-     * @return 
-     * @throws java.sql.SQLException
-     */
     @Override
     public LogicEntity mapResultSet2Entity(ResultSet dbresult) throws SQLException {
         Region_neighbour region_neighbour = (Region_neighbour)super.mapResultSet2Entity(dbresult);

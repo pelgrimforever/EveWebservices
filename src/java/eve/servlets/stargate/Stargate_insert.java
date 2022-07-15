@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.stargate;
@@ -61,7 +61,7 @@ public class Stargate_insert extends SecurityDataServlet {
 
     private void insert_stargate(Stargate_usecases stargateusecases) throws CustomException {
         IStargate stargate = (IStargate)parser.getJavaObject("stargate");
-        stargateusecases.secureinsertStargate(stargate);
+        stargateusecases.insertStargate(stargate);
     }
     
     @Override

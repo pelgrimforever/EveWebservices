@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.shipfitorder;
@@ -61,7 +61,7 @@ public class Shipfitorder_delete extends SecurityDataServlet {
 
     private void delete_shipfitorder(Shipfitorder_usecases shipfitorderusecases) throws CustomException {
         IShipfitorder shipfitorder = (IShipfitorder)parser.getJavaObject("shipfitorder");
-        shipfitorderusecases.securedeleteShipfitorder(shipfitorder);
+        shipfitorderusecases.deleteShipfitorder(shipfitorder);
     }
     
     @Override

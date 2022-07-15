@@ -7,7 +7,7 @@ import eve.entity.pk.OrdersPK;
 import eve.usecases.Orders_usecases;
 import eve.usecases.Orders_usecases.Orderupdate_data;
 import eve.logicview.View_order;
-import eve.usecases.Security_usecases;
+import eve.usecases.custom.Security_usecases;
 import general.exception.CustomException;
 import java.io.IOException;
 import java.util.Iterator;
@@ -29,15 +29,18 @@ import org.json.simple.parser.ParseException;
 @Path("rsloadorderupdate")
 public class RSLoadorderupdate extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
-            Orders_usecases ordersinteractor = new Orders_usecases(loggedin);
-            result = getOrdersupdate(ordersinteractor, json);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Orders_usecases orders_usecases = new Orders_usecases(loggedin);
+            Orders_usecases.Orderupdate_data orderupdate_data = getSwaggerupdate(orders_usecases, json);
+            return buildOrdersupdate_JSONresponsestring(orderupdate_data);
         }
         catch(ParseException | CustomException | IOException e) {
             result = returnstatus(e.getMessage());
@@ -45,11 +48,10 @@ public class RSLoadorderupdate extends RS_json_login {
         return result;
     }
 
-    private String getOrdersupdate(Orders_usecases ordersinteractor, JSONObject json) throws CustomException {
+    public Orders_usecases.Orderupdate_data getSwaggerupdate(Orders_usecases orders_usecases, JSONObject json) throws CustomException {
         OrdersPK sellordersPK = new OrdersPK(JSONConversion.getlong(json, "sellorderid"));
         OrdersPK buyordersPK = new OrdersPK(JSONConversion.getlong(json, "buyorderid"));
-        Orders_usecases.Orderupdate_data orderupdate_data = ordersinteractor.get_ordersupdate_usecase(sellordersPK, buyordersPK);
-        return buildOrdersupdate_JSONresponsestring(orderupdate_data);
+        return orders_usecases.get_ordersupdate_usecase(sellordersPK, buyordersPK);
     }
     
     private String buildOrdersupdate_JSONresponsestring(Orders_usecases.Orderupdate_data orderupdate_data) {

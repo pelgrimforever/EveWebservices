@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Faction;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Faction_usecases {
 
     private boolean loggedin = false;
-    private BLfaction blfaction = new BLfaction();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLfaction blfaction = new BLfaction(sqlreader);
     
     public Faction_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Faction_usecases {
     }
     
     public boolean getFactionExists(IFactionPK factionPK) throws DBException {
-        return blfaction.getEntityExists(factionPK);
+        return blfaction.getFactionExists(factionPK);
     }
     
     public Faction get_faction_by_primarykey(IFactionPK factionPK) throws DBException {
@@ -69,16 +75,29 @@ public class Faction_usecases {
         return blfaction.searchcount(factionsearch);
     }
 
-    public void secureinsertFaction(IFaction faction) throws DBException, DataException {
-        blfaction.secureinsertFaction(faction);
+    public void insertFaction(IFaction faction) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blfaction.insertFaction(tq, faction);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateFaction(IFaction faction) throws DBException, DataException {
-        blfaction.secureupdateFaction(faction);
+    public void updateFaction(IFaction faction) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blfaction.updateFaction(tq, faction);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteFaction(IFaction faction) throws DBException, DataException {
-        blfaction.securedeleteFaction(faction);
+    public void deleteFaction(IFaction faction) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blfaction.deleteFaction(tq, faction);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_System(ISystemPK systemPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blfaction.delete4system(tq, systemPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

@@ -2,23 +2,25 @@
  * WSWishlist.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 13.6.2022 18:20
  *
  */
 
 package eve.webservices;
 
+import base.restservices.RS_json_login;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.IWishlistsearch;
 import eve.interfaces.webservice.WSIWishlist;
 import eve.logicentity.Wishlist;
 import eve.searchentity.Wishlistsearch;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import general.exception.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.jws.WebMethod;
@@ -27,14 +29,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import eve.usecases.custom.Security_usecases;
 
 /**
  *
  * @author Franky Laseure
  */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSIWishlist")
-public class WSWishlist implements WSIWishlist {
+public class WSWishlist extends RS_json_login implements WSIWishlist {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     private JSONArray toJSONArray(ArrayList wishlists) {
         JSONArray jsonwishlists = new JSONArray();
         Iterator wishlistsI = wishlists.iterator();
@@ -44,152 +49,168 @@ public class WSWishlist implements WSIWishlist {
         return jsonwishlists;
     }
 
-    /**
-     * Web service operation
-     */
     //@WebMethod(operationName = "getWishlists")
     @Override
     public String getWishlists() {
         try {
-            BLwishlist blwishlist = new BLwishlist();
-            ArrayList wishlists = blwishlist.getAll();
-            JSONArray jsonwishlists = toJSONArray(wishlists);
-            return jsonwishlists.toJSONString();
+            Wishlist_usecases wishlistusecases = new Wishlist_usecases(loggedin);
+            return get_all_wishlist(wishlistusecases);
         }
-        catch(DBException e) {
+        catch(CustomException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "search")
     @Override
-    public String search(String json) {
-        BLwishlist blwishlist = new BLwishlist();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Wishlist wishlist;
+    public String search(String jsonstring) {
         try {
-            Wishlistsearch wishlistsearch = JSONWishlist.toWishlistsearch((JSONObject)parser.parse(json));
-            ArrayList wishlists = blwishlist.search(wishlistsearch);
-            JSONArray jsonwishlists = toJSONArray(wishlists);
-            result = jsonwishlists.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Wishlist_usecases wishlistusecases = new Wishlist_usecases(loggedin);
+            return search_wishlist(wishlistusecases, json);
         }
-        catch(ParseException e) {
-            result = "";
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-            result = "";
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "getWishlist")
     @Override
-    public String getWishlist(String json) {
-        BLwishlist blwishlist = new BLwishlist();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Wishlist wishlist;
+    public String getWishlist(String jsonstring) {
         try {
-            WishlistPK wishlistPK = JSONWishlist.toWishlistPK((JSONObject)parser.parse(json));
-            wishlist = blwishlist.getWishlist(wishlistPK);
-            if(wishlist!=null) {
-                result = JSONWishlist.toJSON(wishlist).toJSONString();
-            }
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Wishlist_usecases wishlistusecases = new Wishlist_usecases(loggedin);
+            return get_wishlist_with_primarykey(wishlistusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "insertWishlist")
     @Override
-    public void insertWishlist(String json) {
-        BLwishlist blwishlist = new BLwishlist();
-        JSONParser parser = new JSONParser();
+    public void insertWishlist(String jsonstring) {
         try {
-            IWishlist wishlist = JSONWishlist.toWishlist((JSONObject)parser.parse(json));
-            blwishlist.insertWishlist(wishlist);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Wishlist_usecases wishlistusecases = new Wishlist_usecases(loggedin);
+            insert_wishlist(wishlistusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "updateWishlist")
     @Override
-    public void updateWishlist(String json) {
-        BLwishlist blwishlist = new BLwishlist();
-        JSONParser parser = new JSONParser();
+    public void updateWishlist(String jsonstring) {
         try {
-            IWishlist wishlist = JSONWishlist.toWishlist((JSONObject)parser.parse(json));
-            blwishlist.updateWishlist(wishlist);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Wishlist_usecases wishlistusecases = new Wishlist_usecases(loggedin);
+            update_wishlist(wishlistusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "deleteWishlist")
     @Override
-    public void deleteWishlist(String json) {
-        BLwishlist blwishlist = new BLwishlist();
-        JSONParser parser = new JSONParser();
+    public void deleteWishlist(String jsonstring) {
         try {
-            IWishlist wishlist = JSONWishlist.toWishlist((JSONObject)parser.parse(json));
-            blwishlist.deleteWishlist(wishlist);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Wishlist_usecases wishlistusecases = new Wishlist_usecases(loggedin);
+            delete_wishlist(wishlistusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getWishlists4evetype")
     @Override
-    public String getWishlists4evetype(String json) {
-        BLwishlist blwishlist = new BLwishlist();
-        JSONParser parser = new JSONParser();
-        Wishlist wishlist;
+    public String getWishlists4evetype(String jsonstring) {
         try {
-            IEvetypePK evetypePK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            ArrayList wishlists = blwishlist.getWishlists4evetype(evetypePK);
-            JSONArray jsonwishlists = toJSONArray(wishlists);
-            return jsonwishlists.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Wishlist_usecases wishlistusecases = new Wishlist_usecases(loggedin);
+            return get_wishlist_with_foreignkey_evetype(wishlistusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4evetype")
     @Override
-    public void delete4evetype(String json) {
-        BLwishlist blwishlist = new BLwishlist();
-        JSONParser parser = new JSONParser();
-        Wishlist wishlist;
+    public void delete4evetype(String jsonstring) {
         try {
-            IEvetypePK evetypePK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            blwishlist.delete4evetype(evetypePK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Wishlist_usecases wishlistusecases = new Wishlist_usecases(loggedin);
+            delete_wishlist(wishlistusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
+
+    private String count_records(Wishlist_usecases wishlistusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", wishlistusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_wishlist(Wishlist_usecases wishlistusecases) throws ParseException, CustomException {
+    	return JSONWishlist.toJSONArray(wishlistusecases.get_all()).toJSONString();
+    }
+    
+    private String get_wishlist_with_primarykey(Wishlist_usecases wishlistusecases, JSONObject json) throws ParseException, CustomException {
+        IWishlistPK wishlistPK = (IWishlistPK)JSONWishlist.toWishlistPK((JSONObject)json.get("wishlistpk"));
+	return JSONWishlist.toJSON(wishlistusecases.get_wishlist_by_primarykey(wishlistPK)).toJSONString();
+    }
+    
+    private String get_wishlist_with_foreignkey_evetype(Wishlist_usecases wishlistusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        return JSONWishlist.toJSONArray(wishlistusecases.get_wishlist_with_foreignkey_evetype(evetypePK)).toJSONString();
+    }
+    
+    private String search_wishlist(Wishlist_usecases wishlistusecases, JSONObject json) throws ParseException, CustomException {
+        IWishlistsearch search = (IWishlistsearch)JSONWishlist.toWishlistsearch((JSONObject)json.get("search"));
+        return JSONWishlist.toJSONArray(wishlistusecases.search_wishlist(search)).toJSONString();
+    }
+    
+    private String search_wishlist_count(Wishlist_usecases wishlistusecases, JSONObject json) throws ParseException, CustomException {
+        IWishlistsearch wishlistsearch = (IWishlistsearch)JSONWishlist.toWishlistsearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", wishlistusecases.search_wishlist_count(wishlistsearch));
+        return jsonsearchcount.toJSONString();
+    }
+
+    private void insert_wishlist(Wishlist_usecases wishlistusecases, JSONObject json) throws ParseException, CustomException {
+        IWishlist wishlist = (IWishlist)JSONWishlist.toWishlist((JSONObject)json.get("wishlist"));
+        wishlistusecases.insertWishlist(wishlist);
+        setReturnstatus("OK");
+    }
+
+    private void update_wishlist(Wishlist_usecases wishlistusecases, JSONObject json) throws ParseException, CustomException {
+        IWishlist wishlist = (IWishlist)JSONWishlist.toWishlist((JSONObject)json.get("wishlist"));
+        wishlistusecases.updateWishlist(wishlist);
+        setReturnstatus("OK");
+    }
+
+    private void delete_wishlist(Wishlist_usecases wishlistusecases, JSONObject json) throws ParseException, CustomException {
+        IWishlist wishlist = (IWishlist)JSONWishlist.toWishlist((JSONObject)json.get("wishlist"));
+        wishlistusecases.deleteWishlist(wishlist);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Evetype(Wishlist_usecases wishlistusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        wishlistusecases.delete_all_containing_Evetype(evetypePK);
+        setReturnstatus("OK");
+    }
 
 }
 

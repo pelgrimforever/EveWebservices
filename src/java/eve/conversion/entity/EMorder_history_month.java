@@ -1,9 +1,6 @@
 /*
- * EMorder_history_month.java
- *
  * Created on Okt 8, 2021
  * Generated on 13.11.2021 15:8
- *
  */
 package eve.conversion.entity;
 
@@ -14,30 +11,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * EMorder_history_month
- * Custom transformation from ResultSet to Logic Entity
  * @author Franky Laseure
  */
 public class EMorder_history_month extends EMorder_history_month_default {
 //Metacoder: NO AUTHOMATIC UPDATE
     
-//Custom code, do not change this line
     public static final String SQLSelectAll = SQLSelect + OrderBy;
     public static final String SQLdeleteAll = "truncate order_history_month";    
     public static final String SQLcopymarkethistory = "insert into order_history_month " +
         "select region, evetype, extract(year from date), extract(month from date), avg(average), max(highest), min(lowest), sum(volume), sum(order_count) " +
         "from order_history " +
         "group by region, evetype, extract(year from date), extract(month from date)";
-//Custom code, do not change this line
 
-    /**
-     * Map ResultSet Field values to Order_history_month
-     * @param dbresult: Database ResultSet
-     * @return Order_history_month
-     * @throws java.sql.SQLException
-     */
     @Override
-    public Object mapResultSet2Entity(ResultSet dbresult) throws SQLException {
+    public LogicEntity mapResultSet2Entity(ResultSet dbresult) throws SQLException {
         Order_history_month order_history_month = (Order_history_month)super.mapResultSet2Entity(dbresult);
         return order_history_month;
     }    

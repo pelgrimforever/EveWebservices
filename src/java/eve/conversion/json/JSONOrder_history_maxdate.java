@@ -1,9 +1,6 @@
 /*
- * JSONOrder_history_maxdate.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONOrder_history_maxdate {
@@ -36,10 +32,6 @@ public class JSONOrder_history_maxdate {
         return jsonorder_history_maxdates;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IOrder_history_maxdate order_history_maxdate) {
         JSONObject json = new JSONObject();
         if(order_history_maxdate.getMaxdate()!=null) {
@@ -56,11 +48,6 @@ public class JSONOrder_history_maxdate {
         return order_history_maxdate;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Order_history_maxdatesearch parameters
-     * @return 
-     */
     public static Order_history_maxdatesearch toOrder_history_maxdatesearch(JSONObject json) {
         Order_history_maxdatesearch order_history_maxdatesearch = new Order_history_maxdatesearch();
         order_history_maxdatesearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

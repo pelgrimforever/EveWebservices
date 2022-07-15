@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.tradecombined_sell;
@@ -61,7 +61,7 @@ public class Tradecombined_sell_insert extends SecurityDataServlet {
 
     private void insert_tradecombined_sell(Tradecombined_sell_usecases tradecombined_sellusecases) throws CustomException {
         ITradecombined_sell tradecombined_sell = (ITradecombined_sell)parser.getJavaObject("tradecombined_sell");
-        tradecombined_sellusecases.secureinsertTradecombined_sell(tradecombined_sell);
+        tradecombined_sellusecases.insertTradecombined_sell(tradecombined_sell);
     }
     
     @Override

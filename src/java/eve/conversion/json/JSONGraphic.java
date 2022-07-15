@@ -1,9 +1,6 @@
 /*
- * JSONGraphic.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONGraphic {
@@ -41,10 +37,6 @@ public class JSONGraphic {
         return jsongraphics;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IGraphicPK graphicPK) {
         JSONObject json = null;
         if(graphicPK!=null) {
@@ -54,10 +46,6 @@ public class JSONGraphic {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IGraphic graphic) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(graphic.getPrimaryKey()));
@@ -73,10 +61,6 @@ public class JSONGraphic {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Graphicsearch graphicsearch) {
         JSONObject json = new JSONObject();
         if(graphicsearch.used()) {
@@ -112,11 +96,6 @@ public class JSONGraphic {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Graphicsearch toGraphicsearch(JSONObject json) {
         Graphicsearch graphicsearch = new Graphicsearch();
         graphicsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

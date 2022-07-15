@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.frontendpage_auth;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IFrontendpage_authOperation;
 import eve.logicentity.Frontendpage_auth;
 import eve.searchentity.Frontendpage_authsearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,19 +46,27 @@ import org.json.simple.parser.ParseException;
 @Path("rsfrontendpage_auth_delete")
 public class RSFrontendpage_auth_delete extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Frontendpage_auth_usecases frontendpage_authusecases = new Frontendpage_auth_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operation) {
                 case IFrontendpage_authOperation.DELETE_FRONTENDPAGE_AUTH:
+                    delete_frontendpage_auth(frontendpage_authusecases, json);
+                    break;
+                case IFrontendpage_authOperation.DELETE_Frontendpage:
+                    delete_frontendpage_auth(frontendpage_authusecases, json);
+                    break;
+                case IFrontendpage_authOperation.DELETE_Eveuser:
                     delete_frontendpage_auth(frontendpage_authusecases, json);
                     break;
 //Custom code, do not change this line
@@ -80,8 +86,21 @@ public class RSFrontendpage_auth_delete extends RS_json_login {
 
     private void delete_frontendpage_auth(Frontendpage_auth_usecases frontendpage_authusecases, JSONObject json) throws ParseException, CustomException {
         IFrontendpage_auth frontendpage_auth = (IFrontendpage_auth)JSONFrontendpage_auth.toFrontendpage_auth((JSONObject)json.get("frontendpage_auth"));
-        frontendpage_authusecases.securedeleteFrontendpage_auth(frontendpage_auth);
+        frontendpage_authusecases.deleteFrontendpage_auth(frontendpage_auth);
         setReturnstatus("OK");
     }
+
+    private void delete_all_containing_Frontendpage(Frontendpage_auth_usecases frontendpage_authusecases, JSONObject json) throws ParseException, CustomException {
+        IFrontendpagePK frontendpagePK = (IFrontendpagePK)JSONFrontendpage.toFrontendpagePK((JSONObject)json.get("frontendpagepk"));
+        frontendpage_authusecases.delete_all_containing_Frontendpage(frontendpagePK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Eveuser(Frontendpage_auth_usecases frontendpage_authusecases, JSONObject json) throws ParseException, CustomException {
+        IEveuserPK eveuserPK = (IEveuserPK)JSONEveuser.toEveuserPK((JSONObject)json.get("eveuserpk"));
+        frontendpage_authusecases.delete_all_containing_Eveuser(eveuserPK);
+        setReturnstatus("OK");
+    }
+
 }
 

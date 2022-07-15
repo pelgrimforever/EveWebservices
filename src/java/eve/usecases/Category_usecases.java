@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Category;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Category_usecases {
 
     private boolean loggedin = false;
-    private BLcategory blcategory = new BLcategory();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLcategory blcategory = new BLcategory(sqlreader);
     
     public Category_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Category_usecases {
     }
     
     public boolean getCategoryExists(ICategoryPK categoryPK) throws DBException {
-        return blcategory.getEntityExists(categoryPK);
+        return blcategory.getCategoryExists(categoryPK);
     }
     
     public Category get_category_by_primarykey(ICategoryPK categoryPK) throws DBException {
@@ -65,16 +71,23 @@ public class Category_usecases {
         return blcategory.searchcount(categorysearch);
     }
 
-    public void secureinsertCategory(ICategory category) throws DBException, DataException {
-        blcategory.secureinsertCategory(category);
+    public void insertCategory(ICategory category) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blcategory.insertCategory(tq, category);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateCategory(ICategory category) throws DBException, DataException {
-        blcategory.secureupdateCategory(category);
+    public void updateCategory(ICategory category) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blcategory.updateCategory(tq, category);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteCategory(ICategory category) throws DBException, DataException {
-        blcategory.securedeleteCategory(category);
+    public void deleteCategory(ICategory category) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blcategory.deleteCategory(tq, category);
+        sqlwriter.Commit2DB(tq);
     }
+
 }
 

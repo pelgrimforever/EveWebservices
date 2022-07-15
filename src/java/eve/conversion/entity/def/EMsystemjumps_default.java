@@ -1,16 +1,14 @@
 /*
- * EMalliance_default.java
- *
  * Created on Okt 8, 2021
- * Generated on 20.4.2022 10:3
- *
+ * Generated on 13.6.2022 11:21
  */
 package eve.conversion.entity.def;
 
+import data.interfaces.db.*;
 import data.gis.shape.*;
-import data.interfaces.db.LogicEntity;
 import data.json.piJson;
 import db.TableMapper;
+import eve.eveDatabaseproperties;
 import eve.entity.pk.*;
 import eve.logicentity.Systemjumps;
 import java.sql.Date;
@@ -21,11 +19,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
- * EMsystemjumps_default
- * Maps SQL ResultSet to eve.logicentity objects
  * @author Franky Laseure
  */
-public class EMsystemjumps_default implements TableMapper {
+public class EMsystemjumps_default implements eveDatabaseproperties, TableMapper {
     
     public static final String SQLWhere1 = "system_start = :systemjumps.system_start: and system_end = :systemjumps.system_end:";
     public static final String SQLSelect1 = "select systemjumps.* from systemjumps where " + SQLWhere1;
@@ -45,6 +41,15 @@ public class EMsystemjumps_default implements TableMapper {
     public static final String SQLSelect4systemSystem_start = "select * from systemjumps where " + SQLWheresystemSystem_start + OrderBy;
     public static final String SQLDelete4systemSystem_start = "delete from systemjumps where " + SQLWheresystemSystem_start;
 
+    @Override
+    public String getDbtool() { return databasetool; }
+    
+    @Override
+    public String getConnectionpool() { return connectionpool; }
+    
+    @Override
+    public String getTable() { return "systemjumps"; }
+
     /**
      * 
      * @return SQL where clause for one Systemjumps (=Primarykey)
@@ -59,27 +64,14 @@ public class EMsystemjumps_default implements TableMapper {
     @Override
     public String getSQLSelect1() { return SQLSelect1; };
 
-    /**
-     * @return Select statement for Primary key, with count field as result
-     * count = 1: exists
-     * count = 0: not found
-     */
     @Override
     public String getSQLPKExcists() { return SQLSelectPKexists; };
     
-    /**
-     * 
-     * @return SQL select statement for all Systemjumpss
-     */
     @Override
     public String getSQLSelectAll() { return SQLSelectAll; };
 
-    /**
-     * Map ResultSet Field values to Systemjumps
-     * @param dbresult: Database ResultSet
-     */
     @Override
-    public Object mapResultSet2Entity(ResultSet dbresult) throws SQLException {
+    public Entity mapResultSet2Entity(ResultSet dbresult) throws SQLException {
         SystemjumpsPK systemjumpsPK = null;
         Systemjumps systemjumps;
         if(dbresult==null) {

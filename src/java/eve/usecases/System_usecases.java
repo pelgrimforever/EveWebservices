@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.System;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class System_usecases {
 
     private boolean loggedin = false;
-    private BLsystem blsystem = new BLsystem();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLsystem blsystem = new BLsystem(sqlreader);
     
     public System_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class System_usecases {
     }
     
     public boolean getSystemExists(ISystemPK systemPK) throws DBException {
-        return blsystem.getEntityExists(systemPK);
+        return blsystem.getSystemExists(systemPK);
     }
     
     public System get_system_by_primarykey(ISystemPK systemPK) throws DBException {
@@ -89,16 +95,35 @@ public class System_usecases {
         return blsystem.searchcount(systemsearch);
     }
 
-    public void secureinsertSystem(ISystem system) throws DBException, DataException {
-        blsystem.secureinsertSystem(system);
+    public void insertSystem(ISystem system) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blsystem.insertSystem(tq, system);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateSystem(ISystem system) throws DBException, DataException {
-        blsystem.secureupdateSystem(system);
+    public void updateSystem(ISystem system) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blsystem.updateSystem(tq, system);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteSystem(ISystem system) throws DBException, DataException {
-        blsystem.securedeleteSystem(system);
+    public void deleteSystem(ISystem system) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blsystem.deleteSystem(tq, system);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Security_island(ISecurity_islandPK security_islandPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blsystem.delete4security_island(tq, security_islandPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Constellation(IConstellationPK constellationPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blsystem.delete4constellation(tq, constellationPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.station_service;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IStation_serviceOperation;
 import eve.logicentity.Station_service;
 import eve.searchentity.Station_servicesearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,13 +46,15 @@ import org.json.simple.parser.ParseException;
 @Path("rsstation_service_insert")
 public class RSStation_service_insert extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Station_service_usecases station_serviceusecases = new Station_service_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
@@ -80,7 +80,7 @@ public class RSStation_service_insert extends RS_json_login {
 
     private void insert_station_service(Station_service_usecases station_serviceusecases, JSONObject json) throws ParseException, CustomException {
         IStation_service station_service = (IStation_service)JSONStation_service.toStation_service((JSONObject)json.get("station_service"));
-        station_serviceusecases.secureinsertStation_service(station_service);
+        station_serviceusecases.insertStation_service(station_service);
         setReturnstatus("OK");
     }
 }

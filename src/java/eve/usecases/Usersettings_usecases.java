@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Usersettings;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Usersettings_usecases {
 
     private boolean loggedin = false;
-    private BLusersettings blusersettings = new BLusersettings();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLusersettings blusersettings = new BLusersettings(sqlreader);
     
     public Usersettings_usecases() {
         this(false);
@@ -40,7 +46,10 @@ public class Usersettings_usecases {
 //Custom code, do not change this line
 //add here custom operations
     public ArrayList<Usersettings> get_all_4user_usecase(String username) throws DataException, DBException {
-        return blusersettings.getUsersettings(username);
+        SQLTqueue transactionqueue = new SQLTqueue();
+        ArrayList<Usersettings> usersettings = blusersettings.get_or_initialize_Usersettings(transactionqueue, username);
+        sqlwriter.Commit2DB(transactionqueue);
+        return usersettings;
     }
 //Custom code, do not change this line   
 
@@ -53,7 +62,7 @@ public class Usersettings_usecases {
     }
     
     public boolean getUsersettingsExists(IUsersettingsPK usersettingsPK) throws DBException {
-        return blusersettings.getEntityExists(usersettingsPK);
+        return blusersettings.getUsersettingsExists(usersettingsPK);
     }
     
     public Usersettings get_usersettings_by_primarykey(IUsersettingsPK usersettingsPK) throws DBException {
@@ -72,16 +81,29 @@ public class Usersettings_usecases {
         return blusersettings.searchcount(usersettingssearch);
     }
 
-    public void secureinsertUsersettings(IUsersettings usersettings) throws DBException, DataException {
-        blusersettings.secureinsertUsersettings(usersettings);
+    public void insertUsersettings(IUsersettings usersettings) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blusersettings.insertUsersettings(tq, usersettings);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateUsersettings(IUsersettings usersettings) throws DBException, DataException {
-        blusersettings.secureupdateUsersettings(usersettings);
+    public void updateUsersettings(IUsersettings usersettings) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blusersettings.updateUsersettings(tq, usersettings);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteUsersettings(IUsersettings usersettings) throws DBException, DataException {
-        blusersettings.securedeleteUsersettings(usersettings);
+    public void deleteUsersettings(IUsersettings usersettings) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blusersettings.deleteUsersettings(tq, usersettings);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Settings(ISettingsPK settingsPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blusersettings.delete4settings(tq, settingsPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

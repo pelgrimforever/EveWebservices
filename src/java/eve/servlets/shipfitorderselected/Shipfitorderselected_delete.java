@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.shipfitorderselected;
@@ -61,7 +61,7 @@ public class Shipfitorderselected_delete extends SecurityDataServlet {
 
     private void delete_shipfitorderselected(Shipfitorderselected_usecases shipfitorderselectedusecases) throws CustomException {
         IShipfitorderselected shipfitorderselected = (IShipfitorderselected)parser.getJavaObject("shipfitorderselected");
-        shipfitorderselectedusecases.securedeleteShipfitorderselected(shipfitorderselected);
+        shipfitorderselectedusecases.deleteShipfitorderselected(shipfitorderselected);
     }
     
     @Override

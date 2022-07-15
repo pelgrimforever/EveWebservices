@@ -1,9 +1,6 @@
 /*
- * JSONSystemjumps.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONSystemjumps {
@@ -41,10 +37,6 @@ public class JSONSystemjumps {
         return jsonsystemjumpss;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ISystemjumpsPK systemjumpsPK) {
         JSONObject json = null;
         if(systemjumpsPK!=null) {
@@ -55,10 +47,6 @@ public class JSONSystemjumps {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ISystemjumps systemjumps) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(systemjumps.getPrimaryKey()));
@@ -73,10 +61,6 @@ public class JSONSystemjumps {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Systemjumpssearch systemjumpssearch) {
         JSONObject json = new JSONObject();
         if(systemjumpssearch.used()) {
@@ -118,11 +102,6 @@ public class JSONSystemjumps {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Systemjumpssearch toSystemjumpssearch(JSONObject json) {
         Systemjumpssearch systemjumpssearch = new Systemjumpssearch();
         systemjumpssearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

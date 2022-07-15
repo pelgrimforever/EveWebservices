@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.tradecombined;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.ITradecombinedOperation;
 import eve.logicentity.Tradecombined;
 import eve.searchentity.Tradecombinedsearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,19 +46,30 @@ import org.json.simple.parser.ParseException;
 @Path("rstradecombined_delete")
 public class RSTradecombined_delete extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Tradecombined_usecases tradecombinedusecases = new Tradecombined_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operation) {
                 case ITradecombinedOperation.DELETE_TRADECOMBINED:
+                    delete_tradecombined(tradecombinedusecases, json);
+                    break;
+                case ITradecombinedOperation.DELETE_Evetype:
+                    delete_tradecombined(tradecombinedusecases, json);
+                    break;
+                case ITradecombinedOperation.DELETE_Systembuy_system:
+                    delete_tradecombined(tradecombinedusecases, json);
+                    break;
+                case ITradecombinedOperation.DELETE_Systemsell_system:
                     delete_tradecombined(tradecombinedusecases, json);
                     break;
 //Custom code, do not change this line
@@ -80,8 +89,27 @@ public class RSTradecombined_delete extends RS_json_login {
 
     private void delete_tradecombined(Tradecombined_usecases tradecombinedusecases, JSONObject json) throws ParseException, CustomException {
         ITradecombined tradecombined = (ITradecombined)JSONTradecombined.toTradecombined((JSONObject)json.get("tradecombined"));
-        tradecombinedusecases.securedeleteTradecombined(tradecombined);
+        tradecombinedusecases.deleteTradecombined(tradecombined);
         setReturnstatus("OK");
     }
+
+    private void delete_all_containing_Evetype(Tradecombined_usecases tradecombinedusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        tradecombinedusecases.delete_all_containing_Evetype(evetypePK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Systembuy_system(Tradecombined_usecases tradecombinedusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemBuy_systemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        tradecombinedusecases.delete_all_containing_Systembuy_system(systemBuy_systemPK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Systemsell_system(Tradecombined_usecases tradecombinedusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemSell_systemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        tradecombinedusecases.delete_all_containing_Systemsell_system(systemSell_systemPK);
+        setReturnstatus("OK");
+    }
+
 }
 

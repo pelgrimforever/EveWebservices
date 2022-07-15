@@ -1,9 +1,6 @@
 /*
- * JSONView_tradecombined_sell.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_tradecombined_sell {
@@ -36,10 +32,6 @@ public class JSONView_tradecombined_sell {
         return jsonview_tradecombined_sells;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_tradecombined_sell view_tradecombined_sell) {
         JSONObject json = new JSONObject();
         json.put("sell_system", String.valueOf(view_tradecombined_sell.getSell_system()));
@@ -102,11 +94,6 @@ public class JSONView_tradecombined_sell {
         return view_tradecombined_sell;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_tradecombined_sellsearch parameters
-     * @return 
-     */
     public static View_tradecombined_sellsearch toView_tradecombined_sellsearch(JSONObject json) {
         View_tradecombined_sellsearch view_tradecombined_sellsearch = new View_tradecombined_sellsearch();
         view_tradecombined_sellsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

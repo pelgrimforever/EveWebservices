@@ -1,9 +1,6 @@
 /*
- * JSONRegion.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.0.2022 19:32
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONRegion {
@@ -41,10 +37,6 @@ public class JSONRegion {
         return jsonregions;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IRegionPK regionPK) {
         JSONObject json = null;
         if(regionPK!=null) {
@@ -54,10 +46,6 @@ public class JSONRegion {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IRegion region) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(region.getPrimaryKey()));
@@ -72,10 +60,6 @@ public class JSONRegion {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Regionsearch regionsearch) {
         JSONObject json = new JSONObject();
         if(regionsearch.used()) {
@@ -129,11 +113,6 @@ public class JSONRegion {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Regionsearch toRegionsearch(JSONObject json) {
         Regionsearch regionsearch = new Regionsearch();
         regionsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

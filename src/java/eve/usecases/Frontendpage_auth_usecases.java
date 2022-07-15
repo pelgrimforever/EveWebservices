@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Frontendpage_auth;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Frontendpage_auth_usecases {
 
     private boolean loggedin = false;
-    private BLfrontendpage_auth blfrontendpage_auth = new BLfrontendpage_auth();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLfrontendpage_auth blfrontendpage_auth = new BLfrontendpage_auth(sqlreader);
     
     public Frontendpage_auth_usecases() {
         this(false);
@@ -40,7 +46,8 @@ public class Frontendpage_auth_usecases {
 //Custom code, do not change this line
 //add here custom operations
     public boolean check_userauthorisation_for_page(String authorisationstring, String page) throws DBException, IOException {
-        String username = Security_usecases.getUsername(authorisationstring);
+        Security_usecases security_usecases = new Security_usecases();
+        String username = security_usecases.getUsername(authorisationstring);
         return blfrontendpage_auth.checkAuth(username, page);
     }
 //Custom code, do not change this line   
@@ -54,7 +61,7 @@ public class Frontendpage_auth_usecases {
     }
     
     public boolean getFrontendpage_authExists(IFrontendpage_authPK frontendpage_authPK) throws DBException {
-        return blfrontendpage_auth.getEntityExists(frontendpage_authPK);
+        return blfrontendpage_auth.getFrontendpage_authExists(frontendpage_authPK);
     }
     
     public Frontendpage_auth get_frontendpage_auth_by_primarykey(IFrontendpage_authPK frontendpage_authPK) throws DBException {
@@ -77,16 +84,35 @@ public class Frontendpage_auth_usecases {
         return blfrontendpage_auth.searchcount(frontendpage_authsearch);
     }
 
-    public void secureinsertFrontendpage_auth(IFrontendpage_auth frontendpage_auth) throws DBException, DataException {
-        blfrontendpage_auth.secureinsertFrontendpage_auth(frontendpage_auth);
+    public void insertFrontendpage_auth(IFrontendpage_auth frontendpage_auth) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blfrontendpage_auth.insertFrontendpage_auth(tq, frontendpage_auth);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateFrontendpage_auth(IFrontendpage_auth frontendpage_auth) throws DBException, DataException {
-        blfrontendpage_auth.secureupdateFrontendpage_auth(frontendpage_auth);
+    public void updateFrontendpage_auth(IFrontendpage_auth frontendpage_auth) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blfrontendpage_auth.updateFrontendpage_auth(tq, frontendpage_auth);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteFrontendpage_auth(IFrontendpage_auth frontendpage_auth) throws DBException, DataException {
-        blfrontendpage_auth.securedeleteFrontendpage_auth(frontendpage_auth);
+    public void deleteFrontendpage_auth(IFrontendpage_auth frontendpage_auth) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blfrontendpage_auth.deleteFrontendpage_auth(tq, frontendpage_auth);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Frontendpage(IFrontendpagePK frontendpagePK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blfrontendpage_auth.delete4frontendpage(tq, frontendpagePK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Eveuser(IEveuserPK eveuserPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blfrontendpage_auth.delete4eveuser(tq, eveuserPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Shipfitorder;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Shipfitorder_usecases {
 
     private boolean loggedin = false;
-    private BLshipfitorder blshipfitorder = new BLshipfitorder();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLshipfitorder blshipfitorder = new BLshipfitorder(sqlreader);
     
     public Shipfitorder_usecases() {
         this(false);
@@ -39,11 +45,52 @@ public class Shipfitorder_usecases {
     
 //Custom code, do not change this line
 //add here custom operations
+    private SQLTqueue transactionqueue;
+    private BLshipfitorderselected blshipfitorderselected;
+    private boolean ordercomplete;
+    
     public void update_shipfitorder_amount(IShipfitorderPK shipfitorderPK, int amount) throws DBException, DataException {
-        blshipfitorder.updateAmount(shipfitorderPK, amount);
-        blshipfitorder.Commit2DB();
-        blshipfitorder.removeCompleteorders(shipfitorderPK.getUsername());
+        transactionqueue = new SQLTqueue();
+        blshipfitorder.updateAmount(transactionqueue, shipfitorderPK, amount);
+        sqlwriter.Commit2DB(transactionqueue);
+        deleteShipfitorder_complete_for_user(shipfitorderPK.getUsername());
     }
+
+    private ShipfitPK previousshipfitpk;
+    
+    public void deleteShipfitorder_complete_for_user(String username) throws DBException, DataException {
+        blshipfitorderselected = new BLshipfitorderselected(blshipfitorder);
+        blshipfitorderselected.setAuthenticated(loggedin);
+        ArrayList<Shipfitorder> shipfitorders = blshipfitorder.getShipfitorders_for_user(username);
+        previousshipfitpk = null;
+        ordercomplete = true;
+        for(Shipfitorder shipfitorder: shipfitorders)
+            delete_shipfitorder_when_complete(shipfitorder);
+        if(ordercomplete && previousshipfitpk!=null)
+            delete_shipfitorder(previousshipfitpk.getUsername(), previousshipfitpk.getShipname());
+        sqlwriter.Commit2DB(transactionqueue);
+    }
+    
+    private void delete_shipfitorder_when_complete(Shipfitorder shipfitorder) throws DBException, DataException {
+        ShipfitPK shipfitpk = (ShipfitPK)shipfitorder.getPrimaryKey().getShipfitPK();
+        if(shipfitpk.equals(previousshipfitpk))
+            ordercomplete = ordercomplete && shipfitorder.getAmountwanted()<=shipfitorder.getAmountinstock();
+        else
+            delete_shipfitorder_for_previousship_when_complete(shipfitorder);
+        previousshipfitpk = shipfitpk;
+    }
+
+    private void delete_shipfitorder_for_previousship_when_complete(Shipfitorder shipfitorder) throws DBException, DataException {
+        if(ordercomplete && previousshipfitpk!=null)
+            delete_shipfitorder(previousshipfitpk.getUsername(), previousshipfitpk.getShipname());
+        ordercomplete = shipfitorder.getAmountwanted()<=shipfitorder.getAmountinstock();
+    }
+    
+    private void delete_shipfitorder(String username, String shipname)  throws DBException, DataException {
+        blshipfitorderselected.deleleteShipfitorder_for_user_shipname(transactionqueue, username, shipname);
+        blshipfitorder.deleleteShipfitorder_for_user_shipname(transactionqueue, username, shipname);
+    }
+
 //Custom code, do not change this line   
 
     public long count() throws DBException {
@@ -55,7 +102,7 @@ public class Shipfitorder_usecases {
     }
     
     public boolean getShipfitorderExists(IShipfitorderPK shipfitorderPK) throws DBException {
-        return blshipfitorder.getEntityExists(shipfitorderPK);
+        return blshipfitorder.getShipfitorderExists(shipfitorderPK);
     }
     
     public Shipfitorder get_shipfitorder_by_primarykey(IShipfitorderPK shipfitorderPK) throws DBException {
@@ -82,16 +129,35 @@ public class Shipfitorder_usecases {
         return blshipfitorder.searchcount(shipfitordersearch);
     }
 
-    public void secureinsertShipfitorder(IShipfitorder shipfitorder) throws DBException, DataException {
-        blshipfitorder.secureinsertShipfitorder(shipfitorder);
+    public void insertShipfitorder(IShipfitorder shipfitorder) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blshipfitorder.insertShipfitorder(tq, shipfitorder);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateShipfitorder(IShipfitorder shipfitorder) throws DBException, DataException {
-        blshipfitorder.secureupdateShipfitorder(shipfitorder);
+    public void updateShipfitorder(IShipfitorder shipfitorder) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blshipfitorder.updateShipfitorder(tq, shipfitorder);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteShipfitorder(IShipfitorder shipfitorder) throws DBException, DataException {
-        blshipfitorder.securedeleteShipfitorder(shipfitorder);
+    public void deleteShipfitorder(IShipfitorder shipfitorder) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blshipfitorder.deleteShipfitorder(tq, shipfitorder);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Shipfit(IShipfitPK shipfitPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blshipfitorder.delete4shipfit(tq, shipfitPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Evetype(IEvetypePK evetypePK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blshipfitorder.delete4evetype(tq, evetypePK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

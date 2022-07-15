@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.station;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IStationOperation;
 import eve.logicentity.Station;
 import eve.searchentity.Stationsearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,19 +46,30 @@ import org.json.simple.parser.ParseException;
 @Path("rsstation_delete")
 public class RSStation_delete extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Station_usecases stationusecases = new Station_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operation) {
                 case IStationOperation.DELETE_STATION:
+                    delete_station(stationusecases, json);
+                    break;
+                case IStationOperation.DELETE_Race:
+                    delete_station(stationusecases, json);
+                    break;
+                case IStationOperation.DELETE_Evetype:
+                    delete_station(stationusecases, json);
+                    break;
+                case IStationOperation.DELETE_System:
                     delete_station(stationusecases, json);
                     break;
 //Custom code, do not change this line
@@ -80,8 +89,27 @@ public class RSStation_delete extends RS_json_login {
 
     private void delete_station(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
         IStation station = (IStation)JSONStation.toStation((JSONObject)json.get("station"));
-        stationusecases.securedeleteStation(station);
+        stationusecases.deleteStation(station);
         setReturnstatus("OK");
     }
+
+    private void delete_all_containing_Race(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
+        IRacePK racePK = (IRacePK)JSONRace.toRacePK((JSONObject)json.get("racepk"));
+        stationusecases.delete_all_containing_Race(racePK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Evetype(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        stationusecases.delete_all_containing_Evetype(evetypePK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_System(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        stationusecases.delete_all_containing_System(systemPK);
+        setReturnstatus("OK");
+    }
+
 }
 

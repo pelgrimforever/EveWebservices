@@ -1,9 +1,6 @@
 /*
- * JSONCategory.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONCategory {
@@ -41,10 +37,6 @@ public class JSONCategory {
         return jsoncategorys;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ICategoryPK categoryPK) {
         JSONObject json = null;
         if(categoryPK!=null) {
@@ -54,10 +46,6 @@ public class JSONCategory {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ICategory category) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(category.getPrimaryKey()));
@@ -68,10 +56,6 @@ public class JSONCategory {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Categorysearch categorysearch) {
         JSONObject json = new JSONObject();
         if(categorysearch.used()) {
@@ -107,11 +91,6 @@ public class JSONCategory {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Categorysearch toCategorysearch(JSONObject json) {
         Categorysearch categorysearch = new Categorysearch();
         categorysearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

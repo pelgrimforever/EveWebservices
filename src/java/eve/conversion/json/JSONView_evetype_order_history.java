@@ -1,9 +1,6 @@
 /*
- * JSONView_evetype_order_history.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_evetype_order_history {
@@ -36,10 +32,6 @@ public class JSONView_evetype_order_history {
         return jsonview_evetype_order_historys;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_evetype_order_history view_evetype_order_history) {
         JSONObject json = new JSONObject();
         json.put("evetype", String.valueOf(view_evetype_order_history.getEvetype()));
@@ -68,11 +60,6 @@ public class JSONView_evetype_order_history {
         return view_evetype_order_history;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_evetype_order_historysearch parameters
-     * @return 
-     */
     public static View_evetype_order_historysearch toView_evetype_order_historysearch(JSONObject json) {
         View_evetype_order_historysearch view_evetype_order_historysearch = new View_evetype_order_historysearch();
         view_evetype_order_historysearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

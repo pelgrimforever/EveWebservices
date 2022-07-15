@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Materialinput;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Materialinput_usecases {
 
     private boolean loggedin = false;
-    private BLmaterialinput blmaterialinput = new BLmaterialinput();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLmaterialinput blmaterialinput = new BLmaterialinput(sqlreader);
     
     public Materialinput_usecases() {
         this(false);
@@ -40,8 +46,9 @@ public class Materialinput_usecases {
 //Custom code, do not change this line
 //add here custom operations
     public void update_materialusage(String username, long amount, IEvetypePK evetypePK) throws DBException, DataException {
-        blmaterialinput.useMaterial(username, evetypePK, amount);
-        blmaterialinput.Commit2DB();
+        SQLTqueue transactionqueue = new SQLTqueue();
+        blmaterialinput.useMaterial(transactionqueue, username, evetypePK, amount);
+        sqlwriter.Commit2DB(transactionqueue);
     }
 //Custom code, do not change this line   
 
@@ -54,7 +61,7 @@ public class Materialinput_usecases {
     }
     
     public boolean getMaterialinputExists(IMaterialinputPK materialinputPK) throws DBException {
-        return blmaterialinput.getEntityExists(materialinputPK);
+        return blmaterialinput.getMaterialinputExists(materialinputPK);
     }
     
     public Materialinput get_materialinput_by_primarykey(IMaterialinputPK materialinputPK) throws DBException {
@@ -73,16 +80,29 @@ public class Materialinput_usecases {
         return blmaterialinput.searchcount(materialinputsearch);
     }
 
-    public void secureinsertMaterialinput(IMaterialinput materialinput) throws DBException, DataException {
-        blmaterialinput.secureinsertMaterialinput(materialinput);
+    public void insertMaterialinput(IMaterialinput materialinput) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blmaterialinput.insertMaterialinput(tq, materialinput);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateMaterialinput(IMaterialinput materialinput) throws DBException, DataException {
-        blmaterialinput.secureupdateMaterialinput(materialinput);
+    public void updateMaterialinput(IMaterialinput materialinput) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blmaterialinput.updateMaterialinput(tq, materialinput);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteMaterialinput(IMaterialinput materialinput) throws DBException, DataException {
-        blmaterialinput.securedeleteMaterialinput(materialinput);
+    public void deleteMaterialinput(IMaterialinput materialinput) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blmaterialinput.deleteMaterialinput(tq, materialinput);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Evetype(IEvetypePK evetypePK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blmaterialinput.delete4evetype(tq, evetypePK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.frontendpage_auth;
@@ -61,7 +61,7 @@ public class Frontendpage_auth_insert extends SecurityDataServlet {
 
     private void insert_frontendpage_auth(Frontendpage_auth_usecases frontendpage_authusecases) throws CustomException {
         IFrontendpage_auth frontendpage_auth = (IFrontendpage_auth)parser.getJavaObject("frontendpage_auth");
-        frontendpage_authusecases.secureinsertFrontendpage_auth(frontendpage_auth);
+        frontendpage_authusecases.insertFrontendpage_auth(frontendpage_auth);
     }
     
     @Override

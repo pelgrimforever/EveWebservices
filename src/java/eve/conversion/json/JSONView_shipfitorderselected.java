@@ -1,9 +1,6 @@
 /*
- * JSONView_shipfitorderselected.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 20.11.2021 17:22
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_shipfitorderselected {
@@ -36,10 +32,6 @@ public class JSONView_shipfitorderselected {
         return jsonview_shipfitorderselecteds;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_shipfitorderselected view_shipfitorderselected) {
         JSONObject json = new JSONObject();
         json.put("username", view_shipfitorderselected.getUsername());
@@ -118,11 +110,6 @@ public class JSONView_shipfitorderselected {
         return view_shipfitorderselected;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_shipfitorderselectedsearch parameters
-     * @return 
-     */
     public static View_shipfitorderselectedsearch toView_shipfitorderselectedsearch(JSONObject json) {
         View_shipfitorderselectedsearch view_shipfitorderselectedsearch = new View_shipfitorderselectedsearch();
         view_shipfitorderselectedsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

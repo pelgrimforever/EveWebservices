@@ -1,16 +1,14 @@
 /*
- * EMalliance_default.java
- *
  * Created on Okt 8, 2021
- * Generated on 20.4.2022 10:3
- *
+ * Generated on 13.6.2022 11:21
  */
 package eve.conversion.entity.def;
 
+import data.interfaces.db.*;
 import data.gis.shape.*;
-import data.interfaces.db.LogicEntity;
 import data.json.piJson;
 import db.TableMapper;
+import eve.eveDatabaseproperties;
 import eve.entity.pk.*;
 import eve.logicentity.Alliance;
 import java.sql.Date;
@@ -21,11 +19,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
- * EMalliance_default
- * Maps SQL ResultSet to eve.logicentity objects
  * @author Franky Laseure
  */
-public class EMalliance_default implements TableMapper {
+public class EMalliance_default implements eveDatabaseproperties, TableMapper {
     
     public static final String SQLWhere1 = "id = :alliance.id:";
     public static final String SQLSelect1 = "select alliance.* from alliance where " + SQLWhere1;
@@ -45,6 +41,15 @@ public class EMalliance_default implements TableMapper {
     public static final String SQLSelect4corporationExecutor_corporation = "select * from alliance where " + SQLWherecorporationExecutor_corporation + OrderBy;
     public static final String SQLDelete4corporationExecutor_corporation = "delete from alliance where " + SQLWherecorporationExecutor_corporation;
 
+    @Override
+    public String getDbtool() { return databasetool; }
+    
+    @Override
+    public String getConnectionpool() { return connectionpool; }
+    
+    @Override
+    public String getTable() { return "alliance"; }
+
     /**
      * 
      * @return SQL where clause for one Alliance (=Primarykey)
@@ -59,27 +64,14 @@ public class EMalliance_default implements TableMapper {
     @Override
     public String getSQLSelect1() { return SQLSelect1; };
 
-    /**
-     * @return Select statement for Primary key, with count field as result
-     * count = 1: exists
-     * count = 0: not found
-     */
     @Override
     public String getSQLPKExcists() { return SQLSelectPKexists; };
     
-    /**
-     * 
-     * @return SQL select statement for all Alliances
-     */
     @Override
     public String getSQLSelectAll() { return SQLSelectAll; };
 
-    /**
-     * Map ResultSet Field values to Alliance
-     * @param dbresult: Database ResultSet
-     */
     @Override
-    public Object mapResultSet2Entity(ResultSet dbresult) throws SQLException {
+    public Entity mapResultSet2Entity(ResultSet dbresult) throws SQLException {
         AlliancePK alliancePK = null;
         Alliance alliance;
         if(dbresult==null) {

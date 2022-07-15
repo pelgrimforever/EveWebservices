@@ -1,9 +1,6 @@
 /*
- * JSONAllnodes_system.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.0.2022 19:32
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONAllnodes_system {
@@ -41,10 +37,6 @@ public class JSONAllnodes_system {
         return jsonallnodes_systems;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IAllnodes_systemPK allnodes_systemPK) {
         JSONObject json = null;
         if(allnodes_systemPK!=null) {
@@ -54,10 +46,6 @@ public class JSONAllnodes_system {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IAllnodes_system allnodes_system) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(allnodes_system.getPrimaryKey()));
@@ -67,10 +55,6 @@ public class JSONAllnodes_system {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Allnodes_systemsearch allnodes_systemsearch) {
         JSONObject json = new JSONObject();
         if(allnodes_systemsearch.used()) {
@@ -106,11 +90,6 @@ public class JSONAllnodes_system {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Allnodes_systemsearch toAllnodes_systemsearch(JSONObject json) {
         Allnodes_systemsearch allnodes_systemsearch = new Allnodes_systemsearch();
         allnodes_systemsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

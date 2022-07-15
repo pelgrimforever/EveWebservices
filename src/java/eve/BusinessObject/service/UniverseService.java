@@ -1,7 +1,10 @@
 package eve.BusinessObject.service;
 
+import db.SQLTwriter;
 import data.conversion.JSONConversion;
-import db.TransactionOutput;
+import db.SQLToutput;
+import db.SQLTqueue;
+import db.SQLreader;
 import eve.BusinessObject.Logic.BLalliance;
 import eve.BusinessObject.Logic.BLconstellation;
 import eve.BusinessObject.Logic.BLconstellation_neighbour;
@@ -63,7 +66,7 @@ public class UniverseService implements Runnable {
         private long races = 0;
         private long totalraces = 1;
         private long constellations = 0;
-        private long totalconstellations = 0;
+        private long totalconstellations = 1;
         private long systems = 0;
         private long totalsystems = 1;
         private long stations = 0;
@@ -79,52 +82,6 @@ public class UniverseService implements Runnable {
         private boolean done = false;
         
         public UniverseStatus() {
-            initialize_businesslogic();
-            try {
-                totalgraphics = blgraphic.count();
-                totalraces = blrace.count()-1;
-                totalconstellations = blconstellation.count();
-                totalsystems = blsystem.count();
-                totalstations = blstation.count();
-                totalstargates = blstargate.count();
-                totalcorporations = blcorporation.count();
-                totalalliances = blalliance.count();
-            }
-            catch(DBException e) {
-                
-            }
-        }
-
-        private void initialize_businesslogic() {
-            blgraphic = new BLgraphic();
-            blgraphic.setAuthenticated(true);
-            blrace = new BLrace();
-            blrace.setAuthenticated(true);
-            blconstellation = new BLconstellation();
-            blconstellation.setAuthenticated(true);
-            blsystem = new BLsystem();
-            blsystem.setAuthenticated(true);
-            blcorporation = new BLcorporation();
-            blcorporation.setAuthenticated(true);
-            blalliance = new BLalliance();
-            blalliance.setAuthenticated(true);
-            blregion = new BLregion();
-            blregion.setAuthenticated(true);
-            blfaction = new BLfaction();
-            blfaction.setAuthenticated(true);
-            blconstellationneighbour = new BLconstellation_neighbour();
-            blconstellationneighbour.setAuthenticated(true);
-            blregionneighbour = new BLregion_neighbour();
-            blregionneighbour.setAuthenticated(true);
-            blsecurityisland = new BLsecurity_island();
-            blsecurityisland.setAuthenticated(true);
-            
-            blstation = new BLstation(blsystem);
-            blstation.setAuthenticated(true);
-            blstargate = new BLstargate(blsystem);
-            blstargate.setAuthenticated(true);
-            blstationservice = new BLstation_service(blsystem);
-            blstationservice.setAuthenticated(true);
         }
         
         public void setDone() {
@@ -240,29 +197,32 @@ public class UniverseService implements Runnable {
         }
     }
     
-    public UniverseService() {
+    public UniverseService(SQLreader sqlreader, SQLTwriter sqlwriter) {
+        this.sqlreader = sqlreader;
+        this.sqlwriter = sqlwriter;
         universestatus = new UniverseStatus();
     }
     
     @Override
     public void run() {
         long start = System.currentTimeMillis();
-
-        //downloadGraphics();
-        //downloadRaces();
-        downloadSystems();
-        processDevsystems();
-        /*downloadFactions();
-        downloadCorporations();
-        downloadAlliances();
-        updateCorporations();*/
+        try {
+            initialize_businesslogic();
+            downloadSystems();
+            processDevsystems();
+        }
+        catch(DBException e) {
+            universestatus.addMessage(e.getMessage());
+        }
         
         long end = System.currentTimeMillis();
         universestatus.addMessage("Download time " + ((end - start)/1000) + "sec.");
         universestatus.setDone();
     }
     
-    
+    private SQLreader sqlreader;
+    private SQLTwriter sqlwriter;
+    private SQLTqueue transactionqueue;    
     private BLgraphic blgraphic;
     private BLrace blrace;
     private BLconstellation blconstellation;
@@ -282,7 +242,49 @@ public class UniverseService implements Runnable {
     int graphicscounter;
     private Iterator<Long> jsongraphicsI;
     private JSONObject jsontypegraphicdetails;
-    private TransactionOutput toutput;
+    private SQLToutput toutput;
+    
+    private void initialize_businesslogic() throws DBException {
+        transactionqueue = new SQLTqueue();
+        blgraphic = new BLgraphic(sqlreader);
+        blgraphic.setAuthenticated(true);
+        blrace = new BLrace(sqlreader);
+        blrace.setAuthenticated(true);
+        blconstellation = new BLconstellation(sqlreader);
+        blconstellation.setAuthenticated(true);
+        blsystem = new BLsystem(sqlreader);
+        blsystem.setAuthenticated(true);
+        blcorporation = new BLcorporation(sqlreader);
+        blcorporation.setAuthenticated(true);
+        blalliance = new BLalliance(sqlreader);
+        blalliance.setAuthenticated(true);
+        blregion = new BLregion(sqlreader);
+        blregion.setAuthenticated(true);
+        blfaction = new BLfaction(sqlreader);
+        blfaction.setAuthenticated(true);
+        blconstellationneighbour = new BLconstellation_neighbour(sqlreader);
+        blconstellationneighbour.setAuthenticated(true);
+        blregionneighbour = new BLregion_neighbour(sqlreader);
+        blregionneighbour.setAuthenticated(true);
+        blsecurityisland = new BLsecurity_island(sqlreader);
+        blsecurityisland.setAuthenticated(true);
+
+        blstation = new BLstation(blsystem);
+        blstation.setAuthenticated(true);
+        blstargate = new BLstargate(blsystem);
+        blstargate.setAuthenticated(true);
+        blstationservice = new BLstation_service(blsystem);
+        blstationservice.setAuthenticated(true);
+
+        universestatus.totalgraphics = blgraphic.count();
+        universestatus.totalraces = blrace.count()-1;
+        universestatus.totalconstellations = blconstellation.count();
+        universestatus.totalsystems = blsystem.count();
+        universestatus.totalstations = blstation.count();
+        universestatus.totalstargates = blstargate.count();
+        universestatus.totalcorporations = blcorporation.count();
+        universestatus.totalalliances = blalliance.count();
+    }
     
     private void downloadGraphics() {
         universestatus.addMessage("Download Graphics");
@@ -307,7 +309,7 @@ public class UniverseService implements Runnable {
         graphicscounter = 0;
         while(jsongraphicsI.hasNext())
             add_graphic_if_new((Long)jsongraphicsI.next());
-        toutput = blgraphic.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             universestatus.addMessage("GraphicsDownloader " + toutput.getErrormessage());
         run++;
@@ -320,7 +322,7 @@ public class UniverseService implements Runnable {
 
     private void download_and_save_graphic(long graphicid) throws DataException, DBException {
         jsontypegraphicdetails = Swagger.getGraphic(graphicid);
-        blgraphic.updateGraphic(jsontypegraphicdetails);
+        blgraphic.updateGraphic(transactionqueue, jsontypegraphicdetails);
         universestatus.incGraphics();
         graphicscounter++;
         if(graphicscounter==100)
@@ -329,7 +331,7 @@ public class UniverseService implements Runnable {
 
     private void save_graphics_buffer() throws DBException {
         graphicscounter = 0;
-        toutput = blgraphic.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             universestatus.addMessage("GraphicsDownloader " + toutput.getErrormessage());
     }
@@ -342,7 +344,7 @@ public class UniverseService implements Runnable {
             JSONObject jsonfactiondetails;
             while(jsonfactionI.hasNext())
                 update_race_in_database((JSONObject)jsonfactionI.next());
-            toutput = blrace.Commit2DB();
+            toutput = sqlwriter.Commit2DB(transactionqueue);
             if(toutput.getHaserror())
                 universestatus.addMessage("RacesDownloader " + toutput.getErrormessage());
         }
@@ -355,7 +357,7 @@ public class UniverseService implements Runnable {
     }
 
     private void update_race_in_database(JSONObject jsonfactiondetails) throws DBException, DataException {
-        blrace.updateRace(jsonfactiondetails);
+        blrace.updateRace(transactionqueue, jsonfactiondetails);
         universestatus.incRaces();
     }
     
@@ -397,8 +399,9 @@ public class UniverseService implements Runnable {
             add_hardcoded_station_60000001();
             
             universestatus.addMessage("Create empty systemjumps");
-            BLsystemjumps blsystemjumps = new BLsystemjumps();
-            blsystemjumps.createsystemjumps();
+            BLsystemjumps blsystemjumps = new BLsystemjumps(sqlreader);
+            blsystemjumps.createsystemjumps(transactionqueue);
+            sqlwriter.Commit2DB(transactionqueue);
             
             long end = System.currentTimeMillis();
             universestatus.addMessage("Download time Systems " + ((end - start)/1000) + "sec.");
@@ -419,32 +422,32 @@ public class UniverseService implements Runnable {
     private void add_hardcoded_station_60000001() throws DataException, DBException {
         Region unknownregion = new Region(1l);
         unknownregion.setName("Unknown");
-        blregion.insertupdateRegion(unknownregion);
-        blregion.Commit2DB();
+        blregion.insertupdateRegion(transactionqueue, unknownregion);
+        sqlwriter.Commit2DB(transactionqueue);
         Constellation unknownconstellation = new Constellation(1l);
         unknownconstellation.setRegionPK(unknownregion.getPrimaryKey());
         unknownconstellation.setName("Unknown");
-        blconstellation.insertupdateConstellation(unknownconstellation);
-        blconstellation.Commit2DB();
+        blconstellation.insertupdateConstellation(transactionqueue, unknownconstellation);
+        sqlwriter.Commit2DB(transactionqueue);
         eve.logicentity.System unknownsystem = new eve.logicentity.System(1l);
         unknownsystem.setConstellationPK(unknownconstellation.getPrimaryKey());
         unknownsystem.setName("Unknown");
-        blsystem.insertupdateSystem(unknownsystem);
-        blsystem.Commit2DB();
+        blsystem.insertupdateSystem(transactionqueue, unknownsystem);
+        sqlwriter.Commit2DB(transactionqueue);
         long missing_stationid = 60000001l;
         jsonstationdetails = Swagger.getStation(missing_stationid);
-        blstation.updateStation(jsonstationdetails);
+        blstation.updateStation(transactionqueue, jsonstationdetails);
         jsonservices = (JSONArray)jsonstationdetails.get("services");
         jsonservicesI = jsonservices.iterator();
         while(jsonservicesI.hasNext())
-            blstationservice.updateStation_service(new StationPK(missing_stationid), jsonservicesI.next());
-        blstation.Commit2DB();
+            blstationservice.updateStation_service(transactionqueue, new StationPK(missing_stationid), jsonservicesI.next());
+        sqlwriter.Commit2DB(transactionqueue);
     }
 
     private void save_new_systems() throws CustomException, DBException {
         while(jsonsystemsI.hasNext())
             save_system_if_new((Long)jsonsystemsI.next());
-        blsystem.Commit2DB();
+        sqlwriter.Commit2DB(transactionqueue);
         run++;
     }
 
@@ -497,9 +500,9 @@ public class UniverseService implements Runnable {
         long raceid_check = JSONConversion.getLong(jsonstationdetails, "race_id");
         if(!blrace.getRaceExists(new RacePK(raceid_check)))
             save_race(raceid_check);
-        blstation.updateStation(jsonstationdetails);
+        blstation.updateStation(transactionqueue, jsonstationdetails);
         universestatus.incStations();
-        toutput = blstation.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             universestatus.addMessage("UniverseDownloader Station " + toutput.getErrormessage());
     }
@@ -508,8 +511,8 @@ public class UniverseService implements Runnable {
         jsonservices = (JSONArray)jsonstationdetails.get("services");
         jsonservicesI = jsonservices.iterator();
         while(jsonservicesI.hasNext())
-            blstationservice.updateStation_service(new StationPK(stationid), jsonservicesI.next());
-        toutput = blstationservice.Commit2DB();
+            blstationservice.updateStation_service(transactionqueue, new StationPK(stationid), jsonservicesI.next());
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             universestatus.addMessage("UniverseDownloader Stationservice " + toutput.getErrormessage());
     }
@@ -519,8 +522,8 @@ public class UniverseService implements Runnable {
         race.setName("Unknown");
         race.setDescription("Not listed in Swagger");
         race.setFactionPK(new FactionPK(Swagger.EVE_CONST_FACTION_UNKNOWN));
-        blrace.insertRace(race);
-        toutput = blrace.Commit2DB();
+        blrace.insertRace(transactionqueue, race);
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             universestatus.addMessage("UniverseDownloader Racecheck " + toutput.getErrormessage());
     }
@@ -543,7 +546,7 @@ public class UniverseService implements Runnable {
         jsonstargatesI = jsonstargates.iterator();
         while(jsonstargatesI.hasNext())
             download_and_save_if_stargate_is_new();
-        toutput = blsystem.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             universestatus.addMessage("UniverseDownloader Stargate " + toutput.getErrormessage());
     }
@@ -557,14 +560,14 @@ public class UniverseService implements Runnable {
 
     private void download_and_save_stargate() throws DBException, DataException {
         jsonstargatedetails = Swagger.getStargate(stargateid);
-        blstargate.updateStargate(jsonstargatedetails);
+        blstargate.updateStargate(transactionqueue, jsonstargatedetails);
     }
 
     private void download_update_system(long systemid) throws DBException, DataException {
         jsonsystemdetails = Swagger.getSystem(systemid);
-        blsystem.updateSystem(jsonsystemdetails);
+        blsystem.updateSystem(transactionqueue, jsonsystemdetails);
         universestatus.incSystems();
-        toutput = blsystem.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             universestatus.addMessage("UniverseDownloader System " + toutput.getErrormessage());
     }
@@ -584,7 +587,7 @@ public class UniverseService implements Runnable {
     private void save_new_constellations() throws DBException, DataException {
         while(jsonconstellationsI.hasNext())
             save_constellation_if_new((Long)jsonconstellationsI.next());
-        blconstellation.Commit2DB();
+        sqlwriter.Commit2DB(transactionqueue);
         run++;
     }
 
@@ -596,21 +599,24 @@ public class UniverseService implements Runnable {
 
     private void download_and_save_constellation_details(long constellationid) throws DBException, DataException {
         jsonalliancedetails = Swagger.getConstellation(constellationid);
-        blconstellation.updateConstellation(jsonalliancedetails);
+        blconstellation.updateConstellation(transactionqueue, jsonalliancedetails);
     }
 
     private void download_update_regions() throws DataException, DBException {
         JSONArray jsonregions = Swagger.getRegions();
         JSONArray jsonregionnames = Swagger.getNames(jsonregions.toJSONString());
-        blregion.updateRegions(jsonregionnames);
+        blregion.updateRegions(transactionqueue, jsonregionnames);
     }
 
     private void processDevsystems() {
         universestatus.addMessage("Mark development Systems");
         try {
-            blsystem.postprocess();
-            blconstellation.postprocess();
-            blregion.postprocess();        
+            blsystem.postprocess(transactionqueue);
+            sqlwriter.Commit2DB(transactionqueue);
+            blconstellation.postprocess(transactionqueue);
+            sqlwriter.Commit2DB(transactionqueue);
+            blregion.postprocess(transactionqueue);     
+            sqlwriter.Commit2DB(transactionqueue);
         }
         catch(DBException | DataException e) {
             universestatus.addMessage(e.getMessage());
@@ -623,8 +629,8 @@ public class UniverseService implements Runnable {
             JSONArray jsonfaction = Swagger.getFactions();
             Iterator<JSONObject> jsonfactionI = jsonfaction.iterator();
             while(jsonfactionI.hasNext())
-                blfaction.updateFaction((JSONObject)jsonfactionI.next());
-            toutput = blfaction.Commit2DB();
+                blfaction.updateFaction(transactionqueue, (JSONObject)jsonfactionI.next());
+            toutput = sqlwriter.Commit2DB(transactionqueue);
             if(toutput.getHaserror())
                 universestatus.addMessage("FactionDownloader " + toutput.getErrormessage());
         }
@@ -657,7 +663,7 @@ public class UniverseService implements Runnable {
         while(jsoncorporationsI.hasNext()) {
             download_and_save_if_corporation_new((Long)jsoncorporationsI.next());
         }
-        toutput = blcorporation.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror()) {
             universestatus.addMessage("CorporationDownloader " + toutput.getErrormessage());
         }
@@ -673,7 +679,7 @@ public class UniverseService implements Runnable {
     private void download_and_save_corporation(long corporationid) throws DBException, DataException {
         jsoncorporationdetails = Swagger.getCorporation(corporationid);
         jsoncorporationdetails.put("corporation_id", corporationid);
-        blcorporation.updateCorporation(jsoncorporationdetails);
+        blcorporation.updateCorporation(transactionqueue, jsoncorporationdetails);
         corporationcounter++;
         if(corporationcounter==100)
             save_corporation_buffer();
@@ -681,7 +687,7 @@ public class UniverseService implements Runnable {
 
     private void save_corporation_buffer() throws DBException {
         corporationcounter = 0;
-        toutput = blcorporation.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             universestatus.addMessage("CorporationDownloader " + toutput.getErrormessage());
     }
@@ -712,7 +718,7 @@ public class UniverseService implements Runnable {
         while(jsonalliancesI.hasNext()) {
             download_and_save_if_alliance_is_new(jsonalliancesI.next());
         }
-        toutput = blalliance.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror()) {
             universestatus.addMessage("AllianceDownloader " + toutput.getErrormessage());
         }
@@ -737,20 +743,20 @@ public class UniverseService implements Runnable {
 
     private void save_alliance_buffer() throws DBException {
         alliancecounter = 0;
-        toutput = blalliance.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             universestatus.addMessage("AllianceDownloader " + toutput.getErrormessage());
     }
 
     private void save_corporation_data() throws DBException {
-        toutput = blcorporation.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             universestatus.addMessage("AllianceDownloader PlayerCorporation " + toutput.getErrormessage());
     }
 
     private void download_and_save_corporationexecutor_if_new() throws DBException, DataException {
         corporationpk_executor = alliance.getCorporationexecutor_corporationPK();
-        boolean corporation_has_new_data = !corporationpk_executor.equals(corporationpk_creator) && !blcorporation.getEntityExists(corporationpk_executor);
+        boolean corporation_has_new_data = !corporationpk_executor.equals(corporationpk_creator) && !blcorporation.getCorporationExists(corporationpk_executor);
         if(corporation_has_new_data)
             download_and_save_corporation();
     }
@@ -758,37 +764,37 @@ public class UniverseService implements Runnable {
     private void download_and_save_corporation() throws DBException, DataException {
         jsoncorporationdetails = Swagger.getCorporation(corporationpk_executor.getId());
         jsoncorporationdetails.put("corporation_id", corporationpk_executor.getId());
-        blcorporation.updateCorporation(jsoncorporationdetails);
+        blcorporation.updateCorporation(transactionqueue, jsoncorporationdetails);
         universestatus.incCorporations();
     }
 
     private void download_and_save_corporationcreator_if_new() throws DBException, DataException {
         corporationpk_creator = alliance.getCorporationcreator_corporationPK();
-        if(!blcorporation.getEntityExists(corporationpk_creator))
+        if(!blcorporation.getCorporationExists(corporationpk_creator))
             download_and_save_corporationcreator();
     }
 
     private void download_and_save_corporationcreator() throws DataException, DBException {
         jsoncorporationdetails = Swagger.getCorporation(corporationpk_creator.getId());
         jsoncorporationdetails.put("corporation_id", corporationpk_creator.getId());
-        blcorporation.updateCorporation(jsoncorporationdetails);
+        blcorporation.updateCorporation(transactionqueue, jsoncorporationdetails);
         universestatus.incCorporations();
     }
 
     private void download_and_save_alliance(long allianceid) throws DBException, DataException {
         jsonalliancedetails = Swagger.getAlliance(allianceid);
         jsonalliancedetails.put("alliance_id", allianceid);
-        alliance = blalliance.updateAlliance(jsonalliancedetails);
+        alliance = blalliance.updateAlliance(transactionqueue, jsonalliancedetails);
     }
 
     private void updateCorporations() {
         universestatus.addMessage("Update Corporation: Alliance");
         universestatus.corporations = 0;
         try {
-            ArrayList<Corporation> corporationlist = blcorporation.getAll();
+            ArrayList<Corporation> corporationlist = blcorporation.getCorporations();
             for(Corporation corporation: corporationlist)
                 download_and_save_corporation(corporation);
-            toutput = blcorporation.Commit2DB();
+            toutput = sqlwriter.Commit2DB(transactionqueue);
             if(toutput.getHaserror())
                 universestatus.addMessage("CorporationDownloader " + toutput.getErrormessage());
         }
@@ -807,7 +813,7 @@ public class UniverseService implements Runnable {
 
     private void link_alliance_to_corporation(Corporation corporation) throws DataException, DBException {
         corporation.setAlliancePK(new AlliancePK(JSONConversion.getLong(jsoncorporationdetails, "alliance_id")));
-        blcorporation.updateCorporation(corporation);
+        blcorporation.updateCorporation(transactionqueue, corporation);
         corporationcounter++;
         if(corporationcounter==100)
             save_corporationalliance_buffer();
@@ -815,7 +821,7 @@ public class UniverseService implements Runnable {
 
     private void save_corporationalliance_buffer() throws DBException {
         corporationcounter = 0;
-        toutput = blcorporation.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             universestatus.addMessage("Corporation update " + toutput.getErrormessage());
     }
@@ -827,11 +833,16 @@ public class UniverseService implements Runnable {
     private ArrayList<eve.logicentity.System> hisecsystems;
     
     private void createSecurityislands() throws DataException, DBException, CustomException {
-        blstargate.updateborders();
-        blsystem.updateborders();
-        blconstellationneighbour.createneighbours();
-        blregionneighbour.createneighbours();
-        blsecurityisland.deleteAll();
+        blstargate.updateborders(transactionqueue);
+        sqlwriter.Commit2DB(transactionqueue);
+        blsystem.updateborders(transactionqueue);
+        sqlwriter.Commit2DB(transactionqueue);
+        blconstellationneighbour.createneighbours(transactionqueue);
+        sqlwriter.Commit2DB(transactionqueue);
+        blregionneighbour.createneighbours(transactionqueue);
+        sqlwriter.Commit2DB(transactionqueue);
+        blsecurityisland.deleteAll(transactionqueue);
+        sqlwriter.Commit2DB(transactionqueue);
         securityislandid = 0;
         hisecsystems = blsystem.GetSystems_HiSecNoislands();
         while(!hisecsystems.isEmpty())
@@ -853,17 +864,17 @@ public class UniverseService implements Runnable {
         systemsfound = systemsI.hasNext();
         while(systemsI.hasNext())
             update_system_securityisland(systemsI.next());
-        blsystem.Commit2DB();
+        sqlwriter.Commit2DB(transactionqueue);
     }
 
     private void update_system_securityisland(eve.logicentity.System system) throws DataException, DBException {
         system.setSecurity_islandPK(securityisland.getPrimaryKey());
-        blsystem.trans_updateSystem(system);
+        blsystem.updateSystem(transactionqueue, system);
     }
 
     private void link_system_to_securityisland(eve.logicentity.System system) throws DataException, DBException {
         system.setSecurity_islandPK(securityisland.getPrimaryKey());
-        blsystem.updateSystem(system);
+        blsystem.updateSystem(transactionqueue, system);
     }
 
     private eve.logicentity.System create_securityisland_from_first_system() throws DataException, DBException {
@@ -871,7 +882,7 @@ public class UniverseService implements Runnable {
         securityisland = new Security_island(securityislandid);
         securityisland.setName(system.getName());
         securityisland.setSecurity_status(0.5d);
-        blsecurityisland.insertSecurity_island(securityisland);
+        blsecurityisland.insertSecurity_island(transactionqueue, securityisland);
         return system;
     }
 }

@@ -2,23 +2,25 @@
  * WSRoutetype.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 13.6.2022 18:20
  *
  */
 
 package eve.webservices;
 
+import base.restservices.RS_json_login;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.IRoutetypesearch;
 import eve.interfaces.webservice.WSIRoutetype;
 import eve.logicentity.Routetype;
 import eve.searchentity.Routetypesearch;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import general.exception.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.jws.WebMethod;
@@ -27,14 +29,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import eve.usecases.custom.Security_usecases;
 
 /**
  *
  * @author Franky Laseure
  */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSIRoutetype")
-public class WSRoutetype implements WSIRoutetype {
+public class WSRoutetype extends RS_json_login implements WSIRoutetype {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     private JSONArray toJSONArray(ArrayList routetypes) {
         JSONArray jsonroutetypes = new JSONArray();
         Iterator routetypesI = routetypes.iterator();
@@ -44,152 +49,168 @@ public class WSRoutetype implements WSIRoutetype {
         return jsonroutetypes;
     }
 
-    /**
-     * Web service operation
-     */
     //@WebMethod(operationName = "getRoutetypes")
     @Override
     public String getRoutetypes() {
         try {
-            BLroutetype blroutetype = new BLroutetype();
-            ArrayList routetypes = blroutetype.getAll();
-            JSONArray jsonroutetypes = toJSONArray(routetypes);
-            return jsonroutetypes.toJSONString();
+            Routetype_usecases routetypeusecases = new Routetype_usecases(loggedin);
+            return get_all_routetype(routetypeusecases);
         }
-        catch(DBException e) {
+        catch(CustomException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "search")
     @Override
-    public String search(String json) {
-        BLroutetype blroutetype = new BLroutetype();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Routetype routetype;
+    public String search(String jsonstring) {
         try {
-            Routetypesearch routetypesearch = JSONRoutetype.toRoutetypesearch((JSONObject)parser.parse(json));
-            ArrayList routetypes = blroutetype.search(routetypesearch);
-            JSONArray jsonroutetypes = toJSONArray(routetypes);
-            result = jsonroutetypes.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Routetype_usecases routetypeusecases = new Routetype_usecases(loggedin);
+            return search_routetype(routetypeusecases, json);
         }
-        catch(ParseException e) {
-            result = "";
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-            result = "";
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "getRoutetype")
     @Override
-    public String getRoutetype(String json) {
-        BLroutetype blroutetype = new BLroutetype();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Routetype routetype;
+    public String getRoutetype(String jsonstring) {
         try {
-            RoutetypePK routetypePK = JSONRoutetype.toRoutetypePK((JSONObject)parser.parse(json));
-            routetype = blroutetype.getRoutetype(routetypePK);
-            if(routetype!=null) {
-                result = JSONRoutetype.toJSON(routetype).toJSONString();
-            }
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Routetype_usecases routetypeusecases = new Routetype_usecases(loggedin);
+            return get_routetype_with_primarykey(routetypeusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "insertRoutetype")
     @Override
-    public void insertRoutetype(String json) {
-        BLroutetype blroutetype = new BLroutetype();
-        JSONParser parser = new JSONParser();
+    public void insertRoutetype(String jsonstring) {
         try {
-            IRoutetype routetype = JSONRoutetype.toRoutetype((JSONObject)parser.parse(json));
-            blroutetype.insertRoutetype(routetype);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Routetype_usecases routetypeusecases = new Routetype_usecases(loggedin);
+            insert_routetype(routetypeusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "updateRoutetype")
     @Override
-    public void updateRoutetype(String json) {
-        BLroutetype blroutetype = new BLroutetype();
-        JSONParser parser = new JSONParser();
+    public void updateRoutetype(String jsonstring) {
         try {
-            IRoutetype routetype = JSONRoutetype.toRoutetype((JSONObject)parser.parse(json));
-            blroutetype.updateRoutetype(routetype);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Routetype_usecases routetypeusecases = new Routetype_usecases(loggedin);
+            update_routetype(routetypeusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "deleteRoutetype")
     @Override
-    public void deleteRoutetype(String json) {
-        BLroutetype blroutetype = new BLroutetype();
-        JSONParser parser = new JSONParser();
+    public void deleteRoutetype(String jsonstring) {
         try {
-            IRoutetype routetype = JSONRoutetype.toRoutetype((JSONObject)parser.parse(json));
-            blroutetype.deleteRoutetype(routetype);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Routetype_usecases routetypeusecases = new Routetype_usecases(loggedin);
+            delete_routetype(routetypeusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getRoutetypes4security_island")
     @Override
-    public String getRoutetypes4security_island(String json) {
-        BLroutetype blroutetype = new BLroutetype();
-        JSONParser parser = new JSONParser();
-        Routetype routetype;
+    public String getRoutetypes4security_island(String jsonstring) {
         try {
-            ISecurity_islandPK security_islandPK = JSONSecurity_island.toSecurity_islandPK((JSONObject)parser.parse(json));
-            ArrayList routetypes = blroutetype.getRoutetypes4security_island(security_islandPK);
-            JSONArray jsonroutetypes = toJSONArray(routetypes);
-            return jsonroutetypes.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Routetype_usecases routetypeusecases = new Routetype_usecases(loggedin);
+            return get_routetype_with_foreignkey_security_island(routetypeusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4security_island")
     @Override
-    public void delete4security_island(String json) {
-        BLroutetype blroutetype = new BLroutetype();
-        JSONParser parser = new JSONParser();
-        Routetype routetype;
+    public void delete4security_island(String jsonstring) {
         try {
-            ISecurity_islandPK security_islandPK = JSONSecurity_island.toSecurity_islandPK((JSONObject)parser.parse(json));
-            blroutetype.delete4security_island(security_islandPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Routetype_usecases routetypeusecases = new Routetype_usecases(loggedin);
+            delete_routetype(routetypeusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
+
+    private String count_records(Routetype_usecases routetypeusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", routetypeusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_routetype(Routetype_usecases routetypeusecases) throws ParseException, CustomException {
+    	return JSONRoutetype.toJSONArray(routetypeusecases.get_all()).toJSONString();
+    }
+    
+    private String get_routetype_with_primarykey(Routetype_usecases routetypeusecases, JSONObject json) throws ParseException, CustomException {
+        IRoutetypePK routetypePK = (IRoutetypePK)JSONRoutetype.toRoutetypePK((JSONObject)json.get("routetypepk"));
+	return JSONRoutetype.toJSON(routetypeusecases.get_routetype_by_primarykey(routetypePK)).toJSONString();
+    }
+    
+    private String get_routetype_with_foreignkey_security_island(Routetype_usecases routetypeusecases, JSONObject json) throws ParseException, CustomException {
+        ISecurity_islandPK security_islandPK = (ISecurity_islandPK)JSONSecurity_island.toSecurity_islandPK((JSONObject)json.get("security_islandpk"));
+        return JSONRoutetype.toJSONArray(routetypeusecases.get_routetype_with_foreignkey_security_island(security_islandPK)).toJSONString();
+    }
+    
+    private String search_routetype(Routetype_usecases routetypeusecases, JSONObject json) throws ParseException, CustomException {
+        IRoutetypesearch search = (IRoutetypesearch)JSONRoutetype.toRoutetypesearch((JSONObject)json.get("search"));
+        return JSONRoutetype.toJSONArray(routetypeusecases.search_routetype(search)).toJSONString();
+    }
+    
+    private String search_routetype_count(Routetype_usecases routetypeusecases, JSONObject json) throws ParseException, CustomException {
+        IRoutetypesearch routetypesearch = (IRoutetypesearch)JSONRoutetype.toRoutetypesearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", routetypeusecases.search_routetype_count(routetypesearch));
+        return jsonsearchcount.toJSONString();
+    }
+
+    private void insert_routetype(Routetype_usecases routetypeusecases, JSONObject json) throws ParseException, CustomException {
+        IRoutetype routetype = (IRoutetype)JSONRoutetype.toRoutetype((JSONObject)json.get("routetype"));
+        routetypeusecases.insertRoutetype(routetype);
+        setReturnstatus("OK");
+    }
+
+    private void update_routetype(Routetype_usecases routetypeusecases, JSONObject json) throws ParseException, CustomException {
+        IRoutetype routetype = (IRoutetype)JSONRoutetype.toRoutetype((JSONObject)json.get("routetype"));
+        routetypeusecases.updateRoutetype(routetype);
+        setReturnstatus("OK");
+    }
+
+    private void delete_routetype(Routetype_usecases routetypeusecases, JSONObject json) throws ParseException, CustomException {
+        IRoutetype routetype = (IRoutetype)JSONRoutetype.toRoutetype((JSONObject)json.get("routetype"));
+        routetypeusecases.deleteRoutetype(routetype);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Security_island(Routetype_usecases routetypeusecases, JSONObject json) throws ParseException, CustomException {
+        ISecurity_islandPK security_islandPK = (ISecurity_islandPK)JSONSecurity_island.toSecurity_islandPK((JSONObject)json.get("security_islandpk"));
+        routetypeusecases.delete_all_containing_Security_island(security_islandPK);
+        setReturnstatus("OK");
+    }
 
 }
 

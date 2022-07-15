@@ -2,23 +2,25 @@
  * WSConstellation.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 13.6.2022 18:20
  *
  */
 
 package eve.webservices;
 
+import base.restservices.RS_json_login;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.IConstellationsearch;
 import eve.interfaces.webservice.WSIConstellation;
 import eve.logicentity.Constellation;
 import eve.searchentity.Constellationsearch;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import general.exception.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.jws.WebMethod;
@@ -27,14 +29,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import eve.usecases.custom.Security_usecases;
 
 /**
  *
  * @author Franky Laseure
  */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSIConstellation")
-public class WSConstellation implements WSIConstellation {
+public class WSConstellation extends RS_json_login implements WSIConstellation {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     private JSONArray toJSONArray(ArrayList constellations) {
         JSONArray jsonconstellations = new JSONArray();
         Iterator constellationsI = constellations.iterator();
@@ -44,204 +49,206 @@ public class WSConstellation implements WSIConstellation {
         return jsonconstellations;
     }
 
-    /**
-     * Web service operation
-     */
     //@WebMethod(operationName = "getConstellations")
     @Override
     public String getConstellations() {
         try {
-            BLconstellation blconstellation = new BLconstellation();
-            ArrayList constellations = blconstellation.getAll();
-            JSONArray jsonconstellations = toJSONArray(constellations);
-            return jsonconstellations.toJSONString();
+            Constellation_usecases constellationusecases = new Constellation_usecases(loggedin);
+            return get_all_constellation(constellationusecases);
         }
-        catch(DBException e) {
+        catch(CustomException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "search")
     @Override
-    public String search(String json) {
-        BLconstellation blconstellation = new BLconstellation();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Constellation constellation;
+    public String search(String jsonstring) {
         try {
-            Constellationsearch constellationsearch = JSONConstellation.toConstellationsearch((JSONObject)parser.parse(json));
-            ArrayList constellations = blconstellation.search(constellationsearch);
-            JSONArray jsonconstellations = toJSONArray(constellations);
-            result = jsonconstellations.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Constellation_usecases constellationusecases = new Constellation_usecases(loggedin);
+            return search_constellation(constellationusecases, json);
         }
-        catch(ParseException e) {
-            result = "";
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-            result = "";
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "getConstellation")
     @Override
-    public String getConstellation(String json) {
-        BLconstellation blconstellation = new BLconstellation();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Constellation constellation;
+    public String getConstellation(String jsonstring) {
         try {
-            ConstellationPK constellationPK = JSONConstellation.toConstellationPK((JSONObject)parser.parse(json));
-            constellation = blconstellation.getConstellation(constellationPK);
-            if(constellation!=null) {
-                result = JSONConstellation.toJSON(constellation).toJSONString();
-            }
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Constellation_usecases constellationusecases = new Constellation_usecases(loggedin);
+            return get_constellation_with_primarykey(constellationusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "insertConstellation")
     @Override
-    public void insertConstellation(String json) {
-        BLconstellation blconstellation = new BLconstellation();
-        JSONParser parser = new JSONParser();
+    public void insertConstellation(String jsonstring) {
         try {
-            IConstellation constellation = JSONConstellation.toConstellation((JSONObject)parser.parse(json));
-            blconstellation.insertConstellation(constellation);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Constellation_usecases constellationusecases = new Constellation_usecases(loggedin);
+            insert_constellation(constellationusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "updateConstellation")
     @Override
-    public void updateConstellation(String json) {
-        BLconstellation blconstellation = new BLconstellation();
-        JSONParser parser = new JSONParser();
+    public void updateConstellation(String jsonstring) {
         try {
-            IConstellation constellation = JSONConstellation.toConstellation((JSONObject)parser.parse(json));
-            blconstellation.updateConstellation(constellation);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Constellation_usecases constellationusecases = new Constellation_usecases(loggedin);
+            update_constellation(constellationusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "deleteConstellation")
     @Override
-    public void deleteConstellation(String json) {
-        BLconstellation blconstellation = new BLconstellation();
-        JSONParser parser = new JSONParser();
+    public void deleteConstellation(String jsonstring) {
         try {
-            IConstellation constellation = JSONConstellation.toConstellation((JSONObject)parser.parse(json));
-            blconstellation.deleteConstellation(constellation);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Constellation_usecases constellationusecases = new Constellation_usecases(loggedin);
+            delete_constellation(constellationusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getConstellations4region")
     @Override
-    public String getConstellations4region(String json) {
-        BLconstellation blconstellation = new BLconstellation();
-        JSONParser parser = new JSONParser();
-        Constellation constellation;
+    public String getConstellations4region(String jsonstring) {
         try {
-            IRegionPK regionPK = JSONRegion.toRegionPK((JSONObject)parser.parse(json));
-            ArrayList constellations = blconstellation.getConstellations4region(regionPK);
-            JSONArray jsonconstellations = toJSONArray(constellations);
-            return jsonconstellations.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Constellation_usecases constellationusecases = new Constellation_usecases(loggedin);
+            return get_constellation_with_foreignkey_region(constellationusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4region")
     @Override
-    public void delete4region(String json) {
-        BLconstellation blconstellation = new BLconstellation();
-        JSONParser parser = new JSONParser();
-        Constellation constellation;
+    public void delete4region(String jsonstring) {
         try {
-            IRegionPK regionPK = JSONRegion.toRegionPK((JSONObject)parser.parse(json));
-            blconstellation.delete4region(regionPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Constellation_usecases constellationusecases = new Constellation_usecases(loggedin);
+            delete_constellation(constellationusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getConstellations4constellation_neighbourNeighbour")
     @Override
-    public String getConstellations4constellation_neighbourNeighbour(String json) {
-        BLconstellation blconstellation = new BLconstellation();
-        JSONParser parser = new JSONParser();
-        Constellation constellation;
+    public String getConstellations4constellation_neighbourNeighbour(String jsonstring) {
         try {
-            String result = null;
-            IConstellation_neighbourPK constellation_neighbourNeighbourPK = JSONConstellation_neighbour.toConstellation_neighbourPK((JSONObject)parser.parse(json));
-            constellation = (Constellation)blconstellation.getConstellation_neighbourneighbour(constellation_neighbourNeighbourPK);
-            if(constellation!=null) {
-                result = JSONConstellation.toJSON(constellation).toJSONString();
-            }
-            return result;
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Constellation_usecases constellationusecases = new Constellation_usecases(loggedin);
+            return get_constellation_with_externalforeignkey_constellation_neighbourNeighbour(constellationusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "getConstellations4constellation_neighbourConstellation")
     @Override
-    public String getConstellations4constellation_neighbourConstellation(String json) {
-        BLconstellation blconstellation = new BLconstellation();
-        JSONParser parser = new JSONParser();
-        Constellation constellation;
+    public String getConstellations4constellation_neighbourConstellation(String jsonstring) {
         try {
-            String result = null;
-            IConstellation_neighbourPK constellation_neighbourConstellationPK = JSONConstellation_neighbour.toConstellation_neighbourPK((JSONObject)parser.parse(json));
-            constellation = (Constellation)blconstellation.getConstellation_neighbourconstellation(constellation_neighbourConstellationPK);
-            if(constellation!=null) {
-                result = JSONConstellation.toJSON(constellation).toJSONString();
-            }
-            return result;
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Constellation_usecases constellationusecases = new Constellation_usecases(loggedin);
+            return get_constellation_with_externalforeignkey_constellation_neighbourConstellation(constellationusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
+
+    private String count_records(Constellation_usecases constellationusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", constellationusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_constellation(Constellation_usecases constellationusecases) throws ParseException, CustomException {
+    	return JSONConstellation.toJSONArray(constellationusecases.get_all()).toJSONString();
+    }
+    
+    private String get_constellation_with_primarykey(Constellation_usecases constellationusecases, JSONObject json) throws ParseException, CustomException {
+        IConstellationPK constellationPK = (IConstellationPK)JSONConstellation.toConstellationPK((JSONObject)json.get("constellationpk"));
+	return JSONConstellation.toJSON(constellationusecases.get_constellation_by_primarykey(constellationPK)).toJSONString();
+    }
+    
+    private String get_constellation_with_foreignkey_region(Constellation_usecases constellationusecases, JSONObject json) throws ParseException, CustomException {
+        IRegionPK regionPK = (IRegionPK)JSONRegion.toRegionPK((JSONObject)json.get("regionpk"));
+        return JSONConstellation.toJSONArray(constellationusecases.get_constellation_with_foreignkey_region(regionPK)).toJSONString();
+    }
+    
+    private String get_constellation_with_externalforeignkey_constellation_neighbourNeighbour(Constellation_usecases constellationusecases, JSONObject json) throws ParseException, CustomException {
+        IConstellation_neighbourPK constellation_neighbourNeighbourPK = (IConstellation_neighbourPK)JSONConstellation_neighbour.toConstellation_neighbourPK((JSONObject)json.get("constellation_neighbourpk"));
+        return JSONConstellation.toJSON(constellationusecases.get_constellation_with_externalforeignkey_constellation_neighbourNeighbour(constellation_neighbourNeighbourPK)).toJSONString();
+    }
+    
+    private String get_constellation_with_externalforeignkey_constellation_neighbourConstellation(Constellation_usecases constellationusecases, JSONObject json) throws ParseException, CustomException {
+        IConstellation_neighbourPK constellation_neighbourConstellationPK = (IConstellation_neighbourPK)JSONConstellation_neighbour.toConstellation_neighbourPK((JSONObject)json.get("constellation_neighbourpk"));
+        return JSONConstellation.toJSON(constellationusecases.get_constellation_with_externalforeignkey_constellation_neighbourConstellation(constellation_neighbourConstellationPK)).toJSONString();
+    }
+    
+    private String search_constellation(Constellation_usecases constellationusecases, JSONObject json) throws ParseException, CustomException {
+        IConstellationsearch search = (IConstellationsearch)JSONConstellation.toConstellationsearch((JSONObject)json.get("search"));
+        return JSONConstellation.toJSONArray(constellationusecases.search_constellation(search)).toJSONString();
+    }
+    
+    private String search_constellation_count(Constellation_usecases constellationusecases, JSONObject json) throws ParseException, CustomException {
+        IConstellationsearch constellationsearch = (IConstellationsearch)JSONConstellation.toConstellationsearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", constellationusecases.search_constellation_count(constellationsearch));
+        return jsonsearchcount.toJSONString();
+    }
+
+    private void insert_constellation(Constellation_usecases constellationusecases, JSONObject json) throws ParseException, CustomException {
+        IConstellation constellation = (IConstellation)JSONConstellation.toConstellation((JSONObject)json.get("constellation"));
+        constellationusecases.insertConstellation(constellation);
+        setReturnstatus("OK");
+    }
+
+    private void update_constellation(Constellation_usecases constellationusecases, JSONObject json) throws ParseException, CustomException {
+        IConstellation constellation = (IConstellation)JSONConstellation.toConstellation((JSONObject)json.get("constellation"));
+        constellationusecases.updateConstellation(constellation);
+        setReturnstatus("OK");
+    }
+
+    private void delete_constellation(Constellation_usecases constellationusecases, JSONObject json) throws ParseException, CustomException {
+        IConstellation constellation = (IConstellation)JSONConstellation.toConstellation((JSONObject)json.get("constellation"));
+        constellationusecases.deleteConstellation(constellation);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Region(Constellation_usecases constellationusecases, JSONObject json) throws ParseException, CustomException {
+        IRegionPK regionPK = (IRegionPK)JSONRegion.toRegionPK((JSONObject)json.get("regionpk"));
+        constellationusecases.delete_all_containing_Region(regionPK);
+        setReturnstatus("OK");
+    }
 
 }
 

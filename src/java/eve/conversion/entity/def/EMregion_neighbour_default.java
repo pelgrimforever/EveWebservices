@@ -1,16 +1,14 @@
 /*
- * EMalliance_default.java
- *
  * Created on Okt 8, 2021
- * Generated on 20.4.2022 10:3
- *
+ * Generated on 13.6.2022 11:21
  */
 package eve.conversion.entity.def;
 
+import data.interfaces.db.*;
 import data.gis.shape.*;
-import data.interfaces.db.LogicEntity;
 import data.json.piJson;
 import db.TableMapper;
+import eve.eveDatabaseproperties;
 import eve.entity.pk.*;
 import eve.logicentity.Region_neighbour;
 import java.sql.Date;
@@ -21,11 +19,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
- * EMregion_neighbour_default
- * Maps SQL ResultSet to eve.logicentity objects
  * @author Franky Laseure
  */
-public class EMregion_neighbour_default implements TableMapper {
+public class EMregion_neighbour_default implements eveDatabaseproperties, TableMapper {
     
     public static final String SQLWhere1 = "region = :region_neighbour.region: and neighbour = :region_neighbour.neighbour:";
     public static final String SQLSelect1 = "select region_neighbour.* from region_neighbour where " + SQLWhere1;
@@ -45,6 +41,15 @@ public class EMregion_neighbour_default implements TableMapper {
     public static final String SQLSelect4regionNeighbour = "select * from region_neighbour where " + SQLWhereregionNeighbour + OrderBy;
     public static final String SQLDelete4regionNeighbour = "delete from region_neighbour where " + SQLWhereregionNeighbour;
 
+    @Override
+    public String getDbtool() { return databasetool; }
+    
+    @Override
+    public String getConnectionpool() { return connectionpool; }
+    
+    @Override
+    public String getTable() { return "region_neighbour"; }
+
     /**
      * 
      * @return SQL where clause for one Region_neighbour (=Primarykey)
@@ -59,27 +64,14 @@ public class EMregion_neighbour_default implements TableMapper {
     @Override
     public String getSQLSelect1() { return SQLSelect1; };
 
-    /**
-     * @return Select statement for Primary key, with count field as result
-     * count = 1: exists
-     * count = 0: not found
-     */
     @Override
     public String getSQLPKExcists() { return SQLSelectPKexists; };
     
-    /**
-     * 
-     * @return SQL select statement for all Region_neighbours
-     */
     @Override
     public String getSQLSelectAll() { return SQLSelectAll; };
 
-    /**
-     * Map ResultSet Field values to Region_neighbour
-     * @param dbresult: Database ResultSet
-     */
     @Override
-    public Object mapResultSet2Entity(ResultSet dbresult) throws SQLException {
+    public Entity mapResultSet2Entity(ResultSet dbresult) throws SQLException {
         Region_neighbourPK region_neighbourPK = null;
         Region_neighbour region_neighbour;
         if(dbresult==null) {

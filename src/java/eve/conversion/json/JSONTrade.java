@@ -1,9 +1,6 @@
 /*
- * JSONTrade.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.0.2022 19:32
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONTrade {
@@ -41,10 +37,6 @@ public class JSONTrade {
         return jsontrades;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ITradePK tradePK) {
         JSONObject json = null;
         if(tradePK!=null) {
@@ -55,10 +47,6 @@ public class JSONTrade {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ITrade trade) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(trade.getPrimaryKey()));
@@ -79,10 +67,6 @@ public class JSONTrade {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Tradesearch tradesearch) {
         JSONObject json = new JSONObject();
         if(tradesearch.used()) {
@@ -124,11 +108,6 @@ public class JSONTrade {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Tradesearch toTradesearch(JSONObject json) {
         Tradesearch tradesearch = new Tradesearch();
         tradesearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

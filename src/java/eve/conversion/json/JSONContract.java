@@ -1,9 +1,6 @@
 /*
- * JSONContract.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 6.0.2022 19:22
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONContract {
@@ -41,10 +37,6 @@ public class JSONContract {
         return jsoncontracts;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IContractPK contractPK) {
         JSONObject json = null;
         if(contractPK!=null) {
@@ -54,10 +46,6 @@ public class JSONContract {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IContract contract) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(contract.getPrimaryKey()));
@@ -84,10 +72,6 @@ public class JSONContract {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Contractsearch contractsearch) {
         JSONObject json = new JSONObject();
         if(contractsearch.used()) {
@@ -123,11 +107,6 @@ public class JSONContract {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Contractsearch toContractsearch(JSONObject json) {
         Contractsearch contractsearch = new Contractsearch();
         contractsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

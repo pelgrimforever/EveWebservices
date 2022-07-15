@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.view_userbp;
@@ -16,10 +16,8 @@ import eve.interfaces.servlet.IView_userbpOperation;
 import eve.usecases.View_userbp_usecases;
 import eve.logicview.View_userbp;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -46,14 +44,15 @@ import org.json.simple.parser.ParseException;
 @Path("rsview_userbp_select")
 public class RSView_userbp_select extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
-            IView_userbp view_userbp;
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             View_userbp_usecases view_userbpusecases = new View_userbp_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations

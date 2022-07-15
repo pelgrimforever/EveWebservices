@@ -1,14 +1,11 @@
 /*
- * BLview_order.java
- *
  * Created on March 26, 2007, 5:44 PM
  * Generated on 18.6.2021 14:35
- *
  */
 
 package eve.BusinessObject.Logic;
 
-import db.SQLparameters;
+import db.*;
 import general.exception.DBException;
 import eve.logicview.View_order;
 import eve.BusinessObject.view.Bview_order;
@@ -23,86 +20,46 @@ import general.exception.DataException;
 import java.util.ArrayList;
 
 /**
- * Business Logic Entity class BLview_order
- *
- * Class for manipulating data- and database objects
- * for View View_order and direct related data
- * This class is only generated once
- * Implement here all additional business logic
- *
  * @author Franky Laseure
  */
 public class BLview_order extends Bview_order {
 //Metacoder: NO AUTHOMATIC UPDATE
 	
-    /**
-     * Constructor, sets View_order as default Entity
-     */
-    public BLview_order() {
-        this.setLogginrequired(true);
+    public BLview_order(SQLreader sqlreader) {
+        super(sqlreader);
+        setLogginrequired(true);
     }
 
     public ArrayList getOrders4Wishlist(String username) throws DBException {
         Object[][] parameter = {{ "username", username }};
         SQLparameters sqlparameters = new SQLparameters(parameter);
-        return this.getEntities(EMview_order.SQLSelect4wishlist, sqlparameters);
+        return viewio.getEntities(EMview_order.SQLSelect4wishlist, sqlparameters);
     }
     
-    /**
-     * get View_order line for order primary key
-     * @param orderPK
-     * @return View_order
-     * @throws DBException
-     */
     public View_order getView_order(IOrdersPK orderPK) throws DBException {
-        return (View_order)getEntity(EMview_order.SQLSelectOne, orderPK.getSQLprimarykey());
+        return (View_order)viewio.getEntity(EMview_order.SQLSelectOne, orderPK.getSQLprimarykey());
     }
 
-    /**
-     * get all View_order sell orders for evetype
-     * @param evetypePK
-     * @return ArrayList of View_order objects
-     * @throws DBException
-     */
     public ArrayList getView_orders4evetype_sell(EvetypePK evetypePK) throws DBException {
-        return getEntities(EMview_order.SQLSelect4Evetypesell, evetypePK.getSQLprimarykey());
+        return viewio.getEntities(EMview_order.SQLSelect4Evetypesell, evetypePK.getSQLprimarykey());
     }
 
-    /**
-     * get all View_order sell orders for evetype / region
-     * @param evetypePK
-     * @return ArrayList of View_order objects
-     * @throws DBException
-     */
     public ArrayList getView_orders4evetyperegion_sell(EvetypePK evetypePK, RegionPK regionPK) throws DBException {
         SQLparameters sqlparameters = new SQLparameters(evetypePK.getSQLprimarykey(), regionPK.getSQLprimarykey());
-        return getEntities(EMview_order.SQLSelect4Evetyperegionsell, sqlparameters);
+        return viewio.getEntities(EMview_order.SQLSelect4Evetyperegionsell, sqlparameters);
     }
 
-    /**
-     * get all View_order buy orders for evetype
-     * @param evetypePK
-     * @return ArrayList of View_order objects
-     * @throws DBException
-     */
     public ArrayList getView_orders4evetype_buy(EvetypePK evetypePK) throws DBException {
-        return getEntities(EMview_order.SQLSelect4Evetypebuy, evetypePK.getSQLprimarykey());
+        return viewio.getEntities(EMview_order.SQLSelect4Evetypebuy, evetypePK.getSQLprimarykey());
     }
 
-    /**
-     * select all sell orders with very low price, this is set hard coded at 1/10 of average buy price
-     * @param maxcargo max volume of 1 item
-     * @return ArrayList
-     * @throws DBException 
-     */
     public ArrayList getView_ordersAtselllowprice(SystemPK systemPK) throws DBException, DataException {
-        //load usersettings
-        BLsyssettings blsyssettings = new BLsyssettings();
+        BLsyssettings blsyssettings = new BLsyssettings(viewio.getSQLreader());
         Syssettings set_maxcargo = blsyssettings.getSyssettings(ISyssettings.MAXCARGO);
         float max_cargo = Float.valueOf(set_maxcargo.getValue());
         Object[][] parameters = { { "maxcargo", max_cargo }, { "pricefactor", 10 } };
         SQLparameters sqlparameters = new SQLparameters(parameters);
         sqlparameters.add(systemPK.getSQLprimarykey());
-        return getEntities(EMview_order.SQLSelect4selllowprice, sqlparameters);
+        return viewio.getEntities(EMview_order.SQLSelect4selllowprice, sqlparameters);
     }
 }

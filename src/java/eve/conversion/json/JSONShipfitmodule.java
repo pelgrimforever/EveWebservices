@@ -1,9 +1,6 @@
 /*
- * JSONShipfitmodule.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.11.2021 15:34
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONShipfitmodule {
@@ -41,10 +37,6 @@ public class JSONShipfitmodule {
         return jsonshipfitmodules;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IShipfitmodulePK shipfitmodulePK) {
         JSONObject json = null;
         if(shipfitmodulePK!=null) {
@@ -56,10 +48,6 @@ public class JSONShipfitmodule {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IShipfitmodule shipfitmodule) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(shipfitmodule.getPrimaryKey()));
@@ -69,10 +57,6 @@ public class JSONShipfitmodule {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Shipfitmodulesearch shipfitmodulesearch) {
         JSONObject json = new JSONObject();
         if(shipfitmodulesearch.used()) {
@@ -114,11 +98,6 @@ public class JSONShipfitmodule {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Shipfitmodulesearch toShipfitmodulesearch(JSONObject json) {
         Shipfitmodulesearch shipfitmodulesearch = new Shipfitmodulesearch();
         shipfitmodulesearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

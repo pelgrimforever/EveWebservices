@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.constellation_neighbour;
@@ -61,7 +61,7 @@ public class Constellation_neighbour_delete extends SecurityDataServlet {
 
     private void delete_constellation_neighbour(Constellation_neighbour_usecases constellation_neighbourusecases) throws CustomException {
         IConstellation_neighbour constellation_neighbour = (IConstellation_neighbour)parser.getJavaObject("constellation_neighbour");
-        constellation_neighbourusecases.securedeleteConstellation_neighbour(constellation_neighbour);
+        constellation_neighbourusecases.deleteConstellation_neighbour(constellation_neighbour);
     }
     
     @Override

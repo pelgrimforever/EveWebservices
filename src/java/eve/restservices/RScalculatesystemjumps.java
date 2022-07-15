@@ -2,7 +2,8 @@ package eve.restservices;
 
 import base.restservices.RS_json_admin;
 import eve.BusinessObject.service.SystemjumpsService;
-import eve.usecases.Security_usecases;
+import eve.usecases.custom.Security_usecases;
+import eve.usecases.custom.Calculatesystemjumps_usecase;
 import general.exception.CustomException;
 import java.io.IOException;
 import java.util.Iterator;
@@ -21,41 +22,26 @@ import org.json.simple.parser.ParseException;
 @Path("rscalculatesystemjumps")
 public class RScalculatesystemjumps extends RS_json_admin {
     
-    private static Thread jumpcalculator = null;
-    private static SystemjumpsService systemjumpsservice = null;
-
+    private Security_usecases security_usecases = new Security_usecases();
+    private Calculatesystemjumps_usecase calculatesystemjumps_usecase = new Calculatesystemjumps_usecase();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
-            setIsadmin(Security_usecases.isadmin(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            setIsadmin(security_usecases.isadmin(authorisationstring));
             boolean start_requested = json.containsKey("start") && (Boolean)json.get("start");
             boolean stop_requested = json.containsKey("stop") && (Boolean)json.get("stop");
-            boolean issystemjumpservice_running = systemjumpsservice!=null;
-            boolean issystemjumpservice_done = issystemjumpservice_running && systemjumpsservice.getStatus().isDone();
-            boolean isjumpcalculator_not_running = jumpcalculator==null;
-            
-            if(isadmin && start_requested)
-                start_reset_jumpservice(issystemjumpservice_done, isjumpcalculator_not_running);
-            if(isadmin && stop_requested && issystemjumpservice_running)
-                stop_jumpservice();
-            
-            result = build_JSON_response(issystemjumpservice_running).toJSONString();
+            calculatesystemjumps_usecase.processRequest(isadmin, start_requested, stop_requested);
+            result = build_JSON_response(calculatesystemjumps_usecase.isServiceRunning()).toJSONString();
         }
         catch(ParseException | CustomException | IOException e) {
-            result = returnstatus(e.getMessage());
+            setReturnstatus(e.getMessage());
         }
         return result;
-    }
-
-    private void start_reset_jumpservice(boolean issystemjumpservice_done, boolean isjumpcalculator_not_running) {
-        if(issystemjumpservice_done)
-            resetSystemjumpsservice();
-        if(isjumpcalculator_not_running)
-            start_jumpservice();
     }
 
     private JSONObject build_JSON_response(boolean issystemjumpservice_running) {
@@ -72,7 +58,7 @@ public class RScalculatesystemjumps extends RS_json_admin {
     }
 
     private void build_JSON_response_jumpservicedetails(JSONObject jsoncalcjump, JSONArray jsonmessages, JSONObject jsonstatus) {
-        SystemjumpsService.SystemjumpsStatus systemjumpsstatus = systemjumpsservice.getStatus();
+        SystemjumpsService.SystemjumpsStatus systemjumpsstatus = calculatesystemjumps_usecase.getStatus();
         jsoncalcjump.put("done", systemjumpsstatus.isDone());
         jsoncalcjump.put("totalcombinations", systemjumpsstatus.getTotalcombinations());
         jsoncalcjump.put("combinations", systemjumpsstatus.getCombinations());
@@ -81,32 +67,6 @@ public class RScalculatesystemjumps extends RS_json_admin {
             jsonmessages.add(messagesI.next());
         jsonstatus.put("done", systemjumpsstatus.isDone());
         if(systemjumpsstatus.isDone())
-            resetSystemjumpsservice();
+            calculatesystemjumps_usecase.resetSystemjumpsservice();
     }
-    
-    private void stop_jumpservice() {
-        systemjumpsservice.stoprunning();
-        jumpcalculator.interrupt();
-        jumpcalculator = null;
-        systemjumpsservice = null;
-    }
-
-    private void start_jumpservice() {
-        systemjumpsservice = new SystemjumpsService();
-        jumpcalculator = new Thread(systemjumpsservice);
-        jumpcalculator.setPriority(Thread.MIN_PRIORITY);
-        jumpcalculator.start();
-    }
-
-    private void resetSystemjumpsservice() {
-        jumpcalculator = null;
-        systemjumpsservice = null;
-    }
-    
-    private String returnstatus(String status) {
-        JSONObject json = new JSONObject();
-        json.put("status", status);
-        return json.toJSONString();
-    }
-    
 }

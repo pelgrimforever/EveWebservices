@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.station_service;
@@ -61,7 +61,7 @@ public class Station_service_insert extends SecurityDataServlet {
 
     private void insert_station_service(Station_service_usecases station_serviceusecases) throws CustomException {
         IStation_service station_service = (IStation_service)parser.getJavaObject("station_service");
-        station_serviceusecases.secureinsertStation_service(station_service);
+        station_serviceusecases.insertStation_service(station_service);
     }
     
     @Override

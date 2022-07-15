@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Contractitem;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Contractitem_usecases {
 
     private boolean loggedin = false;
-    private BLcontractitem blcontractitem = new BLcontractitem();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLcontractitem blcontractitem = new BLcontractitem(sqlreader);
     
     public Contractitem_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Contractitem_usecases {
     }
     
     public boolean getContractitemExists(IContractitemPK contractitemPK) throws DBException {
-        return blcontractitem.getEntityExists(contractitemPK);
+        return blcontractitem.getContractitemExists(contractitemPK);
     }
     
     public Contractitem get_contractitem_by_primarykey(IContractitemPK contractitemPK) throws DBException {
@@ -73,16 +79,35 @@ public class Contractitem_usecases {
         return blcontractitem.searchcount(contractitemsearch);
     }
 
-    public void secureinsertContractitem(IContractitem contractitem) throws DBException, DataException {
-        blcontractitem.secureinsertContractitem(contractitem);
+    public void insertContractitem(IContractitem contractitem) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blcontractitem.insertContractitem(tq, contractitem);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateContractitem(IContractitem contractitem) throws DBException, DataException {
-        blcontractitem.secureupdateContractitem(contractitem);
+    public void updateContractitem(IContractitem contractitem) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blcontractitem.updateContractitem(tq, contractitem);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteContractitem(IContractitem contractitem) throws DBException, DataException {
-        blcontractitem.securedeleteContractitem(contractitem);
+    public void deleteContractitem(IContractitem contractitem) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blcontractitem.deleteContractitem(tq, contractitem);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Evetype(IEvetypePK evetypePK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blcontractitem.delete4evetype(tq, evetypePK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Contract(IContractPK contractPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blcontractitem.delete4contract(tq, contractPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.shipfitorder;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IShipfitorderOperation;
 import eve.logicentity.Shipfitorder;
 import eve.searchentity.Shipfitordersearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,19 +46,27 @@ import org.json.simple.parser.ParseException;
 @Path("rsshipfitorder_delete")
 public class RSShipfitorder_delete extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Shipfitorder_usecases shipfitorderusecases = new Shipfitorder_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operation) {
                 case IShipfitorderOperation.DELETE_SHIPFITORDER:
+                    delete_shipfitorder(shipfitorderusecases, json);
+                    break;
+                case IShipfitorderOperation.DELETE_Shipfit:
+                    delete_shipfitorder(shipfitorderusecases, json);
+                    break;
+                case IShipfitorderOperation.DELETE_Evetype:
                     delete_shipfitorder(shipfitorderusecases, json);
                     break;
 //Custom code, do not change this line
@@ -80,8 +86,21 @@ public class RSShipfitorder_delete extends RS_json_login {
 
     private void delete_shipfitorder(Shipfitorder_usecases shipfitorderusecases, JSONObject json) throws ParseException, CustomException {
         IShipfitorder shipfitorder = (IShipfitorder)JSONShipfitorder.toShipfitorder((JSONObject)json.get("shipfitorder"));
-        shipfitorderusecases.securedeleteShipfitorder(shipfitorder);
+        shipfitorderusecases.deleteShipfitorder(shipfitorder);
         setReturnstatus("OK");
     }
+
+    private void delete_all_containing_Shipfit(Shipfitorder_usecases shipfitorderusecases, JSONObject json) throws ParseException, CustomException {
+        IShipfitPK shipfitPK = (IShipfitPK)JSONShipfit.toShipfitPK((JSONObject)json.get("shipfitpk"));
+        shipfitorderusecases.delete_all_containing_Shipfit(shipfitPK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Evetype(Shipfitorder_usecases shipfitorderusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        shipfitorderusecases.delete_all_containing_Evetype(evetypePK);
+        setReturnstatus("OK");
+    }
+
 }
 

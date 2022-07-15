@@ -1,9 +1,6 @@
 /*
- * JSONCorporation.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONCorporation {
@@ -41,10 +37,6 @@ public class JSONCorporation {
         return jsoncorporations;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ICorporationPK corporationPK) {
         JSONObject json = null;
         if(corporationPK!=null) {
@@ -54,10 +46,6 @@ public class JSONCorporation {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ICorporation corporation) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(corporation.getPrimaryKey()));
@@ -82,10 +70,6 @@ public class JSONCorporation {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Corporationsearch corporationsearch) {
         JSONObject json = new JSONObject();
         if(corporationsearch.used()) {
@@ -130,11 +114,6 @@ public class JSONCorporation {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Corporationsearch toCorporationsearch(JSONObject json) {
         Corporationsearch corporationsearch = new Corporationsearch();
         corporationsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

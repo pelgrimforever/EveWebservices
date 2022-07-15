@@ -1,9 +1,6 @@
 /*
- * EMsystemjumps.java
- *
  * Created on Okt 8, 2021
  * Generated on 9.9.2021 15:35
- *
  */
 package eve.conversion.entity;
 
@@ -14,8 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * EMsystemjumps
- * Custom transformation from ResultSet to Logic Entity
  * @author Franky Laseure
  */
 public class EMsystemjumps extends EMsystemjumps_default {
@@ -43,12 +38,6 @@ public class EMsystemjumps extends EMsystemjumps_default {
         "(select orders.system from orders inner join shipfitorderselected on orders.id = shipfitorderselected.orderid and shipfitorderselected.username = :username:) " +
         "group by system_start, system_end, jumps, jumpslowsec, jumpsnullsec, jumpssafe, jumpssafelowsec, jumpssafenullsec";
     
-    /**
-     * Map ResultSet Field values to Systemjumps
-     * @param dbresult: Database ResultSet
-     * @return 
-     * @throws java.sql.SQLException
-     */
     @Override
     public LogicEntity mapResultSet2Entity(ResultSet dbresult) throws SQLException {
         Systemjumps systemjumps = (Systemjumps)super.mapResultSet2Entity(dbresult);

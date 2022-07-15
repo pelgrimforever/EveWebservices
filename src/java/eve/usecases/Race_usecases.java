@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Race;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Race_usecases {
 
     private boolean loggedin = false;
-    private BLrace blrace = new BLrace();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLrace blrace = new BLrace(sqlreader);
     
     public Race_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Race_usecases {
     }
     
     public boolean getRaceExists(IRacePK racePK) throws DBException {
-        return blrace.getEntityExists(racePK);
+        return blrace.getRaceExists(racePK);
     }
     
     public Race get_race_by_primarykey(IRacePK racePK) throws DBException {
@@ -69,16 +75,29 @@ public class Race_usecases {
         return blrace.searchcount(racesearch);
     }
 
-    public void secureinsertRace(IRace race) throws DBException, DataException {
-        blrace.secureinsertRace(race);
+    public void insertRace(IRace race) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blrace.insertRace(tq, race);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateRace(IRace race) throws DBException, DataException {
-        blrace.secureupdateRace(race);
+    public void updateRace(IRace race) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blrace.updateRace(tq, race);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteRace(IRace race) throws DBException, DataException {
-        blrace.securedeleteRace(race);
+    public void deleteRace(IRace race) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blrace.deleteRace(tq, race);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Faction(IFactionPK factionPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blrace.delete4faction(tq, factionPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

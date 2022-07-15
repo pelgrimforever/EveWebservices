@@ -1,9 +1,6 @@
 /*
- * JSONView_trade_systemsevetype.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_trade_systemsevetype {
@@ -36,10 +32,6 @@ public class JSONView_trade_systemsevetype {
         return jsonview_trade_systemsevetypes;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_trade_systemsevetype view_trade_systemsevetype) {
         JSONObject json = new JSONObject();
         json.put("systemsell", String.valueOf(view_trade_systemsevetype.getSystemsell()));
@@ -64,11 +56,6 @@ public class JSONView_trade_systemsevetype {
         return view_trade_systemsevetype;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_trade_systemsevetypesearch parameters
-     * @return 
-     */
     public static View_trade_systemsevetypesearch toView_trade_systemsevetypesearch(JSONObject json) {
         View_trade_systemsevetypesearch view_trade_systemsevetypesearch = new View_trade_systemsevetypesearch();
         view_trade_systemsevetypesearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Order_history_month;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Order_history_month_usecases {
 
     private boolean loggedin = false;
-    private BLorder_history_month blorder_history_month = new BLorder_history_month();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLorder_history_month blorder_history_month = new BLorder_history_month(sqlreader);
     
     public Order_history_month_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Order_history_month_usecases {
     }
     
     public boolean getOrder_history_monthExists(IOrder_history_monthPK order_history_monthPK) throws DBException {
-        return blorder_history_month.getEntityExists(order_history_monthPK);
+        return blorder_history_month.getOrder_history_monthExists(order_history_monthPK);
     }
     
     public Order_history_month get_order_history_month_by_primarykey(IOrder_history_monthPK order_history_monthPK) throws DBException {
@@ -73,16 +79,35 @@ public class Order_history_month_usecases {
         return blorder_history_month.searchcount(order_history_monthsearch);
     }
 
-    public void secureinsertOrder_history_month(IOrder_history_month order_history_month) throws DBException, DataException {
-        blorder_history_month.secureinsertOrder_history_month(order_history_month);
+    public void insertOrder_history_month(IOrder_history_month order_history_month) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blorder_history_month.insertOrder_history_month(tq, order_history_month);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateOrder_history_month(IOrder_history_month order_history_month) throws DBException, DataException {
-        blorder_history_month.secureupdateOrder_history_month(order_history_month);
+    public void updateOrder_history_month(IOrder_history_month order_history_month) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blorder_history_month.updateOrder_history_month(tq, order_history_month);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteOrder_history_month(IOrder_history_month order_history_month) throws DBException, DataException {
-        blorder_history_month.securedeleteOrder_history_month(order_history_month);
+    public void deleteOrder_history_month(IOrder_history_month order_history_month) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blorder_history_month.deleteOrder_history_month(tq, order_history_month);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Evetype(IEvetypePK evetypePK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blorder_history_month.delete4evetype(tq, evetypePK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Region(IRegionPK regionPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blorder_history_month.delete4region(tq, regionPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

@@ -2,23 +2,25 @@
  * WSFaction.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 13.6.2022 18:20
  *
  */
 
 package eve.webservices;
 
+import base.restservices.RS_json_login;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.IFactionsearch;
 import eve.interfaces.webservice.WSIFaction;
 import eve.logicentity.Faction;
 import eve.searchentity.Factionsearch;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import general.exception.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.jws.WebMethod;
@@ -27,14 +29,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import eve.usecases.custom.Security_usecases;
 
 /**
  *
  * @author Franky Laseure
  */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSIFaction")
-public class WSFaction implements WSIFaction {
+public class WSFaction extends RS_json_login implements WSIFaction {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     private JSONArray toJSONArray(ArrayList factions) {
         JSONArray jsonfactions = new JSONArray();
         Iterator factionsI = factions.iterator();
@@ -44,152 +49,168 @@ public class WSFaction implements WSIFaction {
         return jsonfactions;
     }
 
-    /**
-     * Web service operation
-     */
     //@WebMethod(operationName = "getFactions")
     @Override
     public String getFactions() {
         try {
-            BLfaction blfaction = new BLfaction();
-            ArrayList factions = blfaction.getAll();
-            JSONArray jsonfactions = toJSONArray(factions);
-            return jsonfactions.toJSONString();
+            Faction_usecases factionusecases = new Faction_usecases(loggedin);
+            return get_all_faction(factionusecases);
         }
-        catch(DBException e) {
+        catch(CustomException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "search")
     @Override
-    public String search(String json) {
-        BLfaction blfaction = new BLfaction();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Faction faction;
+    public String search(String jsonstring) {
         try {
-            Factionsearch factionsearch = JSONFaction.toFactionsearch((JSONObject)parser.parse(json));
-            ArrayList factions = blfaction.search(factionsearch);
-            JSONArray jsonfactions = toJSONArray(factions);
-            result = jsonfactions.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Faction_usecases factionusecases = new Faction_usecases(loggedin);
+            return search_faction(factionusecases, json);
         }
-        catch(ParseException e) {
-            result = "";
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-            result = "";
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "getFaction")
     @Override
-    public String getFaction(String json) {
-        BLfaction blfaction = new BLfaction();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Faction faction;
+    public String getFaction(String jsonstring) {
         try {
-            FactionPK factionPK = JSONFaction.toFactionPK((JSONObject)parser.parse(json));
-            faction = blfaction.getFaction(factionPK);
-            if(faction!=null) {
-                result = JSONFaction.toJSON(faction).toJSONString();
-            }
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Faction_usecases factionusecases = new Faction_usecases(loggedin);
+            return get_faction_with_primarykey(factionusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "insertFaction")
     @Override
-    public void insertFaction(String json) {
-        BLfaction blfaction = new BLfaction();
-        JSONParser parser = new JSONParser();
+    public void insertFaction(String jsonstring) {
         try {
-            IFaction faction = JSONFaction.toFaction((JSONObject)parser.parse(json));
-            blfaction.insertFaction(faction);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Faction_usecases factionusecases = new Faction_usecases(loggedin);
+            insert_faction(factionusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "updateFaction")
     @Override
-    public void updateFaction(String json) {
-        BLfaction blfaction = new BLfaction();
-        JSONParser parser = new JSONParser();
+    public void updateFaction(String jsonstring) {
         try {
-            IFaction faction = JSONFaction.toFaction((JSONObject)parser.parse(json));
-            blfaction.updateFaction(faction);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Faction_usecases factionusecases = new Faction_usecases(loggedin);
+            update_faction(factionusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "deleteFaction")
     @Override
-    public void deleteFaction(String json) {
-        BLfaction blfaction = new BLfaction();
-        JSONParser parser = new JSONParser();
+    public void deleteFaction(String jsonstring) {
         try {
-            IFaction faction = JSONFaction.toFaction((JSONObject)parser.parse(json));
-            blfaction.deleteFaction(faction);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Faction_usecases factionusecases = new Faction_usecases(loggedin);
+            delete_faction(factionusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getFactions4system")
     @Override
-    public String getFactions4system(String json) {
-        BLfaction blfaction = new BLfaction();
-        JSONParser parser = new JSONParser();
-        Faction faction;
+    public String getFactions4system(String jsonstring) {
         try {
-            ISystemPK systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            ArrayList factions = blfaction.getFactions4system(systemPK);
-            JSONArray jsonfactions = toJSONArray(factions);
-            return jsonfactions.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Faction_usecases factionusecases = new Faction_usecases(loggedin);
+            return get_faction_with_foreignkey_system(factionusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4system")
     @Override
-    public void delete4system(String json) {
-        BLfaction blfaction = new BLfaction();
-        JSONParser parser = new JSONParser();
-        Faction faction;
+    public void delete4system(String jsonstring) {
         try {
-            ISystemPK systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blfaction.delete4system(systemPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Faction_usecases factionusecases = new Faction_usecases(loggedin);
+            delete_faction(factionusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
+
+    private String count_records(Faction_usecases factionusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", factionusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_faction(Faction_usecases factionusecases) throws ParseException, CustomException {
+    	return JSONFaction.toJSONArray(factionusecases.get_all()).toJSONString();
+    }
+    
+    private String get_faction_with_primarykey(Faction_usecases factionusecases, JSONObject json) throws ParseException, CustomException {
+        IFactionPK factionPK = (IFactionPK)JSONFaction.toFactionPK((JSONObject)json.get("factionpk"));
+	return JSONFaction.toJSON(factionusecases.get_faction_by_primarykey(factionPK)).toJSONString();
+    }
+    
+    private String get_faction_with_foreignkey_system(Faction_usecases factionusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        return JSONFaction.toJSONArray(factionusecases.get_faction_with_foreignkey_system(systemPK)).toJSONString();
+    }
+    
+    private String search_faction(Faction_usecases factionusecases, JSONObject json) throws ParseException, CustomException {
+        IFactionsearch search = (IFactionsearch)JSONFaction.toFactionsearch((JSONObject)json.get("search"));
+        return JSONFaction.toJSONArray(factionusecases.search_faction(search)).toJSONString();
+    }
+    
+    private String search_faction_count(Faction_usecases factionusecases, JSONObject json) throws ParseException, CustomException {
+        IFactionsearch factionsearch = (IFactionsearch)JSONFaction.toFactionsearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", factionusecases.search_faction_count(factionsearch));
+        return jsonsearchcount.toJSONString();
+    }
+
+    private void insert_faction(Faction_usecases factionusecases, JSONObject json) throws ParseException, CustomException {
+        IFaction faction = (IFaction)JSONFaction.toFaction((JSONObject)json.get("faction"));
+        factionusecases.insertFaction(faction);
+        setReturnstatus("OK");
+    }
+
+    private void update_faction(Faction_usecases factionusecases, JSONObject json) throws ParseException, CustomException {
+        IFaction faction = (IFaction)JSONFaction.toFaction((JSONObject)json.get("faction"));
+        factionusecases.updateFaction(faction);
+        setReturnstatus("OK");
+    }
+
+    private void delete_faction(Faction_usecases factionusecases, JSONObject json) throws ParseException, CustomException {
+        IFaction faction = (IFaction)JSONFaction.toFaction((JSONObject)json.get("faction"));
+        factionusecases.deleteFaction(faction);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_System(Faction_usecases factionusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        factionusecases.delete_all_containing_System(systemPK);
+        setReturnstatus("OK");
+    }
 
 }
 

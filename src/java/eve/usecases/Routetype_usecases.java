@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Routetype;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Routetype_usecases {
 
     private boolean loggedin = false;
-    private BLroutetype blroutetype = new BLroutetype();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLroutetype blroutetype = new BLroutetype(sqlreader);
     
     public Routetype_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Routetype_usecases {
     }
     
     public boolean getRoutetypeExists(IRoutetypePK routetypePK) throws DBException {
-        return blroutetype.getEntityExists(routetypePK);
+        return blroutetype.getRoutetypeExists(routetypePK);
     }
     
     public Routetype get_routetype_by_primarykey(IRoutetypePK routetypePK) throws DBException {
@@ -69,16 +75,29 @@ public class Routetype_usecases {
         return blroutetype.searchcount(routetypesearch);
     }
 
-    public void secureinsertRoutetype(IRoutetype routetype) throws DBException, DataException {
-        blroutetype.secureinsertRoutetype(routetype);
+    public void insertRoutetype(IRoutetype routetype) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blroutetype.insertRoutetype(tq, routetype);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateRoutetype(IRoutetype routetype) throws DBException, DataException {
-        blroutetype.secureupdateRoutetype(routetype);
+    public void updateRoutetype(IRoutetype routetype) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blroutetype.updateRoutetype(tq, routetype);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteRoutetype(IRoutetype routetype) throws DBException, DataException {
-        blroutetype.securedeleteRoutetype(routetype);
+    public void deleteRoutetype(IRoutetype routetype) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blroutetype.deleteRoutetype(tq, routetype);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Security_island(ISecurity_islandPK security_islandPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blroutetype.delete4security_island(tq, security_islandPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

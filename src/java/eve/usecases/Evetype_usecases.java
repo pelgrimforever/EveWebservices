@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Evetype;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Evetype_usecases {
 
     private boolean loggedin = false;
-    private BLevetype blevetype = new BLevetype();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLevetype blevetype = new BLevetype(sqlreader);
     
     public Evetype_usecases() {
         this(false);
@@ -40,11 +46,37 @@ public class Evetype_usecases {
 //Custom code, do not change this line
 //add here custom operations
     public void toggle_configuredbp(IEvetypePK evetypePK) throws DBException, DataException {
-        blevetype.toggleConfiguredbp(evetypePK);
+        SQLTqueue transactionqueue = new SQLTqueue();
+        blevetype.toggleConfiguredbp(transactionqueue, evetypePK);
+        sqlwriter.Commit2DB(transactionqueue);
     }
 
     public void calculate_estimated_productioncosts() throws DBException, DataException, CustomException {
-        blevetype.calculateBpproductioncost();
+        SQLTqueue transactionqueue = new SQLTqueue();
+        int materialefficiency = 10;
+        int breakevenproduction = 20;
+        double researchcostperc = 0.2;
+        double stationfeeperc = 0.1;
+        double totalcostperc = 1 + researchcostperc + stationfeeperc;
+        BLview_bpmaterial blview_bpmaterial = new BLview_bpmaterial(sqlreader);
+        ArrayList<Evetype> blueprints = blevetype.getConfiguredblueprints();
+        ArrayList<View_bpmaterial> bpmaterials;
+        int transactioncounter = 0;
+        for(Evetype blueprint: blueprints) {
+            double totalprice = 0;
+            bpmaterials = blview_bpmaterial.getView_bpmaterials(blueprint.getPrimaryKey().getId());
+            for(View_bpmaterial mat: bpmaterials) {
+                totalprice += Bpproduction_usecases.calculate_net_materialprice(materialefficiency, mat.getAverage(), mat.getAmount());
+            }
+            totalprice += blueprint.getAverage() * totalcostperc / breakevenproduction;
+            blueprint.setEstimatedproductioncost(totalprice);
+            blevetype.updateEvetype(transactionqueue, blueprint);
+            if(transactioncounter==100) {
+                sqlwriter.Commit2DB(transactionqueue);
+                transactioncounter = 0;
+            }
+        }
+        sqlwriter.Commit2DB(transactionqueue);
     }
 //Custom code, do not change this line   
 
@@ -57,7 +89,7 @@ public class Evetype_usecases {
     }
     
     public boolean getEvetypeExists(IEvetypePK evetypePK) throws DBException {
-        return blevetype.getEntityExists(evetypePK);
+        return blevetype.getEvetypeExists(evetypePK);
     }
     
     public Evetype get_evetype_by_primarykey(IEvetypePK evetypePK) throws DBException {
@@ -128,16 +160,41 @@ public class Evetype_usecases {
         return blevetype.searchcount(evetypesearch);
     }
 
-    public void secureinsertEvetype(IEvetype evetype) throws DBException, DataException {
-        blevetype.secureinsertEvetype(evetype);
+    public void insertEvetype(IEvetype evetype) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blevetype.insertEvetype(tq, evetype);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateEvetype(IEvetype evetype) throws DBException, DataException {
-        blevetype.secureupdateEvetype(evetype);
+    public void updateEvetype(IEvetype evetype) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blevetype.updateEvetype(tq, evetype);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteEvetype(IEvetype evetype) throws DBException, DataException {
-        blevetype.securedeleteEvetype(evetype);
+    public void deleteEvetype(IEvetype evetype) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blevetype.deleteEvetype(tq, evetype);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Market_group(IMarket_groupPK market_groupPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blevetype.delete4market_group(tq, market_groupPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Typegroup(ITypegroupPK typegroupPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blevetype.delete4typegroup(tq, typegroupPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Graphic(IGraphicPK graphicPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blevetype.delete4graphic(tq, graphicPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

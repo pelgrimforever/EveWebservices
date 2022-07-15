@@ -1,6 +1,9 @@
 package eve.BusinessObject.service;
 
-import db.TransactionOutput;
+import db.SQLTwriter;
+import db.SQLToutput;
+import db.SQLTqueue;
+import db.SQLreader;
 import eve.BusinessObject.Logic.BLevetype;
 import eve.BusinessObject.Logic.BLorders;
 import eve.BusinessObject.Logic.BLregion;
@@ -15,10 +18,8 @@ import eve.BusinessObject.Logic.BLusersettings;
 import eve.BusinessObject.Logic.BLview_trade_systemsevetype;
 import eve.BusinessObject.Logic.BLview_tradeorders_lowsec;
 import eve.entity.pk.EvetypePK;
-import eve.entity.pk.Security_islandPK;
 import eve.entity.pk.StocktradePK;
 import eve.entity.pk.SystemPK;
-import eve.entity.pk.Tradecombined_sellPK;
 import eve.interfaces.logicentity.ISettings;
 import eve.interfaces.logicentity.ISyssettings;
 import eve.logicentity.Orders;
@@ -27,8 +28,6 @@ import eve.logicentity.Stock;
 import eve.logicentity.Stocktrade;
 import eve.logicentity.Syssettings;
 import eve.logicentity.Trade;
-import eve.logicentity.Tradecombined;
-import eve.logicentity.Tradecombined_sell;
 import eve.logicentity.Usersettings;
 import eve.logicview.View_trade_systemsevetype;
 import eve.logicview.View_tradeorders_lowsec;
@@ -150,19 +149,10 @@ public class MarketService implements Runnable {
         }
     }
     
-    public MarketService(String username) {
+    public MarketService(SQLreader sqlreader, SQLTwriter sqlwriter, String username) {
+        this.sqlreader = sqlreader;
+        this.sqlwriter = sqlwriter;
         this.username = username;
-        BLregion blregion = new BLregion();
-        blregion.setAuthenticated(true);
-        
-        try {
-            ArrayList<Region> regions = blregion.getAll_Orderpages();
-            marketstatus = new MarketStatus(regions);
-            data = new Marketdata(regions);
-        }
-        catch(DBException e) {
-            System.out.println(e.getMessage());
-        }
     }
     
     protected boolean locktoONEprocessor = false;
@@ -183,6 +173,9 @@ public class MarketService implements Runnable {
         processorsactive = value;
     }
 
+    private SQLreader sqlreader;
+    private SQLTwriter sqlwriter;
+    private SQLTqueue transactionqueue;
     private BLorders blorders;
     private BLregion blregion;
     private BLevetype blevetype;
@@ -199,11 +192,10 @@ public class MarketService implements Runnable {
     
     @Override
     public void run() {
-        initialize_businesslogic();
-        delete_orders();
-        download_swagger_orders();
-
         try {
+            initialize_businesslogic();
+            delete_orders();
+            download_swagger_orders();
             load_system_user_settings();
             calculate_tradeorders();
             combineTradeorders();
@@ -224,8 +216,10 @@ public class MarketService implements Runnable {
     private void delete_orders() {
         try {
             marketstatus.addMessage("Delete orders");
-            if(blorders.count()>0)
-                blorders.deleteorders();
+            if(blorders.count()>0) {
+                blorders.deleteorders(transactionqueue);
+                sqlwriter.Commit2DB(transactionqueue);
+            }
         }
         catch(DBException e) {
             marketstatus.addMessage(e.getMessage());
@@ -264,7 +258,7 @@ public class MarketService implements Runnable {
     private void start_marketdownloader(int p) {
         MarketRegionDownloader downloader;
         Thread marketthread;
-        downloader = new MarketRegionDownloader(data, marketstatus, p);
+        downloader = new MarketRegionDownloader(sqlreader, sqlwriter, data, marketstatus, p);
         downloaders.add(downloader);
         marketthread = new Thread(downloader);
         marketthreads.add(marketthread);
@@ -299,7 +293,7 @@ public class MarketService implements Runnable {
     private int runs_for_1_complete_order;
     private Trade trade;
     private int count;
-    private TransactionOutput toutput;
+    private SQLToutput toutput;
     private Iterator<View_tradeorders_lowsec> tradeordersI;
     private View_tradeorders_lowsec tradeorder;
     
@@ -307,7 +301,8 @@ public class MarketService implements Runnable {
         long start = System.currentTimeMillis();
         update_average_prices_of_evetypes();
         marketstatus.addMessage("Construct trade table");
-        bltrade.deletetrade();
+        bltrade.deletetrade(transactionqueue);
+        sqlwriter.Commit2DB(transactionqueue);
         tradeordersI = blviewtradeorders_lowsec.getTradeorders(max_cargo, perc_net, min_profit).iterator();
         count = 0;
         while(keeprunning && tradeordersI.hasNext())
@@ -351,7 +346,7 @@ public class MarketService implements Runnable {
     }
 
     private void create_trade_record() throws DBException {
-        bltrade.addStatement(build_trade_insert_statement().toString());
+        bltrade.addStatement(transactionqueue, build_trade_insert_statement().toString());
         count++;
         if(count==maxtransactions)
             save_trade_buffer();
@@ -378,7 +373,7 @@ public class MarketService implements Runnable {
     }
 
     private void save_trade_buffer() throws DBException {
-        toutput = bltrade.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             marketstatus.addMessage(toutput.getErrormessage());
     }
@@ -393,41 +388,46 @@ public class MarketService implements Runnable {
         min_profit_per_jump = Long.valueOf(set_minprofitperjump.getValue());
         perc_tax = Float.valueOf(set_brokerfee.getValue());
         perc_net = 1 - perc_tax;
-        ArrayList<Usersettings> usersettings = blusersettings.getUsersettings(username);
+        ArrayList<Usersettings> usersettings = blusersettings.get_or_initialize_Usersettings(transactionqueue, username);
         stocksystemid = Long.valueOf(blusersettings.getUsersetting(usersettings, ISettings.STOCKSYSTEMID).getValue());
     }
 
     private void update_average_prices_of_evetypes() throws DBException, DataException {
         marketstatus.addMessage("Update average prices");
-        blevetype.updateaverageprices();
+        blevetype.updateaverageprices(transactionqueue);
+        sqlwriter.Commit2DB(transactionqueue);
     }
 
-    private void initialize_businesslogic() {
-        blorders = new BLorders();
+    private void initialize_businesslogic() throws DBException {
+        transactionqueue = new SQLTqueue();
+        blorders = new BLorders(sqlreader);
         blorders.setAuthenticated(true);
-        blregion = new BLregion();
+        blregion = new BLregion(sqlreader);
         blregion.setAuthenticated(true);
-        blevetype = new BLevetype();
+        ArrayList<Region> regions = blregion.getAll_Orderpages();
+        marketstatus = new MarketStatus(regions);
+        data = new Marketdata(regions);
+        blevetype = new BLevetype(sqlreader);
         blevetype.setAuthenticated(true);
-        blsystem = new BLsystem();
+        blsystem = new BLsystem(sqlreader);
         blsystem.setAuthenticated(true);
-        bltrade = new BLtrade();
+        bltrade = new BLtrade(sqlreader);
         bltrade.setAuthenticated(true);
-        blviewtradeorders_lowsec = new BLview_tradeorders_lowsec();
+        blviewtradeorders_lowsec = new BLview_tradeorders_lowsec(sqlreader);
         blviewtradeorders_lowsec.setAuthenticated(true);
-        blsyssettings = new BLsyssettings();
+        blsyssettings = new BLsyssettings(sqlreader);
         blsyssettings.setAuthenticated(true);
-        blview_trade_systemsevetype = new BLview_trade_systemsevetype();
+        blview_trade_systemsevetype = new BLview_trade_systemsevetype(sqlreader);
         blview_trade_systemsevetype.setAuthenticated(true);
-        bltradecombined = new BLtradecombined();
+        bltradecombined = new BLtradecombined(sqlreader);
         bltradecombined.setAuthenticated(true);
-        bltradecombined_sell = new BLtradecombined_sell();
+        bltradecombined_sell = new BLtradecombined_sell(sqlreader);
         bltradecombined_sell.setAuthenticated(true);
-        blstock = new BLstock();
+        blstock = new BLstock(sqlreader);
         blstock.setAuthenticated(true);
-        blstocktrade = new BLstocktrade();
+        blstocktrade = new BLstocktrade(sqlreader);
         blstocktrade.setAuthenticated(true);
-        blusersettings = new BLusersettings();
+        blusersettings = new BLusersettings(sqlreader);
         blusersettings.setAuthenticated(true);
     }
 
@@ -448,7 +448,7 @@ public class MarketService implements Runnable {
         long start = System.currentTimeMillis();
         marketstatus.addMessage("Combine trade orders");
 
-        ArrayList<View_trade_systemsevetype> view_trade_systemsevetypes = blview_trade_systemsevetype.getAll();
+        ArrayList<View_trade_systemsevetype> view_trade_systemsevetypes = blview_trade_systemsevetype.getView_trade_systemsevetypes();
         initialize_tradecombined_counters();
         for(View_trade_systemsevetype view_trade_systemsevetype: view_trade_systemsevetypes)
             create_tradecombined(view_trade_systemsevetype);
@@ -468,7 +468,7 @@ public class MarketService implements Runnable {
         initialize_sellorder_parameters(view_trade_systemsevetype);
         initialize_buyorder_parameters(view_trade_systemsevetype);
         initialize_tradecombined_parameters(view_trade_systemsevetype);
-        bltradecombined.addStatement(build_tradecombined_statement(view_trade_systemsevetype).toString());
+        bltradecombined.addStatement(transactionqueue, build_tradecombined_statement(view_trade_systemsevetype).toString());
         while(hasprofit && ordersavailable)
             create_new_tradecombination_sell();
         if(insertcounter>maxtransactions)
@@ -495,17 +495,17 @@ public class MarketService implements Runnable {
     }
 
     private void save_tradecombined_buffers() throws DBException {
-        toutput = bltradecombined.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             marketstatus.addMessage(toutput.getErrormessage());
-        toutput = bltradecombined_sell.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             marketstatus.addMessage(toutput.getErrormessage());
     }
 
     private void create_new_tradecombination_sell() {
         amount = Math.min(buyorderasked, sellorderasked);
-        bltradecombined_sell.addStatement(build_tradecombined_sell_statement().toString());
+        bltradecombined_sell.addStatement(transactionqueue, build_tradecombined_sell_statement().toString());
         insertcounter++;
         buyorderasked -= amount;
         sellorderasked -= amount;
@@ -576,8 +576,8 @@ public class MarketService implements Runnable {
     }
 
     private void delete_all_stocktrade() throws DataException, DBException {
-        blstocktrade.deletestocktrade(username);
-        blstocktrade.Commit2DB();
+        blstocktrade.deletestocktrade(transactionqueue, username);
+        sqlwriter.Commit2DB(transactionqueue);
     }
 
     private void process_stock_line(Stock stock) throws DataException, DBException {
@@ -599,12 +599,12 @@ public class MarketService implements Runnable {
         stocktradePK.setOrderid(order.getPrimaryKey().getId());
         stocktrade = new Stocktrade(stocktradePK);
         stocktrade.setSellamount(tradeamount);
-        blstocktrade.trans_insertStocktrade(stocktrade);
+        blstocktrade.insertStocktrade(transactionqueue, stocktrade);
         stockamount -= tradeamount;
     }
 
     private void save_stocktrade_buffer() throws DBException {
-        toutput = blstocktrade.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             marketstatus.addMessage(toutput.getErrormessage());
     }

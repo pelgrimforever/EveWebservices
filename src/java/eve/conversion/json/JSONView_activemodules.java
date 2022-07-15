@@ -1,9 +1,6 @@
 /*
- * JSONView_activemodules.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 19.11.2021 16:16
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_activemodules {
@@ -36,10 +32,6 @@ public class JSONView_activemodules {
         return jsonview_activemoduless;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_activemodules view_activemodules) {
         JSONObject json = new JSONObject();
         json.put("typegroupid", String.valueOf(view_activemodules.getTypegroupid()));
@@ -60,11 +52,6 @@ public class JSONView_activemodules {
         return view_activemodules;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_activemodulessearch parameters
-     * @return 
-     */
     public static View_activemodulessearch toView_activemodulessearch(JSONObject json) {
         View_activemodulessearch view_activemodulessearch = new View_activemodulessearch();
         view_activemodulessearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Station_service;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Station_service_usecases {
 
     private boolean loggedin = false;
-    private BLstation_service blstation_service = new BLstation_service();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLstation_service blstation_service = new BLstation_service(sqlreader);
     
     public Station_service_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Station_service_usecases {
     }
     
     public boolean getStation_serviceExists(IStation_servicePK station_servicePK) throws DBException {
-        return blstation_service.getEntityExists(station_servicePK);
+        return blstation_service.getStation_serviceExists(station_servicePK);
     }
     
     public Station_service get_station_service_by_primarykey(IStation_servicePK station_servicePK) throws DBException {
@@ -69,16 +75,29 @@ public class Station_service_usecases {
         return blstation_service.searchcount(station_servicesearch);
     }
 
-    public void secureinsertStation_service(IStation_service station_service) throws DBException, DataException {
-        blstation_service.secureinsertStation_service(station_service);
+    public void insertStation_service(IStation_service station_service) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blstation_service.insertStation_service(tq, station_service);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateStation_service(IStation_service station_service) throws DBException, DataException {
-        blstation_service.secureupdateStation_service(station_service);
+    public void updateStation_service(IStation_service station_service) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blstation_service.updateStation_service(tq, station_service);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteStation_service(IStation_service station_service) throws DBException, DataException {
-        blstation_service.securedeleteStation_service(station_service);
+    public void deleteStation_service(IStation_service station_service) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blstation_service.deleteStation_service(tq, station_service);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Station(IStationPK stationPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blstation_service.delete4station(tq, stationPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

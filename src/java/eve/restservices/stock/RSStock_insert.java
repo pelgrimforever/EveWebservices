@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.stock;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IStockOperation;
 import eve.logicentity.Stock;
 import eve.searchentity.Stocksearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,13 +46,15 @@ import org.json.simple.parser.ParseException;
 @Path("rsstock_insert")
 public class RSStock_insert extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Stock_usecases stockusecases = new Stock_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
@@ -80,7 +80,7 @@ public class RSStock_insert extends RS_json_login {
 
     private void insert_stock(Stock_usecases stockusecases, JSONObject json) throws ParseException, CustomException {
         IStock stock = (IStock)JSONStock.toStock((JSONObject)json.get("stock"));
-        stockusecases.secureinsertStock(stock);
+        stockusecases.insertStock(stock);
         setReturnstatus("OK");
     }
 }

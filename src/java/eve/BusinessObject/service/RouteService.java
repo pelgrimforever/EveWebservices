@@ -1,12 +1,9 @@
 package eve.BusinessObject.service;
 
-import eve.BusinessObject.Logic.BLstargate;
-import eve.BusinessObject.Logic.BLsystem;
 import static eve.BusinessObject.service.Systemdata.ENDROUTE;
 import static eve.BusinessObject.service.Systemdata.STARTROUTE;
-import eve.usecases.Loadroute_parameters;
+import eve.usecases.custom.Loadroute_parameters;
 import eve.logicentity.Stargate;
-import general.exception.DBException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,18 +21,12 @@ public class RouteService {
     private Systemdata systemdata;
     private Systemdata endnode;
     
-    public RouteService() {
-        try {
-            loadsystems();
-            connect_systems_with_stargateconnections();
-        }
-        catch(DBException e) {
-        }
+    public RouteService(ArrayList<eve.logicentity.System> systems, ArrayList<Stargate> stargates) {
+        loadsystems(systems);
+        connect_systems_with_stargateconnections(stargates);
     }
 
-    private void connect_systems_with_stargateconnections() throws DBException {
-        BLstargate blstargate = new BLstargate();
-        ArrayList<Stargate> stargates = blstargate.getAll();
+    private void connect_systems_with_stargateconnections(ArrayList<Stargate> stargates) {
         for(Stargate stargate: stargates)
             connect_system(stargate);
     }
@@ -45,10 +36,7 @@ public class RouteService {
         systemdata.addConnection(systemhash.get(stargate.getSystemto_systemPK().getId()));
     }
 
-    private void loadsystems() throws DBException {
-        BLsystem blsystem = new BLsystem();
-        blsystem.setAuthenticated(true);
-        ArrayList<eve.logicentity.System> systems = blsystem.getSystems();
+    private void loadsystems(ArrayList<eve.logicentity.System> systems) {
         for(eve.logicentity.System system: systems)
             systemhash.put(system.getPrimaryKey().getId(), new Systemdata(system));
     }
@@ -111,11 +99,11 @@ public class RouteService {
     }
 
     private Systemdata get_new_route_segment(long systemstart, long systemend) {
-        Route_calculator routecalculator = new Route_calculator(systemstart, systemend, loadrouteparameters.getAvoidsystems());
+        Route_calculator routecalculator = new Route_calculator();
         if(loadrouteparameters.isSecure())
-            return routecalculator.calculate_saferoute();
+            return routecalculator.calculate_saferoute(systemstart, systemend, loadrouteparameters.getAvoidsystems());
         else
-            return routecalculator.calculate_shortroute();
+            return routecalculator.calculate_shortroute(systemstart, systemend, loadrouteparameters.getAvoidsystems());
     }
     
     private class Route_calculator {
@@ -123,396 +111,244 @@ public class RouteService {
         private long startpoint;
         private long endpoint;
         private ArrayList<Long> avoidlist;
-        private ArrayList<Systemdata> checkedsystems_startside, checkedsystems_endside;
-        private ArrayList<Systemdata> activesystems_startside, activesystems_endside;
-        private ArrayList<Systemdata> new_connections_startside, new_connections_endside;
+        private Route_parameters startsideparams = new Route_parameters();
+        private Route_parameters endsideparams = new Route_parameters();
         private Systemdata tempsystemdata;
-        private Systemdata newconnection;
-        private int counter;
-        private Systemdata startsystem;
-        private Systemdata endsystem;
-        private Systemdata middlesystem_startside, middlesystem_endside;
-        private boolean highsecfound_start_side;
-        private boolean highsecfound_end_side;
-        
-        public Route_calculator(long startpoint, long endpoint, ArrayList<Long> avoidlist) {
+
+        private class Route_parameters {
+            Systemdata system;
+            ArrayList<Systemdata> checkedsystems;
+            ArrayList<Systemdata> activesystems;
+            ArrayList<Systemdata> new_connections;
+            Systemdata middlesystem;
+            boolean highsec_connection_found = false;
+
+            public void initialize(long systemid, byte STARTENDROUTECONST) {
+                system = systemhash.get(systemid);
+                system.setStartingpoint(STARTENDROUTECONST);
+                checkedsystems = new ArrayList<>();
+                checkedsystems.add(system);
+                activesystems = new ArrayList<>();
+                activesystems.add(system);
+                new_connections = new ArrayList<>();
+                middlesystem = null;
+            }
+
+            public void reset_activesystems() {
+                activesystems.clear();
+            }
+
+            public void init_lowsecsearch() {
+                highsec_connection_found = false;
+                activesystems.clear();
+                activesystems.addAll(checkedsystems);
+            }
+
+            public void process_new_connections() {
+                checkedsystems.addAll(new_connections);
+                activesystems.clear();
+                if(!is_route_complete())
+                    activesystems.addAll(new_connections);
+                    if(highsec_connection_found) {
+                        activesystems.removeIf(s -> !s.isHighsec());
+                    }
+                new_connections.clear();            
+            }
+        }
+
+        public boolean hasnot_highsec_connection() {
+            return !startsideparams.highsec_connection_found && !endsideparams.highsec_connection_found;
+        }
+
+        public Route_calculator() {
+        }
+
+        public Systemdata calculate_saferoute(long startpoint, long endpoint, ArrayList<Long> avoidlist) {
             this.startpoint = startpoint;
             this.endpoint = endpoint;
             this.avoidlist = avoidlist;
-        }
-
-        public Systemdata calculate_saferoute() {
-            initializesystemhash(avoidlist);
             initialize();
             //isolated clusters of systems exists in eve
-            //so we check if there are still open connectedsystem in stead of looking if all systems are checked
-            while(!are_start_side_end_side_connected() && start_side_end_side_has_active_connections())
-                find_next_connectedsystems_on_start_end_priority_highsec();
-            if(are_start_side_end_side_connected())
+            //so we check if there are still open connection in stead of looking if all systems are checked
+            while(!is_route_complete() && has_unexplored_connections()) {
+                while(has_unexplored_connections())
+                    explore_active_highsecconnections();
+                if(!is_route_complete())
+                    explore_active_lowsecconnections();
+            }
+            if(is_route_complete())
                 link_route_startside_endside();
-            return endsystem;
+            return endsideparams.system;
         }
 
-        public Systemdata calculate_shortroute() {
-            initializesystemhash(avoidlist);
+        private void explore_active_highsecconnections() {
+            explore_active_highsecconnections_startside();
+            if(!is_route_complete())
+                explore_active_highsecconnections_endside();
+            if(is_route_complete()) {
+                startsideparams.reset_activesystems();
+                endsideparams.reset_activesystems();
+            }
+        }
+
+        private void explore_active_lowsecconnections() {
+            startsideparams.init_lowsecsearch();
+            endsideparams.init_lowsecsearch();
+            while(has_unexplored_connections() && hasnot_highsec_connection() ) {
+                explore_activeconnections();
+            }
+        }
+
+        private void explore_active_highsecconnections_startside() {
+            for(Systemdata activesystem: startsideparams.activesystems) {
+                check_all_highsecconnections_startside(activesystem);
+                if(is_route_complete()) break;
+            }
+            startsideparams.process_new_connections();
+        }
+
+        private void explore_active_highsecconnections_endside() {
+            for(Systemdata activesystem: endsideparams.activesystems) {
+                check_all_highsecconnections_endside(activesystem);
+                if(is_route_complete()) break;
+            }
+            endsideparams.process_new_connections();
+        }
+
+        private void check_all_highsecconnections_startside(Systemdata activesystem) {
+            for(Systemdata connection: activesystem.getHighsecConnectedsystems()) {
+                check_connections_startside(activesystem, connection);
+                if(is_route_complete()) break;
+            }
+        }
+
+        private void check_all_highsecconnections_endside(Systemdata activesystem) {
+            for(Systemdata connection: activesystem.getHighsecConnectedsystems()) {
+                check_connections_endside(activesystem, connection);
+                if(is_route_complete()) break;
+            }
+        }
+
+        private void check_all_connections_startside(Systemdata activesystem) {
+            for(Systemdata connection: activesystem.getConnectedsystems()) {
+                startsideparams.highsec_connection_found = connection.isHighsec();
+                check_connections_startside(activesystem, connection);
+                if(is_route_complete()) break;
+            }
+        }
+
+        private void check_all_connections_endside(Systemdata activesystem) {
+            for(Systemdata connection: activesystem.getConnectedsystems()) {
+                endsideparams.highsec_connection_found = connection.isHighsec();
+                check_connections_endside(activesystem, connection);
+                if(is_route_complete()) break;
+            }
+        }
+
+        public Systemdata calculate_shortroute(long startpoint, long endpoint, ArrayList<Long> avoidlist) {
+            this.startpoint = startpoint;
+            this.endpoint = endpoint;
+            this.avoidlist = avoidlist;
             initialize();
-            //isolated clusters of systems exists in eve
-            //so we check if there are still open connectedsystem in stead of looking if all systems are checked
-            while(start_side_end_side_has_active_connections())
-                find_next_connectedsystems_on_start_end_anysec();
-            if(are_start_side_end_side_connected())
+            while(has_unexplored_connections())
+                explore_activeconnections();
+            if(is_route_complete())
                 link_route_startside_endside();
-            return endsystem;
-        }
-        
-        private void find_next_connectedsystems_on_start_end_priority_highsec() {
-            while(start_side_end_side_has_active_connections())
-                find_next_connectedsystems_on_start_end_highsec();
-            if(!are_start_side_end_side_connected())
-                find_next_connectedsystems_on_start_end_lowsec();
-        }
-        
-        private void find_next_connectedsystems_on_start_end_highsec() {
-            find_connectedsystems_on_startside_highsec();
-            find_connectedsystems_on_endside_highsec_when_not_connected_yet();
-            if(are_start_side_end_side_connected())
-                clear_remaining_activesystems();
+            return endsideparams.system;
         }
 
-        private void clear_remaining_activesystems() {
-            activesystems_startside.clear();
-            activesystems_endside.clear();
-        }
-        
-        private void find_connectedsystems_on_startside_highsec() {
-            for(Systemdata activesystem_startside: activesystems_startside)
-                if(is_activesystem_startside_connectedwith_endside(activesystem_startside)) break;
-            gather_active_connections_startside_for_next_iteration();
-            if(!are_start_side_end_side_connected())
-                activesystems_startside.addAll(new_connections_startside);
-            new_connections_startside.clear();
-        }
-
-        private void gather_active_connections_startside_for_next_iteration() {
-            checkedsystems_startside.addAll(new_connections_startside);
-            activesystems_startside.clear();
-        }
-
-        private boolean is_activesystem_startside_connectedwith_endside(Systemdata activesystem_startside) {
-            find_connectedsystems_on_startside_highsec_for_1_system(activesystem_startside);
-            if (are_start_side_end_side_connected())
-                return true;
-            return false;
-        }
-
-        private void find_connectedsystems_on_startside_highsec_for_1_system(Systemdata activesystem_startside) {
-            for(Systemdata connectedsystem: activesystem_startside.getConnectedsystems())
-                if(is_connectedsystem_on_startside_available_and_highsec_and_connectedto_endside(connectedsystem, activesystem_startside)) break;
-        }
-
-        private boolean is_connectedsystem_on_startside_available_and_highsec_and_connectedto_endside(Systemdata connectedsystem, Systemdata activesystem_startside) {
-            if (connectedsystem.isAvailable(STARTROUTE) && connectedsystem.isHighsec())
-                if (is_system_connected_with_endside(connectedsystem, activesystem_startside))
-                    return link_startside_with_endside(activesystem_startside, connectedsystem);
-            return false;
-        }
-
-        private boolean is_system_connected_with_endside(Systemdata connectedsystem, Systemdata activesystem_startside) {
-            if (connectedsystem.hasConnected2Route(ENDROUTE))
-                return true;
-            else
-                link_connectedsystem_to_route_on_startside(connectedsystem, activesystem_startside);
-            return false;
-        }
-
-        private void link_connectedsystem_to_route_on_startside(Systemdata connectedsystem, Systemdata activesystem_startside) {
-            connectedsystem.setRoute(activesystem_startside);
-            new_connections_startside.add(connectedsystem);
-            highsecfound_start_side = connectedsystem.isHighsec();
-        }
-
-        private boolean link_startside_with_endside(Systemdata activesystem_startside, Systemdata connectedsystem) {
-            middlesystem_startside = activesystem_startside;
-            middlesystem_endside = connectedsystem;
-            highsecfound_end_side = activesystem_startside.isHighsec();
-            return true;
-        }
-        
-        private void find_connectedsystems_on_endside_highsec_when_not_connected_yet() {
-            if(!are_start_side_end_side_connected())
-                find_connectedsystems_on_endside_highsec();
-        }
-
-        private void find_connectedsystems_on_endside_highsec() {
-            for(Systemdata activesystem_endside: activesystems_endside)
-                if(is_connectedsystem_on_endside_available_and_highsec_and_connectedto_startside(activesystem_endside)) break;
-            gather_active_connections_endside_for_next_iteration();
-            if(!are_start_side_end_side_connected())
-                activesystems_endside.addAll(new_connections_endside);
-            new_connections_endside.clear();
-        }
-
-        private void gather_active_connections_endside_for_next_iteration() {
-            checkedsystems_endside.addAll(new_connections_endside);
-            activesystems_endside.clear();
-        }
-
-        private boolean is_connectedsystem_on_endside_available_and_highsec_and_connectedto_startside(Systemdata activesystem_endside) {
-            find_connectedsystems_on_endside_highsec_for_1_system(activesystem_endside);
-            if (are_start_side_end_side_connected())
-                return true;
-            return false;
-        }
-
-        private void find_connectedsystems_on_endside_highsec_for_1_system(Systemdata activesystem_endside) {
-            for(Systemdata connectedsystem: activesystem_endside.getConnectedsystems())
-                if(is_connectedsystem_on_endside_available_and_highsec_and_connectedto_startside(connectedsystem, activesystem_endside)) break;
-        }
-
-        private boolean is_connectedsystem_on_endside_available_and_highsec_and_connectedto_startside(Systemdata connectedsystem, Systemdata activesystem_endside) {
-            if (connectedsystem.isAvailable(ENDROUTE) && connectedsystem.isHighsec())
-                if (is_system_connected_with_startside(connectedsystem, activesystem_endside)) return link_startside_with_endside(connectedsystem, activesystem_endside);
-            return false;
-        }
-
-        private boolean is_system_connected_with_startside(Systemdata connectedsystem, Systemdata activesystem_endside) {
-            if (connectedsystem.hasConnected2Route(STARTROUTE))
-                return true;
-            else
-                link_connectedsystem_to_route_on_endside(connectedsystem, activesystem_endside);
-            return false;
-        }
-        
-        private void find_next_connectedsystems_on_start_end_lowsec() {
-            initialize_find_next_connectedsystems_on_start_end_lowsec();
-            while(start_side_end_side_has_active_connections() && !highsecfound_start_side && !highsecfound_end_side ) {
-                find_next_connectedsystem_on_start_end_lowsec();
+        private void explore_activeconnections() {
+            explore_activeconnections_startside();
+            if(!is_route_complete())
+                explore_activeconnections_endside();
+            if(is_route_complete()) {
+                startsideparams.reset_activesystems();
+                endsideparams.reset_activesystems();
             }
         }
 
-        private void find_next_connectedsystem_on_start_end_lowsec() {
-            find_connectedsystems_on_startside_lowsec();
-            if(!are_start_side_end_side_connected())
-                find_connectedsystems_on_endside_lowsec();
-            else
-                clear_remaining_activesystems();
-        }
-        
-        private void find_connectedsystems_on_startside_lowsec() {
-            for(Systemdata activesystem_startside: activesystems_startside)
-                if(is_activesystem_startside_connectedwith_endside_lowsec(activesystem_startside))
-                    break;
-            gather_active_connections_startside_for_next_iteration();
-            if(!are_start_side_end_side_connected())
-                add_new_connectedsystems_to_activesystems_startside();
-            new_connections_startside.clear();
-        }
-
-        private void add_new_connectedsystems_to_activesystems_startside() {
-            activesystems_startside.addAll(new_connections_startside);
-            if(highsecfound_start_side)
-                activesystems_startside.removeIf(s -> !s.isHighsec());
-        }
-
-        private boolean is_activesystem_startside_connectedwith_endside_lowsec(Systemdata activesystem_startside) {
-            find_connectedsystems_on_startside_lowsec_for_1_system(activesystem_startside);
-            if (are_start_side_end_side_connected()) {
-                return true;
+        private void explore_activeconnections_startside() {
+            for(Systemdata activesystem: startsideparams.activesystems) {
+                check_all_connections_startside(activesystem);
+                if(is_route_complete()) break;
             }
-            return false;
+            startsideparams.process_new_connections();
         }
 
-        private void find_connectedsystems_on_startside_lowsec_for_1_system(Systemdata activesystem_startside) {
-            for(Systemdata connectedsystem: activesystem_startside.getConnectedsystems())
-                if(is_connectedsystem_on_startside_available_and_connectedto_endside(connectedsystem, activesystem_startside)) break;
-        }
-
-        private boolean is_connectedsystem_on_startside_available_and_connectedto_endside(Systemdata connectedsystem, Systemdata activesystem_startside) {
-            if (connectedsystem.isAvailable(STARTROUTE)) {
-                if (connectedsystem.hasConnected2Route(ENDROUTE))
-                    return link_startside_with_endside(activesystem_startside, connectedsystem);
-                else
-                    link_connectedsystem_to_route_on_startside(connectedsystem, activesystem_startside);
+        private void explore_activeconnections_endside() {
+            for(Systemdata activesystem: endsideparams.activesystems) {
+                check_all_connections_endside(activesystem);
+                if(is_route_complete()) break;
             }
-            return false;
+            endsideparams.process_new_connections();
         }
 
-        private void find_connectedsystems_on_endside_lowsec() {
-            for(Systemdata activesystem: activesystems_endside)
-                if(is_activesystem_endside_connectedwith_endside_lowsec(activesystem)) break;
-            gather_active_connections_endside_for_next_iteration();
-            if(!are_start_side_end_side_connected())
-                add_new_connectedsystems_to_activesystems_endside();
-            new_connections_endside.clear();
+        private void initialize() {
+            for(Systemdata systeminit: systemhash.values())
+                systeminit.reset();
+            for(Long systemid: avoidlist)
+                systemhash.get(systemid).avoid();
+            startsideparams.initialize(startpoint, STARTROUTE);
+            endsideparams.initialize(endpoint, ENDROUTE);
         }
 
-        private void add_new_connectedsystems_to_activesystems_endside() {
-            activesystems_endside.addAll(new_connections_endside);
-            if(highsecfound_end_side)
-                activesystems_endside.removeIf(s -> !s.isHighsec());
+        private boolean is_route_complete() {
+            return startsideparams.middlesystem!=null;
         }
 
-        private boolean is_activesystem_endside_connectedwith_endside_lowsec(Systemdata activesystem) {
-            find_connectedsystems_on_endside_lowsec_for_1_system(activesystem);
-            if (are_start_side_end_side_connected())
-                return true;
-            return false;
+        private boolean has_unexplored_connections() {
+            return startsideparams.activesystems.size()>0 || endsideparams.activesystems.size()>0;
         }
 
-        private void find_connectedsystems_on_endside_lowsec_for_1_system(Systemdata activesystem) {
-            for(Systemdata connection: activesystem.getConnectedsystems())
-                if(is_connectedsystem_on_endside_available_and_connectedto_startside(connection, activesystem)) break;
-        }
-
-        private boolean is_connectedsystem_on_endside_available_and_connectedto_startside(Systemdata connection, Systemdata activesystem) {
-            if (connection.isAvailable(ENDROUTE)) {
-                if (connection.hasConnected2Route(STARTROUTE)) {
-                    link_startside_with_endside(connection, activesystem);
-                } else {
-                    link_connectedsystem_to_route_on_endside(connection, activesystem);
-                }
-            }
-            return false;
-        }
-
-        private void initialize_find_next_connectedsystems_on_start_end_lowsec() {
-            highsecfound_start_side = false;
-            highsecfound_end_side = false;
-            activesystems_startside.clear();
-            activesystems_startside.addAll(checkedsystems_startside);
-            activesystems_endside.clear();
-            activesystems_endside.addAll(checkedsystems_endside);
-        }
-        
-        private void find_next_connectedsystems_on_start_end_anysec() {
-            find_connectedsystems_on_startside_anysec();
-            find_connectedsystems_on_endside_anysec();
-            if(are_start_side_end_side_connected())
-                clear_remaining_activesystems();
-        }
-        
-        private void find_connectedsystems_on_startside_anysec() {
-            for(Systemdata activesystem_startside: activesystems_startside) {
-                if(is_activesystem_startside_connectedwith_endside_anysec(activesystem_startside))
-                    break;
-            }
-            gather_active_connections_startside_for_next_iteration();
-            if(!are_start_side_end_side_connected())
-                activesystems_startside.addAll(new_connections_startside);
-            new_connections_startside.clear();
-        }
-
-        private boolean is_activesystem_startside_connectedwith_endside_anysec(Systemdata activesystem_startside) {
-            find_connectedsystems_on_startside_anysec_for_1_system(activesystem_startside);
-            if (are_start_side_end_side_connected())
-                return true;
-            return false;
-        }
-
-        private void find_connectedsystems_on_startside_anysec_for_1_system(Systemdata activesystem_startside) {
-            for(Systemdata connectedsystem: activesystem_startside.getConnectedsystems())
-                if(find_connectedsystems_on_startside_anysec_for_1_system_isavailable(connectedsystem, activesystem_startside)) break;
-        }
-
-        private boolean find_connectedsystems_on_startside_anysec_for_1_system_isavailable(Systemdata connectedsystem, Systemdata activesystem_startside) {
-            if (connectedsystem.isAvailable(STARTROUTE))
-                if (is_system_connected_with_endside(connectedsystem, activesystem_startside)) 
-                    return link_startside_with_endside(activesystem_startside, connectedsystem);
-            return false;
-        }
-
-        private void find_connectedsystems_on_endside_anysec() {
-            if(!are_start_side_end_side_connected()) {
-                for(Systemdata activesystem_endside: activesystems_endside) {
-                    if(is_activesystem_endside_connectedwith_startside_anysec(activesystem_endside))
-                        break;
-                }
-                //gather active connections for next loop
-                checkedsystems_startside.addAll(new_connections_endside);
-                activesystems_endside.clear();
-                if(!are_start_side_end_side_connected())
-                    activesystems_endside.addAll(new_connections_endside);
-                new_connections_endside.clear();
+        private void check_connections_startside(Systemdata system, Systemdata connection) {
+            if(connection.isAvailable(STARTROUTE)) {
+                add_connection_to_startside(connection, system);
             }
         }
 
-        private boolean is_activesystem_endside_connectedwith_startside_anysec(Systemdata activesystem_endside) {
-            find_connectedsystems_on_endside_anysec_for_1_system(activesystem_endside);
-            if (are_start_side_end_side_connected())
-                return true;
-            return false;
-        }
-
-        private void find_connectedsystems_on_endside_anysec_for_1_system(Systemdata activesystem_endside) {
-            for(Systemdata connectedsystem: activesystem_endside.getConnectedsystems())
-                if(find_connectedsystems_on_endside_anysec_for_1_system_isavailable(connectedsystem, activesystem_endside)) break;
-        }
-
-        private boolean find_connectedsystems_on_endside_anysec_for_1_system_isavailable(Systemdata connectedsystem, Systemdata activesystem_endside) {
-            if (connectedsystem.isAvailable(ENDROUTE)) {
-                if (is_system_connected_with_startside(connectedsystem, activesystem_endside)) return link_startside_with_endside(connectedsystem, activesystem_endside);
+        private void add_connection_to_startside(Systemdata connection, Systemdata system) {
+            if(connection.hasConnected2Route(ENDROUTE)) {
+                startsideparams.middlesystem = system;
+                endsideparams.middlesystem = connection;
+            } else {
+                connection.setRoute(system);
+                startsideparams.new_connections.add(connection);
             }
-            return false;
         }
 
-        private void link_connectedsystem_to_route_on_endside(Systemdata connectedsystem, Systemdata activesystem_endside) {
-            connectedsystem.setRoute(activesystem_endside);
-            new_connections_endside.add(connectedsystem);
+        private void check_connections_endside(Systemdata system, Systemdata connection) {
+            if(connection.isAvailable(ENDROUTE))
+                add_connection_to_endside(connection, system);
+        }
+
+        private void add_connection_to_endside(Systemdata connection, Systemdata system) {
+            if(connection.hasConnected2Route(STARTROUTE)) {
+                startsideparams.middlesystem = connection;
+                endsideparams.middlesystem = system;
+            } else {
+                connection.setRoute(system);
+                endsideparams.new_connections.add(connection);
+            }
         }
 
         private void link_route_startside_endside() {
             ArrayList<Long> route2 = reverse_route_endside();
             for(long systemid: route2)
                 connect_route_endside_on_route_startside(systemid);
-            endsystem.setRoute(middlesystem_startside);
+            endsideparams.system.setRoute(startsideparams.middlesystem);
         }
-        
+
         private ArrayList<Long> reverse_route_endside() {
-            ArrayList<Long> route2 = middlesystem_endside.getRoute();
+            ArrayList<Long> route2 = endsideparams.middlesystem.getRoute();
             Collections.reverse(route2);
             return route2;
         }
-        
+
         private void connect_route_endside_on_route_startside(long systemid) {
             tempsystemdata = systemhash.get(systemid);
             tempsystemdata.reset();
-            tempsystemdata.setRoute(middlesystem_startside);
-            middlesystem_startside = tempsystemdata;
-        }
-        
-        private void initializesystemhash(ArrayList<Long> avoidlist) {
-            for(Systemdata systeminit: systemhash.values())
-                systeminit.reset();
-            for(Long systemid: avoidlist)
-                systemhash.get(systemid).avoid();
-        }
-
-        private void initialize() {
-            counter = 0;
-            startsystem = systemhash.get(startpoint);
-            endsystem = systemhash.get(endpoint);
-            startsystem.setStartingpoint(STARTROUTE);
-            endsystem.setStartingpoint(ENDROUTE);
-            checkedsystems_startside = new ArrayList<>();
-            checkedsystems_endside = new ArrayList<>();
-            checkedsystems_startside.add(startsystem);
-            checkedsystems_endside.add(endsystem);
-            activesystems_startside = new ArrayList<>();
-            activesystems_startside.add(startsystem);
-            activesystems_endside = new ArrayList<>();
-            activesystems_endside.add(endsystem);
-            new_connections_startside = new ArrayList<>();
-            new_connections_endside = new ArrayList<>();
-            middlesystem_startside = null;
-            middlesystem_endside = null;
-        }
-        
-        private boolean are_start_side_end_side_connected() {
-            return middlesystem_startside!=null;
-        }
-        
-        private boolean start_side_end_side_has_active_connections() {
-            return activesystems_startside.size()>0 && activesystems_endside.size()>0;
+            tempsystemdata.setRoute(startsideparams.middlesystem);
+            startsideparams.middlesystem = tempsystemdata;
         }
     }
 }

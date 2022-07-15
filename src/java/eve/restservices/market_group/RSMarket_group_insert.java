@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.market_group;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IMarket_groupOperation;
 import eve.logicentity.Market_group;
 import eve.searchentity.Market_groupsearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,13 +46,15 @@ import org.json.simple.parser.ParseException;
 @Path("rsmarket_group_insert")
 public class RSMarket_group_insert extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Market_group_usecases market_groupusecases = new Market_group_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
@@ -80,7 +80,7 @@ public class RSMarket_group_insert extends RS_json_login {
 
     private void insert_market_group(Market_group_usecases market_groupusecases, JSONObject json) throws ParseException, CustomException {
         IMarket_group market_group = (IMarket_group)JSONMarket_group.toMarket_group((JSONObject)json.get("market_group"));
-        market_groupusecases.secureinsertMarket_group(market_group);
+        market_groupusecases.insertMarket_group(market_group);
         setReturnstatus("OK");
     }
 }

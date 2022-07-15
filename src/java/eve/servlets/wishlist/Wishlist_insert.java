@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.wishlist;
@@ -61,7 +61,7 @@ public class Wishlist_insert extends SecurityDataServlet {
 
     private void insert_wishlist(Wishlist_usecases wishlistusecases) throws CustomException {
         IWishlist wishlist = (IWishlist)parser.getJavaObject("wishlist");
-        wishlistusecases.secureinsertWishlist(wishlist);
+        wishlistusecases.insertWishlist(wishlist);
     }
     
     @Override

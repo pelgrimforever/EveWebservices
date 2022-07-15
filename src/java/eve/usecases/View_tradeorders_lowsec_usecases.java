@@ -1,16 +1,19 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.gis.shape.piPoint;
 import eve.interfaces.searchentity.*;
 import eve.logicview.*;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
-import eve.logicview.View_tradeorders_lowsec;
+import eve.logicentity.*;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -23,7 +26,8 @@ import org.json.simple.parser.ParseException;
 public class View_tradeorders_lowsec_usecases {
 
     private boolean loggedin = false;
-    private BLview_tradeorders_lowsec blview_tradeorders_lowsec = new BLview_tradeorders_lowsec();
+    private SQLreader sqlreader = new SQLreader();
+    private BLview_tradeorders_lowsec blview_tradeorders_lowsec = new BLview_tradeorders_lowsec(sqlreader);
     
     public View_tradeorders_lowsec_usecases() {
         this(false);

@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.shipfitmodule;
@@ -61,7 +61,7 @@ public class Shipfitmodule_update extends SecurityDataServlet {
 
     private void update_shipfitmodule(Shipfitmodule_usecases shipfitmoduleusecases) throws CustomException {
         IShipfitmodule shipfitmodule = (IShipfitmodule)parser.getJavaObject("shipfitmodule");
-        shipfitmoduleusecases.secureupdateShipfitmodule(shipfitmodule);
+        shipfitmoduleusecases.updateShipfitmodule(shipfitmodule);
     }
     
     @Override

@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.order_history_month;
@@ -61,7 +61,7 @@ public class Order_history_month_delete extends SecurityDataServlet {
 
     private void delete_order_history_month(Order_history_month_usecases order_history_monthusecases) throws CustomException {
         IOrder_history_month order_history_month = (IOrder_history_month)parser.getJavaObject("order_history_month");
-        order_history_monthusecases.securedeleteOrder_history_month(order_history_month);
+        order_history_monthusecases.deleteOrder_history_month(order_history_month);
     }
     
     @Override

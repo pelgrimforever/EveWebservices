@@ -1,9 +1,6 @@
 /*
- * JSONOrders.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.0.2022 19:32
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONOrders {
@@ -41,10 +37,6 @@ public class JSONOrders {
         return jsonorderss;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IOrdersPK ordersPK) {
         JSONObject json = null;
         if(ordersPK!=null) {
@@ -54,10 +46,6 @@ public class JSONOrders {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IOrders orders) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(orders.getPrimaryKey()));
@@ -82,10 +70,6 @@ public class JSONOrders {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Orderssearch orderssearch) {
         JSONObject json = new JSONObject();
         if(orderssearch.used()) {
@@ -151,11 +135,6 @@ public class JSONOrders {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Orderssearch toOrderssearch(JSONObject json) {
         Orderssearch orderssearch = new Orderssearch();
         orderssearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

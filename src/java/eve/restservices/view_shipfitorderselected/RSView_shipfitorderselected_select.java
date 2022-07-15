@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.view_shipfitorderselected;
@@ -16,10 +16,8 @@ import eve.interfaces.servlet.IView_shipfitorderselectedOperation;
 import eve.usecases.View_shipfitorderselected_usecases;
 import eve.logicview.View_shipfitorderselected;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -46,14 +44,15 @@ import org.json.simple.parser.ParseException;
 @Path("rsview_shipfitorderselected_select")
 public class RSView_shipfitorderselected_select extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
-            IView_shipfitorderselected view_shipfitorderselected;
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             View_shipfitorderselected_usecases view_shipfitorderselectedusecases = new View_shipfitorderselected_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
@@ -65,10 +64,10 @@ public class RSView_shipfitorderselected_select extends RS_json_login {
 //Custom code, do not change this line
 //add here custom operations
                 case IView_shipfitorderselectedOperation.SELECT_4USER:
-                    result = blview_shipfitorderselected_for_user(view_shipfitorderselectedusecases, json);
+                    result = view_shipfitorderselected_for_user(view_shipfitorderselectedusecases, json);
                     break;
                 case IView_shipfitorderselectedOperation.SELECT_4USERSYSTEM:
-                    result = blview_shipfitorderselected_for_user_system(view_shipfitorderselectedusecases, json);
+                    result = view_shipfitorderselected_for_user_system(view_shipfitorderselectedusecases, json);
                     break;
 //Custom code, do not change this line   
 	    }
@@ -81,12 +80,12 @@ public class RSView_shipfitorderselected_select extends RS_json_login {
 
 //Custom code, do not change this line
 //add here custom operations
-    private String blview_shipfitorderselected_for_user(View_shipfitorderselected_usecases view_shipfitorderselectedinteractor, JSONObject json) throws ParseException, CustomException {
+    private String view_shipfitorderselected_for_user(View_shipfitorderselected_usecases view_shipfitorderselectedinteractor, JSONObject json) throws ParseException, CustomException {
         String username = JSONConversion.getString(json, "username");
         return JSONView_shipfitorderselected.toJSONArray(view_shipfitorderselectedinteractor.blview_shipfitorderselected_for_user_usecase(username)).toJSONString();
     }
 
-    private String blview_shipfitorderselected_for_user_system(View_shipfitorderselected_usecases view_shipfitorderselectedinteractor, JSONObject json) throws ParseException, CustomException {
+    private String view_shipfitorderselected_for_user_system(View_shipfitorderselected_usecases view_shipfitorderselectedinteractor, JSONObject json) throws ParseException, CustomException {
         String username = JSONConversion.getString(json, "username");
         long systemid = JSONConversion.getlong(json, "systemid");
         return JSONView_shipfitorderselected.toJSONArray(view_shipfitorderselectedinteractor.blview_shipfitorderselected_for_user_system_usecase(username, systemid)).toJSONString();

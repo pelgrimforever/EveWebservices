@@ -1,9 +1,6 @@
 /*
- * JSONView_shipfitorder.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 21.11.2021 14:30
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_shipfitorder {
@@ -36,10 +32,6 @@ public class JSONView_shipfitorder {
         return jsonview_shipfitorders;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_shipfitorder view_shipfitorder) {
         JSONObject json = new JSONObject();
         json.put("evetypename", view_shipfitorder.getEvetypename());
@@ -68,11 +60,6 @@ public class JSONView_shipfitorder {
         return view_shipfitorder;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_shipfitordersearch parameters
-     * @return 
-     */
     public static View_shipfitordersearch toView_shipfitordersearch(JSONObject json) {
         View_shipfitordersearch view_shipfitordersearch = new View_shipfitordersearch();
         view_shipfitordersearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

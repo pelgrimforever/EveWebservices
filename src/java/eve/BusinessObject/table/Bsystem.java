@@ -1,216 +1,142 @@
 /*
- * Bsystem.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 11.4.2022 9:13
- *
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-import db.SQLMapperFactory;
-import db.SQLparameters;
-import data.gis.shape.*;
-import data.json.piJson;
-import data.json.psqlJsonobject;
-import db.SQLMapper_pgsql;
-import data.interfaces.db.Filedata;
-import eve.BusinessObject.Logic.*;
-import eve.conversion.json.JSONSystem;
+import db.*;
+import data.interfaces.db.*;
 import eve.conversion.entity.EMsystem;
+import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.ISystemsearch;
 import eve.logicentity.System;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import org.postgresql.geometric.PGpoint;
-import org.postgis.PGgeometry;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
- * Business Entity class Bsystem
- *
- * Superclass for manipulating data- and database objects
- * for Entity System and direct related data
- * This class is overwritten each time the code generator runs
- * and is not meant to be changed
- *
  * @author Franky Laseure
  */
-public abstract class Bsystem extends BLtable {
+public abstract class Bsystem extends TableBusinessrules {
 
-    /**
-     * Constructor, sets System as default Entity
-     */
-    public Bsystem() {
-        super(new System(), new EMsystem());
+    public Bsystem(SQLreader sqlreader) {
+        super(new TableIO(sqlreader, new EMsystem()));
     }
 
-    /**
-     * Constructor, sets System as default Entity
-     * sets transaction queue from given GeneralEntityObject implementation
-     * all transactions will commit at same time
-     * @param transactionobject: GeneralEntityObjects that holds the transaction queue
-     */
-    public Bsystem(BLtable transactionobject) {
-        super(transactionobject, new System(), new EMsystem());
+    public Bsystem(TableBusinessrules businessrules) {
+        super(new TableIO(businessrules.getTableio(), new EMsystem()));
+        this.tableio.setAuthenticated(tableio!=null && tableio.isAuthenticated());
     }
 
-    /**
-     * create new empty System object
-     * @return empty ISystem
-     */
     public ISystem newSystem() {
     	return new System();
     }
     
-    /**
-     * create new empty System object
-     * create new primary key with given parameters
-     * @param id primary key field
-     * @return ISystem with primary key
-     */
     public ISystem newSystem(long id) {
         return new System(id);
     }
 
-    /**
-     * create new empty System object with given primary key
-     * @param systemPK: primary key for System
-     * @return ISystem with primary key
-     */
     public ISystem newSystem(ISystemPK systemPK) {
         return new System((SystemPK)systemPK);
     }
 
-    /**
-     * create new empty primary key
-     * @return empty SystemPK
-     */
     public ISystemPK newSystemPK() {
         return new SystemPK();
     }
 
-    /**
-     * create new primary key with given parameters
-     * @param id primary key field
-     * @return new ISystemPK
-     */
     public ISystemPK newSystemPK(long id) {
         return new SystemPK(id);
     }
 
-    /**
-     * get all System objects from database
-     * @return ArrayList of System objects
-     * @throws DBException
-     */
     public ArrayList<System> getSystems() throws DBException {
-        return (ArrayList<System>)super.getEntities(EMsystem.SQLSelectAll);
+        return (ArrayList<System>)tableio.getEntities(EMsystem.SQLSelectAll);
     }
 
-    /**
-     * search System for primary key
-     * @param systemPK: System primary key
-     * @return System object
-     * @throws DBException
-     */
     public System getSystem(ISystemPK systemPK) throws DBException {
-        return (System)super.getEntity((SystemPK)systemPK);
+        return (System)tableio.getEntity((SystemPK)systemPK);
     }
 
-    /**
-     * search system with ISystemsearch parameters
-     * @param search ISystemsearch
-     * @return ArrayList of System
-     * @throws DBException 
-     */
     public ArrayList<System> searchsystems(ISystemsearch search) throws DBException {
-        return (ArrayList<System>)this.search(search);
+        return (ArrayList<System>)tableio.search(search);
     }
 
-    /**
-     * search system with ISystemsearch parameters, order by orderby sql clause
-     * @param search ISystemsearch
-     * @param orderby sql order by string
-     * @return ArrayList of System
-     * @throws DBException 
-     */
     public ArrayList<System> searchsystems(ISystemsearch search, String orderby) throws DBException {
-        return (ArrayList<System>)this.search(search, orderby);
+        return (ArrayList<System>)tableio.search(search, orderby);
     }
 
-    /**
-     * Search system in database for systemPK:
-     * @param systemPK: System Primary Key, only valid for the initialized Entity
-     * @return true if found in database
-     * @throws DBException
-     */
     public boolean getSystemExists(ISystemPK systemPK) throws DBException {
-        return super.getEntityExists((SystemPK)systemPK);
+        return tableio.getEntityExists((SystemPK)systemPK);
     }
 
-    /**
-     * try to insert System in database
-     * @param system System object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertSystem(ISystem system) throws DBException, DataException {
-        super.insertEntity(system);
+    public System getEntity(String sql) throws DBException {
+        return (System)tableio.getEntity(sql);
+    }
+    
+    public System getEntity(String sql, SQLparameters parameters) throws DBException {
+        return (System)tableio.getEntity(sql, parameters);
+    }
+    
+    public ArrayList<System> getEntities(String sql) throws DBException {
+        return tableio.getEntities(sql);
+    }
+    
+    public ArrayList<System> getEntities(String sql, SQLparameters parameters) throws DBException {
+        return tableio.getEntities(sql, parameters);
     }
 
-    /**
-     * check if SystemPK exists
-     * insert if not, update if found
-     * do not commit transaction
-     * @param system System object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertupdateSystem(ISystem system) throws DBException, DataException {
+    public long count() throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+    
+    public long count(String sql, SQLparameters parameters) throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+
+    public ArrayList<System> search(Tablesearcher search) throws DBException {
+        return tableio.search(search);
+    }
+
+    public ArrayList<System> search(Tablesearcher search, String orderby) throws DBException {
+        return tableio.search(search, orderby);
+    }
+
+    public long searchcount(Tablesearcher search) throws DBException {
+        return tableio.searchcount(search);
+    }
+
+    public void insertSystem(SQLTqueue transactionqueue, ISystem system) throws DBException, DataException {
+        tableio.insertEntity(transactionqueue, system);
+    }
+
+    public void insertupdateSystem(SQLTqueue transactionqueue, ISystem system) throws DBException, DataException {
+    	checkDATA(system);
         if(this.getSystemExists(system.getPrimaryKey())) {
-            super.updateEntity(system);
+            tableio.updateEntity(transactionqueue, system);
         } else {
-            super.insertEntity(system);
+            tableio.insertEntity(transactionqueue, system);
         }
     }
 
-    /**
-     * try to update System in database
-     * @param system System object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void updateSystem(ISystem system) throws DBException, DataException {
-        super.updateEntity(system);
+    public void updateSystem(SQLTqueue transactionqueue, ISystem system) throws DBException, DataException {
+    	checkDATA(system);
+        tableio.updateEntity(transactionqueue, system);
     }
 
-    /**
-     * try to delete System in database
-     * @param system System object
-     * @throws DBException
-     */
-    public void deleteSystem(ISystem system) throws DBException {
-        cascadedeleteSystem(system.getPrimaryKey());
-        super.deleteEntity(system);
+    public void deleteSystem(SQLTqueue transactionqueue, ISystem system) throws DBException {
+        cascadedeleteSystem(transactionqueue, system.getPrimaryKey());
+        tableio.deleteEntity(transactionqueue, system);
     }
 
-    /**
-     * check data rules in System, throw DataException with customized message if rules do not apply
-     * @param system System object
-     * @throws DataException
-     * @throws DBException
-     */
-    public void checkDATA(ISystem system) throws DataException, DBException {
+    private void checkDATA(ISystem system) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
         if(system.getName()!=null && system.getName().length()>ISystem.SIZE_NAME) {
@@ -234,99 +160,52 @@ public abstract class Bsystem extends BLtable {
      * delete all records in tables where systemPK is used in a primary key
      * @param systemPK: System primary key
      */
-    public void cascadedeleteSystem(ISystemPK systemPK) {
+    public void cascadedeleteSystem(SQLTqueue transactionqueue, ISystemPK systemPK) {
         BLsystemjumps blsystemjumpsSystem_end = new BLsystemjumps(this);
-        blsystemjumpsSystem_end.delete4systemSystem_end(systemPK);
+        blsystemjumpsSystem_end.delete4systemSystem_end(transactionqueue, systemPK);
         BLsystemjumps blsystemjumpsSystem_start = new BLsystemjumps(this);
-        blsystemjumpsSystem_start.delete4systemSystem_start(systemPK);
+        blsystemjumpsSystem_start.delete4systemSystem_start(transactionqueue, systemPK);
         BLtradecombined bltradecombinedBuy_system = new BLtradecombined(this);
-        bltradecombinedBuy_system.delete4systemBuy_system(systemPK);
+        bltradecombinedBuy_system.delete4systemBuy_system(transactionqueue, systemPK);
         BLtradecombined bltradecombinedSell_system = new BLtradecombined(this);
-        bltradecombinedSell_system.delete4systemSell_system(systemPK);
+        bltradecombinedSell_system.delete4systemSell_system(transactionqueue, systemPK);
     }
 
-    /**
-     * @param security_islandPK: foreign key for Security_island
-     * @delete all System Entity objects for Security_island in database
-     */
-    public void delete4security_island(ISecurity_islandPK security_islandPK) {
-        super.addStatement(EMsystem.SQLDelete4security_island, security_islandPK.getSQLprimarykey());
+    public void delete4security_island(SQLTqueue transactionqueue, ISecurity_islandPK security_islandPK) {
+        tableio.addStatement(transactionqueue, EMsystem.SQLDelete4security_island, security_islandPK.getSQLprimarykey());
     }
 
-    /**
-     * @param security_islandPK: foreign key for Security_island
-     * @return all System Entity objects for Security_island
-     * @throws CustomException
-     */
     public ArrayList<System> getSystems4security_island(ISecurity_islandPK security_islandPK) throws CustomException {
-        return super.getEntities(EMsystem.SQLSelect4security_island, security_islandPK.getSQLprimarykey());
+        return tableio.getEntities(EMsystem.SQLSelect4security_island, security_islandPK.getSQLprimarykey());
     }
-    /**
-     * @param constellationPK: foreign key for Constellation
-     * @delete all System Entity objects for Constellation in database
-     */
-    public void delete4constellation(IConstellationPK constellationPK) {
-        super.addStatement(EMsystem.SQLDelete4constellation, constellationPK.getSQLprimarykey());
+    public void delete4constellation(SQLTqueue transactionqueue, IConstellationPK constellationPK) {
+        tableio.addStatement(transactionqueue, EMsystem.SQLDelete4constellation, constellationPK.getSQLprimarykey());
     }
 
-    /**
-     * @param constellationPK: foreign key for Constellation
-     * @return all System Entity objects for Constellation
-     * @throws CustomException
-     */
     public ArrayList<System> getSystems4constellation(IConstellationPK constellationPK) throws CustomException {
-        return super.getEntities(EMsystem.SQLSelect4constellation, constellationPK.getSQLprimarykey());
+        return tableio.getEntities(EMsystem.SQLSelect4constellation, constellationPK.getSQLprimarykey());
     }
-    /**
-     * @param systemjumpsPK: parent Systemjumps for child object System Entity
-     * @return child System Entity object
-     * @throws CustomException
-     */
     public System getSystemjumpssystem_end(ISystemjumpsPK systemjumpsPK) throws CustomException {
         SystemPK systemPK = new SystemPK(systemjumpsPK.getSystem_end());
         return this.getSystem(systemPK);
     }
 
-    /**
-     * @param systemjumpsPK: parent Systemjumps for child object System Entity
-     * @return child System Entity object
-     * @throws CustomException
-     */
     public System getSystemjumpssystem_start(ISystemjumpsPK systemjumpsPK) throws CustomException {
         SystemPK systemPK = new SystemPK(systemjumpsPK.getSystem_start());
         return this.getSystem(systemPK);
     }
 
-    /**
-     * @param tradecombinedPK: parent Tradecombined for child object System Entity
-     * @return child System Entity object
-     * @throws CustomException
-     */
     public System getTradecombinedbuy_system(ITradecombinedPK tradecombinedPK) throws CustomException {
         SystemPK systemPK = new SystemPK(tradecombinedPK.getBuy_system());
         return this.getSystem(systemPK);
     }
 
-    /**
-     * @param tradecombinedPK: parent Tradecombined for child object System Entity
-     * @return child System Entity object
-     * @throws CustomException
-     */
     public System getTradecombinedsell_system(ITradecombinedPK tradecombinedPK) throws CustomException {
         SystemPK systemPK = new SystemPK(tradecombinedPK.getSell_system());
         return this.getSystem(systemPK);
     }
 
 
-    /**
-     * get all System objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @param sortlist sql sort string
-     * @param sortoperator asc/desc
-     * @return ArrayList of System objects
-     * @throws DBException
-     */
     public ArrayList<System> getSystems(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
         StringBuilder sql = new StringBuilder(EMsystem.SQLSelect);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
@@ -341,16 +220,10 @@ public abstract class Bsystem extends BLtable {
         if(sortlist.length()>0) {
             sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return (ArrayList<System>)super.getEntities(sql.toString(), sqlparameters);
+        return (ArrayList<System>)tableio.getEntities(sql.toString(), sqlparameters);
     }
 
-    /**
-     * delete all System objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @throws DBException
-     */
-    public void delSystem(SQLparameters sqlparameters, String andoroperator) throws DBException {
+    public void delSystem(SQLTqueue transactionqueue, SQLparameters sqlparameters, String andoroperator) throws DBException {
         StringBuilder sql = new StringBuilder("delete from ").append(System.table);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
         int l = parameters.size();
@@ -361,7 +234,7 @@ public abstract class Bsystem extends BLtable {
                 if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(sql.toString(), sqlparameters);
+        tableio.addStatement(transactionqueue, sql.toString(), sqlparameters);
     }
 
 

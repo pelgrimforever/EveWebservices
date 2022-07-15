@@ -1,9 +1,6 @@
 /*
- * JSONView_materialinputavg.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 23.0.2022 17:52
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_materialinputavg {
@@ -36,10 +32,6 @@ public class JSONView_materialinputavg {
         return jsonview_materialinputavgs;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_materialinputavg view_materialinputavg) {
         JSONObject json = new JSONObject();
         json.put("username", view_materialinputavg.getUsername());
@@ -76,11 +68,6 @@ public class JSONView_materialinputavg {
         return view_materialinputavg;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_materialinputavgsearch parameters
-     * @return 
-     */
     public static View_materialinputavgsearch toView_materialinputavgsearch(JSONObject json) {
         View_materialinputavgsearch view_materialinputavgsearch = new View_materialinputavgsearch();
         view_materialinputavgsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

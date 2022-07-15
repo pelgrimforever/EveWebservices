@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.allnodes_system;
@@ -61,7 +61,7 @@ public class Allnodes_system_delete extends SecurityDataServlet {
 
     private void delete_allnodes_system(Allnodes_system_usecases allnodes_systemusecases) throws CustomException {
         IAllnodes_system allnodes_system = (IAllnodes_system)parser.getJavaObject("allnodes_system");
-        allnodes_systemusecases.securedeleteAllnodes_system(allnodes_system);
+        allnodes_systemusecases.deleteAllnodes_system(allnodes_system);
     }
     
     @Override

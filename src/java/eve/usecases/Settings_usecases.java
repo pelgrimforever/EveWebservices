@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Settings;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Settings_usecases {
 
     private boolean loggedin = false;
-    private BLsettings blsettings = new BLsettings();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLsettings blsettings = new BLsettings(sqlreader);
     
     public Settings_usecases() {
         this(false);
@@ -39,6 +45,12 @@ public class Settings_usecases {
     
 //Custom code, do not change this line
 //add here custom operations
+    public ArrayList<Settings> getDefaultSettings() throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        ArrayList<Settings> defaultsettings = blsettings.getDefaultSettings(tq);
+        sqlwriter.Commit2DB(tq);
+        return defaultsettings;
+    }
 //Custom code, do not change this line   
 
     public long count() throws DBException {
@@ -50,7 +62,7 @@ public class Settings_usecases {
     }
     
     public boolean getSettingsExists(ISettingsPK settingsPK) throws DBException {
-        return blsettings.getEntityExists(settingsPK);
+        return blsettings.getSettingsExists(settingsPK);
     }
     
     public Settings get_settings_by_primarykey(ISettingsPK settingsPK) throws DBException {
@@ -69,16 +81,23 @@ public class Settings_usecases {
         return blsettings.searchcount(settingssearch);
     }
 
-    public void secureinsertSettings(ISettings settings) throws DBException, DataException {
-        blsettings.secureinsertSettings(settings);
+    public void insertSettings(ISettings settings) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blsettings.insertSettings(tq, settings);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateSettings(ISettings settings) throws DBException, DataException {
-        blsettings.secureupdateSettings(settings);
+    public void updateSettings(ISettings settings) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blsettings.updateSettings(tq, settings);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteSettings(ISettings settings) throws DBException, DataException {
-        blsettings.securedeleteSettings(settings);
+    public void deleteSettings(ISettings settings) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blsettings.deleteSettings(tq, settings);
+        sqlwriter.Commit2DB(tq);
     }
+
 }
 

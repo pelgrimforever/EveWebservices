@@ -1,25 +1,20 @@
 package eve.restservices;
 
-import base.restservices.RS_json;
 import base.restservices.RS_json_admin;
 import eve.BusinessObject.service.UniverseService;
 import eve.BusinessObject.service.UniverseService.UniverseStatus;
-import eve.usecases.Security_usecases;
+import eve.usecases.custom.Security_usecases;
+import eve.usecases.custom.Downloaduniverse_usecase;
 import general.exception.CustomException;
-import general.exception.DatahandlerException;
 import java.io.IOException;
 import java.util.Iterator;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriInfo;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
@@ -28,28 +23,20 @@ import org.json.simple.parser.ParseException;
 @Path("rsdownloaduniverse")
 public class RSdownloaduniverse extends RS_json_admin {
     
-    private static Thread universedownloader = null;
-    private static UniverseService universeservice = null;
-    private static boolean keeprunning = false;
-    private static int count = 0;
-
+    private Security_usecases security_usecases = new Security_usecases();
+    private Downloaduniverse_usecase downloaduniverse_usecase = new Downloaduniverse_usecase();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
-            setIsadmin(Security_usecases.isadmin(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            setIsadmin(security_usecases.isadmin(authorisationstring));
             boolean start_requested = json.containsKey("start") && (Boolean)json.get("start");
             boolean stop_requested = json.containsKey("stop") && (Boolean)json.get("stop");
-            boolean isuniverseservice_running = universeservice!=null;
-            boolean isuniverseservice_done = isuniverseservice_running && universeservice.getStatus().isDone();
-            boolean isuniversedownloader_not_running = universedownloader==null;
-            if(isadmin && start_requested)
-                start_reset_universeservice();
-            if(isadmin && stop_requested && isuniverseservice_running)
-                stop_universeservice();
+            downloaduniverse_usecase.processRequest(isadmin, start_requested, stop_requested);
             JSONObject jsonstatus = build_JSON_response();
             result = jsonstatus.toJSONString();
         }
@@ -59,34 +46,6 @@ public class RSdownloaduniverse extends RS_json_admin {
         return result;
     }
 
-    private void stop_universeservice() {
-        universeservice.stoprunning();
-        keeprunning = false;
-        universedownloader.interrupt();
-        universedownloader = null;
-        universeservice = null;
-    }
-
-    private void start_reset_universeservice() {
-        keeprunning = true;
-        if(universeservice!=null && universeservice.getStatus().isDone())
-            resetUniverse();
-        if(universedownloader==null)
-            start_universeservice();
-    }
-
-    private void start_universeservice() {
-        universeservice = new UniverseService();
-        universedownloader = new Thread(universeservice);
-        universedownloader.setPriority(Thread.MIN_PRIORITY);
-        universedownloader.start();
-    }
-
-    private void resetUniverse() {
-        universedownloader = null;
-        universeservice = null;
-    }
-
     private JSONObject build_JSON_response() {
         JSONObject jsonstatus = new JSONObject();
         JSONObject jsonuniverse = new JSONObject();
@@ -94,14 +53,14 @@ public class RSdownloaduniverse extends RS_json_admin {
         jsonstatus.put("universe", jsonuniverse);
         jsonstatus.put("messages", jsonmessages);
         jsonstatus.put("done", true);
-        if(universeservice!=null)
+        if(downloaduniverse_usecase.isServiceRunning())
             build_JSON_response_universeservice_details(jsonuniverse, jsonmessages, jsonstatus);
         jsonstatus.put("status", "OK");
         return jsonstatus;
     }
 
     private void build_JSON_response_universeservice_details(JSONObject jsonuniverse, JSONArray jsonmessages, JSONObject jsonstatus) {
-        UniverseStatus universestatus = universeservice.getStatus();
+        UniverseStatus universestatus = downloaduniverse_usecase.getStatus();
         jsonuniverse.put("done", universestatus.isDone());
         jsonuniverse.put("totalgraphics", universestatus.getTotalgraphics());
         jsonuniverse.put("graphics", universestatus.getGraphics());
@@ -117,7 +76,6 @@ public class RSdownloaduniverse extends RS_json_admin {
         jsonuniverse.put("stargates", universestatus.getStargates());
         jsonuniverse.put("totalcorporations", universestatus.getTotalcorporations());
         jsonuniverse.put("corporations", universestatus.getCorporations());
-        jsonuniverse.put("alliances", universestatus.getAlliances());
         jsonuniverse.put("totalalliances", universestatus.getTotalalliances());
         jsonuniverse.put("alliances", universestatus.getAlliances());
         Iterator<String> messagesI = universestatus.getMessages().iterator();
@@ -125,7 +83,7 @@ public class RSdownloaduniverse extends RS_json_admin {
             jsonmessages.add(messagesI.next());
         jsonstatus.put("done", universestatus.isDone());
         if(universestatus.isDone())
-            resetUniverse();
+            downloaduniverse_usecase.resetUniverse();
     }
     
     private String returnstatus(String status) {

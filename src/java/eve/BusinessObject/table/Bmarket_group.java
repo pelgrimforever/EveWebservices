@@ -1,216 +1,142 @@
 /*
- * Bmarket_group.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 11.4.2022 9:13
- *
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-import db.SQLMapperFactory;
-import db.SQLparameters;
-import data.gis.shape.*;
-import data.json.piJson;
-import data.json.psqlJsonobject;
-import db.SQLMapper_pgsql;
-import data.interfaces.db.Filedata;
-import eve.BusinessObject.Logic.*;
-import eve.conversion.json.JSONMarket_group;
+import db.*;
+import data.interfaces.db.*;
 import eve.conversion.entity.EMmarket_group;
+import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IMarket_groupsearch;
 import eve.logicentity.Market_group;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import org.postgresql.geometric.PGpoint;
-import org.postgis.PGgeometry;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
- * Business Entity class Bmarket_group
- *
- * Superclass for manipulating data- and database objects
- * for Entity Market_group and direct related data
- * This class is overwritten each time the code generator runs
- * and is not meant to be changed
- *
  * @author Franky Laseure
  */
-public abstract class Bmarket_group extends BLtable {
+public abstract class Bmarket_group extends TableBusinessrules {
 
-    /**
-     * Constructor, sets Market_group as default Entity
-     */
-    public Bmarket_group() {
-        super(new Market_group(), new EMmarket_group());
+    public Bmarket_group(SQLreader sqlreader) {
+        super(new TableIO(sqlreader, new EMmarket_group()));
     }
 
-    /**
-     * Constructor, sets Market_group as default Entity
-     * sets transaction queue from given GeneralEntityObject implementation
-     * all transactions will commit at same time
-     * @param transactionobject: GeneralEntityObjects that holds the transaction queue
-     */
-    public Bmarket_group(BLtable transactionobject) {
-        super(transactionobject, new Market_group(), new EMmarket_group());
+    public Bmarket_group(TableBusinessrules businessrules) {
+        super(new TableIO(businessrules.getTableio(), new EMmarket_group()));
+        this.tableio.setAuthenticated(tableio!=null && tableio.isAuthenticated());
     }
 
-    /**
-     * create new empty Market_group object
-     * @return empty IMarket_group
-     */
     public IMarket_group newMarket_group() {
     	return new Market_group();
     }
     
-    /**
-     * create new empty Market_group object
-     * create new primary key with given parameters
-     * @param id primary key field
-     * @return IMarket_group with primary key
-     */
     public IMarket_group newMarket_group(long id) {
         return new Market_group(id);
     }
 
-    /**
-     * create new empty Market_group object with given primary key
-     * @param market_groupPK: primary key for Market_group
-     * @return IMarket_group with primary key
-     */
     public IMarket_group newMarket_group(IMarket_groupPK market_groupPK) {
         return new Market_group((Market_groupPK)market_groupPK);
     }
 
-    /**
-     * create new empty primary key
-     * @return empty Market_groupPK
-     */
     public IMarket_groupPK newMarket_groupPK() {
         return new Market_groupPK();
     }
 
-    /**
-     * create new primary key with given parameters
-     * @param id primary key field
-     * @return new IMarket_groupPK
-     */
     public IMarket_groupPK newMarket_groupPK(long id) {
         return new Market_groupPK(id);
     }
 
-    /**
-     * get all Market_group objects from database
-     * @return ArrayList of Market_group objects
-     * @throws DBException
-     */
     public ArrayList<Market_group> getMarket_groups() throws DBException {
-        return (ArrayList<Market_group>)super.getEntities(EMmarket_group.SQLSelectAll);
+        return (ArrayList<Market_group>)tableio.getEntities(EMmarket_group.SQLSelectAll);
     }
 
-    /**
-     * search Market_group for primary key
-     * @param market_groupPK: Market_group primary key
-     * @return Market_group object
-     * @throws DBException
-     */
     public Market_group getMarket_group(IMarket_groupPK market_groupPK) throws DBException {
-        return (Market_group)super.getEntity((Market_groupPK)market_groupPK);
+        return (Market_group)tableio.getEntity((Market_groupPK)market_groupPK);
     }
 
-    /**
-     * search market_group with IMarket_groupsearch parameters
-     * @param search IMarket_groupsearch
-     * @return ArrayList of Market_group
-     * @throws DBException 
-     */
     public ArrayList<Market_group> searchmarket_groups(IMarket_groupsearch search) throws DBException {
-        return (ArrayList<Market_group>)this.search(search);
+        return (ArrayList<Market_group>)tableio.search(search);
     }
 
-    /**
-     * search market_group with IMarket_groupsearch parameters, order by orderby sql clause
-     * @param search IMarket_groupsearch
-     * @param orderby sql order by string
-     * @return ArrayList of Market_group
-     * @throws DBException 
-     */
     public ArrayList<Market_group> searchmarket_groups(IMarket_groupsearch search, String orderby) throws DBException {
-        return (ArrayList<Market_group>)this.search(search, orderby);
+        return (ArrayList<Market_group>)tableio.search(search, orderby);
     }
 
-    /**
-     * Search market_group in database for market_groupPK:
-     * @param market_groupPK: Market_group Primary Key, only valid for the initialized Entity
-     * @return true if found in database
-     * @throws DBException
-     */
     public boolean getMarket_groupExists(IMarket_groupPK market_groupPK) throws DBException {
-        return super.getEntityExists((Market_groupPK)market_groupPK);
+        return tableio.getEntityExists((Market_groupPK)market_groupPK);
     }
 
-    /**
-     * try to insert Market_group in database
-     * @param market_group Market_group object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertMarket_group(IMarket_group market_group) throws DBException, DataException {
-        super.insertEntity(market_group);
+    public Market_group getEntity(String sql) throws DBException {
+        return (Market_group)tableio.getEntity(sql);
+    }
+    
+    public Market_group getEntity(String sql, SQLparameters parameters) throws DBException {
+        return (Market_group)tableio.getEntity(sql, parameters);
+    }
+    
+    public ArrayList<Market_group> getEntities(String sql) throws DBException {
+        return tableio.getEntities(sql);
+    }
+    
+    public ArrayList<Market_group> getEntities(String sql, SQLparameters parameters) throws DBException {
+        return tableio.getEntities(sql, parameters);
     }
 
-    /**
-     * check if Market_groupPK exists
-     * insert if not, update if found
-     * do not commit transaction
-     * @param market_group Market_group object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertupdateMarket_group(IMarket_group market_group) throws DBException, DataException {
+    public long count() throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+    
+    public long count(String sql, SQLparameters parameters) throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+
+    public ArrayList<Market_group> search(Tablesearcher search) throws DBException {
+        return tableio.search(search);
+    }
+
+    public ArrayList<Market_group> search(Tablesearcher search, String orderby) throws DBException {
+        return tableio.search(search, orderby);
+    }
+
+    public long searchcount(Tablesearcher search) throws DBException {
+        return tableio.searchcount(search);
+    }
+
+    public void insertMarket_group(SQLTqueue transactionqueue, IMarket_group market_group) throws DBException, DataException {
+        tableio.insertEntity(transactionqueue, market_group);
+    }
+
+    public void insertupdateMarket_group(SQLTqueue transactionqueue, IMarket_group market_group) throws DBException, DataException {
+    	checkDATA(market_group);
         if(this.getMarket_groupExists(market_group.getPrimaryKey())) {
-            super.updateEntity(market_group);
+            tableio.updateEntity(transactionqueue, market_group);
         } else {
-            super.insertEntity(market_group);
+            tableio.insertEntity(transactionqueue, market_group);
         }
     }
 
-    /**
-     * try to update Market_group in database
-     * @param market_group Market_group object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void updateMarket_group(IMarket_group market_group) throws DBException, DataException {
-        super.updateEntity(market_group);
+    public void updateMarket_group(SQLTqueue transactionqueue, IMarket_group market_group) throws DBException, DataException {
+    	checkDATA(market_group);
+        tableio.updateEntity(transactionqueue, market_group);
     }
 
-    /**
-     * try to delete Market_group in database
-     * @param market_group Market_group object
-     * @throws DBException
-     */
-    public void deleteMarket_group(IMarket_group market_group) throws DBException {
-        cascadedeleteMarket_group(market_group.getPrimaryKey());
-        super.deleteEntity(market_group);
+    public void deleteMarket_group(SQLTqueue transactionqueue, IMarket_group market_group) throws DBException {
+        cascadedeleteMarket_group(transactionqueue, market_group.getPrimaryKey());
+        tableio.deleteEntity(transactionqueue, market_group);
     }
 
-    /**
-     * check data rules in Market_group, throw DataException with customized message if rules do not apply
-     * @param market_group Market_group object
-     * @throws DataException
-     * @throws DBException
-     */
-    public void checkDATA(IMarket_group market_group) throws DataException, DBException {
+    private void checkDATA(IMarket_group market_group) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
         if(market_group.getName()!=null && market_group.getName().length()>IMarket_group.SIZE_NAME) {
@@ -231,35 +157,17 @@ public abstract class Bmarket_group extends BLtable {
      * delete all records in tables where market_groupPK is used in a primary key
      * @param market_groupPK: Market_group primary key
      */
-    public void cascadedeleteMarket_group(IMarket_groupPK market_groupPK) {
+    public void cascadedeleteMarket_group(SQLTqueue transactionqueue, IMarket_groupPK market_groupPK) {
     }
 
-    /**
-     * @param market_groupPK: foreign key for Market_group
-     * @delete all Market_group Entity objects for Market_group in database
-     */
-    public void delete4market_groupParent_id(IMarket_groupPK market_groupPK) {
-        super.addStatement(EMmarket_group.SQLDelete4market_groupParent_id, market_groupPK.getSQLprimarykey());
+    public void delete4market_groupParent_id(SQLTqueue transactionqueue, IMarket_groupPK market_groupPK) {
+        tableio.addStatement(transactionqueue, EMmarket_group.SQLDelete4market_groupParent_id, market_groupPK.getSQLprimarykey());
     }
 
-    /**
-     * @param market_groupPK: foreign key for Market_group
-     * @return all Market_group Entity objects for Market_group
-     * @throws CustomException
-     */
     public ArrayList<Market_group> getMarket_groups4market_groupParent_id(IMarket_groupPK market_groupPK) throws CustomException {
-        return super.getEntities(EMmarket_group.SQLSelect4market_groupParent_id, market_groupPK.getSQLprimarykey());
+        return tableio.getEntities(EMmarket_group.SQLSelect4market_groupParent_id, market_groupPK.getSQLprimarykey());
     }
 
-    /**
-     * get all Market_group objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @param sortlist sql sort string
-     * @param sortoperator asc/desc
-     * @return ArrayList of Market_group objects
-     * @throws DBException
-     */
     public ArrayList<Market_group> getMarket_groups(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
         StringBuilder sql = new StringBuilder(EMmarket_group.SQLSelect);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
@@ -274,16 +182,10 @@ public abstract class Bmarket_group extends BLtable {
         if(sortlist.length()>0) {
             sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return (ArrayList<Market_group>)super.getEntities(sql.toString(), sqlparameters);
+        return (ArrayList<Market_group>)tableio.getEntities(sql.toString(), sqlparameters);
     }
 
-    /**
-     * delete all Market_group objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @throws DBException
-     */
-    public void delMarket_group(SQLparameters sqlparameters, String andoroperator) throws DBException {
+    public void delMarket_group(SQLTqueue transactionqueue, SQLparameters sqlparameters, String andoroperator) throws DBException {
         StringBuilder sql = new StringBuilder("delete from ").append(Market_group.table);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
         int l = parameters.size();
@@ -294,7 +196,7 @@ public abstract class Bmarket_group extends BLtable {
                 if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(sql.toString(), sqlparameters);
+        tableio.addStatement(transactionqueue, sql.toString(), sqlparameters);
     }
 
 

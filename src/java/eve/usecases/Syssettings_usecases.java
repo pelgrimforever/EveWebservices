@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Syssettings;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Syssettings_usecases {
 
     private boolean loggedin = false;
-    private BLsyssettings blsyssettings = new BLsyssettings();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLsyssettings blsyssettings = new BLsyssettings(sqlreader);
     
     public Syssettings_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Syssettings_usecases {
     }
     
     public boolean getSyssettingsExists(ISyssettingsPK syssettingsPK) throws DBException {
-        return blsyssettings.getEntityExists(syssettingsPK);
+        return blsyssettings.getSyssettingsExists(syssettingsPK);
     }
     
     public Syssettings get_syssettings_by_primarykey(ISyssettingsPK syssettingsPK) throws DBException {
@@ -65,16 +71,23 @@ public class Syssettings_usecases {
         return blsyssettings.searchcount(syssettingssearch);
     }
 
-    public void secureinsertSyssettings(ISyssettings syssettings) throws DBException, DataException {
-        blsyssettings.secureinsertSyssettings(syssettings);
+    public void insertSyssettings(ISyssettings syssettings) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blsyssettings.insertSyssettings(tq, syssettings);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateSyssettings(ISyssettings syssettings) throws DBException, DataException {
-        blsyssettings.secureupdateSyssettings(syssettings);
+    public void updateSyssettings(ISyssettings syssettings) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blsyssettings.updateSyssettings(tq, syssettings);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteSyssettings(ISyssettings syssettings) throws DBException, DataException {
-        blsyssettings.securedeleteSyssettings(syssettings);
+    public void deleteSyssettings(ISyssettings syssettings) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blsyssettings.deleteSyssettings(tq, syssettings);
+        sqlwriter.Commit2DB(tq);
     }
+
 }
 

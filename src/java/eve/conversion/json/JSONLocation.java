@@ -1,9 +1,6 @@
 /*
- * JSONLocation.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONLocation {
@@ -41,10 +37,6 @@ public class JSONLocation {
         return jsonlocations;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ILocationPK locationPK) {
         JSONObject json = null;
         if(locationPK!=null) {
@@ -54,10 +46,6 @@ public class JSONLocation {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ILocation location) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(location.getPrimaryKey()));
@@ -70,10 +58,6 @@ public class JSONLocation {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Locationsearch locationsearch) {
         JSONObject json = new JSONObject();
         if(locationsearch.used()) {
@@ -112,11 +96,6 @@ public class JSONLocation {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Locationsearch toLocationsearch(JSONObject json) {
         Locationsearch locationsearch = new Locationsearch();
         locationsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.corporation;
@@ -61,7 +61,7 @@ public class Corporation_insert extends SecurityDataServlet {
 
     private void insert_corporation(Corporation_usecases corporationusecases) throws CustomException {
         ICorporation corporation = (ICorporation)parser.getJavaObject("corporation");
-        corporationusecases.secureinsertCorporation(corporation);
+        corporationusecases.insertCorporation(corporation);
     }
     
     @Override

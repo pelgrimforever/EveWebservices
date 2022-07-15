@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.trade;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.ITradeOperation;
 import eve.logicentity.Trade;
 import eve.searchentity.Tradesearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,13 +46,15 @@ import org.json.simple.parser.ParseException;
 @Path("rstrade_insert")
 public class RSTrade_insert extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Trade_usecases tradeusecases = new Trade_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
@@ -80,7 +80,7 @@ public class RSTrade_insert extends RS_json_login {
 
     private void insert_trade(Trade_usecases tradeusecases, JSONObject json) throws ParseException, CustomException {
         ITrade trade = (ITrade)JSONTrade.toTrade((JSONObject)json.get("trade"));
-        tradeusecases.secureinsertTrade(trade);
+        tradeusecases.insertTrade(trade);
         setReturnstatus("OK");
     }
 }

@@ -1,218 +1,142 @@
 /*
- * Bstation_service.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 11.4.2022 9:13
- *
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-import db.SQLMapperFactory;
-import db.SQLparameters;
-import data.gis.shape.*;
-import data.json.piJson;
-import data.json.psqlJsonobject;
-import db.SQLMapper_pgsql;
-import data.interfaces.db.Filedata;
-import eve.BusinessObject.Logic.*;
-import eve.conversion.json.JSONStation_service;
+import db.*;
+import data.interfaces.db.*;
 import eve.conversion.entity.EMstation_service;
+import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IStation_servicesearch;
 import eve.logicentity.Station_service;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import org.postgresql.geometric.PGpoint;
-import org.postgis.PGgeometry;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
- * Business Entity class Bstation_service
- *
- * Superclass for manipulating data- and database objects
- * for Entity Station_service and direct related data
- * This class is overwritten each time the code generator runs
- * and is not meant to be changed
- *
  * @author Franky Laseure
  */
-public abstract class Bstation_service extends BLtable {
+public abstract class Bstation_service extends TableBusinessrules {
 
-    /**
-     * Constructor, sets Station_service as default Entity
-     */
-    public Bstation_service() {
-        super(new Station_service(), new EMstation_service());
+    public Bstation_service(SQLreader sqlreader) {
+        super(new TableIO(sqlreader, new EMstation_service()));
     }
 
-    /**
-     * Constructor, sets Station_service as default Entity
-     * sets transaction queue from given GeneralEntityObject implementation
-     * all transactions will commit at same time
-     * @param transactionobject: GeneralEntityObjects that holds the transaction queue
-     */
-    public Bstation_service(BLtable transactionobject) {
-        super(transactionobject, new Station_service(), new EMstation_service());
+    public Bstation_service(TableBusinessrules businessrules) {
+        super(new TableIO(businessrules.getTableio(), new EMstation_service()));
+        this.tableio.setAuthenticated(tableio!=null && tableio.isAuthenticated());
     }
 
-    /**
-     * create new empty Station_service object
-     * @return empty IStation_service
-     */
     public IStation_service newStation_service() {
     	return new Station_service();
     }
     
-    /**
-     * create new empty Station_service object
-     * create new primary key with given parameters
-     * @param station primary key field
-     * @param service primary key field
-     * @return IStation_service with primary key
-     */
     public IStation_service newStation_service(long station, java.lang.String service) {
         return new Station_service(station, service);
     }
 
-    /**
-     * create new empty Station_service object with given primary key
-     * @param station_servicePK: primary key for Station_service
-     * @return IStation_service with primary key
-     */
     public IStation_service newStation_service(IStation_servicePK station_servicePK) {
         return new Station_service((Station_servicePK)station_servicePK);
     }
 
-    /**
-     * create new empty primary key
-     * @return empty Station_servicePK
-     */
     public IStation_servicePK newStation_servicePK() {
         return new Station_servicePK();
     }
 
-    /**
-     * create new primary key with given parameters
-     * @param station primary key field
-     * @param service primary key field
-     * @return new IStation_servicePK
-     */
     public IStation_servicePK newStation_servicePK(long station, java.lang.String service) {
         return new Station_servicePK(station, service);
     }
 
-    /**
-     * get all Station_service objects from database
-     * @return ArrayList of Station_service objects
-     * @throws DBException
-     */
     public ArrayList<Station_service> getStation_services() throws DBException {
-        return (ArrayList<Station_service>)super.getEntities(EMstation_service.SQLSelectAll);
+        return (ArrayList<Station_service>)tableio.getEntities(EMstation_service.SQLSelectAll);
     }
 
-    /**
-     * search Station_service for primary key
-     * @param station_servicePK: Station_service primary key
-     * @return Station_service object
-     * @throws DBException
-     */
     public Station_service getStation_service(IStation_servicePK station_servicePK) throws DBException {
-        return (Station_service)super.getEntity((Station_servicePK)station_servicePK);
+        return (Station_service)tableio.getEntity((Station_servicePK)station_servicePK);
     }
 
-    /**
-     * search station_service with IStation_servicesearch parameters
-     * @param search IStation_servicesearch
-     * @return ArrayList of Station_service
-     * @throws DBException 
-     */
     public ArrayList<Station_service> searchstation_services(IStation_servicesearch search) throws DBException {
-        return (ArrayList<Station_service>)this.search(search);
+        return (ArrayList<Station_service>)tableio.search(search);
     }
 
-    /**
-     * search station_service with IStation_servicesearch parameters, order by orderby sql clause
-     * @param search IStation_servicesearch
-     * @param orderby sql order by string
-     * @return ArrayList of Station_service
-     * @throws DBException 
-     */
     public ArrayList<Station_service> searchstation_services(IStation_servicesearch search, String orderby) throws DBException {
-        return (ArrayList<Station_service>)this.search(search, orderby);
+        return (ArrayList<Station_service>)tableio.search(search, orderby);
     }
 
-    /**
-     * Search station_service in database for station_servicePK:
-     * @param station_servicePK: Station_service Primary Key, only valid for the initialized Entity
-     * @return true if found in database
-     * @throws DBException
-     */
     public boolean getStation_serviceExists(IStation_servicePK station_servicePK) throws DBException {
-        return super.getEntityExists((Station_servicePK)station_servicePK);
+        return tableio.getEntityExists((Station_servicePK)station_servicePK);
     }
 
-    /**
-     * try to insert Station_service in database
-     * @param station_service Station_service object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertStation_service(IStation_service station_service) throws DBException, DataException {
-        super.insertEntity(station_service);
+    public Station_service getEntity(String sql) throws DBException {
+        return (Station_service)tableio.getEntity(sql);
+    }
+    
+    public Station_service getEntity(String sql, SQLparameters parameters) throws DBException {
+        return (Station_service)tableio.getEntity(sql, parameters);
+    }
+    
+    public ArrayList<Station_service> getEntities(String sql) throws DBException {
+        return tableio.getEntities(sql);
+    }
+    
+    public ArrayList<Station_service> getEntities(String sql, SQLparameters parameters) throws DBException {
+        return tableio.getEntities(sql, parameters);
     }
 
-    /**
-     * check if Station_servicePK exists
-     * insert if not, update if found
-     * do not commit transaction
-     * @param station_service Station_service object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertupdateStation_service(IStation_service station_service) throws DBException, DataException {
+    public long count() throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+    
+    public long count(String sql, SQLparameters parameters) throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+
+    public ArrayList<Station_service> search(Tablesearcher search) throws DBException {
+        return tableio.search(search);
+    }
+
+    public ArrayList<Station_service> search(Tablesearcher search, String orderby) throws DBException {
+        return tableio.search(search, orderby);
+    }
+
+    public long searchcount(Tablesearcher search) throws DBException {
+        return tableio.searchcount(search);
+    }
+
+    public void insertStation_service(SQLTqueue transactionqueue, IStation_service station_service) throws DBException, DataException {
+        tableio.insertEntity(transactionqueue, station_service);
+    }
+
+    public void insertupdateStation_service(SQLTqueue transactionqueue, IStation_service station_service) throws DBException, DataException {
+    	checkDATA(station_service);
         if(this.getStation_serviceExists(station_service.getPrimaryKey())) {
-            super.updateEntity(station_service);
+            tableio.updateEntity(transactionqueue, station_service);
         } else {
-            super.insertEntity(station_service);
+            tableio.insertEntity(transactionqueue, station_service);
         }
     }
 
-    /**
-     * try to update Station_service in database
-     * @param station_service Station_service object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void updateStation_service(IStation_service station_service) throws DBException, DataException {
-        super.updateEntity(station_service);
+    public void updateStation_service(SQLTqueue transactionqueue, IStation_service station_service) throws DBException, DataException {
+    	checkDATA(station_service);
+        tableio.updateEntity(transactionqueue, station_service);
     }
 
-    /**
-     * try to delete Station_service in database
-     * @param station_service Station_service object
-     * @throws DBException
-     */
-    public void deleteStation_service(IStation_service station_service) throws DBException {
-        cascadedeleteStation_service(station_service.getPrimaryKey());
-        super.deleteEntity(station_service);
+    public void deleteStation_service(SQLTqueue transactionqueue, IStation_service station_service) throws DBException {
+        cascadedeleteStation_service(transactionqueue, station_service.getPrimaryKey());
+        tableio.deleteEntity(transactionqueue, station_service);
     }
 
-    /**
-     * check data rules in Station_service, throw DataException with customized message if rules do not apply
-     * @param station_service Station_service object
-     * @throws DataException
-     * @throws DBException
-     */
-    public void checkDATA(IStation_service station_service) throws DataException, DBException {
+    private void checkDATA(IStation_service station_service) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //foreign key Station_service.Station - Station.Id
         //Primary key
@@ -225,35 +149,17 @@ public abstract class Bstation_service extends BLtable {
      * delete all records in tables where station_servicePK is used in a primary key
      * @param station_servicePK: Station_service primary key
      */
-    public void cascadedeleteStation_service(IStation_servicePK station_servicePK) {
+    public void cascadedeleteStation_service(SQLTqueue transactionqueue, IStation_servicePK station_servicePK) {
     }
 
-    /**
-     * @param stationPK: foreign key for Station
-     * @delete all Station_service Entity objects for Station in database
-     */
-    public void delete4station(IStationPK stationPK) {
-        super.addStatement(EMstation_service.SQLDelete4station, stationPK.getSQLprimarykey());
+    public void delete4station(SQLTqueue transactionqueue, IStationPK stationPK) {
+        tableio.addStatement(transactionqueue, EMstation_service.SQLDelete4station, stationPK.getSQLprimarykey());
     }
 
-    /**
-     * @param stationPK: foreign key for Station
-     * @return all Station_service Entity objects for Station
-     * @throws CustomException
-     */
     public ArrayList<Station_service> getStation_services4station(IStationPK stationPK) throws CustomException {
-        return super.getEntities(EMstation_service.SQLSelect4station, stationPK.getSQLprimarykey());
+        return tableio.getEntities(EMstation_service.SQLSelect4station, stationPK.getSQLprimarykey());
     }
 
-    /**
-     * get all Station_service objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @param sortlist sql sort string
-     * @param sortoperator asc/desc
-     * @return ArrayList of Station_service objects
-     * @throws DBException
-     */
     public ArrayList<Station_service> getStation_services(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
         StringBuilder sql = new StringBuilder(EMstation_service.SQLSelect);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
@@ -268,16 +174,10 @@ public abstract class Bstation_service extends BLtable {
         if(sortlist.length()>0) {
             sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return (ArrayList<Station_service>)super.getEntities(sql.toString(), sqlparameters);
+        return (ArrayList<Station_service>)tableio.getEntities(sql.toString(), sqlparameters);
     }
 
-    /**
-     * delete all Station_service objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @throws DBException
-     */
-    public void delStation_service(SQLparameters sqlparameters, String andoroperator) throws DBException {
+    public void delStation_service(SQLTqueue transactionqueue, SQLparameters sqlparameters, String andoroperator) throws DBException {
         StringBuilder sql = new StringBuilder("delete from ").append(Station_service.table);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
         int l = parameters.size();
@@ -288,7 +188,7 @@ public abstract class Bstation_service extends BLtable {
                 if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(sql.toString(), sqlparameters);
+        tableio.addStatement(transactionqueue, sql.toString(), sqlparameters);
     }
 
 

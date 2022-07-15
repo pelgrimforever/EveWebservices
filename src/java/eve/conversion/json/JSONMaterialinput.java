@@ -1,9 +1,6 @@
 /*
- * JSONMaterialinput.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 19.0.2022 21:56
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONMaterialinput {
@@ -41,10 +37,6 @@ public class JSONMaterialinput {
         return jsonmaterialinputs;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IMaterialinputPK materialinputPK) {
         JSONObject json = null;
         if(materialinputPK!=null) {
@@ -58,10 +50,6 @@ public class JSONMaterialinput {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IMaterialinput materialinput) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(materialinput.getPrimaryKey()));
@@ -73,10 +61,6 @@ public class JSONMaterialinput {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Materialinputsearch materialinputsearch) {
         JSONObject json = new JSONObject();
         if(materialinputsearch.used()) {
@@ -115,11 +99,6 @@ public class JSONMaterialinput {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Materialinputsearch toMaterialinputsearch(JSONObject json) {
         Materialinputsearch materialinputsearch = new Materialinputsearch();
         materialinputsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

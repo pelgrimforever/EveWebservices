@@ -1,9 +1,6 @@
 /*
- * JSONView_trade.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_trade {
@@ -36,10 +32,6 @@ public class JSONView_trade {
         return jsonview_trades;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_trade view_trade) {
         JSONObject json = new JSONObject();
         json.put("sell_regionid", String.valueOf(view_trade.getSell_regionid()));
@@ -116,11 +108,6 @@ public class JSONView_trade {
         return view_trade;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_tradesearch parameters
-     * @return 
-     */
     public static View_tradesearch toView_tradesearch(JSONObject json) {
         View_tradesearch view_tradesearch = new View_tradesearch();
         view_tradesearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

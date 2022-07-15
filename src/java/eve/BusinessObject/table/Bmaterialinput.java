@@ -1,220 +1,142 @@
 /*
- * Bmaterialinput.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 11.4.2022 9:13
- *
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-import db.SQLMapperFactory;
-import db.SQLparameters;
-import data.gis.shape.*;
-import data.json.piJson;
-import data.json.psqlJsonobject;
-import db.SQLMapper_pgsql;
-import data.interfaces.db.Filedata;
-import eve.BusinessObject.Logic.*;
-import eve.conversion.json.JSONMaterialinput;
+import db.*;
+import data.interfaces.db.*;
 import eve.conversion.entity.EMmaterialinput;
+import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IMaterialinputsearch;
 import eve.logicentity.Materialinput;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import org.postgresql.geometric.PGpoint;
-import org.postgis.PGgeometry;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
- * Business Entity class Bmaterialinput
- *
- * Superclass for manipulating data- and database objects
- * for Entity Materialinput and direct related data
- * This class is overwritten each time the code generator runs
- * and is not meant to be changed
- *
  * @author Franky Laseure
  */
-public abstract class Bmaterialinput extends BLtable {
+public abstract class Bmaterialinput extends TableBusinessrules {
 
-    /**
-     * Constructor, sets Materialinput as default Entity
-     */
-    public Bmaterialinput() {
-        super(new Materialinput(), new EMmaterialinput());
+    public Bmaterialinput(SQLreader sqlreader) {
+        super(new TableIO(sqlreader, new EMmaterialinput()));
     }
 
-    /**
-     * Constructor, sets Materialinput as default Entity
-     * sets transaction queue from given GeneralEntityObject implementation
-     * all transactions will commit at same time
-     * @param transactionobject: GeneralEntityObjects that holds the transaction queue
-     */
-    public Bmaterialinput(BLtable transactionobject) {
-        super(transactionobject, new Materialinput(), new EMmaterialinput());
+    public Bmaterialinput(TableBusinessrules businessrules) {
+        super(new TableIO(businessrules.getTableio(), new EMmaterialinput()));
+        this.tableio.setAuthenticated(tableio!=null && tableio.isAuthenticated());
     }
 
-    /**
-     * create new empty Materialinput object
-     * @return empty IMaterialinput
-     */
     public IMaterialinput newMaterialinput() {
     	return new Materialinput();
     }
     
-    /**
-     * create new empty Materialinput object
-     * create new primary key with given parameters
-     * @param username primary key field
-     * @param evetype primary key field
-     * @param addtimestamp primary key field
-     * @return IMaterialinput with primary key
-     */
     public IMaterialinput newMaterialinput(java.lang.String username, long evetype, java.sql.Timestamp addtimestamp) {
         return new Materialinput(username, evetype, addtimestamp);
     }
 
-    /**
-     * create new empty Materialinput object with given primary key
-     * @param materialinputPK: primary key for Materialinput
-     * @return IMaterialinput with primary key
-     */
     public IMaterialinput newMaterialinput(IMaterialinputPK materialinputPK) {
         return new Materialinput((MaterialinputPK)materialinputPK);
     }
 
-    /**
-     * create new empty primary key
-     * @return empty MaterialinputPK
-     */
     public IMaterialinputPK newMaterialinputPK() {
         return new MaterialinputPK();
     }
 
-    /**
-     * create new primary key with given parameters
-     * @param username primary key field
-     * @param evetype primary key field
-     * @param addtimestamp primary key field
-     * @return new IMaterialinputPK
-     */
     public IMaterialinputPK newMaterialinputPK(java.lang.String username, long evetype, java.sql.Timestamp addtimestamp) {
         return new MaterialinputPK(username, evetype, addtimestamp);
     }
 
-    /**
-     * get all Materialinput objects from database
-     * @return ArrayList of Materialinput objects
-     * @throws DBException
-     */
     public ArrayList<Materialinput> getMaterialinputs() throws DBException {
-        return (ArrayList<Materialinput>)super.getEntities(EMmaterialinput.SQLSelectAll);
+        return (ArrayList<Materialinput>)tableio.getEntities(EMmaterialinput.SQLSelectAll);
     }
 
-    /**
-     * search Materialinput for primary key
-     * @param materialinputPK: Materialinput primary key
-     * @return Materialinput object
-     * @throws DBException
-     */
     public Materialinput getMaterialinput(IMaterialinputPK materialinputPK) throws DBException {
-        return (Materialinput)super.getEntity((MaterialinputPK)materialinputPK);
+        return (Materialinput)tableio.getEntity((MaterialinputPK)materialinputPK);
     }
 
-    /**
-     * search materialinput with IMaterialinputsearch parameters
-     * @param search IMaterialinputsearch
-     * @return ArrayList of Materialinput
-     * @throws DBException 
-     */
     public ArrayList<Materialinput> searchmaterialinputs(IMaterialinputsearch search) throws DBException {
-        return (ArrayList<Materialinput>)this.search(search);
+        return (ArrayList<Materialinput>)tableio.search(search);
     }
 
-    /**
-     * search materialinput with IMaterialinputsearch parameters, order by orderby sql clause
-     * @param search IMaterialinputsearch
-     * @param orderby sql order by string
-     * @return ArrayList of Materialinput
-     * @throws DBException 
-     */
     public ArrayList<Materialinput> searchmaterialinputs(IMaterialinputsearch search, String orderby) throws DBException {
-        return (ArrayList<Materialinput>)this.search(search, orderby);
+        return (ArrayList<Materialinput>)tableio.search(search, orderby);
     }
 
-    /**
-     * Search materialinput in database for materialinputPK:
-     * @param materialinputPK: Materialinput Primary Key, only valid for the initialized Entity
-     * @return true if found in database
-     * @throws DBException
-     */
     public boolean getMaterialinputExists(IMaterialinputPK materialinputPK) throws DBException {
-        return super.getEntityExists((MaterialinputPK)materialinputPK);
+        return tableio.getEntityExists((MaterialinputPK)materialinputPK);
     }
 
-    /**
-     * try to insert Materialinput in database
-     * @param materialinput Materialinput object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertMaterialinput(IMaterialinput materialinput) throws DBException, DataException {
-        super.insertEntity(materialinput);
+    public Materialinput getEntity(String sql) throws DBException {
+        return (Materialinput)tableio.getEntity(sql);
+    }
+    
+    public Materialinput getEntity(String sql, SQLparameters parameters) throws DBException {
+        return (Materialinput)tableio.getEntity(sql, parameters);
+    }
+    
+    public ArrayList<Materialinput> getEntities(String sql) throws DBException {
+        return tableio.getEntities(sql);
+    }
+    
+    public ArrayList<Materialinput> getEntities(String sql, SQLparameters parameters) throws DBException {
+        return tableio.getEntities(sql, parameters);
     }
 
-    /**
-     * check if MaterialinputPK exists
-     * insert if not, update if found
-     * do not commit transaction
-     * @param materialinput Materialinput object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertupdateMaterialinput(IMaterialinput materialinput) throws DBException, DataException {
+    public long count() throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+    
+    public long count(String sql, SQLparameters parameters) throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+
+    public ArrayList<Materialinput> search(Tablesearcher search) throws DBException {
+        return tableio.search(search);
+    }
+
+    public ArrayList<Materialinput> search(Tablesearcher search, String orderby) throws DBException {
+        return tableio.search(search, orderby);
+    }
+
+    public long searchcount(Tablesearcher search) throws DBException {
+        return tableio.searchcount(search);
+    }
+
+    public void insertMaterialinput(SQLTqueue transactionqueue, IMaterialinput materialinput) throws DBException, DataException {
+        tableio.insertEntity(transactionqueue, materialinput);
+    }
+
+    public void insertupdateMaterialinput(SQLTqueue transactionqueue, IMaterialinput materialinput) throws DBException, DataException {
+    	checkDATA(materialinput);
         if(this.getMaterialinputExists(materialinput.getPrimaryKey())) {
-            super.updateEntity(materialinput);
+            tableio.updateEntity(transactionqueue, materialinput);
         } else {
-            super.insertEntity(materialinput);
+            tableio.insertEntity(transactionqueue, materialinput);
         }
     }
 
-    /**
-     * try to update Materialinput in database
-     * @param materialinput Materialinput object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void updateMaterialinput(IMaterialinput materialinput) throws DBException, DataException {
-        super.updateEntity(materialinput);
+    public void updateMaterialinput(SQLTqueue transactionqueue, IMaterialinput materialinput) throws DBException, DataException {
+    	checkDATA(materialinput);
+        tableio.updateEntity(transactionqueue, materialinput);
     }
 
-    /**
-     * try to delete Materialinput in database
-     * @param materialinput Materialinput object
-     * @throws DBException
-     */
-    public void deleteMaterialinput(IMaterialinput materialinput) throws DBException {
-        cascadedeleteMaterialinput(materialinput.getPrimaryKey());
-        super.deleteEntity(materialinput);
+    public void deleteMaterialinput(SQLTqueue transactionqueue, IMaterialinput materialinput) throws DBException {
+        cascadedeleteMaterialinput(transactionqueue, materialinput.getPrimaryKey());
+        tableio.deleteEntity(transactionqueue, materialinput);
     }
 
-    /**
-     * check data rules in Materialinput, throw DataException with customized message if rules do not apply
-     * @param materialinput Materialinput object
-     * @throws DataException
-     * @throws DBException
-     */
-    public void checkDATA(IMaterialinput materialinput) throws DataException, DBException {
+    private void checkDATA(IMaterialinput materialinput) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //foreign key Materialinput.Evetype - Evetype.Id
         //Primary key
@@ -228,35 +150,17 @@ public abstract class Bmaterialinput extends BLtable {
      * delete all records in tables where materialinputPK is used in a primary key
      * @param materialinputPK: Materialinput primary key
      */
-    public void cascadedeleteMaterialinput(IMaterialinputPK materialinputPK) {
+    public void cascadedeleteMaterialinput(SQLTqueue transactionqueue, IMaterialinputPK materialinputPK) {
     }
 
-    /**
-     * @param evetypePK: foreign key for Evetype
-     * @delete all Materialinput Entity objects for Evetype in database
-     */
-    public void delete4evetype(IEvetypePK evetypePK) {
-        super.addStatement(EMmaterialinput.SQLDelete4evetype, evetypePK.getSQLprimarykey());
+    public void delete4evetype(SQLTqueue transactionqueue, IEvetypePK evetypePK) {
+        tableio.addStatement(transactionqueue, EMmaterialinput.SQLDelete4evetype, evetypePK.getSQLprimarykey());
     }
 
-    /**
-     * @param evetypePK: foreign key for Evetype
-     * @return all Materialinput Entity objects for Evetype
-     * @throws CustomException
-     */
     public ArrayList<Materialinput> getMaterialinputs4evetype(IEvetypePK evetypePK) throws CustomException {
-        return super.getEntities(EMmaterialinput.SQLSelect4evetype, evetypePK.getSQLprimarykey());
+        return tableio.getEntities(EMmaterialinput.SQLSelect4evetype, evetypePK.getSQLprimarykey());
     }
 
-    /**
-     * get all Materialinput objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @param sortlist sql sort string
-     * @param sortoperator asc/desc
-     * @return ArrayList of Materialinput objects
-     * @throws DBException
-     */
     public ArrayList<Materialinput> getMaterialinputs(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
         StringBuilder sql = new StringBuilder(EMmaterialinput.SQLSelect);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
@@ -271,16 +175,10 @@ public abstract class Bmaterialinput extends BLtable {
         if(sortlist.length()>0) {
             sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return (ArrayList<Materialinput>)super.getEntities(sql.toString(), sqlparameters);
+        return (ArrayList<Materialinput>)tableio.getEntities(sql.toString(), sqlparameters);
     }
 
-    /**
-     * delete all Materialinput objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @throws DBException
-     */
-    public void delMaterialinput(SQLparameters sqlparameters, String andoroperator) throws DBException {
+    public void delMaterialinput(SQLTqueue transactionqueue, SQLparameters sqlparameters, String andoroperator) throws DBException {
         StringBuilder sql = new StringBuilder("delete from ").append(Materialinput.table);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
         int l = parameters.size();
@@ -291,7 +189,7 @@ public abstract class Bmaterialinput extends BLtable {
                 if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(sql.toString(), sqlparameters);
+        tableio.addStatement(transactionqueue, sql.toString(), sqlparameters);
     }
 
 

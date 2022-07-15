@@ -1,9 +1,6 @@
 /*
- * JSONView_userbpmaterial.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 11.1.2022 21:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_userbpmaterial {
@@ -36,10 +32,6 @@ public class JSONView_userbpmaterial {
         return jsonview_userbpmaterials;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_userbpmaterial view_userbpmaterial) {
         JSONObject json = new JSONObject();
         json.put("username", view_userbpmaterial.getUsername());
@@ -74,11 +66,6 @@ public class JSONView_userbpmaterial {
         return view_userbpmaterial;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_userbpmaterialsearch parameters
-     * @return 
-     */
     public static View_userbpmaterialsearch toView_userbpmaterialsearch(JSONObject json) {
         View_userbpmaterialsearch view_userbpmaterialsearch = new View_userbpmaterialsearch();
         view_userbpmaterialsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

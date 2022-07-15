@@ -1,9 +1,6 @@
 /*
- * JSONSecurity_island.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONSecurity_island {
@@ -41,10 +37,6 @@ public class JSONSecurity_island {
         return jsonsecurity_islands;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ISecurity_islandPK security_islandPK) {
         JSONObject json = null;
         if(security_islandPK!=null) {
@@ -54,10 +46,6 @@ public class JSONSecurity_island {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ISecurity_island security_island) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(security_island.getPrimaryKey()));
@@ -68,10 +56,6 @@ public class JSONSecurity_island {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Security_islandsearch security_islandsearch) {
         JSONObject json = new JSONObject();
         if(security_islandsearch.used()) {
@@ -107,11 +91,6 @@ public class JSONSecurity_island {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Security_islandsearch toSecurity_islandsearch(JSONObject json) {
         Security_islandsearch security_islandsearch = new Security_islandsearch();
         security_islandsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

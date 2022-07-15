@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.wishlist;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IWishlistOperation;
 import eve.logicentity.Wishlist;
 import eve.searchentity.Wishlistsearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,19 +46,24 @@ import org.json.simple.parser.ParseException;
 @Path("rswishlist_delete")
 public class RSWishlist_delete extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Wishlist_usecases wishlistusecases = new Wishlist_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operation) {
                 case IWishlistOperation.DELETE_WISHLIST:
+                    delete_wishlist(wishlistusecases, json);
+                    break;
+                case IWishlistOperation.DELETE_Evetype:
                     delete_wishlist(wishlistusecases, json);
                     break;
 //Custom code, do not change this line
@@ -80,8 +83,15 @@ public class RSWishlist_delete extends RS_json_login {
 
     private void delete_wishlist(Wishlist_usecases wishlistusecases, JSONObject json) throws ParseException, CustomException {
         IWishlist wishlist = (IWishlist)JSONWishlist.toWishlist((JSONObject)json.get("wishlist"));
-        wishlistusecases.securedeleteWishlist(wishlist);
+        wishlistusecases.deleteWishlist(wishlist);
         setReturnstatus("OK");
     }
+
+    private void delete_all_containing_Evetype(Wishlist_usecases wishlistusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        wishlistusecases.delete_all_containing_Evetype(evetypePK);
+        setReturnstatus("OK");
+    }
+
 }
 

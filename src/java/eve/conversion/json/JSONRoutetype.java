@@ -1,9 +1,6 @@
 /*
- * JSONRoutetype.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONRoutetype {
@@ -41,10 +37,6 @@ public class JSONRoutetype {
         return jsonroutetypes;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IRoutetypePK routetypePK) {
         JSONObject json = null;
         if(routetypePK!=null) {
@@ -54,10 +46,6 @@ public class JSONRoutetype {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IRoutetype routetype) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(routetype.getPrimaryKey()));
@@ -68,10 +56,6 @@ public class JSONRoutetype {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Routetypesearch routetypesearch) {
         JSONObject json = new JSONObject();
         if(routetypesearch.used()) {
@@ -110,11 +94,6 @@ public class JSONRoutetype {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Routetypesearch toRoutetypesearch(JSONObject json) {
         Routetypesearch routetypesearch = new Routetypesearch();
         routetypesearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

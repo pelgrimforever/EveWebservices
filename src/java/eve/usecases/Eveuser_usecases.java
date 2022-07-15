@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Eveuser;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Eveuser_usecases {
 
     private boolean loggedin = false;
-    private BLeveuser bleveuser = new BLeveuser();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLeveuser bleveuser = new BLeveuser(sqlreader);
     
     public Eveuser_usecases() {
         this(false);
@@ -46,10 +52,13 @@ public class Eveuser_usecases {
         } else {
             String registerusername = eveuser.getPrimaryKey().getUsername();
             String registerpassword = eveuser.getPrimaryKey().getUsername();
-            boolean isregistered = Security_usecases.register(authorisationstring, registerusername, registerpassword);
-            if(isregistered)
-                bleveuser.secureinsertEveuser(eveuser);
-            else
+            Security_usecases security_usecases = new Security_usecases();
+            boolean isregistered = security_usecases.register(authorisationstring, registerusername, registerpassword);
+            if(isregistered) {
+                SQLTqueue transactionqueue = new SQLTqueue();
+                bleveuser.insertEveuser(transactionqueue, eveuser);
+                sqlwriter.Commit2DB(transactionqueue);
+            } else
                 returnmessage = "Registration failed";
         }
         return returnmessage;
@@ -57,7 +66,8 @@ public class Eveuser_usecases {
     
     public String update_password(String authorisationstring, String newauthorisationstring) throws DatahandlerException, DBException, IOException {
         String result;
-        String username = Security_usecases.getUsername(authorisationstring);
+        Security_usecases security_usecases = new Security_usecases();
+        String username = security_usecases.getUsername(authorisationstring);
         IEveuserPK eveuserPK = new EveuserPK(username);
         if(getEveuserExists(eveuserPK))
             result = update_password_in_database(authorisationstring, newauthorisationstring);
@@ -68,7 +78,8 @@ public class Eveuser_usecases {
 
     private String update_password_in_database(String authorisationstring, String newauthorisationstring) throws DatahandlerException {
         String result;
-        boolean isupdated = Security_usecases.updatepass(authorisationstring, newauthorisationstring);
+        Security_usecases security_usecases = new Security_usecases();
+        boolean isupdated = security_usecases.updatepass(authorisationstring, newauthorisationstring);
         if(isupdated)
             result = "OK";
         else
@@ -87,7 +98,8 @@ public class Eveuser_usecases {
 
     private String reset_eveuser_in_database(String authorisationstring, IEveuser eveuser) throws DatahandlerException {
         String result;
-        boolean isreset = Security_usecases.reset(authorisationstring, eveuser.getPrimaryKey().getUsername());
+        Security_usecases security_usecases = new Security_usecases();
+        boolean isreset = security_usecases.reset(authorisationstring, eveuser.getPrimaryKey().getUsername());
         if(isreset)
             result = "OK";
         else
@@ -97,9 +109,12 @@ public class Eveuser_usecases {
 
     public String delete_registration(String authorisationstring, IEveuser eveuser) throws DBException, DataException, DatahandlerException {
         String resultmessage = "Not authorized";
-        boolean isadmin = Security_usecases.isadmin(authorisationstring);
+        Security_usecases security_usecases = new Security_usecases();
+        boolean isadmin = security_usecases.isadmin(authorisationstring);
         if(isadmin) {
-            bleveuser.securedeleteEveuser(eveuser);
+            SQLTqueue transactionqueue = new SQLTqueue();
+            bleveuser.deleteEveuser(transactionqueue, eveuser);
+            sqlwriter.Commit2DB(transactionqueue);
             resultmessage = "OK";
         }
         return resultmessage;
@@ -115,7 +130,7 @@ public class Eveuser_usecases {
     }
     
     public boolean getEveuserExists(IEveuserPK eveuserPK) throws DBException {
-        return bleveuser.getEntityExists(eveuserPK);
+        return bleveuser.getEveuserExists(eveuserPK);
     }
     
     public Eveuser get_eveuser_by_primarykey(IEveuserPK eveuserPK) throws DBException {
@@ -134,16 +149,23 @@ public class Eveuser_usecases {
         return bleveuser.searchcount(eveusersearch);
     }
 
-    public void secureinsertEveuser(IEveuser eveuser) throws DBException, DataException {
-        bleveuser.secureinsertEveuser(eveuser);
+    public void insertEveuser(IEveuser eveuser) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        bleveuser.insertEveuser(tq, eveuser);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateEveuser(IEveuser eveuser) throws DBException, DataException {
-        bleveuser.secureupdateEveuser(eveuser);
+    public void updateEveuser(IEveuser eveuser) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        bleveuser.updateEveuser(tq, eveuser);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteEveuser(IEveuser eveuser) throws DBException, DataException {
-        bleveuser.securedeleteEveuser(eveuser);
+    public void deleteEveuser(IEveuser eveuser) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        bleveuser.deleteEveuser(tq, eveuser);
+        sqlwriter.Commit2DB(tq);
     }
+
 }
 

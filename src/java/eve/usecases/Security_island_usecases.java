@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Security_island;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Security_island_usecases {
 
     private boolean loggedin = false;
-    private BLsecurity_island blsecurity_island = new BLsecurity_island();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLsecurity_island blsecurity_island = new BLsecurity_island(sqlreader);
     
     public Security_island_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Security_island_usecases {
     }
     
     public boolean getSecurity_islandExists(ISecurity_islandPK security_islandPK) throws DBException {
-        return blsecurity_island.getEntityExists(security_islandPK);
+        return blsecurity_island.getSecurity_islandExists(security_islandPK);
     }
     
     public Security_island get_security_island_by_primarykey(ISecurity_islandPK security_islandPK) throws DBException {
@@ -65,16 +71,23 @@ public class Security_island_usecases {
         return blsecurity_island.searchcount(security_islandsearch);
     }
 
-    public void secureinsertSecurity_island(ISecurity_island security_island) throws DBException, DataException {
-        blsecurity_island.secureinsertSecurity_island(security_island);
+    public void insertSecurity_island(ISecurity_island security_island) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blsecurity_island.insertSecurity_island(tq, security_island);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateSecurity_island(ISecurity_island security_island) throws DBException, DataException {
-        blsecurity_island.secureupdateSecurity_island(security_island);
+    public void updateSecurity_island(ISecurity_island security_island) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blsecurity_island.updateSecurity_island(tq, security_island);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteSecurity_island(ISecurity_island security_island) throws DBException, DataException {
-        blsecurity_island.securedeleteSecurity_island(security_island);
+    public void deleteSecurity_island(ISecurity_island security_island) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blsecurity_island.deleteSecurity_island(tq, security_island);
+        sqlwriter.Commit2DB(tq);
     }
+
 }
 

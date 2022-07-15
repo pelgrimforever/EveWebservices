@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Constellation_neighbour;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Constellation_neighbour_usecases {
 
     private boolean loggedin = false;
-    private BLconstellation_neighbour blconstellation_neighbour = new BLconstellation_neighbour();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLconstellation_neighbour blconstellation_neighbour = new BLconstellation_neighbour(sqlreader);
     
     public Constellation_neighbour_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Constellation_neighbour_usecases {
     }
     
     public boolean getConstellation_neighbourExists(IConstellation_neighbourPK constellation_neighbourPK) throws DBException {
-        return blconstellation_neighbour.getEntityExists(constellation_neighbourPK);
+        return blconstellation_neighbour.getConstellation_neighbourExists(constellation_neighbourPK);
     }
     
     public Constellation_neighbour get_constellation_neighbour_by_primarykey(IConstellation_neighbourPK constellation_neighbourPK) throws DBException {
@@ -73,16 +79,35 @@ public class Constellation_neighbour_usecases {
         return blconstellation_neighbour.searchcount(constellation_neighboursearch);
     }
 
-    public void secureinsertConstellation_neighbour(IConstellation_neighbour constellation_neighbour) throws DBException, DataException {
-        blconstellation_neighbour.secureinsertConstellation_neighbour(constellation_neighbour);
+    public void insertConstellation_neighbour(IConstellation_neighbour constellation_neighbour) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blconstellation_neighbour.insertConstellation_neighbour(tq, constellation_neighbour);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateConstellation_neighbour(IConstellation_neighbour constellation_neighbour) throws DBException, DataException {
-        blconstellation_neighbour.secureupdateConstellation_neighbour(constellation_neighbour);
+    public void updateConstellation_neighbour(IConstellation_neighbour constellation_neighbour) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blconstellation_neighbour.updateConstellation_neighbour(tq, constellation_neighbour);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteConstellation_neighbour(IConstellation_neighbour constellation_neighbour) throws DBException, DataException {
-        blconstellation_neighbour.securedeleteConstellation_neighbour(constellation_neighbour);
+    public void deleteConstellation_neighbour(IConstellation_neighbour constellation_neighbour) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blconstellation_neighbour.deleteConstellation_neighbour(tq, constellation_neighbour);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Constellationneighbour(IConstellationPK constellationNeighbourPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blconstellation_neighbour.delete4constellationNeighbour(tq, constellationNeighbourPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Constellationconstellation(IConstellationPK constellationConstellationPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blconstellation_neighbour.delete4constellationConstellation(tq, constellationConstellationPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

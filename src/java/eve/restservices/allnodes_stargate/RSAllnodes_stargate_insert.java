@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.allnodes_stargate;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IAllnodes_stargateOperation;
 import eve.logicentity.Allnodes_stargate;
 import eve.searchentity.Allnodes_stargatesearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,13 +46,15 @@ import org.json.simple.parser.ParseException;
 @Path("rsallnodes_stargate_insert")
 public class RSAllnodes_stargate_insert extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Allnodes_stargate_usecases allnodes_stargateusecases = new Allnodes_stargate_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
@@ -80,7 +80,7 @@ public class RSAllnodes_stargate_insert extends RS_json_login {
 
     private void insert_allnodes_stargate(Allnodes_stargate_usecases allnodes_stargateusecases, JSONObject json) throws ParseException, CustomException {
         IAllnodes_stargate allnodes_stargate = (IAllnodes_stargate)JSONAllnodes_stargate.toAllnodes_stargate((JSONObject)json.get("allnodes_stargate"));
-        allnodes_stargateusecases.secureinsertAllnodes_stargate(allnodes_stargate);
+        allnodes_stargateusecases.insertAllnodes_stargate(allnodes_stargate);
         setReturnstatus("OK");
     }
 }

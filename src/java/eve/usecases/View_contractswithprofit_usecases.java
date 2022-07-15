@@ -1,16 +1,19 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.gis.shape.piPoint;
 import eve.interfaces.searchentity.*;
 import eve.logicview.*;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
-import eve.logicview.View_contractswithprofit;
+import eve.logicentity.*;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -23,7 +26,8 @@ import org.json.simple.parser.ParseException;
 public class View_contractswithprofit_usecases {
 
     private boolean loggedin = false;
-    private BLview_contractswithprofit blview_contractswithprofit = new BLview_contractswithprofit();
+    private SQLreader sqlreader = new SQLreader();
+    private BLview_contractswithprofit blview_contractswithprofit = new BLview_contractswithprofit(sqlreader);
     
     public View_contractswithprofit_usecases() {
         this(false);

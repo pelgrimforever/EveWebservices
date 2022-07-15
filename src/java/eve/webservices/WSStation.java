@@ -2,23 +2,25 @@
  * WSStation.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 13.6.2022 18:20
  *
  */
 
 package eve.webservices;
 
+import base.restservices.RS_json_login;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.IStationsearch;
 import eve.interfaces.webservice.WSIStation;
 import eve.logicentity.Station;
 import eve.searchentity.Stationsearch;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import general.exception.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.jws.WebMethod;
@@ -27,14 +29,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import eve.usecases.custom.Security_usecases;
 
 /**
  *
  * @author Franky Laseure
  */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSIStation")
-public class WSStation implements WSIStation {
+public class WSStation extends RS_json_login implements WSIStation {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     private JSONArray toJSONArray(ArrayList stations) {
         JSONArray jsonstations = new JSONArray();
         Iterator stationsI = stations.iterator();
@@ -44,252 +49,263 @@ public class WSStation implements WSIStation {
         return jsonstations;
     }
 
-    /**
-     * Web service operation
-     */
     //@WebMethod(operationName = "getStations")
     @Override
     public String getStations() {
         try {
-            BLstation blstation = new BLstation();
-            ArrayList stations = blstation.getAll();
-            JSONArray jsonstations = toJSONArray(stations);
-            return jsonstations.toJSONString();
+            Station_usecases stationusecases = new Station_usecases(loggedin);
+            return get_all_station(stationusecases);
         }
-        catch(DBException e) {
+        catch(CustomException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "search")
     @Override
-    public String search(String json) {
-        BLstation blstation = new BLstation();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Station station;
+    public String search(String jsonstring) {
         try {
-            Stationsearch stationsearch = JSONStation.toStationsearch((JSONObject)parser.parse(json));
-            ArrayList stations = blstation.search(stationsearch);
-            JSONArray jsonstations = toJSONArray(stations);
-            result = jsonstations.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_usecases stationusecases = new Station_usecases(loggedin);
+            return search_station(stationusecases, json);
         }
-        catch(ParseException e) {
-            result = "";
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-            result = "";
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "getStation")
     @Override
-    public String getStation(String json) {
-        BLstation blstation = new BLstation();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Station station;
+    public String getStation(String jsonstring) {
         try {
-            StationPK stationPK = JSONStation.toStationPK((JSONObject)parser.parse(json));
-            station = blstation.getStation(stationPK);
-            if(station!=null) {
-                result = JSONStation.toJSON(station).toJSONString();
-            }
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_usecases stationusecases = new Station_usecases(loggedin);
+            return get_station_with_primarykey(stationusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "insertStation")
     @Override
-    public void insertStation(String json) {
-        BLstation blstation = new BLstation();
-        JSONParser parser = new JSONParser();
+    public void insertStation(String jsonstring) {
         try {
-            IStation station = JSONStation.toStation((JSONObject)parser.parse(json));
-            blstation.insertStation(station);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_usecases stationusecases = new Station_usecases(loggedin);
+            insert_station(stationusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "updateStation")
     @Override
-    public void updateStation(String json) {
-        BLstation blstation = new BLstation();
-        JSONParser parser = new JSONParser();
+    public void updateStation(String jsonstring) {
         try {
-            IStation station = JSONStation.toStation((JSONObject)parser.parse(json));
-            blstation.updateStation(station);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_usecases stationusecases = new Station_usecases(loggedin);
+            update_station(stationusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "deleteStation")
     @Override
-    public void deleteStation(String json) {
-        BLstation blstation = new BLstation();
-        JSONParser parser = new JSONParser();
+    public void deleteStation(String jsonstring) {
         try {
-            IStation station = JSONStation.toStation((JSONObject)parser.parse(json));
-            blstation.deleteStation(station);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_usecases stationusecases = new Station_usecases(loggedin);
+            delete_station(stationusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getStations4race")
     @Override
-    public String getStations4race(String json) {
-        BLstation blstation = new BLstation();
-        JSONParser parser = new JSONParser();
-        Station station;
+    public String getStations4race(String jsonstring) {
         try {
-            IRacePK racePK = JSONRace.toRacePK((JSONObject)parser.parse(json));
-            ArrayList stations = blstation.getStations4race(racePK);
-            JSONArray jsonstations = toJSONArray(stations);
-            return jsonstations.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_usecases stationusecases = new Station_usecases(loggedin);
+            return get_station_with_foreignkey_race(stationusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4race")
     @Override
-    public void delete4race(String json) {
-        BLstation blstation = new BLstation();
-        JSONParser parser = new JSONParser();
-        Station station;
+    public void delete4race(String jsonstring) {
         try {
-            IRacePK racePK = JSONRace.toRacePK((JSONObject)parser.parse(json));
-            blstation.delete4race(racePK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_usecases stationusecases = new Station_usecases(loggedin);
+            delete_station(stationusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getStations4evetype")
     @Override
-    public String getStations4evetype(String json) {
-        BLstation blstation = new BLstation();
-        JSONParser parser = new JSONParser();
-        Station station;
+    public String getStations4evetype(String jsonstring) {
         try {
-            IEvetypePK evetypePK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            ArrayList stations = blstation.getStations4evetype(evetypePK);
-            JSONArray jsonstations = toJSONArray(stations);
-            return jsonstations.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_usecases stationusecases = new Station_usecases(loggedin);
+            return get_station_with_foreignkey_evetype(stationusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4evetype")
     @Override
-    public void delete4evetype(String json) {
-        BLstation blstation = new BLstation();
-        JSONParser parser = new JSONParser();
-        Station station;
+    public void delete4evetype(String jsonstring) {
         try {
-            IEvetypePK evetypePK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            blstation.delete4evetype(evetypePK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_usecases stationusecases = new Station_usecases(loggedin);
+            delete_station(stationusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getStations4system")
     @Override
-    public String getStations4system(String json) {
-        BLstation blstation = new BLstation();
-        JSONParser parser = new JSONParser();
-        Station station;
+    public String getStations4system(String jsonstring) {
         try {
-            ISystemPK systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            ArrayList stations = blstation.getStations4system(systemPK);
-            JSONArray jsonstations = toJSONArray(stations);
-            return jsonstations.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_usecases stationusecases = new Station_usecases(loggedin);
+            return get_station_with_foreignkey_system(stationusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4system")
     @Override
-    public void delete4system(String json) {
-        BLstation blstation = new BLstation();
-        JSONParser parser = new JSONParser();
-        Station station;
+    public void delete4system(String jsonstring) {
         try {
-            ISystemPK systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blstation.delete4system(systemPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_usecases stationusecases = new Station_usecases(loggedin);
+            delete_station(stationusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getStations4station_service")
     @Override
-    public String getStations4station_service(String json) {
-        BLstation blstation = new BLstation();
-        JSONParser parser = new JSONParser();
-        Station station;
+    public String getStations4station_service(String jsonstring) {
         try {
-            String result = null;
-            IStation_servicePK station_servicePK = JSONStation_service.toStation_servicePK((JSONObject)parser.parse(json));
-            station = (Station)blstation.getStation_service(station_servicePK);
-            if(station!=null) {
-                result = JSONStation.toJSON(station).toJSONString();
-            }
-            return result;
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_usecases stationusecases = new Station_usecases(loggedin);
+            return get_station_with_externalforeignkey_station_service(stationusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
+
+    private String count_records(Station_usecases stationusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", stationusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_station(Station_usecases stationusecases) throws ParseException, CustomException {
+    	return JSONStation.toJSONArray(stationusecases.get_all()).toJSONString();
+    }
+    
+    private String get_station_with_primarykey(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
+        IStationPK stationPK = (IStationPK)JSONStation.toStationPK((JSONObject)json.get("stationpk"));
+	return JSONStation.toJSON(stationusecases.get_station_by_primarykey(stationPK)).toJSONString();
+    }
+    
+    private String get_station_with_foreignkey_race(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
+        IRacePK racePK = (IRacePK)JSONRace.toRacePK((JSONObject)json.get("racepk"));
+        return JSONStation.toJSONArray(stationusecases.get_station_with_foreignkey_race(racePK)).toJSONString();
+    }
+    
+    private String get_station_with_foreignkey_evetype(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        return JSONStation.toJSONArray(stationusecases.get_station_with_foreignkey_evetype(evetypePK)).toJSONString();
+    }
+    
+    private String get_station_with_foreignkey_system(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        return JSONStation.toJSONArray(stationusecases.get_station_with_foreignkey_system(systemPK)).toJSONString();
+    }
+    
+    private String get_station_with_externalforeignkey_station_service(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
+        IStation_servicePK station_servicePK = (IStation_servicePK)JSONStation_service.toStation_servicePK((JSONObject)json.get("station_servicepk"));
+        return JSONStation.toJSON(stationusecases.get_station_with_externalforeignkey_station_service(station_servicePK)).toJSONString();
+    }
+    
+    private String search_station(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
+        IStationsearch search = (IStationsearch)JSONStation.toStationsearch((JSONObject)json.get("search"));
+        return JSONStation.toJSONArray(stationusecases.search_station(search)).toJSONString();
+    }
+    
+    private String search_station_count(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
+        IStationsearch stationsearch = (IStationsearch)JSONStation.toStationsearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", stationusecases.search_station_count(stationsearch));
+        return jsonsearchcount.toJSONString();
+    }
+
+    private void insert_station(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
+        IStation station = (IStation)JSONStation.toStation((JSONObject)json.get("station"));
+        stationusecases.insertStation(station);
+        setReturnstatus("OK");
+    }
+
+    private void update_station(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
+        IStation station = (IStation)JSONStation.toStation((JSONObject)json.get("station"));
+        stationusecases.updateStation(station);
+        setReturnstatus("OK");
+    }
+
+    private void delete_station(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
+        IStation station = (IStation)JSONStation.toStation((JSONObject)json.get("station"));
+        stationusecases.deleteStation(station);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Race(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
+        IRacePK racePK = (IRacePK)JSONRace.toRacePK((JSONObject)json.get("racepk"));
+        stationusecases.delete_all_containing_Race(racePK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Evetype(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        stationusecases.delete_all_containing_Evetype(evetypePK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_System(Station_usecases stationusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        stationusecases.delete_all_containing_System(systemPK);
+        setReturnstatus("OK");
+    }
 
 }
 

@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Contract;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Contract_usecases {
 
     private boolean loggedin = false;
-    private BLcontract blcontract = new BLcontract();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLcontract blcontract = new BLcontract(sqlreader);
     
     public Contract_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Contract_usecases {
     }
     
     public boolean getContractExists(IContractPK contractPK) throws DBException {
-        return blcontract.getEntityExists(contractPK);
+        return blcontract.getContractExists(contractPK);
     }
     
     public Contract get_contract_by_primarykey(IContractPK contractPK) throws DBException {
@@ -65,16 +71,23 @@ public class Contract_usecases {
         return blcontract.searchcount(contractsearch);
     }
 
-    public void secureinsertContract(IContract contract) throws DBException, DataException {
-        blcontract.secureinsertContract(contract);
+    public void insertContract(IContract contract) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blcontract.insertContract(tq, contract);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateContract(IContract contract) throws DBException, DataException {
-        blcontract.secureupdateContract(contract);
+    public void updateContract(IContract contract) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blcontract.updateContract(tq, contract);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteContract(IContract contract) throws DBException, DataException {
-        blcontract.securedeleteContract(contract);
+    public void deleteContract(IContract contract) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blcontract.deleteContract(tq, contract);
+        sqlwriter.Commit2DB(tq);
     }
+
 }
 

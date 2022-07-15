@@ -1,6 +1,9 @@
 package eve.BusinessObject.service;
 
-import db.TransactionOutput;
+import db.SQLTwriter;
+import db.SQLToutput;
+import db.SQLTqueue;
+import db.SQLreader;
 import eve.BusinessObject.Logic.BLmarket_group;
 import eve.data.Swagger;
 import eve.entity.pk.Market_groupPK;
@@ -35,12 +38,6 @@ public class Market_groupService implements Runnable {
         private boolean done = false;
         
         public Market_groupStatus() {
-            try {
-                totalmarketgroups = (new BLmarket_group()).count();
-            }
-            catch(DBException e) {
-                
-            }
         }
         
         public void incMarketgroups() {
@@ -72,12 +69,17 @@ public class Market_groupService implements Runnable {
         }
     }
     
-    public Market_groupService() {
+    public Market_groupService(SQLreader sqlreader, SQLTwriter sqlwriter) {
+        this.sqlreader = sqlreader;
+        this.sqlwriter = sqlwriter;
         market_groupstatus = new Market_groupStatus();
     }
     
+    private SQLTqueue transactionqueue;
+    private SQLreader sqlreader;
+    private SQLTwriter sqlwriter;
     private BLmarket_group blmarketgroup;
-    private TransactionOutput toutput;
+    private SQLToutput toutput;
     private int run;
     private JSONArray jsonmarketgroup;
     private Iterator<Long> jsonmarketgroupI;
@@ -90,10 +92,9 @@ public class Market_groupService implements Runnable {
     @Override
     public void run() {
         market_groupstatus.addMessage("Download market groups");
-        blmarketgroup = new BLmarket_group();
-        blmarketgroup.setAuthenticated(true);
         long start = System.currentTimeMillis();
         try {
+            initialize();
             run = 0;
             load_and_update_marketgroups();            
             load_and_update_marketgroup_parents();
@@ -109,6 +110,15 @@ public class Market_groupService implements Runnable {
         market_groupstatus.setDone();
     }
 
+    private void initialize() throws DBException {
+        transactionqueue = new SQLTqueue();
+        BLmarket_group blmarket_group = new BLmarket_group(sqlreader);
+        blmarket_group.setAuthenticated(true);
+        market_groupstatus.totalmarketgroups = blmarketgroup.count();
+        blmarketgroup = new BLmarket_group(sqlreader);
+        blmarketgroup.setAuthenticated(true);
+    }
+
     private void load_and_update_marketgroups() throws DBException, DataException {
         jsonmarketgroup = Swagger.getMarketgroups();
         jsonmarketgroupI = jsonmarketgroup.iterator();
@@ -122,8 +132,8 @@ public class Market_groupService implements Runnable {
     private void load_and_update_marketgroup_parents() throws DataException, DBException {
         Iterator<Market_group> marketgroupI = marketgroup_parents.iterator();
         while(marketgroupI.hasNext())
-            blmarketgroup.trans_updateMarket_group(marketgroupI.next());
-        toutput = blmarketgroup.Commit2DB();
+            blmarketgroup.updateMarket_group(transactionqueue, marketgroupI.next());
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             market_groupstatus.addMessage("MarketGroupDownloader " + toutput.getErrormessage());
     }
@@ -139,7 +149,7 @@ public class Market_groupService implements Runnable {
     }
 
     private void save_marketgroup_buffer_to_database() throws DBException {
-        toutput = blmarketgroup.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             market_groupstatus.addMessage("MarketGroupDownloader " + toutput.getErrormessage());
         run++;
@@ -154,7 +164,8 @@ public class Market_groupService implements Runnable {
 
     private void load_and_save_marketgroup_details() throws DataException, DBException {
         jsonmarketgroupdetails = Swagger.getMarketgroup(marketgroupid);
-        marketgroup = blmarketgroup.updateMarket_group(jsonmarketgroupdetails);
+        marketgroup = blmarketgroup.updateMarket_group(transactionqueue, jsonmarketgroupdetails);
+        sqlwriter.Commit2DB(transactionqueue);
         boolean marketgroup_has_parent_marketgroup = jsonmarketgroupdetails.containsKey("parent_group_id");
         if(run==0 && marketgroup_has_parent_marketgroup)
             marketgroup_parents.add(blmarketgroup.updateParent(marketgroup, jsonmarketgroupdetails));
@@ -166,7 +177,7 @@ public class Market_groupService implements Runnable {
 
     private void save_marketgroup_buffer() throws DBException {
         marketgroupcounter = 0;
-        toutput = blmarketgroup.Commit2DB();
+        toutput = sqlwriter.Commit2DB(transactionqueue);
         if(toutput.getHaserror())
             market_groupstatus.addMessage("MarketGroupDownloader " + toutput.getErrormessage());
     }

@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.contractitem;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IContractitemOperation;
 import eve.logicentity.Contractitem;
 import eve.searchentity.Contractitemsearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,19 +46,27 @@ import org.json.simple.parser.ParseException;
 @Path("rscontractitem_delete")
 public class RSContractitem_delete extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Contractitem_usecases contractitemusecases = new Contractitem_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operation) {
                 case IContractitemOperation.DELETE_CONTRACTITEM:
+                    delete_contractitem(contractitemusecases, json);
+                    break;
+                case IContractitemOperation.DELETE_Evetype:
+                    delete_contractitem(contractitemusecases, json);
+                    break;
+                case IContractitemOperation.DELETE_Contract:
                     delete_contractitem(contractitemusecases, json);
                     break;
 //Custom code, do not change this line
@@ -80,8 +86,21 @@ public class RSContractitem_delete extends RS_json_login {
 
     private void delete_contractitem(Contractitem_usecases contractitemusecases, JSONObject json) throws ParseException, CustomException {
         IContractitem contractitem = (IContractitem)JSONContractitem.toContractitem((JSONObject)json.get("contractitem"));
-        contractitemusecases.securedeleteContractitem(contractitem);
+        contractitemusecases.deleteContractitem(contractitem);
         setReturnstatus("OK");
     }
+
+    private void delete_all_containing_Evetype(Contractitem_usecases contractitemusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        contractitemusecases.delete_all_containing_Evetype(evetypePK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Contract(Contractitem_usecases contractitemusecases, JSONObject json) throws ParseException, CustomException {
+        IContractPK contractPK = (IContractPK)JSONContract.toContractPK((JSONObject)json.get("contractpk"));
+        contractitemusecases.delete_all_containing_Contract(contractPK);
+        setReturnstatus("OK");
+    }
+
 }
 

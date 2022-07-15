@@ -8,7 +8,7 @@ import eve.conversion.json.JSONView_userbpmaterial;
 import eve.usecases.Bpproduction_usecases;
 import eve.logicview.View_userbp;
 import eve.logicview.View_userbpmaterial;
-import eve.usecases.Security_usecases;
+import eve.usecases.custom.Security_usecases;
 import general.exception.CustomException;
 import general.exception.DBException;
 import general.exception.DatahandlerException;
@@ -31,6 +31,9 @@ import org.json.simple.parser.ParseException;
 @Path("rsbpproduction")
 public class RSbpproduction extends RS_json_login {
     
+    private Security_usecases security_usecases = new Security_usecases();
+    private Bpproduction_usecases bpproduction_usecases;
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -38,16 +41,15 @@ public class RSbpproduction extends RS_json_login {
         String result = "";
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             View_userbp view_userbp = JSONView_userbp.toView_userbp((JSONObject)json.get("viewuserbp"));
-            Bpproduction_usecases bpproductioninteractor = new Bpproduction_usecases(loggedin);
+            bpproduction_usecases = new Bpproduction_usecases(loggedin);
             
             JSONObject production = new JSONObject();
-            ArrayList<View_userbpmaterial> view_userbpmaterials = 
-                    bpproductioninteractor.find_user_materials_for_blueprint_usecase(view_userbp.getBp(), view_userbp.getSerialnumber(), view_userbp.getUsername());
+            ArrayList<View_userbpmaterial> view_userbpmaterials = find_user_materials_for_blueprint(view_userbp);
             production.put("material", JSONView_userbpmaterial.toJSONArray(view_userbpmaterials));
-            production.put("totalprice_market", bpproductioninteractor.calculateproductionprice_market_usecase(view_userbp, view_userbpmaterials));
-            production.put("totalprice_user", bpproductioninteractor.calculateproductionprice4user_usecase(view_userbp, view_userbpmaterials));
+            production.put("totalprice_market", bpproduction_usecases.calculateproductionprice_market_usecase(view_userbp, view_userbpmaterials));
+            production.put("totalprice_user", bpproduction_usecases.calculateproductionprice4user_usecase(view_userbp, view_userbpmaterials));
             
             result = production.toJSONString();
         }
@@ -57,6 +59,10 @@ public class RSbpproduction extends RS_json_login {
         return result;
     }
 
+    public ArrayList<View_userbpmaterial> find_user_materials_for_blueprint(View_userbp view_userbp) throws DBException, DatahandlerException {
+        return bpproduction_usecases.find_user_materials_for_blueprint_usecase(view_userbp.getBp(), view_userbp.getSerialnumber(), view_userbp.getUsername());
+    }
+    
     private String returnstatus(String status) {
         JSONObject json = new JSONObject();
         json.put("status", status);

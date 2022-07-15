@@ -1,216 +1,142 @@
 /*
- * Bcontract.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 11.4.2022 9:13
- *
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-import db.SQLMapperFactory;
-import db.SQLparameters;
-import data.gis.shape.*;
-import data.json.piJson;
-import data.json.psqlJsonobject;
-import db.SQLMapper_pgsql;
-import data.interfaces.db.Filedata;
-import eve.BusinessObject.Logic.*;
-import eve.conversion.json.JSONContract;
+import db.*;
+import data.interfaces.db.*;
 import eve.conversion.entity.EMcontract;
+import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IContractsearch;
 import eve.logicentity.Contract;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import org.postgresql.geometric.PGpoint;
-import org.postgis.PGgeometry;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
- * Business Entity class Bcontract
- *
- * Superclass for manipulating data- and database objects
- * for Entity Contract and direct related data
- * This class is overwritten each time the code generator runs
- * and is not meant to be changed
- *
  * @author Franky Laseure
  */
-public abstract class Bcontract extends BLtable {
+public abstract class Bcontract extends TableBusinessrules {
 
-    /**
-     * Constructor, sets Contract as default Entity
-     */
-    public Bcontract() {
-        super(new Contract(), new EMcontract());
+    public Bcontract(SQLreader sqlreader) {
+        super(new TableIO(sqlreader, new EMcontract()));
     }
 
-    /**
-     * Constructor, sets Contract as default Entity
-     * sets transaction queue from given GeneralEntityObject implementation
-     * all transactions will commit at same time
-     * @param transactionobject: GeneralEntityObjects that holds the transaction queue
-     */
-    public Bcontract(BLtable transactionobject) {
-        super(transactionobject, new Contract(), new EMcontract());
+    public Bcontract(TableBusinessrules businessrules) {
+        super(new TableIO(businessrules.getTableio(), new EMcontract()));
+        this.tableio.setAuthenticated(tableio!=null && tableio.isAuthenticated());
     }
 
-    /**
-     * create new empty Contract object
-     * @return empty IContract
-     */
     public IContract newContract() {
     	return new Contract();
     }
     
-    /**
-     * create new empty Contract object
-     * create new primary key with given parameters
-     * @param id primary key field
-     * @return IContract with primary key
-     */
     public IContract newContract(long id) {
         return new Contract(id);
     }
 
-    /**
-     * create new empty Contract object with given primary key
-     * @param contractPK: primary key for Contract
-     * @return IContract with primary key
-     */
     public IContract newContract(IContractPK contractPK) {
         return new Contract((ContractPK)contractPK);
     }
 
-    /**
-     * create new empty primary key
-     * @return empty ContractPK
-     */
     public IContractPK newContractPK() {
         return new ContractPK();
     }
 
-    /**
-     * create new primary key with given parameters
-     * @param id primary key field
-     * @return new IContractPK
-     */
     public IContractPK newContractPK(long id) {
         return new ContractPK(id);
     }
 
-    /**
-     * get all Contract objects from database
-     * @return ArrayList of Contract objects
-     * @throws DBException
-     */
     public ArrayList<Contract> getContracts() throws DBException {
-        return (ArrayList<Contract>)super.getEntities(EMcontract.SQLSelectAll);
+        return (ArrayList<Contract>)tableio.getEntities(EMcontract.SQLSelectAll);
     }
 
-    /**
-     * search Contract for primary key
-     * @param contractPK: Contract primary key
-     * @return Contract object
-     * @throws DBException
-     */
     public Contract getContract(IContractPK contractPK) throws DBException {
-        return (Contract)super.getEntity((ContractPK)contractPK);
+        return (Contract)tableio.getEntity((ContractPK)contractPK);
     }
 
-    /**
-     * search contract with IContractsearch parameters
-     * @param search IContractsearch
-     * @return ArrayList of Contract
-     * @throws DBException 
-     */
     public ArrayList<Contract> searchcontracts(IContractsearch search) throws DBException {
-        return (ArrayList<Contract>)this.search(search);
+        return (ArrayList<Contract>)tableio.search(search);
     }
 
-    /**
-     * search contract with IContractsearch parameters, order by orderby sql clause
-     * @param search IContractsearch
-     * @param orderby sql order by string
-     * @return ArrayList of Contract
-     * @throws DBException 
-     */
     public ArrayList<Contract> searchcontracts(IContractsearch search, String orderby) throws DBException {
-        return (ArrayList<Contract>)this.search(search, orderby);
+        return (ArrayList<Contract>)tableio.search(search, orderby);
     }
 
-    /**
-     * Search contract in database for contractPK:
-     * @param contractPK: Contract Primary Key, only valid for the initialized Entity
-     * @return true if found in database
-     * @throws DBException
-     */
     public boolean getContractExists(IContractPK contractPK) throws DBException {
-        return super.getEntityExists((ContractPK)contractPK);
+        return tableio.getEntityExists((ContractPK)contractPK);
     }
 
-    /**
-     * try to insert Contract in database
-     * @param contract Contract object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertContract(IContract contract) throws DBException, DataException {
-        super.insertEntity(contract);
+    public Contract getEntity(String sql) throws DBException {
+        return (Contract)tableio.getEntity(sql);
+    }
+    
+    public Contract getEntity(String sql, SQLparameters parameters) throws DBException {
+        return (Contract)tableio.getEntity(sql, parameters);
+    }
+    
+    public ArrayList<Contract> getEntities(String sql) throws DBException {
+        return tableio.getEntities(sql);
+    }
+    
+    public ArrayList<Contract> getEntities(String sql, SQLparameters parameters) throws DBException {
+        return tableio.getEntities(sql, parameters);
     }
 
-    /**
-     * check if ContractPK exists
-     * insert if not, update if found
-     * do not commit transaction
-     * @param contract Contract object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertupdateContract(IContract contract) throws DBException, DataException {
+    public long count() throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+    
+    public long count(String sql, SQLparameters parameters) throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+
+    public ArrayList<Contract> search(Tablesearcher search) throws DBException {
+        return tableio.search(search);
+    }
+
+    public ArrayList<Contract> search(Tablesearcher search, String orderby) throws DBException {
+        return tableio.search(search, orderby);
+    }
+
+    public long searchcount(Tablesearcher search) throws DBException {
+        return tableio.searchcount(search);
+    }
+
+    public void insertContract(SQLTqueue transactionqueue, IContract contract) throws DBException, DataException {
+        tableio.insertEntity(transactionqueue, contract);
+    }
+
+    public void insertupdateContract(SQLTqueue transactionqueue, IContract contract) throws DBException, DataException {
+    	checkDATA(contract);
         if(this.getContractExists(contract.getPrimaryKey())) {
-            super.updateEntity(contract);
+            tableio.updateEntity(transactionqueue, contract);
         } else {
-            super.insertEntity(contract);
+            tableio.insertEntity(transactionqueue, contract);
         }
     }
 
-    /**
-     * try to update Contract in database
-     * @param contract Contract object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void updateContract(IContract contract) throws DBException, DataException {
-        super.updateEntity(contract);
+    public void updateContract(SQLTqueue transactionqueue, IContract contract) throws DBException, DataException {
+    	checkDATA(contract);
+        tableio.updateEntity(transactionqueue, contract);
     }
 
-    /**
-     * try to delete Contract in database
-     * @param contract Contract object
-     * @throws DBException
-     */
-    public void deleteContract(IContract contract) throws DBException {
-        cascadedeleteContract(contract.getPrimaryKey());
-        super.deleteEntity(contract);
+    public void deleteContract(SQLTqueue transactionqueue, IContract contract) throws DBException {
+        cascadedeleteContract(transactionqueue, contract.getPrimaryKey());
+        tableio.deleteEntity(transactionqueue, contract);
     }
 
-    /**
-     * check data rules in Contract, throw DataException with customized message if rules do not apply
-     * @param contract Contract object
-     * @throws DataException
-     * @throws DBException
-     */
-    public void checkDATA(IContract contract) throws DataException, DBException {
+    private void checkDATA(IContract contract) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
         if(contract.getDate_expired()==null) {
@@ -240,19 +166,10 @@ public abstract class Bcontract extends BLtable {
      * delete all records in tables where contractPK is used in a primary key
      * @param contractPK: Contract primary key
      */
-    public void cascadedeleteContract(IContractPK contractPK) {
+    public void cascadedeleteContract(SQLTqueue transactionqueue, IContractPK contractPK) {
     }
 
 
-    /**
-     * get all Contract objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @param sortlist sql sort string
-     * @param sortoperator asc/desc
-     * @return ArrayList of Contract objects
-     * @throws DBException
-     */
     public ArrayList<Contract> getContracts(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
         StringBuilder sql = new StringBuilder(EMcontract.SQLSelect);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
@@ -267,16 +184,10 @@ public abstract class Bcontract extends BLtable {
         if(sortlist.length()>0) {
             sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return (ArrayList<Contract>)super.getEntities(sql.toString(), sqlparameters);
+        return (ArrayList<Contract>)tableio.getEntities(sql.toString(), sqlparameters);
     }
 
-    /**
-     * delete all Contract objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @throws DBException
-     */
-    public void delContract(SQLparameters sqlparameters, String andoroperator) throws DBException {
+    public void delContract(SQLTqueue transactionqueue, SQLparameters sqlparameters, String andoroperator) throws DBException {
         StringBuilder sql = new StringBuilder("delete from ").append(Contract.table);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
         int l = parameters.size();
@@ -287,7 +198,7 @@ public abstract class Bcontract extends BLtable {
                 if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(sql.toString(), sqlparameters);
+        tableio.addStatement(transactionqueue, sql.toString(), sqlparameters);
     }
 
 

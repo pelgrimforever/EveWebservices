@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Graphic;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Graphic_usecases {
 
     private boolean loggedin = false;
-    private BLgraphic blgraphic = new BLgraphic();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLgraphic blgraphic = new BLgraphic(sqlreader);
     
     public Graphic_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Graphic_usecases {
     }
     
     public boolean getGraphicExists(IGraphicPK graphicPK) throws DBException {
-        return blgraphic.getEntityExists(graphicPK);
+        return blgraphic.getGraphicExists(graphicPK);
     }
     
     public Graphic get_graphic_by_primarykey(IGraphicPK graphicPK) throws DBException {
@@ -65,16 +71,23 @@ public class Graphic_usecases {
         return blgraphic.searchcount(graphicsearch);
     }
 
-    public void secureinsertGraphic(IGraphic graphic) throws DBException, DataException {
-        blgraphic.secureinsertGraphic(graphic);
+    public void insertGraphic(IGraphic graphic) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blgraphic.insertGraphic(tq, graphic);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateGraphic(IGraphic graphic) throws DBException, DataException {
-        blgraphic.secureupdateGraphic(graphic);
+    public void updateGraphic(IGraphic graphic) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blgraphic.updateGraphic(tq, graphic);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteGraphic(IGraphic graphic) throws DBException, DataException {
-        blgraphic.securedeleteGraphic(graphic);
+    public void deleteGraphic(IGraphic graphic) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blgraphic.deleteGraphic(tq, graphic);
+        sqlwriter.Commit2DB(tq);
     }
+
 }
 

@@ -1,9 +1,6 @@
 /*
- * JSONView_order_region_evetype.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_order_region_evetype {
@@ -36,10 +32,6 @@ public class JSONView_order_region_evetype {
         return jsonview_order_region_evetypes;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_order_region_evetype view_order_region_evetype) {
         JSONObject json = new JSONObject();
         json.put("region", String.valueOf(view_order_region_evetype.getRegion()));
@@ -56,11 +48,6 @@ public class JSONView_order_region_evetype {
         return view_order_region_evetype;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_order_region_evetypesearch parameters
-     * @return 
-     */
     public static View_order_region_evetypesearch toView_order_region_evetypesearch(JSONObject json) {
         View_order_region_evetypesearch view_order_region_evetypesearch = new View_order_region_evetypesearch();
         view_order_region_evetypesearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

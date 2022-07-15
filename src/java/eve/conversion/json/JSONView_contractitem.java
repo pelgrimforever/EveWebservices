@@ -1,9 +1,6 @@
 /*
- * JSONView_contractitem.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 9.0.2022 17:5
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_contractitem {
@@ -36,10 +32,6 @@ public class JSONView_contractitem {
         return jsonview_contractitems;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_contractitem view_contractitem) {
         JSONObject json = new JSONObject();
         json.put("id", String.valueOf(view_contractitem.getId()));
@@ -102,11 +94,6 @@ public class JSONView_contractitem {
         return view_contractitem;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_contractitemsearch parameters
-     * @return 
-     */
     public static View_contractitemsearch toView_contractitemsearch(JSONObject json) {
         View_contractitemsearch view_contractitemsearch = new View_contractitemsearch();
         view_contractitemsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

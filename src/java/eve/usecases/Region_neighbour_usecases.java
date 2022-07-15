@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Region_neighbour;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Region_neighbour_usecases {
 
     private boolean loggedin = false;
-    private BLregion_neighbour blregion_neighbour = new BLregion_neighbour();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLregion_neighbour blregion_neighbour = new BLregion_neighbour(sqlreader);
     
     public Region_neighbour_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Region_neighbour_usecases {
     }
     
     public boolean getRegion_neighbourExists(IRegion_neighbourPK region_neighbourPK) throws DBException {
-        return blregion_neighbour.getEntityExists(region_neighbourPK);
+        return blregion_neighbour.getRegion_neighbourExists(region_neighbourPK);
     }
     
     public Region_neighbour get_region_neighbour_by_primarykey(IRegion_neighbourPK region_neighbourPK) throws DBException {
@@ -73,16 +79,35 @@ public class Region_neighbour_usecases {
         return blregion_neighbour.searchcount(region_neighboursearch);
     }
 
-    public void secureinsertRegion_neighbour(IRegion_neighbour region_neighbour) throws DBException, DataException {
-        blregion_neighbour.secureinsertRegion_neighbour(region_neighbour);
+    public void insertRegion_neighbour(IRegion_neighbour region_neighbour) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blregion_neighbour.insertRegion_neighbour(tq, region_neighbour);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateRegion_neighbour(IRegion_neighbour region_neighbour) throws DBException, DataException {
-        blregion_neighbour.secureupdateRegion_neighbour(region_neighbour);
+    public void updateRegion_neighbour(IRegion_neighbour region_neighbour) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blregion_neighbour.updateRegion_neighbour(tq, region_neighbour);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteRegion_neighbour(IRegion_neighbour region_neighbour) throws DBException, DataException {
-        blregion_neighbour.securedeleteRegion_neighbour(region_neighbour);
+    public void deleteRegion_neighbour(IRegion_neighbour region_neighbour) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blregion_neighbour.deleteRegion_neighbour(tq, region_neighbour);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Regionregion(IRegionPK regionRegionPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blregion_neighbour.delete4regionRegion(tq, regionRegionPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Regionneighbour(IRegionPK regionNeighbourPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blregion_neighbour.delete4regionNeighbour(tq, regionNeighbourPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

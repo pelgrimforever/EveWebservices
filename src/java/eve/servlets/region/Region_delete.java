@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.region;
@@ -61,7 +61,7 @@ public class Region_delete extends SecurityDataServlet {
 
     private void delete_region(Region_usecases regionusecases) throws CustomException {
         IRegion region = (IRegion)parser.getJavaObject("region");
-        regionusecases.securedeleteRegion(region);
+        regionusecases.deleteRegion(region);
     }
     
     @Override

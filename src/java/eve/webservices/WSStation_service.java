@@ -2,23 +2,25 @@
  * WSStation_service.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 13.6.2022 18:20
  *
  */
 
 package eve.webservices;
 
+import base.restservices.RS_json_login;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.IStation_servicesearch;
 import eve.interfaces.webservice.WSIStation_service;
 import eve.logicentity.Station_service;
 import eve.searchentity.Station_servicesearch;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import general.exception.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.jws.WebMethod;
@@ -27,14 +29,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import eve.usecases.custom.Security_usecases;
 
 /**
  *
  * @author Franky Laseure
  */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSIStation_service")
-public class WSStation_service implements WSIStation_service {
+public class WSStation_service extends RS_json_login implements WSIStation_service {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     private JSONArray toJSONArray(ArrayList station_services) {
         JSONArray jsonstation_services = new JSONArray();
         Iterator station_servicesI = station_services.iterator();
@@ -44,152 +49,168 @@ public class WSStation_service implements WSIStation_service {
         return jsonstation_services;
     }
 
-    /**
-     * Web service operation
-     */
     //@WebMethod(operationName = "getStation_services")
     @Override
     public String getStation_services() {
         try {
-            BLstation_service blstation_service = new BLstation_service();
-            ArrayList station_services = blstation_service.getAll();
-            JSONArray jsonstation_services = toJSONArray(station_services);
-            return jsonstation_services.toJSONString();
+            Station_service_usecases station_serviceusecases = new Station_service_usecases(loggedin);
+            return get_all_station_service(station_serviceusecases);
         }
-        catch(DBException e) {
+        catch(CustomException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "search")
     @Override
-    public String search(String json) {
-        BLstation_service blstation_service = new BLstation_service();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Station_service station_service;
+    public String search(String jsonstring) {
         try {
-            Station_servicesearch station_servicesearch = JSONStation_service.toStation_servicesearch((JSONObject)parser.parse(json));
-            ArrayList station_services = blstation_service.search(station_servicesearch);
-            JSONArray jsonstation_services = toJSONArray(station_services);
-            result = jsonstation_services.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_service_usecases station_serviceusecases = new Station_service_usecases(loggedin);
+            return search_station_service(station_serviceusecases, json);
         }
-        catch(ParseException e) {
-            result = "";
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-            result = "";
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "getStation_service")
     @Override
-    public String getStation_service(String json) {
-        BLstation_service blstation_service = new BLstation_service();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Station_service station_service;
+    public String getStation_service(String jsonstring) {
         try {
-            Station_servicePK station_servicePK = JSONStation_service.toStation_servicePK((JSONObject)parser.parse(json));
-            station_service = blstation_service.getStation_service(station_servicePK);
-            if(station_service!=null) {
-                result = JSONStation_service.toJSON(station_service).toJSONString();
-            }
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_service_usecases station_serviceusecases = new Station_service_usecases(loggedin);
+            return get_station_service_with_primarykey(station_serviceusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "insertStation_service")
     @Override
-    public void insertStation_service(String json) {
-        BLstation_service blstation_service = new BLstation_service();
-        JSONParser parser = new JSONParser();
+    public void insertStation_service(String jsonstring) {
         try {
-            IStation_service station_service = JSONStation_service.toStation_service((JSONObject)parser.parse(json));
-            blstation_service.insertStation_service(station_service);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_service_usecases station_serviceusecases = new Station_service_usecases(loggedin);
+            insert_station_service(station_serviceusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "updateStation_service")
     @Override
-    public void updateStation_service(String json) {
-        BLstation_service blstation_service = new BLstation_service();
-        JSONParser parser = new JSONParser();
+    public void updateStation_service(String jsonstring) {
         try {
-            IStation_service station_service = JSONStation_service.toStation_service((JSONObject)parser.parse(json));
-            blstation_service.updateStation_service(station_service);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_service_usecases station_serviceusecases = new Station_service_usecases(loggedin);
+            update_station_service(station_serviceusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "deleteStation_service")
     @Override
-    public void deleteStation_service(String json) {
-        BLstation_service blstation_service = new BLstation_service();
-        JSONParser parser = new JSONParser();
+    public void deleteStation_service(String jsonstring) {
         try {
-            IStation_service station_service = JSONStation_service.toStation_service((JSONObject)parser.parse(json));
-            blstation_service.deleteStation_service(station_service);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_service_usecases station_serviceusecases = new Station_service_usecases(loggedin);
+            delete_station_service(station_serviceusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getStation_services4station")
     @Override
-    public String getStation_services4station(String json) {
-        BLstation_service blstation_service = new BLstation_service();
-        JSONParser parser = new JSONParser();
-        Station_service station_service;
+    public String getStation_services4station(String jsonstring) {
         try {
-            IStationPK stationPK = JSONStation.toStationPK((JSONObject)parser.parse(json));
-            ArrayList station_services = blstation_service.getStation_services4station(stationPK);
-            JSONArray jsonstation_services = toJSONArray(station_services);
-            return jsonstation_services.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_service_usecases station_serviceusecases = new Station_service_usecases(loggedin);
+            return get_station_service_with_foreignkey_station(station_serviceusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4station")
     @Override
-    public void delete4station(String json) {
-        BLstation_service blstation_service = new BLstation_service();
-        JSONParser parser = new JSONParser();
-        Station_service station_service;
+    public void delete4station(String jsonstring) {
         try {
-            IStationPK stationPK = JSONStation.toStationPK((JSONObject)parser.parse(json));
-            blstation_service.delete4station(stationPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Station_service_usecases station_serviceusecases = new Station_service_usecases(loggedin);
+            delete_station_service(station_serviceusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
+
+    private String count_records(Station_service_usecases station_serviceusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", station_serviceusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_station_service(Station_service_usecases station_serviceusecases) throws ParseException, CustomException {
+    	return JSONStation_service.toJSONArray(station_serviceusecases.get_all()).toJSONString();
+    }
+    
+    private String get_station_service_with_primarykey(Station_service_usecases station_serviceusecases, JSONObject json) throws ParseException, CustomException {
+        IStation_servicePK station_servicePK = (IStation_servicePK)JSONStation_service.toStation_servicePK((JSONObject)json.get("station_servicepk"));
+	return JSONStation_service.toJSON(station_serviceusecases.get_station_service_by_primarykey(station_servicePK)).toJSONString();
+    }
+    
+    private String get_station_service_with_foreignkey_station(Station_service_usecases station_serviceusecases, JSONObject json) throws ParseException, CustomException {
+        IStationPK stationPK = (IStationPK)JSONStation.toStationPK((JSONObject)json.get("stationpk"));
+        return JSONStation_service.toJSONArray(station_serviceusecases.get_station_service_with_foreignkey_station(stationPK)).toJSONString();
+    }
+    
+    private String search_station_service(Station_service_usecases station_serviceusecases, JSONObject json) throws ParseException, CustomException {
+        IStation_servicesearch search = (IStation_servicesearch)JSONStation_service.toStation_servicesearch((JSONObject)json.get("search"));
+        return JSONStation_service.toJSONArray(station_serviceusecases.search_station_service(search)).toJSONString();
+    }
+    
+    private String search_station_service_count(Station_service_usecases station_serviceusecases, JSONObject json) throws ParseException, CustomException {
+        IStation_servicesearch station_servicesearch = (IStation_servicesearch)JSONStation_service.toStation_servicesearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", station_serviceusecases.search_station_service_count(station_servicesearch));
+        return jsonsearchcount.toJSONString();
+    }
+
+    private void insert_station_service(Station_service_usecases station_serviceusecases, JSONObject json) throws ParseException, CustomException {
+        IStation_service station_service = (IStation_service)JSONStation_service.toStation_service((JSONObject)json.get("station_service"));
+        station_serviceusecases.insertStation_service(station_service);
+        setReturnstatus("OK");
+    }
+
+    private void update_station_service(Station_service_usecases station_serviceusecases, JSONObject json) throws ParseException, CustomException {
+        IStation_service station_service = (IStation_service)JSONStation_service.toStation_service((JSONObject)json.get("station_service"));
+        station_serviceusecases.updateStation_service(station_service);
+        setReturnstatus("OK");
+    }
+
+    private void delete_station_service(Station_service_usecases station_serviceusecases, JSONObject json) throws ParseException, CustomException {
+        IStation_service station_service = (IStation_service)JSONStation_service.toStation_service((JSONObject)json.get("station_service"));
+        station_serviceusecases.deleteStation_service(station_service);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Station(Station_service_usecases station_serviceusecases, JSONObject json) throws ParseException, CustomException {
+        IStationPK stationPK = (IStationPK)JSONStation.toStationPK((JSONObject)json.get("stationpk"));
+        station_serviceusecases.delete_all_containing_Station(stationPK);
+        setReturnstatus("OK");
+    }
 
 }
 

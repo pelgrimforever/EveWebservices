@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Tradecombined_sell;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Tradecombined_sell_usecases {
 
     private boolean loggedin = false;
-    private BLtradecombined_sell bltradecombined_sell = new BLtradecombined_sell();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLtradecombined_sell bltradecombined_sell = new BLtradecombined_sell(sqlreader);
     
     public Tradecombined_sell_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Tradecombined_sell_usecases {
     }
     
     public boolean getTradecombined_sellExists(ITradecombined_sellPK tradecombined_sellPK) throws DBException {
-        return bltradecombined_sell.getEntityExists(tradecombined_sellPK);
+        return bltradecombined_sell.getTradecombined_sellExists(tradecombined_sellPK);
     }
     
     public Tradecombined_sell get_tradecombined_sell_by_primarykey(ITradecombined_sellPK tradecombined_sellPK) throws DBException {
@@ -77,16 +83,41 @@ public class Tradecombined_sell_usecases {
         return bltradecombined_sell.searchcount(tradecombined_sellsearch);
     }
 
-    public void secureinsertTradecombined_sell(ITradecombined_sell tradecombined_sell) throws DBException, DataException {
-        bltradecombined_sell.secureinsertTradecombined_sell(tradecombined_sell);
+    public void insertTradecombined_sell(ITradecombined_sell tradecombined_sell) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        bltradecombined_sell.insertTradecombined_sell(tq, tradecombined_sell);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateTradecombined_sell(ITradecombined_sell tradecombined_sell) throws DBException, DataException {
-        bltradecombined_sell.secureupdateTradecombined_sell(tradecombined_sell);
+    public void updateTradecombined_sell(ITradecombined_sell tradecombined_sell) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        bltradecombined_sell.updateTradecombined_sell(tq, tradecombined_sell);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteTradecombined_sell(ITradecombined_sell tradecombined_sell) throws DBException, DataException {
-        bltradecombined_sell.securedeleteTradecombined_sell(tradecombined_sell);
+    public void deleteTradecombined_sell(ITradecombined_sell tradecombined_sell) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        bltradecombined_sell.deleteTradecombined_sell(tq, tradecombined_sell);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Ordersbuy_order_id(IOrdersPK ordersBuy_order_idPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        bltradecombined_sell.delete4ordersBuy_order_id(tq, ordersBuy_order_idPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Orderssell_order_id(IOrdersPK ordersSell_order_idPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        bltradecombined_sell.delete4ordersSell_order_id(tq, ordersSell_order_idPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Tradecombined(ITradecombinedPK tradecombinedPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        bltradecombined_sell.delete4tradecombined(tq, tradecombinedPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

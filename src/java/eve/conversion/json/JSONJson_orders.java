@@ -1,9 +1,6 @@
 /*
- * JSONJson_orders.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.0.2022 19:32
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONJson_orders {
@@ -41,10 +37,6 @@ public class JSONJson_orders {
         return jsonjson_orderss;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IJson_ordersPK json_ordersPK) {
         JSONObject json = null;
         if(json_ordersPK!=null) {
@@ -54,10 +46,6 @@ public class JSONJson_orders {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IJson_orders json_orders) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(json_orders.getPrimaryKey()));
@@ -69,10 +57,6 @@ public class JSONJson_orders {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Json_orderssearch json_orderssearch) {
         JSONObject json = new JSONObject();
         if(json_orderssearch.used()) {
@@ -108,11 +92,6 @@ public class JSONJson_orders {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Json_orderssearch toJson_orderssearch(JSONObject json) {
         Json_orderssearch json_orderssearch = new Json_orderssearch();
         json_orderssearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

@@ -1,9 +1,6 @@
 /*
- * JSONView_order.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_order {
@@ -36,10 +32,6 @@ public class JSONView_order {
         return jsonview_orders;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_order view_order) {
         JSONObject json = new JSONObject();
         json.put("id", String.valueOf(view_order.getId()));
@@ -115,11 +107,6 @@ public class JSONView_order {
         return view_order;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_ordersearch parameters
-     * @return 
-     */
     public static View_ordersearch toView_ordersearch(JSONObject json) {
         View_ordersearch view_ordersearch = new View_ordersearch();
         view_ordersearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

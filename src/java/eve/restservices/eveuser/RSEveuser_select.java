@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.eveuser;
@@ -10,7 +10,7 @@ import data.gis.shape.GISConversion;
 import data.gis.shape.piPoint;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
-import eve.usecases.Eveuser_usecases;
+import eve.usecases.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.IEveusersearch;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IEveuserOperation;
 import eve.logicentity.Eveuser;
 import eve.searchentity.Eveusersearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,23 +46,22 @@ import org.json.simple.parser.ParseException;
 @Path("rseveuser_select")
 public class RSEveuser_select extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
-            IEveuserPK eveuserPK;
-            IEveuser eveuser;
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Eveuser_usecases eveuserusecases = new Eveuser_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
             //Select is allowed for all, anything else needs USERS authorization
-            String username = Security_usecases.getUsername(super.authorisationstring);
-            eve.BusinessObject.Logic.BLfrontendpage_auth blfrontendpage_auth = new eve.BusinessObject.Logic.BLfrontendpage_auth();
-            blfrontendpage_auth.setAuthenticated(true);
-            loggedin = loggedin && blfrontendpage_auth.checkAuth(username, eve.BusinessObject.Logic.BLfrontendpage.USERS);
+            String username = security_usecases.getUsername(super.authorisationstring);
+            frontendpage_auth_usecases = new Frontendpage_auth_usecases(loggedin);
+            loggedin = loggedin && isauthorized();
             eveuserusecases = new Eveuser_usecases(loggedin);
 //Custom code, do not change this line   
             switch(operation) {
@@ -89,7 +86,7 @@ public class RSEveuser_select extends RS_json_login {
 //Custom code, do not change this line
 //add here custom operations
                 case IEveuserOperation.SELECT_ISADMIN:
-                    boolean isadmin = Security_usecases.isadmin(super.authorisationstring);
+                    boolean isadmin = security_usecases.isadmin(super.authorisationstring);
                     break;
 //Custom code, do not change this line   
             }
@@ -102,6 +99,11 @@ public class RSEveuser_select extends RS_json_login {
 
 //Custom code, do not change this line
 //add here custom operations
+    Frontendpage_auth_usecases frontendpage_auth_usecases;
+    
+    public boolean isauthorized() throws DBException, IOException {
+        return loggedin && frontendpage_auth_usecases.check_userauthorisation_for_page(authorisationstring, eve.BusinessObject.Logic.BLfrontendpage.USERS);
+    }
 //Custom code, do not change this line   
 
     private String count_records(Eveuser_usecases eveuserusecases) throws ParseException, CustomException {

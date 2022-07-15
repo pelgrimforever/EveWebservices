@@ -1,9 +1,6 @@
 /*
- * JSONSystem.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 15.3.2022 8:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONSystem {
@@ -41,10 +37,6 @@ public class JSONSystem {
         return jsonsystems;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ISystemPK systemPK) {
         JSONObject json = null;
         if(systemPK!=null) {
@@ -54,10 +46,6 @@ public class JSONSystem {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ISystem system) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(system.getPrimaryKey()));
@@ -84,10 +72,6 @@ public class JSONSystem {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Systemsearch systemsearch) {
         JSONObject json = new JSONObject();
         if(systemsearch.used()) {
@@ -147,11 +131,6 @@ public class JSONSystem {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Systemsearch toSystemsearch(JSONObject json) {
         Systemsearch systemsearch = new Systemsearch();
         systemsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

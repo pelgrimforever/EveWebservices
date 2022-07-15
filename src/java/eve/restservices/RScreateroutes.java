@@ -4,8 +4,8 @@ import base.restservices.RS_json;
 import data.conversion.JSONConversion;
 import eve.BusinessObject.service.RouteService;
 import eve.conversion.json.JSONSystem;
-import eve.usecases.Loadroute_usecases;
-import eve.usecases.Loadroute_parameters;
+import eve.usecases.custom.Loadroute_usecases;
+import eve.usecases.custom.Loadroute_parameters;
 import general.exception.CustomException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,8 +25,8 @@ import org.json.simple.parser.ParseException;
 @Path("rscreateroutes")
 public class RScreateroutes extends RS_json {
     
-    private static RouteService routeservice = null;
-
+    Loadroute_usecases loadroute_usecases = new Loadroute_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -42,16 +42,13 @@ public class RScreateroutes extends RS_json {
     }
 
     private String findroute(JSONObject json) throws CustomException {
-        if(routeservice==null)
-            routeservice = new RouteService();
-        Loadroute_usecases loadroute_interactor = new Loadroute_usecases();
         Loadroute_parameters loadrouteparameters = new Loadroute_parameters();
         loadrouteparameters.setOrigin(JSONConversion.getlong(json, "origin"));
         loadrouteparameters.setDestination(JSONConversion.getlong(json, "destination"));
         loadrouteparameters.setAvoidsystems(extract_avoidsystems_from_jsoninput(json));
         loadrouteparameters.setRoutesegmentlist(extract_routestoppoints_from_jsoninput(json));
         loadrouteparameters.setSecure(JSONConversion.getboolean(json, "secure"));
-        ArrayList systems = loadroute_interactor.Loadroute_localservice_usecase(routeservice, loadrouteparameters);
+        ArrayList systems = loadroute_usecases.Loadroute_localservice_usecase(loadrouteparameters);
         return JSONSystem.toJSONArray(systems).toJSONString();
     }
     

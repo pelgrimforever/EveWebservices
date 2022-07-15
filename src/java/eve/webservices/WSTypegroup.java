@@ -2,23 +2,25 @@
  * WSTypegroup.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 13.6.2022 18:20
  *
  */
 
 package eve.webservices;
 
+import base.restservices.RS_json_login;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.ITypegroupsearch;
 import eve.interfaces.webservice.WSITypegroup;
 import eve.logicentity.Typegroup;
 import eve.searchentity.Typegroupsearch;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import general.exception.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.jws.WebMethod;
@@ -27,14 +29,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import eve.usecases.custom.Security_usecases;
 
 /**
  *
  * @author Franky Laseure
  */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSITypegroup")
-public class WSTypegroup implements WSITypegroup {
+public class WSTypegroup extends RS_json_login implements WSITypegroup {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     private JSONArray toJSONArray(ArrayList typegroups) {
         JSONArray jsontypegroups = new JSONArray();
         Iterator typegroupsI = typegroups.iterator();
@@ -44,152 +49,168 @@ public class WSTypegroup implements WSITypegroup {
         return jsontypegroups;
     }
 
-    /**
-     * Web service operation
-     */
     //@WebMethod(operationName = "getTypegroups")
     @Override
     public String getTypegroups() {
         try {
-            BLtypegroup bltypegroup = new BLtypegroup();
-            ArrayList typegroups = bltypegroup.getAll();
-            JSONArray jsontypegroups = toJSONArray(typegroups);
-            return jsontypegroups.toJSONString();
+            Typegroup_usecases typegroupusecases = new Typegroup_usecases(loggedin);
+            return get_all_typegroup(typegroupusecases);
         }
-        catch(DBException e) {
+        catch(CustomException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "search")
     @Override
-    public String search(String json) {
-        BLtypegroup bltypegroup = new BLtypegroup();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Typegroup typegroup;
+    public String search(String jsonstring) {
         try {
-            Typegroupsearch typegroupsearch = JSONTypegroup.toTypegroupsearch((JSONObject)parser.parse(json));
-            ArrayList typegroups = bltypegroup.search(typegroupsearch);
-            JSONArray jsontypegroups = toJSONArray(typegroups);
-            result = jsontypegroups.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Typegroup_usecases typegroupusecases = new Typegroup_usecases(loggedin);
+            return search_typegroup(typegroupusecases, json);
         }
-        catch(ParseException e) {
-            result = "";
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-            result = "";
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "getTypegroup")
     @Override
-    public String getTypegroup(String json) {
-        BLtypegroup bltypegroup = new BLtypegroup();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Typegroup typegroup;
+    public String getTypegroup(String jsonstring) {
         try {
-            TypegroupPK typegroupPK = JSONTypegroup.toTypegroupPK((JSONObject)parser.parse(json));
-            typegroup = bltypegroup.getTypegroup(typegroupPK);
-            if(typegroup!=null) {
-                result = JSONTypegroup.toJSON(typegroup).toJSONString();
-            }
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Typegroup_usecases typegroupusecases = new Typegroup_usecases(loggedin);
+            return get_typegroup_with_primarykey(typegroupusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "insertTypegroup")
     @Override
-    public void insertTypegroup(String json) {
-        BLtypegroup bltypegroup = new BLtypegroup();
-        JSONParser parser = new JSONParser();
+    public void insertTypegroup(String jsonstring) {
         try {
-            ITypegroup typegroup = JSONTypegroup.toTypegroup((JSONObject)parser.parse(json));
-            bltypegroup.insertTypegroup(typegroup);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Typegroup_usecases typegroupusecases = new Typegroup_usecases(loggedin);
+            insert_typegroup(typegroupusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "updateTypegroup")
     @Override
-    public void updateTypegroup(String json) {
-        BLtypegroup bltypegroup = new BLtypegroup();
-        JSONParser parser = new JSONParser();
+    public void updateTypegroup(String jsonstring) {
         try {
-            ITypegroup typegroup = JSONTypegroup.toTypegroup((JSONObject)parser.parse(json));
-            bltypegroup.updateTypegroup(typegroup);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Typegroup_usecases typegroupusecases = new Typegroup_usecases(loggedin);
+            update_typegroup(typegroupusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "deleteTypegroup")
     @Override
-    public void deleteTypegroup(String json) {
-        BLtypegroup bltypegroup = new BLtypegroup();
-        JSONParser parser = new JSONParser();
+    public void deleteTypegroup(String jsonstring) {
         try {
-            ITypegroup typegroup = JSONTypegroup.toTypegroup((JSONObject)parser.parse(json));
-            bltypegroup.deleteTypegroup(typegroup);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Typegroup_usecases typegroupusecases = new Typegroup_usecases(loggedin);
+            delete_typegroup(typegroupusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getTypegroups4category")
     @Override
-    public String getTypegroups4category(String json) {
-        BLtypegroup bltypegroup = new BLtypegroup();
-        JSONParser parser = new JSONParser();
-        Typegroup typegroup;
+    public String getTypegroups4category(String jsonstring) {
         try {
-            ICategoryPK categoryPK = JSONCategory.toCategoryPK((JSONObject)parser.parse(json));
-            ArrayList typegroups = bltypegroup.getTypegroups4category(categoryPK);
-            JSONArray jsontypegroups = toJSONArray(typegroups);
-            return jsontypegroups.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Typegroup_usecases typegroupusecases = new Typegroup_usecases(loggedin);
+            return get_typegroup_with_foreignkey_category(typegroupusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4category")
     @Override
-    public void delete4category(String json) {
-        BLtypegroup bltypegroup = new BLtypegroup();
-        JSONParser parser = new JSONParser();
-        Typegroup typegroup;
+    public void delete4category(String jsonstring) {
         try {
-            ICategoryPK categoryPK = JSONCategory.toCategoryPK((JSONObject)parser.parse(json));
-            bltypegroup.delete4category(categoryPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Typegroup_usecases typegroupusecases = new Typegroup_usecases(loggedin);
+            delete_typegroup(typegroupusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
+
+    private String count_records(Typegroup_usecases typegroupusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", typegroupusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_typegroup(Typegroup_usecases typegroupusecases) throws ParseException, CustomException {
+    	return JSONTypegroup.toJSONArray(typegroupusecases.get_all()).toJSONString();
+    }
+    
+    private String get_typegroup_with_primarykey(Typegroup_usecases typegroupusecases, JSONObject json) throws ParseException, CustomException {
+        ITypegroupPK typegroupPK = (ITypegroupPK)JSONTypegroup.toTypegroupPK((JSONObject)json.get("typegrouppk"));
+	return JSONTypegroup.toJSON(typegroupusecases.get_typegroup_by_primarykey(typegroupPK)).toJSONString();
+    }
+    
+    private String get_typegroup_with_foreignkey_category(Typegroup_usecases typegroupusecases, JSONObject json) throws ParseException, CustomException {
+        ICategoryPK categoryPK = (ICategoryPK)JSONCategory.toCategoryPK((JSONObject)json.get("categorypk"));
+        return JSONTypegroup.toJSONArray(typegroupusecases.get_typegroup_with_foreignkey_category(categoryPK)).toJSONString();
+    }
+    
+    private String search_typegroup(Typegroup_usecases typegroupusecases, JSONObject json) throws ParseException, CustomException {
+        ITypegroupsearch search = (ITypegroupsearch)JSONTypegroup.toTypegroupsearch((JSONObject)json.get("search"));
+        return JSONTypegroup.toJSONArray(typegroupusecases.search_typegroup(search)).toJSONString();
+    }
+    
+    private String search_typegroup_count(Typegroup_usecases typegroupusecases, JSONObject json) throws ParseException, CustomException {
+        ITypegroupsearch typegroupsearch = (ITypegroupsearch)JSONTypegroup.toTypegroupsearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", typegroupusecases.search_typegroup_count(typegroupsearch));
+        return jsonsearchcount.toJSONString();
+    }
+
+    private void insert_typegroup(Typegroup_usecases typegroupusecases, JSONObject json) throws ParseException, CustomException {
+        ITypegroup typegroup = (ITypegroup)JSONTypegroup.toTypegroup((JSONObject)json.get("typegroup"));
+        typegroupusecases.insertTypegroup(typegroup);
+        setReturnstatus("OK");
+    }
+
+    private void update_typegroup(Typegroup_usecases typegroupusecases, JSONObject json) throws ParseException, CustomException {
+        ITypegroup typegroup = (ITypegroup)JSONTypegroup.toTypegroup((JSONObject)json.get("typegroup"));
+        typegroupusecases.updateTypegroup(typegroup);
+        setReturnstatus("OK");
+    }
+
+    private void delete_typegroup(Typegroup_usecases typegroupusecases, JSONObject json) throws ParseException, CustomException {
+        ITypegroup typegroup = (ITypegroup)JSONTypegroup.toTypegroup((JSONObject)json.get("typegroup"));
+        typegroupusecases.deleteTypegroup(typegroup);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Category(Typegroup_usecases typegroupusecases, JSONObject json) throws ParseException, CustomException {
+        ICategoryPK categoryPK = (ICategoryPK)JSONCategory.toCategoryPK((JSONObject)json.get("categorypk"));
+        typegroupusecases.delete_all_containing_Category(categoryPK);
+        setReturnstatus("OK");
+    }
 
 }
 

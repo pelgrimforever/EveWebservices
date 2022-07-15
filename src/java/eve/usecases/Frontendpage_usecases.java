@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Frontendpage;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Frontendpage_usecases {
 
     private boolean loggedin = false;
-    private BLfrontendpage blfrontendpage = new BLfrontendpage();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLfrontendpage blfrontendpage = new BLfrontendpage(sqlreader);
     
     public Frontendpage_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Frontendpage_usecases {
     }
     
     public boolean getFrontendpageExists(IFrontendpagePK frontendpagePK) throws DBException {
-        return blfrontendpage.getEntityExists(frontendpagePK);
+        return blfrontendpage.getFrontendpageExists(frontendpagePK);
     }
     
     public Frontendpage get_frontendpage_by_primarykey(IFrontendpagePK frontendpagePK) throws DBException {
@@ -69,16 +75,23 @@ public class Frontendpage_usecases {
         return blfrontendpage.searchcount(frontendpagesearch);
     }
 
-    public void secureinsertFrontendpage(IFrontendpage frontendpage) throws DBException, DataException {
-        blfrontendpage.secureinsertFrontendpage(frontendpage);
+    public void insertFrontendpage(IFrontendpage frontendpage) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blfrontendpage.insertFrontendpage(tq, frontendpage);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateFrontendpage(IFrontendpage frontendpage) throws DBException, DataException {
-        blfrontendpage.secureupdateFrontendpage(frontendpage);
+    public void updateFrontendpage(IFrontendpage frontendpage) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blfrontendpage.updateFrontendpage(tq, frontendpage);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteFrontendpage(IFrontendpage frontendpage) throws DBException, DataException {
-        blfrontendpage.securedeleteFrontendpage(frontendpage);
+    public void deleteFrontendpage(IFrontendpage frontendpage) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blfrontendpage.deleteFrontendpage(tq, frontendpage);
+        sqlwriter.Commit2DB(tq);
     }
+
 }
 

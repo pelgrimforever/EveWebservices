@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.orders;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IOrdersOperation;
 import eve.logicentity.Orders;
 import eve.searchentity.Orderssearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,19 +46,27 @@ import org.json.simple.parser.ParseException;
 @Path("rsorders_delete")
 public class RSOrders_delete extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Orders_usecases ordersusecases = new Orders_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operation) {
                 case IOrdersOperation.DELETE_ORDERS:
+                    delete_orders(ordersusecases, json);
+                    break;
+                case IOrdersOperation.DELETE_Evetype:
+                    delete_orders(ordersusecases, json);
+                    break;
+                case IOrdersOperation.DELETE_System:
                     delete_orders(ordersusecases, json);
                     break;
 //Custom code, do not change this line
@@ -80,8 +86,21 @@ public class RSOrders_delete extends RS_json_login {
 
     private void delete_orders(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
         IOrders orders = (IOrders)JSONOrders.toOrders((JSONObject)json.get("orders"));
-        ordersusecases.securedeleteOrders(orders);
+        ordersusecases.deleteOrders(orders);
         setReturnstatus("OK");
     }
+
+    private void delete_all_containing_Evetype(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        ordersusecases.delete_all_containing_Evetype(evetypePK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_System(Orders_usecases ordersusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        ordersusecases.delete_all_containing_System(systemPK);
+        setReturnstatus("OK");
+    }
+
 }
 

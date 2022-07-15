@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.bpmaterial;
@@ -61,7 +61,7 @@ public class Bpmaterial_update extends SecurityDataServlet {
 
     private void update_bpmaterial(Bpmaterial_usecases bpmaterialusecases) throws CustomException {
         IBpmaterial bpmaterial = (IBpmaterial)parser.getJavaObject("bpmaterial");
-        bpmaterialusecases.secureupdateBpmaterial(bpmaterial);
+        bpmaterialusecases.updateBpmaterial(bpmaterial);
     }
     
     @Override

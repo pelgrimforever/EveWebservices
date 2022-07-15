@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Market_group;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Market_group_usecases {
 
     private boolean loggedin = false;
-    private BLmarket_group blmarket_group = new BLmarket_group();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLmarket_group blmarket_group = new BLmarket_group(sqlreader);
     
     public Market_group_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Market_group_usecases {
     }
     
     public boolean getMarket_groupExists(IMarket_groupPK market_groupPK) throws DBException {
-        return blmarket_group.getEntityExists(market_groupPK);
+        return blmarket_group.getMarket_groupExists(market_groupPK);
     }
     
     public Market_group get_market_group_by_primarykey(IMarket_groupPK market_groupPK) throws DBException {
@@ -69,16 +75,29 @@ public class Market_group_usecases {
         return blmarket_group.searchcount(market_groupsearch);
     }
 
-    public void secureinsertMarket_group(IMarket_group market_group) throws DBException, DataException {
-        blmarket_group.secureinsertMarket_group(market_group);
+    public void insertMarket_group(IMarket_group market_group) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blmarket_group.insertMarket_group(tq, market_group);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateMarket_group(IMarket_group market_group) throws DBException, DataException {
-        blmarket_group.secureupdateMarket_group(market_group);
+    public void updateMarket_group(IMarket_group market_group) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blmarket_group.updateMarket_group(tq, market_group);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteMarket_group(IMarket_group market_group) throws DBException, DataException {
-        blmarket_group.securedeleteMarket_group(market_group);
+    public void deleteMarket_group(IMarket_group market_group) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blmarket_group.deleteMarket_group(tq, market_group);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Market_groupparent_id(IMarket_groupPK market_groupParent_idPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blmarket_group.delete4market_groupParent_id(tq, market_groupParent_idPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

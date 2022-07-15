@@ -1,9 +1,6 @@
 /*
- * JSONWishlist.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 17:36
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONWishlist {
@@ -41,10 +37,6 @@ public class JSONWishlist {
         return jsonwishlists;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IWishlistPK wishlistPK) {
         JSONObject json = null;
         if(wishlistPK!=null) {
@@ -55,10 +47,6 @@ public class JSONWishlist {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IWishlist wishlist) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(wishlist.getPrimaryKey()));
@@ -68,10 +56,6 @@ public class JSONWishlist {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Wishlistsearch wishlistsearch) {
         JSONObject json = new JSONObject();
         if(wishlistsearch.used()) {
@@ -110,11 +94,6 @@ public class JSONWishlist {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Wishlistsearch toWishlistsearch(JSONObject json) {
         Wishlistsearch wishlistsearch = new Wishlistsearch();
         wishlistsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

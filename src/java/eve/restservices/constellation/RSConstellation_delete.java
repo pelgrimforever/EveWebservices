@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.constellation;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IConstellationOperation;
 import eve.logicentity.Constellation;
 import eve.searchentity.Constellationsearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,19 +46,24 @@ import org.json.simple.parser.ParseException;
 @Path("rsconstellation_delete")
 public class RSConstellation_delete extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Constellation_usecases constellationusecases = new Constellation_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operation) {
                 case IConstellationOperation.DELETE_CONSTELLATION:
+                    delete_constellation(constellationusecases, json);
+                    break;
+                case IConstellationOperation.DELETE_Region:
                     delete_constellation(constellationusecases, json);
                     break;
 //Custom code, do not change this line
@@ -80,8 +83,15 @@ public class RSConstellation_delete extends RS_json_login {
 
     private void delete_constellation(Constellation_usecases constellationusecases, JSONObject json) throws ParseException, CustomException {
         IConstellation constellation = (IConstellation)JSONConstellation.toConstellation((JSONObject)json.get("constellation"));
-        constellationusecases.securedeleteConstellation(constellation);
+        constellationusecases.deleteConstellation(constellation);
         setReturnstatus("OK");
     }
+
+    private void delete_all_containing_Region(Constellation_usecases constellationusecases, JSONObject json) throws ParseException, CustomException {
+        IRegionPK regionPK = (IRegionPK)JSONRegion.toRegionPK((JSONObject)json.get("regionpk"));
+        constellationusecases.delete_all_containing_Region(regionPK);
+        setReturnstatus("OK");
+    }
+
 }
 

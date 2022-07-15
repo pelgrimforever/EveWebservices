@@ -1,9 +1,6 @@
 /*
- * JSONView_security_island_systemcount.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_security_island_systemcount {
@@ -36,10 +32,6 @@ public class JSONView_security_island_systemcount {
         return jsonview_security_island_systemcounts;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_security_island_systemcount view_security_island_systemcount) {
         JSONObject json = new JSONObject();
         json.put("id", String.valueOf(view_security_island_systemcount.getId()));
@@ -58,11 +50,6 @@ public class JSONView_security_island_systemcount {
         return view_security_island_systemcount;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_security_island_systemcountsearch parameters
-     * @return 
-     */
     public static View_security_island_systemcountsearch toView_security_island_systemcountsearch(JSONObject json) {
         View_security_island_systemcountsearch view_security_island_systemcountsearch = new View_security_island_systemcountsearch();
         view_security_island_systemcountsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

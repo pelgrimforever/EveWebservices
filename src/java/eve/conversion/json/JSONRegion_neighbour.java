@@ -1,9 +1,6 @@
 /*
- * JSONRegion_neighbour.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.0.2022 19:32
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONRegion_neighbour {
@@ -41,10 +37,6 @@ public class JSONRegion_neighbour {
         return jsonregion_neighbours;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IRegion_neighbourPK region_neighbourPK) {
         JSONObject json = null;
         if(region_neighbourPK!=null) {
@@ -55,10 +47,6 @@ public class JSONRegion_neighbour {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IRegion_neighbour region_neighbour) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(region_neighbour.getPrimaryKey()));
@@ -67,10 +55,6 @@ public class JSONRegion_neighbour {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Region_neighboursearch region_neighboursearch) {
         JSONObject json = new JSONObject();
         if(region_neighboursearch.used()) {
@@ -112,11 +96,6 @@ public class JSONRegion_neighbour {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Region_neighboursearch toRegion_neighboursearch(JSONObject json) {
         Region_neighboursearch region_neighboursearch = new Region_neighboursearch();
         region_neighboursearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

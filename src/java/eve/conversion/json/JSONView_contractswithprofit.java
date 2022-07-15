@@ -1,9 +1,6 @@
 /*
- * JSONView_contractswithprofit.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.0.2022 19:19
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_contractswithprofit {
@@ -36,10 +32,6 @@ public class JSONView_contractswithprofit {
         return jsonview_contractswithprofits;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_contractswithprofit view_contractswithprofit) {
         JSONObject json = new JSONObject();
         json.put("id", String.valueOf(view_contractswithprofit.getId()));
@@ -86,11 +78,6 @@ public class JSONView_contractswithprofit {
         return view_contractswithprofit;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_contractswithprofitsearch parameters
-     * @return 
-     */
     public static View_contractswithprofitsearch toView_contractswithprofitsearch(JSONObject json) {
         View_contractswithprofitsearch view_contractswithprofitsearch = new View_contractswithprofitsearch();
         view_contractswithprofitsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

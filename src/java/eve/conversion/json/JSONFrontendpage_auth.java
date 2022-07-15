@@ -1,9 +1,6 @@
 /*
- * JSONFrontendpage_auth.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 19.1.2022 9:43
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONFrontendpage_auth {
@@ -41,10 +37,6 @@ public class JSONFrontendpage_auth {
         return jsonfrontendpage_auths;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IFrontendpage_authPK frontendpage_authPK) {
         JSONObject json = null;
         if(frontendpage_authPK!=null) {
@@ -55,10 +47,6 @@ public class JSONFrontendpage_auth {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IFrontendpage_auth frontendpage_auth) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(frontendpage_auth.getPrimaryKey()));
@@ -67,10 +55,6 @@ public class JSONFrontendpage_auth {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Frontendpage_authsearch frontendpage_authsearch) {
         JSONObject json = new JSONObject();
         if(frontendpage_authsearch.used()) {
@@ -112,11 +96,6 @@ public class JSONFrontendpage_auth {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Frontendpage_authsearch toFrontendpage_authsearch(JSONObject json) {
         Frontendpage_authsearch frontendpage_authsearch = new Frontendpage_authsearch();
         frontendpage_authsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

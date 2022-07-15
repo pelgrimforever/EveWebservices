@@ -1,9 +1,6 @@
 /*
- * JSONFaction.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONFaction {
@@ -41,10 +37,6 @@ public class JSONFaction {
         return jsonfactions;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IFactionPK factionPK) {
         JSONObject json = null;
         if(factionPK!=null) {
@@ -54,10 +46,6 @@ public class JSONFaction {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IFaction faction) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(faction.getPrimaryKey()));
@@ -75,10 +63,6 @@ public class JSONFaction {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Factionsearch factionsearch) {
         JSONObject json = new JSONObject();
         if(factionsearch.used()) {
@@ -117,11 +101,6 @@ public class JSONFaction {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Factionsearch toFactionsearch(JSONObject json) {
         Factionsearch factionsearch = new Factionsearch();
         factionsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

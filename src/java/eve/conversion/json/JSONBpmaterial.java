@@ -1,9 +1,6 @@
 /*
- * JSONBpmaterial.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 24.0.2022 16:47
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONBpmaterial {
@@ -41,10 +37,6 @@ public class JSONBpmaterial {
         return jsonbpmaterials;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IBpmaterialPK bpmaterialPK) {
         JSONObject json = null;
         if(bpmaterialPK!=null) {
@@ -55,10 +47,6 @@ public class JSONBpmaterial {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IBpmaterial bpmaterial) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(bpmaterial.getPrimaryKey()));
@@ -68,10 +56,6 @@ public class JSONBpmaterial {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Bpmaterialsearch bpmaterialsearch) {
         JSONObject json = new JSONObject();
         if(bpmaterialsearch.used()) {
@@ -113,11 +97,6 @@ public class JSONBpmaterial {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Bpmaterialsearch toBpmaterialsearch(JSONObject json) {
         Bpmaterialsearch bpmaterialsearch = new Bpmaterialsearch();
         bpmaterialsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

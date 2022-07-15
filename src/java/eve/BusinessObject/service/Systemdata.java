@@ -94,6 +94,13 @@ public class Systemdata {
         this.route.add(this.getId());
     }
     
+    public Collection<Systemdata> getHighsecConnectedsystems() {
+        ArrayList<Systemdata> highsecsystems = new ArrayList<>();
+        for(Systemdata system: getConnectedsystems())
+            if(system.isHighsec()) highsecsystems.add(system);
+        return highsecsystems;
+    }
+    
     public Collection<Systemdata> getConnectedsystems() {
         return connections.values();
     }

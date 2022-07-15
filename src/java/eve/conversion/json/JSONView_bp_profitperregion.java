@@ -1,9 +1,6 @@
 /*
- * JSONView_bp_profitperregion.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 22.1.2022 8:34
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_bp_profitperregion {
@@ -36,10 +32,6 @@ public class JSONView_bp_profitperregion {
         return jsonview_bp_profitperregions;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_bp_profitperregion view_bp_profitperregion) {
         JSONObject json = new JSONObject();
         json.put("categoryid", String.valueOf(view_bp_profitperregion.getCategoryid()));
@@ -86,11 +78,6 @@ public class JSONView_bp_profitperregion {
         return view_bp_profitperregion;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_bp_profitperregionsearch parameters
-     * @return 
-     */
     public static View_bp_profitperregionsearch toView_bp_profitperregionsearch(JSONObject json) {
         View_bp_profitperregionsearch view_bp_profitperregionsearch = new View_bp_profitperregionsearch();
         view_bp_profitperregionsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

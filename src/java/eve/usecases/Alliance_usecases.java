@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Alliance;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Alliance_usecases {
 
     private boolean loggedin = false;
-    private BLalliance blalliance = new BLalliance();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLalliance blalliance = new BLalliance(sqlreader);
     
     public Alliance_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Alliance_usecases {
     }
     
     public boolean getAllianceExists(IAlliancePK alliancePK) throws DBException {
-        return blalliance.getEntityExists(alliancePK);
+        return blalliance.getAllianceExists(alliancePK);
     }
     
     public Alliance get_alliance_by_primarykey(IAlliancePK alliancePK) throws DBException {
@@ -73,16 +79,35 @@ public class Alliance_usecases {
         return blalliance.searchcount(alliancesearch);
     }
 
-    public void secureinsertAlliance(IAlliance alliance) throws DBException, DataException {
-        blalliance.secureinsertAlliance(alliance);
+    public void insertAlliance(IAlliance alliance) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blalliance.insertAlliance(tq, alliance);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateAlliance(IAlliance alliance) throws DBException, DataException {
-        blalliance.secureupdateAlliance(alliance);
+    public void updateAlliance(IAlliance alliance) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blalliance.updateAlliance(tq, alliance);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteAlliance(IAlliance alliance) throws DBException, DataException {
-        blalliance.securedeleteAlliance(alliance);
+    public void deleteAlliance(IAlliance alliance) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blalliance.deleteAlliance(tq, alliance);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Corporationcreator_corporation(ICorporationPK corporationCreator_corporationPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blalliance.delete4corporationCreator_corporation(tq, corporationCreator_corporationPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Corporationexecutor_corporation(ICorporationPK corporationExecutor_corporationPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blalliance.delete4corporationExecutor_corporation(tq, corporationExecutor_corporationPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

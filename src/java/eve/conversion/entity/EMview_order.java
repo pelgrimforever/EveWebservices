@@ -1,21 +1,16 @@
 /*
- * EMview_order.java
- *
  * Created on Okt 8, 2021
  * Generated on 9.9.2021 18:23
- *
  */
 package eve.conversion.entity;
 
-import data.interfaces.db.LogicEntity;
+import data.interfaces.db.View;
 import eve.conversion.entity.def.EMview_order_default;
 import eve.logicview.View_order;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * EMview_order
- * Custom transformation from ResultSet to Logic Entity
  * @author Franky Laseure
  */
 public class EMview_order extends EMview_order_default {
@@ -39,14 +34,8 @@ public class EMview_order extends EMview_order_default {
         "where not view_order.is_buy_order and wishlist.username = :username: " +
         "order by view_order.evetypename, price";
 
-    /**
-     * Map ResultSet Field values to View_order
-     * @param dbresult: Database ResultSet
-     * @return 
-     * @throws java.sql.SQLException
-     */
     @Override
-    public Object mapResultSet2Entity(ResultSet dbresult) throws SQLException {
+    public View mapResultSet2Entity(ResultSet dbresult) throws SQLException {
         View_order view_order = (View_order)super.mapResultSet2Entity(dbresult);
         try {
             view_order.setStart_system_jumps(dbresult.getInt("startsystem_jumps"));

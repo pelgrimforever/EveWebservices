@@ -1,9 +1,6 @@
 /*
- * JSONUsersettings.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONUsersettings {
@@ -41,10 +37,6 @@ public class JSONUsersettings {
         return jsonusersettingss;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IUsersettingsPK usersettingsPK) {
         JSONObject json = null;
         if(usersettingsPK!=null) {
@@ -55,10 +47,6 @@ public class JSONUsersettings {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IUsersettings usersettings) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(usersettings.getPrimaryKey()));
@@ -68,10 +56,6 @@ public class JSONUsersettings {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Usersettingssearch usersettingssearch) {
         JSONObject json = new JSONObject();
         if(usersettingssearch.used()) {
@@ -110,11 +94,6 @@ public class JSONUsersettings {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Usersettingssearch toUsersettingssearch(JSONObject json) {
         Usersettingssearch usersettingssearch = new Usersettingssearch();
         usersettingssearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

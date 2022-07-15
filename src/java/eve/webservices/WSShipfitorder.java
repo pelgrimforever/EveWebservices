@@ -2,23 +2,25 @@
  * WSShipfitorder.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 13.6.2022 18:20
  *
  */
 
 package eve.webservices;
 
+import base.restservices.RS_json_login;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.IShipfitordersearch;
 import eve.interfaces.webservice.WSIShipfitorder;
 import eve.logicentity.Shipfitorder;
 import eve.searchentity.Shipfitordersearch;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import general.exception.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.jws.WebMethod;
@@ -27,14 +29,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import eve.usecases.custom.Security_usecases;
 
 /**
  *
  * @author Franky Laseure
  */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSIShipfitorder")
-public class WSShipfitorder implements WSIShipfitorder {
+public class WSShipfitorder extends RS_json_login implements WSIShipfitorder {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     private JSONArray toJSONArray(ArrayList shipfitorders) {
         JSONArray jsonshipfitorders = new JSONArray();
         Iterator shipfitordersI = shipfitorders.iterator();
@@ -44,215 +49,225 @@ public class WSShipfitorder implements WSIShipfitorder {
         return jsonshipfitorders;
     }
 
-    /**
-     * Web service operation
-     */
     //@WebMethod(operationName = "getShipfitorders")
     @Override
     public String getShipfitorders() {
         try {
-            BLshipfitorder blshipfitorder = new BLshipfitorder();
-            ArrayList shipfitorders = blshipfitorder.getAll();
-            JSONArray jsonshipfitorders = toJSONArray(shipfitorders);
-            return jsonshipfitorders.toJSONString();
+            Shipfitorder_usecases shipfitorderusecases = new Shipfitorder_usecases(loggedin);
+            return get_all_shipfitorder(shipfitorderusecases);
         }
-        catch(DBException e) {
+        catch(CustomException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "search")
     @Override
-    public String search(String json) {
-        BLshipfitorder blshipfitorder = new BLshipfitorder();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Shipfitorder shipfitorder;
+    public String search(String jsonstring) {
         try {
-            Shipfitordersearch shipfitordersearch = JSONShipfitorder.toShipfitordersearch((JSONObject)parser.parse(json));
-            ArrayList shipfitorders = blshipfitorder.search(shipfitordersearch);
-            JSONArray jsonshipfitorders = toJSONArray(shipfitorders);
-            result = jsonshipfitorders.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Shipfitorder_usecases shipfitorderusecases = new Shipfitorder_usecases(loggedin);
+            return search_shipfitorder(shipfitorderusecases, json);
         }
-        catch(ParseException e) {
-            result = "";
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-            result = "";
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "getShipfitorder")
     @Override
-    public String getShipfitorder(String json) {
-        BLshipfitorder blshipfitorder = new BLshipfitorder();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Shipfitorder shipfitorder;
+    public String getShipfitorder(String jsonstring) {
         try {
-            ShipfitorderPK shipfitorderPK = JSONShipfitorder.toShipfitorderPK((JSONObject)parser.parse(json));
-            shipfitorder = blshipfitorder.getShipfitorder(shipfitorderPK);
-            if(shipfitorder!=null) {
-                result = JSONShipfitorder.toJSON(shipfitorder).toJSONString();
-            }
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Shipfitorder_usecases shipfitorderusecases = new Shipfitorder_usecases(loggedin);
+            return get_shipfitorder_with_primarykey(shipfitorderusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "insertShipfitorder")
     @Override
-    public void insertShipfitorder(String json) {
-        BLshipfitorder blshipfitorder = new BLshipfitorder();
-        JSONParser parser = new JSONParser();
+    public void insertShipfitorder(String jsonstring) {
         try {
-            IShipfitorder shipfitorder = JSONShipfitorder.toShipfitorder((JSONObject)parser.parse(json));
-            blshipfitorder.insertShipfitorder(shipfitorder);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Shipfitorder_usecases shipfitorderusecases = new Shipfitorder_usecases(loggedin);
+            insert_shipfitorder(shipfitorderusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "updateShipfitorder")
     @Override
-    public void updateShipfitorder(String json) {
-        BLshipfitorder blshipfitorder = new BLshipfitorder();
-        JSONParser parser = new JSONParser();
+    public void updateShipfitorder(String jsonstring) {
         try {
-            IShipfitorder shipfitorder = JSONShipfitorder.toShipfitorder((JSONObject)parser.parse(json));
-            blshipfitorder.updateShipfitorder(shipfitorder);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Shipfitorder_usecases shipfitorderusecases = new Shipfitorder_usecases(loggedin);
+            update_shipfitorder(shipfitorderusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "deleteShipfitorder")
     @Override
-    public void deleteShipfitorder(String json) {
-        BLshipfitorder blshipfitorder = new BLshipfitorder();
-        JSONParser parser = new JSONParser();
+    public void deleteShipfitorder(String jsonstring) {
         try {
-            IShipfitorder shipfitorder = JSONShipfitorder.toShipfitorder((JSONObject)parser.parse(json));
-            blshipfitorder.deleteShipfitorder(shipfitorder);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Shipfitorder_usecases shipfitorderusecases = new Shipfitorder_usecases(loggedin);
+            delete_shipfitorder(shipfitorderusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getShipfitorders4shipfit")
     @Override
-    public String getShipfitorders4shipfit(String json) {
-        BLshipfitorder blshipfitorder = new BLshipfitorder();
-        JSONParser parser = new JSONParser();
-        Shipfitorder shipfitorder;
+    public String getShipfitorders4shipfit(String jsonstring) {
         try {
-            IShipfitPK shipfitPK = JSONShipfit.toShipfitPK((JSONObject)parser.parse(json));
-            ArrayList shipfitorders = blshipfitorder.getShipfitorders4shipfit(shipfitPK);
-            JSONArray jsonshipfitorders = toJSONArray(shipfitorders);
-            return jsonshipfitorders.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Shipfitorder_usecases shipfitorderusecases = new Shipfitorder_usecases(loggedin);
+            return get_shipfitorder_with_foreignkey_shipfit(shipfitorderusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4shipfit")
     @Override
-    public void delete4shipfit(String json) {
-        BLshipfitorder blshipfitorder = new BLshipfitorder();
-        JSONParser parser = new JSONParser();
-        Shipfitorder shipfitorder;
+    public void delete4shipfit(String jsonstring) {
         try {
-            IShipfitPK shipfitPK = JSONShipfit.toShipfitPK((JSONObject)parser.parse(json));
-            blshipfitorder.delete4shipfit(shipfitPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Shipfitorder_usecases shipfitorderusecases = new Shipfitorder_usecases(loggedin);
+            delete_shipfitorder(shipfitorderusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getShipfitorders4evetype")
     @Override
-    public String getShipfitorders4evetype(String json) {
-        BLshipfitorder blshipfitorder = new BLshipfitorder();
-        JSONParser parser = new JSONParser();
-        Shipfitorder shipfitorder;
+    public String getShipfitorders4evetype(String jsonstring) {
         try {
-            IEvetypePK evetypePK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            ArrayList shipfitorders = blshipfitorder.getShipfitorders4evetype(evetypePK);
-            JSONArray jsonshipfitorders = toJSONArray(shipfitorders);
-            return jsonshipfitorders.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Shipfitorder_usecases shipfitorderusecases = new Shipfitorder_usecases(loggedin);
+            return get_shipfitorder_with_foreignkey_evetype(shipfitorderusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4evetype")
     @Override
-    public void delete4evetype(String json) {
-        BLshipfitorder blshipfitorder = new BLshipfitorder();
-        JSONParser parser = new JSONParser();
-        Shipfitorder shipfitorder;
+    public void delete4evetype(String jsonstring) {
         try {
-            IEvetypePK evetypePK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            blshipfitorder.delete4evetype(evetypePK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Shipfitorder_usecases shipfitorderusecases = new Shipfitorder_usecases(loggedin);
+            delete_shipfitorder(shipfitorderusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getShipfitorders4shipfitorderselected")
     @Override
-    public String getShipfitorders4shipfitorderselected(String json) {
-        BLshipfitorder blshipfitorder = new BLshipfitorder();
-        JSONParser parser = new JSONParser();
-        Shipfitorder shipfitorder;
+    public String getShipfitorders4shipfitorderselected(String jsonstring) {
         try {
-            String result = null;
-            IShipfitorderselectedPK shipfitorderselectedPK = JSONShipfitorderselected.toShipfitorderselectedPK((JSONObject)parser.parse(json));
-            shipfitorder = (Shipfitorder)blshipfitorder.getShipfitorderselected(shipfitorderselectedPK);
-            if(shipfitorder!=null) {
-                result = JSONShipfitorder.toJSON(shipfitorder).toJSONString();
-            }
-            return result;
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Shipfitorder_usecases shipfitorderusecases = new Shipfitorder_usecases(loggedin);
+            return get_shipfitorder_with_externalforeignkey_shipfitorderselected(shipfitorderusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
+
+    private String count_records(Shipfitorder_usecases shipfitorderusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", shipfitorderusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_shipfitorder(Shipfitorder_usecases shipfitorderusecases) throws ParseException, CustomException {
+    	return JSONShipfitorder.toJSONArray(shipfitorderusecases.get_all()).toJSONString();
+    }
+    
+    private String get_shipfitorder_with_primarykey(Shipfitorder_usecases shipfitorderusecases, JSONObject json) throws ParseException, CustomException {
+        IShipfitorderPK shipfitorderPK = (IShipfitorderPK)JSONShipfitorder.toShipfitorderPK((JSONObject)json.get("shipfitorderpk"));
+	return JSONShipfitorder.toJSON(shipfitorderusecases.get_shipfitorder_by_primarykey(shipfitorderPK)).toJSONString();
+    }
+    
+    private String get_shipfitorder_with_foreignkey_shipfit(Shipfitorder_usecases shipfitorderusecases, JSONObject json) throws ParseException, CustomException {
+        IShipfitPK shipfitPK = (IShipfitPK)JSONShipfit.toShipfitPK((JSONObject)json.get("shipfitpk"));
+        return JSONShipfitorder.toJSONArray(shipfitorderusecases.get_shipfitorder_with_foreignkey_shipfit(shipfitPK)).toJSONString();
+    }
+    
+    private String get_shipfitorder_with_foreignkey_evetype(Shipfitorder_usecases shipfitorderusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        return JSONShipfitorder.toJSONArray(shipfitorderusecases.get_shipfitorder_with_foreignkey_evetype(evetypePK)).toJSONString();
+    }
+    
+    private String get_shipfitorder_with_externalforeignkey_shipfitorderselected(Shipfitorder_usecases shipfitorderusecases, JSONObject json) throws ParseException, CustomException {
+        IShipfitorderselectedPK shipfitorderselectedPK = (IShipfitorderselectedPK)JSONShipfitorderselected.toShipfitorderselectedPK((JSONObject)json.get("shipfitorderselectedpk"));
+        return JSONShipfitorder.toJSON(shipfitorderusecases.get_shipfitorder_with_externalforeignkey_shipfitorderselected(shipfitorderselectedPK)).toJSONString();
+    }
+    
+    private String search_shipfitorder(Shipfitorder_usecases shipfitorderusecases, JSONObject json) throws ParseException, CustomException {
+        IShipfitordersearch search = (IShipfitordersearch)JSONShipfitorder.toShipfitordersearch((JSONObject)json.get("search"));
+        return JSONShipfitorder.toJSONArray(shipfitorderusecases.search_shipfitorder(search)).toJSONString();
+    }
+    
+    private String search_shipfitorder_count(Shipfitorder_usecases shipfitorderusecases, JSONObject json) throws ParseException, CustomException {
+        IShipfitordersearch shipfitordersearch = (IShipfitordersearch)JSONShipfitorder.toShipfitordersearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", shipfitorderusecases.search_shipfitorder_count(shipfitordersearch));
+        return jsonsearchcount.toJSONString();
+    }
+
+    private void insert_shipfitorder(Shipfitorder_usecases shipfitorderusecases, JSONObject json) throws ParseException, CustomException {
+        IShipfitorder shipfitorder = (IShipfitorder)JSONShipfitorder.toShipfitorder((JSONObject)json.get("shipfitorder"));
+        shipfitorderusecases.insertShipfitorder(shipfitorder);
+        setReturnstatus("OK");
+    }
+
+    private void update_shipfitorder(Shipfitorder_usecases shipfitorderusecases, JSONObject json) throws ParseException, CustomException {
+        IShipfitorder shipfitorder = (IShipfitorder)JSONShipfitorder.toShipfitorder((JSONObject)json.get("shipfitorder"));
+        shipfitorderusecases.updateShipfitorder(shipfitorder);
+        setReturnstatus("OK");
+    }
+
+    private void delete_shipfitorder(Shipfitorder_usecases shipfitorderusecases, JSONObject json) throws ParseException, CustomException {
+        IShipfitorder shipfitorder = (IShipfitorder)JSONShipfitorder.toShipfitorder((JSONObject)json.get("shipfitorder"));
+        shipfitorderusecases.deleteShipfitorder(shipfitorder);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Shipfit(Shipfitorder_usecases shipfitorderusecases, JSONObject json) throws ParseException, CustomException {
+        IShipfitPK shipfitPK = (IShipfitPK)JSONShipfit.toShipfitPK((JSONObject)json.get("shipfitpk"));
+        shipfitorderusecases.delete_all_containing_Shipfit(shipfitPK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Evetype(Shipfitorder_usecases shipfitorderusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        shipfitorderusecases.delete_all_containing_Evetype(evetypePK);
+        setReturnstatus("OK");
+    }
 
 }
 

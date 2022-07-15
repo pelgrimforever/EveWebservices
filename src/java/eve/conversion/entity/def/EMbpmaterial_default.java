@@ -1,16 +1,14 @@
 /*
- * EMalliance_default.java
- *
  * Created on Okt 8, 2021
- * Generated on 20.4.2022 10:3
- *
+ * Generated on 13.6.2022 11:21
  */
 package eve.conversion.entity.def;
 
+import data.interfaces.db.*;
 import data.gis.shape.*;
-import data.interfaces.db.LogicEntity;
 import data.json.piJson;
 import db.TableMapper;
+import eve.eveDatabaseproperties;
 import eve.entity.pk.*;
 import eve.logicentity.Bpmaterial;
 import java.sql.Date;
@@ -21,11 +19,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
- * EMbpmaterial_default
- * Maps SQL ResultSet to eve.logicentity objects
  * @author Franky Laseure
  */
-public class EMbpmaterial_default implements TableMapper {
+public class EMbpmaterial_default implements eveDatabaseproperties, TableMapper {
     
     public static final String SQLWhere1 = "bp = :bpmaterial.bp: and material = :bpmaterial.material:";
     public static final String SQLSelect1 = "select bpmaterial.* from bpmaterial where " + SQLWhere1;
@@ -45,6 +41,15 @@ public class EMbpmaterial_default implements TableMapper {
     public static final String SQLSelect4evetypeMaterial = "select * from bpmaterial where " + SQLWhereevetypeMaterial + OrderBy;
     public static final String SQLDelete4evetypeMaterial = "delete from bpmaterial where " + SQLWhereevetypeMaterial;
 
+    @Override
+    public String getDbtool() { return databasetool; }
+    
+    @Override
+    public String getConnectionpool() { return connectionpool; }
+    
+    @Override
+    public String getTable() { return "bpmaterial"; }
+
     /**
      * 
      * @return SQL where clause for one Bpmaterial (=Primarykey)
@@ -59,27 +64,14 @@ public class EMbpmaterial_default implements TableMapper {
     @Override
     public String getSQLSelect1() { return SQLSelect1; };
 
-    /**
-     * @return Select statement for Primary key, with count field as result
-     * count = 1: exists
-     * count = 0: not found
-     */
     @Override
     public String getSQLPKExcists() { return SQLSelectPKexists; };
     
-    /**
-     * 
-     * @return SQL select statement for all Bpmaterials
-     */
     @Override
     public String getSQLSelectAll() { return SQLSelectAll; };
 
-    /**
-     * Map ResultSet Field values to Bpmaterial
-     * @param dbresult: Database ResultSet
-     */
     @Override
-    public Object mapResultSet2Entity(ResultSet dbresult) throws SQLException {
+    public Entity mapResultSet2Entity(ResultSet dbresult) throws SQLException {
         BpmaterialPK bpmaterialPK = null;
         Bpmaterial bpmaterial;
         if(dbresult==null) {

@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.order_history_month;
@@ -10,7 +10,7 @@ import data.gis.shape.GISConversion;
 import data.gis.shape.piPoint;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
-import eve.usecases.Order_history_month_usecases;
+import eve.usecases.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.IOrder_history_monthsearch;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IOrder_history_monthOperation;
 import eve.logicentity.Order_history_month;
 import eve.searchentity.Order_history_monthsearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,15 +46,15 @@ import org.json.simple.parser.ParseException;
 @Path("rsorder_history_month_select")
 public class RSOrder_history_month_select extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
-            IOrder_history_monthPK order_history_monthPK;
-            IOrder_history_month order_history_month;
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Order_history_month_usecases order_history_monthusecases = new Order_history_month_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations

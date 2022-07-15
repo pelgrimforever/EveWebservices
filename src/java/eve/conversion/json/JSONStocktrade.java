@@ -1,9 +1,6 @@
 /*
- * JSONStocktrade.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONStocktrade {
@@ -41,10 +37,6 @@ public class JSONStocktrade {
         return jsonstocktrades;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IStocktradePK stocktradePK) {
         JSONObject json = null;
         if(stocktradePK!=null) {
@@ -56,10 +48,6 @@ public class JSONStocktrade {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IStocktrade stocktrade) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(stocktrade.getPrimaryKey()));
@@ -69,10 +57,6 @@ public class JSONStocktrade {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Stocktradesearch stocktradesearch) {
         JSONObject json = new JSONObject();
         if(stocktradesearch.used()) {
@@ -111,11 +95,6 @@ public class JSONStocktrade {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Stocktradesearch toStocktradesearch(JSONObject json) {
         Stocktradesearch stocktradesearch = new Stocktradesearch();
         stocktradesearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

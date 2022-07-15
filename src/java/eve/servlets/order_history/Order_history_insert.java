@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.order_history;
@@ -61,7 +61,7 @@ public class Order_history_insert extends SecurityDataServlet {
 
     private void insert_order_history(Order_history_usecases order_historyusecases) throws CustomException {
         IOrder_history order_history = (IOrder_history)parser.getJavaObject("order_history");
-        order_historyusecases.secureinsertOrder_history(order_history);
+        order_historyusecases.insertOrder_history(order_history);
     }
     
     @Override

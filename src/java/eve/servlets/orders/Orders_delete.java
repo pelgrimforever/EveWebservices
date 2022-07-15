@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.orders;
@@ -61,7 +61,7 @@ public class Orders_delete extends SecurityDataServlet {
 
     private void delete_orders(Orders_usecases ordersusecases) throws CustomException {
         IOrders orders = (IOrders)parser.getJavaObject("orders");
-        ordersusecases.securedeleteOrders(orders);
+        ordersusecases.deleteOrders(orders);
     }
     
     @Override

@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.corporation;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.ICorporationOperation;
 import eve.logicentity.Corporation;
 import eve.searchentity.Corporationsearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,19 +46,30 @@ import org.json.simple.parser.ParseException;
 @Path("rscorporation_delete")
 public class RSCorporation_delete extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Corporation_usecases corporationusecases = new Corporation_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operation) {
                 case ICorporationOperation.DELETE_CORPORATION:
+                    delete_corporation(corporationusecases, json);
+                    break;
+                case ICorporationOperation.DELETE_Station:
+                    delete_corporation(corporationusecases, json);
+                    break;
+                case ICorporationOperation.DELETE_Faction:
+                    delete_corporation(corporationusecases, json);
+                    break;
+                case ICorporationOperation.DELETE_Alliance:
                     delete_corporation(corporationusecases, json);
                     break;
 //Custom code, do not change this line
@@ -80,8 +89,27 @@ public class RSCorporation_delete extends RS_json_login {
 
     private void delete_corporation(Corporation_usecases corporationusecases, JSONObject json) throws ParseException, CustomException {
         ICorporation corporation = (ICorporation)JSONCorporation.toCorporation((JSONObject)json.get("corporation"));
-        corporationusecases.securedeleteCorporation(corporation);
+        corporationusecases.deleteCorporation(corporation);
         setReturnstatus("OK");
     }
+
+    private void delete_all_containing_Station(Corporation_usecases corporationusecases, JSONObject json) throws ParseException, CustomException {
+        IStationPK stationPK = (IStationPK)JSONStation.toStationPK((JSONObject)json.get("stationpk"));
+        corporationusecases.delete_all_containing_Station(stationPK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Faction(Corporation_usecases corporationusecases, JSONObject json) throws ParseException, CustomException {
+        IFactionPK factionPK = (IFactionPK)JSONFaction.toFactionPK((JSONObject)json.get("factionpk"));
+        corporationusecases.delete_all_containing_Faction(factionPK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Alliance(Corporation_usecases corporationusecases, JSONObject json) throws ParseException, CustomException {
+        IAlliancePK alliancePK = (IAlliancePK)JSONAlliance.toAlliancePK((JSONObject)json.get("alliancepk"));
+        corporationusecases.delete_all_containing_Alliance(alliancePK);
+        setReturnstatus("OK");
+    }
+
 }
 

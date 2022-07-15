@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Stock;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Stock_usecases {
 
     private boolean loggedin = false;
-    private BLstock blstock = new BLstock();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLstock blstock = new BLstock(sqlreader);
     
     public Stock_usecases() {
         this(false);
@@ -40,21 +46,27 @@ public class Stock_usecases {
 //Custom code, do not change this line
 //add here custom operations
     public void add_to_stock(IStock stock) throws DBException, DataException {
-        blstock.add_to_Stock(stock);
+        SQLTqueue transactionqueue = new SQLTqueue();
+        blstock.add_to_Stock(transactionqueue, stock);
+        sqlwriter.Commit2DB(transactionqueue);
     }
 
     public void remove_from_stock(IStock stock) throws DBException, DataException {
-        blstock.remove_from_stock(stock);
-        blstock.Commit2DB();
+        SQLTqueue transactionqueue = new SQLTqueue();
+        blstock.remove_from_stock(transactionqueue, stock);
+        sqlwriter.Commit2DB(transactionqueue);
     }
     
     public void sell_from_Stocktrade(IStocktrade stocktrade) throws DBException, DataException {
-        blstock.sell_from_Stocktrade(stocktrade);
-        blstock.Commit2DB();
+        SQLTqueue transactionqueue = new SQLTqueue();
+        blstock.sell_from_Stocktrade(transactionqueue, stocktrade);
+        sqlwriter.Commit2DB(transactionqueue);
     }
     
     public void sell_all_Stock_from_system(String username, long system) throws DBException, DataException {
-        blstock.sellall4System(username, system);
+        SQLTqueue transactionqueue = new SQLTqueue();
+        blstock.sellall4System(transactionqueue, username, system);
+        sqlwriter.Commit2DB(transactionqueue);
     }
 //Custom code, do not change this line   
 
@@ -67,7 +79,7 @@ public class Stock_usecases {
     }
     
     public boolean getStockExists(IStockPK stockPK) throws DBException {
-        return blstock.getEntityExists(stockPK);
+        return blstock.getStockExists(stockPK);
     }
     
     public Stock get_stock_by_primarykey(IStockPK stockPK) throws DBException {
@@ -90,16 +102,29 @@ public class Stock_usecases {
         return blstock.searchcount(stocksearch);
     }
 
-    public void secureinsertStock(IStock stock) throws DBException, DataException {
-        blstock.secureinsertStock(stock);
+    public void insertStock(IStock stock) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blstock.insertStock(tq, stock);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateStock(IStock stock) throws DBException, DataException {
-        blstock.secureupdateStock(stock);
+    public void updateStock(IStock stock) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blstock.updateStock(tq, stock);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteStock(IStock stock) throws DBException, DataException {
-        blstock.securedeleteStock(stock);
+    public void deleteStock(IStock stock) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blstock.deleteStock(tq, stock);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Evetype(IEvetypePK evetypePK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blstock.delete4evetype(tq, evetypePK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

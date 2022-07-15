@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Order_history;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Order_history_usecases {
 
     private boolean loggedin = false;
-    private BLorder_history blorder_history = new BLorder_history();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLorder_history blorder_history = new BLorder_history(sqlreader);
     
     public Order_history_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Order_history_usecases {
     }
     
     public boolean getOrder_historyExists(IOrder_historyPK order_historyPK) throws DBException {
-        return blorder_history.getEntityExists(order_historyPK);
+        return blorder_history.getOrder_historyExists(order_historyPK);
     }
     
     public Order_history get_order_history_by_primarykey(IOrder_historyPK order_historyPK) throws DBException {
@@ -73,16 +79,35 @@ public class Order_history_usecases {
         return blorder_history.searchcount(order_historysearch);
     }
 
-    public void secureinsertOrder_history(IOrder_history order_history) throws DBException, DataException {
-        blorder_history.secureinsertOrder_history(order_history);
+    public void insertOrder_history(IOrder_history order_history) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blorder_history.insertOrder_history(tq, order_history);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateOrder_history(IOrder_history order_history) throws DBException, DataException {
-        blorder_history.secureupdateOrder_history(order_history);
+    public void updateOrder_history(IOrder_history order_history) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blorder_history.updateOrder_history(tq, order_history);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteOrder_history(IOrder_history order_history) throws DBException, DataException {
-        blorder_history.securedeleteOrder_history(order_history);
+    public void deleteOrder_history(IOrder_history order_history) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blorder_history.deleteOrder_history(tq, order_history);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Evetype(IEvetypePK evetypePK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blorder_history.delete4evetype(tq, evetypePK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Region(IRegionPK regionPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blorder_history.delete4region(tq, regionPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

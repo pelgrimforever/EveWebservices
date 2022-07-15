@@ -1,9 +1,6 @@
 /*
- * EMconstellation_neighbour.java
- *
  * Created on Okt 8, 2021
  * Generated on 9.9.2021 15:35
- *
  */
 package eve.conversion.entity;
 
@@ -14,8 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * EMconstellation_neighbour
- * Custom transformation from ResultSet to Logic Entity
  * @author Franky Laseure
  */
 public class EMconstellation_neighbour extends EMconstellation_neighbour_default {
@@ -31,12 +26,6 @@ public class EMconstellation_neighbour extends EMconstellation_neighbour_default
         "where sg.isconstellationborder and s1.constellation <> s2.constellation " +
         "group by s1.constellation, s2.constellation";
 
-    /**
-     * Map ResultSet Field values to Constellation_neighbour
-     * @param dbresult: Database ResultSet
-     * @return 
-     * @throws java.sql.SQLException
-     */
     @Override
     public LogicEntity mapResultSet2Entity(ResultSet dbresult) throws SQLException {
         Constellation_neighbour constellation_neighbour = (Constellation_neighbour)super.mapResultSet2Entity(dbresult);

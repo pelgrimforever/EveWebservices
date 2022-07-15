@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Station;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Station_usecases {
 
     private boolean loggedin = false;
-    private BLstation blstation = new BLstation();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLstation blstation = new BLstation(sqlreader);
     
     public Station_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Station_usecases {
     }
     
     public boolean getStationExists(IStationPK stationPK) throws DBException {
-        return blstation.getEntityExists(stationPK);
+        return blstation.getStationExists(stationPK);
     }
     
     public Station get_station_by_primarykey(IStationPK stationPK) throws DBException {
@@ -81,16 +87,41 @@ public class Station_usecases {
         return blstation.searchcount(stationsearch);
     }
 
-    public void secureinsertStation(IStation station) throws DBException, DataException {
-        blstation.secureinsertStation(station);
+    public void insertStation(IStation station) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blstation.insertStation(tq, station);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateStation(IStation station) throws DBException, DataException {
-        blstation.secureupdateStation(station);
+    public void updateStation(IStation station) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blstation.updateStation(tq, station);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteStation(IStation station) throws DBException, DataException {
-        blstation.securedeleteStation(station);
+    public void deleteStation(IStation station) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blstation.deleteStation(tq, station);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Race(IRacePK racePK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blstation.delete4race(tq, racePK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Evetype(IEvetypePK evetypePK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blstation.delete4evetype(tq, evetypePK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_System(ISystemPK systemPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blstation.delete4system(tq, systemPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

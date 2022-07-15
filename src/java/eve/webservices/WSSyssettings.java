@@ -2,23 +2,25 @@
  * WSSyssettings.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 13.6.2022 18:20
  *
  */
 
 package eve.webservices;
 
+import base.restservices.RS_json_login;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.ISyssettingssearch;
 import eve.interfaces.webservice.WSISyssettings;
 import eve.logicentity.Syssettings;
 import eve.searchentity.Syssettingssearch;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import general.exception.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.jws.WebMethod;
@@ -27,14 +29,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import eve.usecases.custom.Security_usecases;
 
 /**
  *
  * @author Franky Laseure
  */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSISyssettings")
-public class WSSyssettings implements WSISyssettings {
+public class WSSyssettings extends RS_json_login implements WSISyssettings {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     private JSONArray toJSONArray(ArrayList syssettingss) {
         JSONArray jsonsyssettingss = new JSONArray();
         Iterator syssettingssI = syssettingss.iterator();
@@ -44,115 +49,130 @@ public class WSSyssettings implements WSISyssettings {
         return jsonsyssettingss;
     }
 
-    /**
-     * Web service operation
-     */
     //@WebMethod(operationName = "getSyssettingss")
     @Override
     public String getSyssettingss() {
         try {
-            BLsyssettings blsyssettings = new BLsyssettings();
-            ArrayList syssettingss = blsyssettings.getAll();
-            JSONArray jsonsyssettingss = toJSONArray(syssettingss);
-            return jsonsyssettingss.toJSONString();
+            Syssettings_usecases syssettingsusecases = new Syssettings_usecases(loggedin);
+            return get_all_syssettings(syssettingsusecases);
         }
-        catch(DBException e) {
+        catch(CustomException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "search")
     @Override
-    public String search(String json) {
-        BLsyssettings blsyssettings = new BLsyssettings();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Syssettings syssettings;
+    public String search(String jsonstring) {
         try {
-            Syssettingssearch syssettingssearch = JSONSyssettings.toSyssettingssearch((JSONObject)parser.parse(json));
-            ArrayList syssettingss = blsyssettings.search(syssettingssearch);
-            JSONArray jsonsyssettingss = toJSONArray(syssettingss);
-            result = jsonsyssettingss.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Syssettings_usecases syssettingsusecases = new Syssettings_usecases(loggedin);
+            return search_syssettings(syssettingsusecases, json);
         }
-        catch(ParseException e) {
-            result = "";
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-            result = "";
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "getSyssettings")
     @Override
-    public String getSyssettings(String json) {
-        BLsyssettings blsyssettings = new BLsyssettings();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Syssettings syssettings;
+    public String getSyssettings(String jsonstring) {
         try {
-            SyssettingsPK syssettingsPK = JSONSyssettings.toSyssettingsPK((JSONObject)parser.parse(json));
-            syssettings = blsyssettings.getSyssettings(syssettingsPK);
-            if(syssettings!=null) {
-                result = JSONSyssettings.toJSON(syssettings).toJSONString();
-            }
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Syssettings_usecases syssettingsusecases = new Syssettings_usecases(loggedin);
+            return get_syssettings_with_primarykey(syssettingsusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "insertSyssettings")
     @Override
-    public void insertSyssettings(String json) {
-        BLsyssettings blsyssettings = new BLsyssettings();
-        JSONParser parser = new JSONParser();
+    public void insertSyssettings(String jsonstring) {
         try {
-            ISyssettings syssettings = JSONSyssettings.toSyssettings((JSONObject)parser.parse(json));
-            blsyssettings.insertSyssettings(syssettings);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Syssettings_usecases syssettingsusecases = new Syssettings_usecases(loggedin);
+            insert_syssettings(syssettingsusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "updateSyssettings")
     @Override
-    public void updateSyssettings(String json) {
-        BLsyssettings blsyssettings = new BLsyssettings();
-        JSONParser parser = new JSONParser();
+    public void updateSyssettings(String jsonstring) {
         try {
-            ISyssettings syssettings = JSONSyssettings.toSyssettings((JSONObject)parser.parse(json));
-            blsyssettings.updateSyssettings(syssettings);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Syssettings_usecases syssettingsusecases = new Syssettings_usecases(loggedin);
+            update_syssettings(syssettingsusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "deleteSyssettings")
     @Override
-    public void deleteSyssettings(String json) {
-        BLsyssettings blsyssettings = new BLsyssettings();
-        JSONParser parser = new JSONParser();
+    public void deleteSyssettings(String jsonstring) {
         try {
-            ISyssettings syssettings = JSONSyssettings.toSyssettings((JSONObject)parser.parse(json));
-            blsyssettings.deleteSyssettings(syssettings);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Syssettings_usecases syssettingsusecases = new Syssettings_usecases(loggedin);
+            delete_syssettings(syssettingsusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
+
+    private String count_records(Syssettings_usecases syssettingsusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", syssettingsusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_syssettings(Syssettings_usecases syssettingsusecases) throws ParseException, CustomException {
+    	return JSONSyssettings.toJSONArray(syssettingsusecases.get_all()).toJSONString();
+    }
+    
+    private String get_syssettings_with_primarykey(Syssettings_usecases syssettingsusecases, JSONObject json) throws ParseException, CustomException {
+        ISyssettingsPK syssettingsPK = (ISyssettingsPK)JSONSyssettings.toSyssettingsPK((JSONObject)json.get("syssettingspk"));
+	return JSONSyssettings.toJSON(syssettingsusecases.get_syssettings_by_primarykey(syssettingsPK)).toJSONString();
+    }
+    
+    private String search_syssettings(Syssettings_usecases syssettingsusecases, JSONObject json) throws ParseException, CustomException {
+        ISyssettingssearch search = (ISyssettingssearch)JSONSyssettings.toSyssettingssearch((JSONObject)json.get("search"));
+        return JSONSyssettings.toJSONArray(syssettingsusecases.search_syssettings(search)).toJSONString();
+    }
+    
+    private String search_syssettings_count(Syssettings_usecases syssettingsusecases, JSONObject json) throws ParseException, CustomException {
+        ISyssettingssearch syssettingssearch = (ISyssettingssearch)JSONSyssettings.toSyssettingssearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", syssettingsusecases.search_syssettings_count(syssettingssearch));
+        return jsonsearchcount.toJSONString();
+    }
+
+    private void insert_syssettings(Syssettings_usecases syssettingsusecases, JSONObject json) throws ParseException, CustomException {
+        ISyssettings syssettings = (ISyssettings)JSONSyssettings.toSyssettings((JSONObject)json.get("syssettings"));
+        syssettingsusecases.insertSyssettings(syssettings);
+        setReturnstatus("OK");
+    }
+
+    private void update_syssettings(Syssettings_usecases syssettingsusecases, JSONObject json) throws ParseException, CustomException {
+        ISyssettings syssettings = (ISyssettings)JSONSyssettings.toSyssettings((JSONObject)json.get("syssettings"));
+        syssettingsusecases.updateSyssettings(syssettings);
+        setReturnstatus("OK");
+    }
+
+    private void delete_syssettings(Syssettings_usecases syssettingsusecases, JSONObject json) throws ParseException, CustomException {
+        ISyssettings syssettings = (ISyssettings)JSONSyssettings.toSyssettings((JSONObject)json.get("syssettings"));
+        syssettingsusecases.deleteSyssettings(syssettings);
+        setReturnstatus("OK");
+    }
 
 }
 

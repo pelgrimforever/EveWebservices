@@ -1,216 +1,142 @@
 /*
- * Bsettings.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 11.4.2022 9:13
- *
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-import db.SQLMapperFactory;
-import db.SQLparameters;
-import data.gis.shape.*;
-import data.json.piJson;
-import data.json.psqlJsonobject;
-import db.SQLMapper_pgsql;
-import data.interfaces.db.Filedata;
-import eve.BusinessObject.Logic.*;
-import eve.conversion.json.JSONSettings;
+import db.*;
+import data.interfaces.db.*;
 import eve.conversion.entity.EMsettings;
+import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.ISettingssearch;
 import eve.logicentity.Settings;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import org.postgresql.geometric.PGpoint;
-import org.postgis.PGgeometry;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
- * Business Entity class Bsettings
- *
- * Superclass for manipulating data- and database objects
- * for Entity Settings and direct related data
- * This class is overwritten each time the code generator runs
- * and is not meant to be changed
- *
  * @author Franky Laseure
  */
-public abstract class Bsettings extends BLtable {
+public abstract class Bsettings extends TableBusinessrules {
 
-    /**
-     * Constructor, sets Settings as default Entity
-     */
-    public Bsettings() {
-        super(new Settings(), new EMsettings());
+    public Bsettings(SQLreader sqlreader) {
+        super(new TableIO(sqlreader, new EMsettings()));
     }
 
-    /**
-     * Constructor, sets Settings as default Entity
-     * sets transaction queue from given GeneralEntityObject implementation
-     * all transactions will commit at same time
-     * @param transactionobject: GeneralEntityObjects that holds the transaction queue
-     */
-    public Bsettings(BLtable transactionobject) {
-        super(transactionobject, new Settings(), new EMsettings());
+    public Bsettings(TableBusinessrules businessrules) {
+        super(new TableIO(businessrules.getTableio(), new EMsettings()));
+        this.tableio.setAuthenticated(tableio!=null && tableio.isAuthenticated());
     }
 
-    /**
-     * create new empty Settings object
-     * @return empty ISettings
-     */
     public ISettings newSettings() {
     	return new Settings();
     }
     
-    /**
-     * create new empty Settings object
-     * create new primary key with given parameters
-     * @param name primary key field
-     * @return ISettings with primary key
-     */
     public ISettings newSettings(java.lang.String name) {
         return new Settings(name);
     }
 
-    /**
-     * create new empty Settings object with given primary key
-     * @param settingsPK: primary key for Settings
-     * @return ISettings with primary key
-     */
     public ISettings newSettings(ISettingsPK settingsPK) {
         return new Settings((SettingsPK)settingsPK);
     }
 
-    /**
-     * create new empty primary key
-     * @return empty SettingsPK
-     */
     public ISettingsPK newSettingsPK() {
         return new SettingsPK();
     }
 
-    /**
-     * create new primary key with given parameters
-     * @param name primary key field
-     * @return new ISettingsPK
-     */
     public ISettingsPK newSettingsPK(java.lang.String name) {
         return new SettingsPK(name);
     }
 
-    /**
-     * get all Settings objects from database
-     * @return ArrayList of Settings objects
-     * @throws DBException
-     */
     public ArrayList<Settings> getSettingss() throws DBException {
-        return (ArrayList<Settings>)super.getEntities(EMsettings.SQLSelectAll);
+        return (ArrayList<Settings>)tableio.getEntities(EMsettings.SQLSelectAll);
     }
 
-    /**
-     * search Settings for primary key
-     * @param settingsPK: Settings primary key
-     * @return Settings object
-     * @throws DBException
-     */
     public Settings getSettings(ISettingsPK settingsPK) throws DBException {
-        return (Settings)super.getEntity((SettingsPK)settingsPK);
+        return (Settings)tableio.getEntity((SettingsPK)settingsPK);
     }
 
-    /**
-     * search settings with ISettingssearch parameters
-     * @param search ISettingssearch
-     * @return ArrayList of Settings
-     * @throws DBException 
-     */
     public ArrayList<Settings> searchsettingss(ISettingssearch search) throws DBException {
-        return (ArrayList<Settings>)this.search(search);
+        return (ArrayList<Settings>)tableio.search(search);
     }
 
-    /**
-     * search settings with ISettingssearch parameters, order by orderby sql clause
-     * @param search ISettingssearch
-     * @param orderby sql order by string
-     * @return ArrayList of Settings
-     * @throws DBException 
-     */
     public ArrayList<Settings> searchsettingss(ISettingssearch search, String orderby) throws DBException {
-        return (ArrayList<Settings>)this.search(search, orderby);
+        return (ArrayList<Settings>)tableio.search(search, orderby);
     }
 
-    /**
-     * Search settings in database for settingsPK:
-     * @param settingsPK: Settings Primary Key, only valid for the initialized Entity
-     * @return true if found in database
-     * @throws DBException
-     */
     public boolean getSettingsExists(ISettingsPK settingsPK) throws DBException {
-        return super.getEntityExists((SettingsPK)settingsPK);
+        return tableio.getEntityExists((SettingsPK)settingsPK);
     }
 
-    /**
-     * try to insert Settings in database
-     * @param settings Settings object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertSettings(ISettings settings) throws DBException, DataException {
-        super.insertEntity(settings);
+    public Settings getEntity(String sql) throws DBException {
+        return (Settings)tableio.getEntity(sql);
+    }
+    
+    public Settings getEntity(String sql, SQLparameters parameters) throws DBException {
+        return (Settings)tableio.getEntity(sql, parameters);
+    }
+    
+    public ArrayList<Settings> getEntities(String sql) throws DBException {
+        return tableio.getEntities(sql);
+    }
+    
+    public ArrayList<Settings> getEntities(String sql, SQLparameters parameters) throws DBException {
+        return tableio.getEntities(sql, parameters);
     }
 
-    /**
-     * check if SettingsPK exists
-     * insert if not, update if found
-     * do not commit transaction
-     * @param settings Settings object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertupdateSettings(ISettings settings) throws DBException, DataException {
+    public long count() throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+    
+    public long count(String sql, SQLparameters parameters) throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+
+    public ArrayList<Settings> search(Tablesearcher search) throws DBException {
+        return tableio.search(search);
+    }
+
+    public ArrayList<Settings> search(Tablesearcher search, String orderby) throws DBException {
+        return tableio.search(search, orderby);
+    }
+
+    public long searchcount(Tablesearcher search) throws DBException {
+        return tableio.searchcount(search);
+    }
+
+    public void insertSettings(SQLTqueue transactionqueue, ISettings settings) throws DBException, DataException {
+        tableio.insertEntity(transactionqueue, settings);
+    }
+
+    public void insertupdateSettings(SQLTqueue transactionqueue, ISettings settings) throws DBException, DataException {
+    	checkDATA(settings);
         if(this.getSettingsExists(settings.getPrimaryKey())) {
-            super.updateEntity(settings);
+            tableio.updateEntity(transactionqueue, settings);
         } else {
-            super.insertEntity(settings);
+            tableio.insertEntity(transactionqueue, settings);
         }
     }
 
-    /**
-     * try to update Settings in database
-     * @param settings Settings object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void updateSettings(ISettings settings) throws DBException, DataException {
-        super.updateEntity(settings);
+    public void updateSettings(SQLTqueue transactionqueue, ISettings settings) throws DBException, DataException {
+    	checkDATA(settings);
+        tableio.updateEntity(transactionqueue, settings);
     }
 
-    /**
-     * try to delete Settings in database
-     * @param settings Settings object
-     * @throws DBException
-     */
-    public void deleteSettings(ISettings settings) throws DBException {
-        cascadedeleteSettings(settings.getPrimaryKey());
-        super.deleteEntity(settings);
+    public void deleteSettings(SQLTqueue transactionqueue, ISettings settings) throws DBException {
+        cascadedeleteSettings(transactionqueue, settings.getPrimaryKey());
+        tableio.deleteEntity(transactionqueue, settings);
     }
 
-    /**
-     * check data rules in Settings, throw DataException with customized message if rules do not apply
-     * @param settings Settings object
-     * @throws DataException
-     * @throws DBException
-     */
-    public void checkDATA(ISettings settings) throws DataException, DBException {
+    private void checkDATA(ISettings settings) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //Primary key
         if(settings.getValue()!=null && settings.getValue().length()>ISettings.SIZE_VALUE) {
@@ -225,31 +151,17 @@ public abstract class Bsettings extends BLtable {
      * delete all records in tables where settingsPK is used in a primary key
      * @param settingsPK: Settings primary key
      */
-    public void cascadedeleteSettings(ISettingsPK settingsPK) {
+    public void cascadedeleteSettings(SQLTqueue transactionqueue, ISettingsPK settingsPK) {
         BLusersettings blusersettings = new BLusersettings(this);
-        blusersettings.delete4settings(settingsPK);
+        blusersettings.delete4settings(transactionqueue, settingsPK);
     }
 
-    /**
-     * @param usersettingsPK: parent Usersettings for child object Settings Entity
-     * @return child Settings Entity object
-     * @throws CustomException
-     */
     public Settings getUsersettings(IUsersettingsPK usersettingsPK) throws CustomException {
         SettingsPK settingsPK = new SettingsPK(usersettingsPK.getName());
         return this.getSettings(settingsPK);
     }
 
 
-    /**
-     * get all Settings objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @param sortlist sql sort string
-     * @param sortoperator asc/desc
-     * @return ArrayList of Settings objects
-     * @throws DBException
-     */
     public ArrayList<Settings> getSettingss(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
         StringBuilder sql = new StringBuilder(EMsettings.SQLSelect);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
@@ -264,16 +176,10 @@ public abstract class Bsettings extends BLtable {
         if(sortlist.length()>0) {
             sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return (ArrayList<Settings>)super.getEntities(sql.toString(), sqlparameters);
+        return (ArrayList<Settings>)tableio.getEntities(sql.toString(), sqlparameters);
     }
 
-    /**
-     * delete all Settings objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @throws DBException
-     */
-    public void delSettings(SQLparameters sqlparameters, String andoroperator) throws DBException {
+    public void delSettings(SQLTqueue transactionqueue, SQLparameters sqlparameters, String andoroperator) throws DBException {
         StringBuilder sql = new StringBuilder("delete from ").append(Settings.table);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
         int l = parameters.size();
@@ -284,7 +190,7 @@ public abstract class Bsettings extends BLtable {
                 if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(sql.toString(), sqlparameters);
+        tableio.addStatement(transactionqueue, sql.toString(), sqlparameters);
     }
 
 

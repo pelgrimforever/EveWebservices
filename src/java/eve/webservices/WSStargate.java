@@ -2,23 +2,25 @@
  * WSStargate.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 13.6.2022 18:20
  *
  */
 
 package eve.webservices;
 
+import base.restservices.RS_json_login;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.IStargatesearch;
 import eve.interfaces.webservice.WSIStargate;
 import eve.logicentity.Stargate;
 import eve.searchentity.Stargatesearch;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import general.exception.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.jws.WebMethod;
@@ -27,14 +29,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import eve.usecases.custom.Security_usecases;
 
 /**
  *
  * @author Franky Laseure
  */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSIStargate")
-public class WSStargate implements WSIStargate {
+public class WSStargate extends RS_json_login implements WSIStargate {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     private JSONArray toJSONArray(ArrayList stargates) {
         JSONArray jsonstargates = new JSONArray();
         Iterator stargatesI = stargates.iterator();
@@ -44,189 +49,206 @@ public class WSStargate implements WSIStargate {
         return jsonstargates;
     }
 
-    /**
-     * Web service operation
-     */
     //@WebMethod(operationName = "getStargates")
     @Override
     public String getStargates() {
         try {
-            BLstargate blstargate = new BLstargate();
-            ArrayList stargates = blstargate.getAll();
-            JSONArray jsonstargates = toJSONArray(stargates);
-            return jsonstargates.toJSONString();
+            Stargate_usecases stargateusecases = new Stargate_usecases(loggedin);
+            return get_all_stargate(stargateusecases);
         }
-        catch(DBException e) {
+        catch(CustomException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "search")
     @Override
-    public String search(String json) {
-        BLstargate blstargate = new BLstargate();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Stargate stargate;
+    public String search(String jsonstring) {
         try {
-            Stargatesearch stargatesearch = JSONStargate.toStargatesearch((JSONObject)parser.parse(json));
-            ArrayList stargates = blstargate.search(stargatesearch);
-            JSONArray jsonstargates = toJSONArray(stargates);
-            result = jsonstargates.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Stargate_usecases stargateusecases = new Stargate_usecases(loggedin);
+            return search_stargate(stargateusecases, json);
         }
-        catch(ParseException e) {
-            result = "";
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-            result = "";
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "getStargate")
     @Override
-    public String getStargate(String json) {
-        BLstargate blstargate = new BLstargate();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Stargate stargate;
+    public String getStargate(String jsonstring) {
         try {
-            StargatePK stargatePK = JSONStargate.toStargatePK((JSONObject)parser.parse(json));
-            stargate = blstargate.getStargate(stargatePK);
-            if(stargate!=null) {
-                result = JSONStargate.toJSON(stargate).toJSONString();
-            }
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Stargate_usecases stargateusecases = new Stargate_usecases(loggedin);
+            return get_stargate_with_primarykey(stargateusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "insertStargate")
     @Override
-    public void insertStargate(String json) {
-        BLstargate blstargate = new BLstargate();
-        JSONParser parser = new JSONParser();
+    public void insertStargate(String jsonstring) {
         try {
-            IStargate stargate = JSONStargate.toStargate((JSONObject)parser.parse(json));
-            blstargate.insertStargate(stargate);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Stargate_usecases stargateusecases = new Stargate_usecases(loggedin);
+            insert_stargate(stargateusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "updateStargate")
     @Override
-    public void updateStargate(String json) {
-        BLstargate blstargate = new BLstargate();
-        JSONParser parser = new JSONParser();
+    public void updateStargate(String jsonstring) {
         try {
-            IStargate stargate = JSONStargate.toStargate((JSONObject)parser.parse(json));
-            blstargate.updateStargate(stargate);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Stargate_usecases stargateusecases = new Stargate_usecases(loggedin);
+            update_stargate(stargateusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "deleteStargate")
     @Override
-    public void deleteStargate(String json) {
-        BLstargate blstargate = new BLstargate();
-        JSONParser parser = new JSONParser();
+    public void deleteStargate(String jsonstring) {
         try {
-            IStargate stargate = JSONStargate.toStargate((JSONObject)parser.parse(json));
-            blstargate.deleteStargate(stargate);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Stargate_usecases stargateusecases = new Stargate_usecases(loggedin);
+            delete_stargate(stargateusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getStargates4systemSystem")
     @Override
-    public String getStargates4systemSystem(String json) {
-        BLstargate blstargate = new BLstargate();
-        JSONParser parser = new JSONParser();
-        Stargate stargate;
+    public String getStargates4systemSystem(String jsonstring) {
         try {
-            ISystemPK systemSystemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            ArrayList stargates = blstargate.getStargates4systemSystem(systemSystemPK);
-            JSONArray jsonstargates = toJSONArray(stargates);
-            return jsonstargates.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Stargate_usecases stargateusecases = new Stargate_usecases(loggedin);
+            return get_stargate_with_foreignkey_systemSystem(stargateusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4systemSystem")
     @Override
-    public void delete4systemSystem(String json) {
-        BLstargate blstargate = new BLstargate();
-        JSONParser parser = new JSONParser();
-        Stargate stargate;
+    public void delete4systemSystem(String jsonstring) {
         try {
-            ISystemPK systemSystemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blstargate.delete4systemSystem(systemSystemPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Stargate_usecases stargateusecases = new Stargate_usecases(loggedin);
+            delete_stargate(stargateusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getStargates4systemTo_system")
     @Override
-    public String getStargates4systemTo_system(String json) {
-        BLstargate blstargate = new BLstargate();
-        JSONParser parser = new JSONParser();
-        Stargate stargate;
+    public String getStargates4systemTo_system(String jsonstring) {
         try {
-            ISystemPK systemTo_systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            ArrayList stargates = blstargate.getStargates4systemTo_system(systemTo_systemPK);
-            JSONArray jsonstargates = toJSONArray(stargates);
-            return jsonstargates.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Stargate_usecases stargateusecases = new Stargate_usecases(loggedin);
+            return get_stargate_with_foreignkey_systemTo_system(stargateusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4systemTo_system")
     @Override
-    public void delete4systemTo_system(String json) {
-        BLstargate blstargate = new BLstargate();
-        JSONParser parser = new JSONParser();
-        Stargate stargate;
+    public void delete4systemTo_system(String jsonstring) {
         try {
-            ISystemPK systemTo_systemPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blstargate.delete4systemTo_system(systemTo_systemPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Stargate_usecases stargateusecases = new Stargate_usecases(loggedin);
+            delete_stargate(stargateusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
+
+    private String count_records(Stargate_usecases stargateusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", stargateusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_stargate(Stargate_usecases stargateusecases) throws ParseException, CustomException {
+    	return JSONStargate.toJSONArray(stargateusecases.get_all()).toJSONString();
+    }
+    
+    private String get_stargate_with_primarykey(Stargate_usecases stargateusecases, JSONObject json) throws ParseException, CustomException {
+        IStargatePK stargatePK = (IStargatePK)JSONStargate.toStargatePK((JSONObject)json.get("stargatepk"));
+	return JSONStargate.toJSON(stargateusecases.get_stargate_by_primarykey(stargatePK)).toJSONString();
+    }
+    
+    private String get_stargate_with_foreignkey_systemSystem(Stargate_usecases stargateusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemSystemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        return JSONStargate.toJSONArray(stargateusecases.get_stargate_with_foreignkey_systemSystem(systemSystemPK)).toJSONString();
+    }
+    
+    private String get_stargate_with_foreignkey_systemTo_system(Stargate_usecases stargateusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemTo_systemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        return JSONStargate.toJSONArray(stargateusecases.get_stargate_with_foreignkey_systemTo_system(systemTo_systemPK)).toJSONString();
+    }
+    
+    private String search_stargate(Stargate_usecases stargateusecases, JSONObject json) throws ParseException, CustomException {
+        IStargatesearch search = (IStargatesearch)JSONStargate.toStargatesearch((JSONObject)json.get("search"));
+        return JSONStargate.toJSONArray(stargateusecases.search_stargate(search)).toJSONString();
+    }
+    
+    private String search_stargate_count(Stargate_usecases stargateusecases, JSONObject json) throws ParseException, CustomException {
+        IStargatesearch stargatesearch = (IStargatesearch)JSONStargate.toStargatesearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", stargateusecases.search_stargate_count(stargatesearch));
+        return jsonsearchcount.toJSONString();
+    }
+
+    private void insert_stargate(Stargate_usecases stargateusecases, JSONObject json) throws ParseException, CustomException {
+        IStargate stargate = (IStargate)JSONStargate.toStargate((JSONObject)json.get("stargate"));
+        stargateusecases.insertStargate(stargate);
+        setReturnstatus("OK");
+    }
+
+    private void update_stargate(Stargate_usecases stargateusecases, JSONObject json) throws ParseException, CustomException {
+        IStargate stargate = (IStargate)JSONStargate.toStargate((JSONObject)json.get("stargate"));
+        stargateusecases.updateStargate(stargate);
+        setReturnstatus("OK");
+    }
+
+    private void delete_stargate(Stargate_usecases stargateusecases, JSONObject json) throws ParseException, CustomException {
+        IStargate stargate = (IStargate)JSONStargate.toStargate((JSONObject)json.get("stargate"));
+        stargateusecases.deleteStargate(stargate);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Systemsystem(Stargate_usecases stargateusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemSystemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        stargateusecases.delete_all_containing_Systemsystem(systemSystemPK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Systemto_system(Stargate_usecases stargateusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemTo_systemPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        stargateusecases.delete_all_containing_Systemto_system(systemTo_systemPK);
+        setReturnstatus("OK");
+    }
 
 }
 

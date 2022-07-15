@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.typegroup;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.ITypegroupOperation;
 import eve.logicentity.Typegroup;
 import eve.searchentity.Typegroupsearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,19 +46,24 @@ import org.json.simple.parser.ParseException;
 @Path("rstypegroup_delete")
 public class RSTypegroup_delete extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Typegroup_usecases typegroupusecases = new Typegroup_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
 //Custom code, do not change this line   
             switch(operation) {
                 case ITypegroupOperation.DELETE_TYPEGROUP:
+                    delete_typegroup(typegroupusecases, json);
+                    break;
+                case ITypegroupOperation.DELETE_Category:
                     delete_typegroup(typegroupusecases, json);
                     break;
 //Custom code, do not change this line
@@ -80,8 +83,15 @@ public class RSTypegroup_delete extends RS_json_login {
 
     private void delete_typegroup(Typegroup_usecases typegroupusecases, JSONObject json) throws ParseException, CustomException {
         ITypegroup typegroup = (ITypegroup)JSONTypegroup.toTypegroup((JSONObject)json.get("typegroup"));
-        typegroupusecases.securedeleteTypegroup(typegroup);
+        typegroupusecases.deleteTypegroup(typegroup);
         setReturnstatus("OK");
     }
+
+    private void delete_all_containing_Category(Typegroup_usecases typegroupusecases, JSONObject json) throws ParseException, CustomException {
+        ICategoryPK categoryPK = (ICategoryPK)JSONCategory.toCategoryPK((JSONObject)json.get("categorypk"));
+        typegroupusecases.delete_all_containing_Category(categoryPK);
+        setReturnstatus("OK");
+    }
+
 }
 

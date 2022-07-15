@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.view_tradecombined_sell;
@@ -16,10 +16,8 @@ import eve.interfaces.servlet.IView_tradecombined_sellOperation;
 import eve.usecases.View_tradecombined_sell_usecases;
 import eve.logicview.View_tradecombined_sell;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -46,14 +44,15 @@ import org.json.simple.parser.ParseException;
 @Path("rsview_tradecombined_sell_select")
 public class RSView_tradecombined_sell_select extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
-            IView_tradecombined_sell view_tradecombined_sell;
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             View_tradecombined_sell_usecases view_tradecombined_sellusecases = new View_tradecombined_sell_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
@@ -83,13 +82,13 @@ public class RSView_tradecombined_sell_select extends RS_json_login {
 //add here custom operations
     private String getView_tradecombined_sells_for_primarykey(View_tradecombined_sell_usecases view_tradecombined_sellinteractor, JSONObject json) throws ParseException, CustomException {
         TradecombinedPK tradecombinedPK = (TradecombinedPK)JSONTradecombined.toTradecombinedPK((JSONObject)json.get("tradecombinedpk"));
-    	return JSONView_tradecombined_sell.toJSONArray(view_tradecombined_sellinteractor.getView_tradecombined_sells_for_primarykey_usecase(tradecombinedPK)).toJSONString();
+    	return JSONView_tradecombined_sell.toJSONArray(view_tradecombined_sellinteractor.getView_tradecombined_sells_for_evetype(tradecombinedPK)).toJSONString();
     }
 
     private String get_all_view_tradecombined_sell(View_tradecombined_sell_usecases view_tradecombined_sellinteractor, JSONObject json) throws ParseException, CustomException {
         SystemPK sell_systemPK = (SystemPK)JSONSystem.toSystemPK((JSONObject)json.get("sell_systempk"));
         SystemPK buy_systemPK = (SystemPK)JSONSystem.toSystemPK((JSONObject)json.get("buy_systempk"));
-    	return JSONView_tradecombined_sell.toJSONArray(view_tradecombined_sellinteractor.getView_tradecombined_sells_usecase(sell_systemPK, buy_systemPK)).toJSONString();
+    	return JSONView_tradecombined_sell.toJSONArray(view_tradecombined_sellinteractor.getView_tradecombined_sells_for_all_evetypes(sell_systemPK, buy_systemPK)).toJSONString();
     }
 //Custom code, do not change this line   
 

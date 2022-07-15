@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.routetype;
@@ -61,7 +61,7 @@ public class Routetype_delete extends SecurityDataServlet {
 
     private void delete_routetype(Routetype_usecases routetypeusecases) throws CustomException {
         IRoutetype routetype = (IRoutetype)parser.getJavaObject("routetype");
-        routetypeusecases.securedeleteRoutetype(routetype);
+        routetypeusecases.deleteRoutetype(routetype);
     }
     
     @Override

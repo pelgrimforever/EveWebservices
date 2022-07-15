@@ -1,9 +1,6 @@
 /*
- * JSONAllnodes_stargate.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.0.2022 19:32
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONAllnodes_stargate {
@@ -41,10 +37,6 @@ public class JSONAllnodes_stargate {
         return jsonallnodes_stargates;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IAllnodes_stargatePK allnodes_stargatePK) {
         JSONObject json = null;
         if(allnodes_stargatePK!=null) {
@@ -54,10 +46,6 @@ public class JSONAllnodes_stargate {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IAllnodes_stargate allnodes_stargate) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(allnodes_stargate.getPrimaryKey()));
@@ -70,10 +58,6 @@ public class JSONAllnodes_stargate {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Allnodes_stargatesearch allnodes_stargatesearch) {
         JSONObject json = new JSONObject();
         if(allnodes_stargatesearch.used()) {
@@ -109,11 +93,6 @@ public class JSONAllnodes_stargate {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Allnodes_stargatesearch toAllnodes_stargatesearch(JSONObject json) {
         Allnodes_stargatesearch allnodes_stargatesearch = new Allnodes_stargatesearch();
         allnodes_stargatesearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

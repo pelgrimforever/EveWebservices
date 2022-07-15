@@ -1,9 +1,6 @@
 /*
- * JSONShipfit.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 19.11.2021 16:16
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONShipfit {
@@ -41,10 +37,6 @@ public class JSONShipfit {
         return jsonshipfits;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IShipfitPK shipfitPK) {
         JSONObject json = null;
         if(shipfitPK!=null) {
@@ -55,10 +47,6 @@ public class JSONShipfit {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IShipfit shipfit) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(shipfit.getPrimaryKey()));
@@ -68,10 +56,6 @@ public class JSONShipfit {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Shipfitsearch shipfitsearch) {
         JSONObject json = new JSONObject();
         if(shipfitsearch.used()) {
@@ -116,11 +100,6 @@ public class JSONShipfit {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Shipfitsearch toShipfitsearch(JSONObject json) {
         Shipfitsearch shipfitsearch = new Shipfitsearch();
         shipfitsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.category;
@@ -61,7 +61,7 @@ public class Category_insert extends SecurityDataServlet {
 
     private void insert_category(Category_usecases categoryusecases) throws CustomException {
         ICategory category = (ICategory)parser.getJavaObject("category");
-        categoryusecases.secureinsertCategory(category);
+        categoryusecases.insertCategory(category);
     }
     
     @Override

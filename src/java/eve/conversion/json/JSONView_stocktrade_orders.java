@@ -1,9 +1,6 @@
 /*
- * JSONView_stocktrade_orders.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 15.3.2022 8:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_stocktrade_orders {
@@ -36,10 +32,6 @@ public class JSONView_stocktrade_orders {
         return jsonview_stocktrade_orderss;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_stocktrade_orders view_stocktrade_orders) {
         JSONObject json = new JSONObject();
         json.put("username", view_stocktrade_orders.getUsername());
@@ -78,11 +70,6 @@ public class JSONView_stocktrade_orders {
         return view_stocktrade_orders;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_stocktrade_orderssearch parameters
-     * @return 
-     */
     public static View_stocktrade_orderssearch toView_stocktrade_orderssearch(JSONObject json) {
         View_stocktrade_orderssearch view_stocktrade_orderssearch = new View_stocktrade_orderssearch();
         view_stocktrade_orderssearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

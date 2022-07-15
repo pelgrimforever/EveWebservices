@@ -1,9 +1,6 @@
 /*
- * JSONTradecombined_sell.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.0.2022 19:32
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONTradecombined_sell {
@@ -41,10 +37,6 @@ public class JSONTradecombined_sell {
         return jsontradecombined_sells;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ITradecombined_sellPK tradecombined_sellPK) {
         JSONObject json = null;
         if(tradecombined_sellPK!=null) {
@@ -58,10 +50,6 @@ public class JSONTradecombined_sell {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(ITradecombined_sell tradecombined_sell) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(tradecombined_sell.getPrimaryKey()));
@@ -74,10 +62,6 @@ public class JSONTradecombined_sell {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Tradecombined_sellsearch tradecombined_sellsearch) {
         JSONObject json = new JSONObject();
         if(tradecombined_sellsearch.used()) {
@@ -122,11 +106,6 @@ public class JSONTradecombined_sell {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Tradecombined_sellsearch toTradecombined_sellsearch(JSONObject json) {
         Tradecombined_sellsearch tradecombined_sellsearch = new Tradecombined_sellsearch();
         tradecombined_sellsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

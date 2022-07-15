@@ -1,9 +1,6 @@
 /*
- * JSONStargate.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.0.2022 19:32
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONStargate {
@@ -41,10 +37,6 @@ public class JSONStargate {
         return jsonstargates;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IStargatePK stargatePK) {
         JSONObject json = null;
         if(stargatePK!=null) {
@@ -54,10 +46,6 @@ public class JSONStargate {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IStargate stargate) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(stargate.getPrimaryKey()));
@@ -78,10 +66,6 @@ public class JSONStargate {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Stargatesearch stargatesearch) {
         JSONObject json = new JSONObject();
         if(stargatesearch.used()) {
@@ -123,11 +107,6 @@ public class JSONStargate {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Stargatesearch toStargatesearch(JSONObject json) {
         Stargatesearch stargatesearch = new Stargatesearch();
         stargatesearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

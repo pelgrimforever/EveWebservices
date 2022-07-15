@@ -1,218 +1,142 @@
 /*
- * Bbpmaterial.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 11.4.2022 9:13
- *
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.BusinessObject.table;
 
-import BusinessObject.BLtable;
 import general.exception.*;
 import java.util.ArrayList;
-import db.SQLMapperFactory;
-import db.SQLparameters;
-import data.gis.shape.*;
-import data.json.piJson;
-import data.json.psqlJsonobject;
-import db.SQLMapper_pgsql;
-import data.interfaces.db.Filedata;
-import eve.BusinessObject.Logic.*;
-import eve.conversion.json.JSONBpmaterial;
+import db.*;
+import data.interfaces.db.*;
 import eve.conversion.entity.EMbpmaterial;
+import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IBpmaterialsearch;
 import eve.logicentity.Bpmaterial;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import org.postgresql.geometric.PGpoint;
-import org.postgis.PGgeometry;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
- * Business Entity class Bbpmaterial
- *
- * Superclass for manipulating data- and database objects
- * for Entity Bpmaterial and direct related data
- * This class is overwritten each time the code generator runs
- * and is not meant to be changed
- *
  * @author Franky Laseure
  */
-public abstract class Bbpmaterial extends BLtable {
+public abstract class Bbpmaterial extends TableBusinessrules {
 
-    /**
-     * Constructor, sets Bpmaterial as default Entity
-     */
-    public Bbpmaterial() {
-        super(new Bpmaterial(), new EMbpmaterial());
+    public Bbpmaterial(SQLreader sqlreader) {
+        super(new TableIO(sqlreader, new EMbpmaterial()));
     }
 
-    /**
-     * Constructor, sets Bpmaterial as default Entity
-     * sets transaction queue from given GeneralEntityObject implementation
-     * all transactions will commit at same time
-     * @param transactionobject: GeneralEntityObjects that holds the transaction queue
-     */
-    public Bbpmaterial(BLtable transactionobject) {
-        super(transactionobject, new Bpmaterial(), new EMbpmaterial());
+    public Bbpmaterial(TableBusinessrules businessrules) {
+        super(new TableIO(businessrules.getTableio(), new EMbpmaterial()));
+        this.tableio.setAuthenticated(tableio!=null && tableio.isAuthenticated());
     }
 
-    /**
-     * create new empty Bpmaterial object
-     * @return empty IBpmaterial
-     */
     public IBpmaterial newBpmaterial() {
     	return new Bpmaterial();
     }
     
-    /**
-     * create new empty Bpmaterial object
-     * create new primary key with given parameters
-     * @param bp primary key field
-     * @param material primary key field
-     * @return IBpmaterial with primary key
-     */
     public IBpmaterial newBpmaterial(long bp, long material) {
         return new Bpmaterial(bp, material);
     }
 
-    /**
-     * create new empty Bpmaterial object with given primary key
-     * @param bpmaterialPK: primary key for Bpmaterial
-     * @return IBpmaterial with primary key
-     */
     public IBpmaterial newBpmaterial(IBpmaterialPK bpmaterialPK) {
         return new Bpmaterial((BpmaterialPK)bpmaterialPK);
     }
 
-    /**
-     * create new empty primary key
-     * @return empty BpmaterialPK
-     */
     public IBpmaterialPK newBpmaterialPK() {
         return new BpmaterialPK();
     }
 
-    /**
-     * create new primary key with given parameters
-     * @param bp primary key field
-     * @param material primary key field
-     * @return new IBpmaterialPK
-     */
     public IBpmaterialPK newBpmaterialPK(long bp, long material) {
         return new BpmaterialPK(bp, material);
     }
 
-    /**
-     * get all Bpmaterial objects from database
-     * @return ArrayList of Bpmaterial objects
-     * @throws DBException
-     */
     public ArrayList<Bpmaterial> getBpmaterials() throws DBException {
-        return (ArrayList<Bpmaterial>)super.getEntities(EMbpmaterial.SQLSelectAll);
+        return (ArrayList<Bpmaterial>)tableio.getEntities(EMbpmaterial.SQLSelectAll);
     }
 
-    /**
-     * search Bpmaterial for primary key
-     * @param bpmaterialPK: Bpmaterial primary key
-     * @return Bpmaterial object
-     * @throws DBException
-     */
     public Bpmaterial getBpmaterial(IBpmaterialPK bpmaterialPK) throws DBException {
-        return (Bpmaterial)super.getEntity((BpmaterialPK)bpmaterialPK);
+        return (Bpmaterial)tableio.getEntity((BpmaterialPK)bpmaterialPK);
     }
 
-    /**
-     * search bpmaterial with IBpmaterialsearch parameters
-     * @param search IBpmaterialsearch
-     * @return ArrayList of Bpmaterial
-     * @throws DBException 
-     */
     public ArrayList<Bpmaterial> searchbpmaterials(IBpmaterialsearch search) throws DBException {
-        return (ArrayList<Bpmaterial>)this.search(search);
+        return (ArrayList<Bpmaterial>)tableio.search(search);
     }
 
-    /**
-     * search bpmaterial with IBpmaterialsearch parameters, order by orderby sql clause
-     * @param search IBpmaterialsearch
-     * @param orderby sql order by string
-     * @return ArrayList of Bpmaterial
-     * @throws DBException 
-     */
     public ArrayList<Bpmaterial> searchbpmaterials(IBpmaterialsearch search, String orderby) throws DBException {
-        return (ArrayList<Bpmaterial>)this.search(search, orderby);
+        return (ArrayList<Bpmaterial>)tableio.search(search, orderby);
     }
 
-    /**
-     * Search bpmaterial in database for bpmaterialPK:
-     * @param bpmaterialPK: Bpmaterial Primary Key, only valid for the initialized Entity
-     * @return true if found in database
-     * @throws DBException
-     */
     public boolean getBpmaterialExists(IBpmaterialPK bpmaterialPK) throws DBException {
-        return super.getEntityExists((BpmaterialPK)bpmaterialPK);
+        return tableio.getEntityExists((BpmaterialPK)bpmaterialPK);
     }
 
-    /**
-     * try to insert Bpmaterial in database
-     * @param bpmaterial Bpmaterial object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertBpmaterial(IBpmaterial bpmaterial) throws DBException, DataException {
-        super.insertEntity(bpmaterial);
+    public Bpmaterial getEntity(String sql) throws DBException {
+        return (Bpmaterial)tableio.getEntity(sql);
+    }
+    
+    public Bpmaterial getEntity(String sql, SQLparameters parameters) throws DBException {
+        return (Bpmaterial)tableio.getEntity(sql, parameters);
+    }
+    
+    public ArrayList<Bpmaterial> getEntities(String sql) throws DBException {
+        return tableio.getEntities(sql);
+    }
+    
+    public ArrayList<Bpmaterial> getEntities(String sql, SQLparameters parameters) throws DBException {
+        return tableio.getEntities(sql, parameters);
     }
 
-    /**
-     * check if BpmaterialPK exists
-     * insert if not, update if found
-     * do not commit transaction
-     * @param bpmaterial Bpmaterial object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void insertupdateBpmaterial(IBpmaterial bpmaterial) throws DBException, DataException {
+    public long count() throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+    
+    public long count(String sql, SQLparameters parameters) throws DBException {
+        long count = 0;
+        if(tableio.isReadAllowed())
+            count = tableio.count();
+        return count;
+    }
+
+    public ArrayList<Bpmaterial> search(Tablesearcher search) throws DBException {
+        return tableio.search(search);
+    }
+
+    public ArrayList<Bpmaterial> search(Tablesearcher search, String orderby) throws DBException {
+        return tableio.search(search, orderby);
+    }
+
+    public long searchcount(Tablesearcher search) throws DBException {
+        return tableio.searchcount(search);
+    }
+
+    public void insertBpmaterial(SQLTqueue transactionqueue, IBpmaterial bpmaterial) throws DBException, DataException {
+        tableio.insertEntity(transactionqueue, bpmaterial);
+    }
+
+    public void insertupdateBpmaterial(SQLTqueue transactionqueue, IBpmaterial bpmaterial) throws DBException, DataException {
+    	checkDATA(bpmaterial);
         if(this.getBpmaterialExists(bpmaterial.getPrimaryKey())) {
-            super.updateEntity(bpmaterial);
+            tableio.updateEntity(transactionqueue, bpmaterial);
         } else {
-            super.insertEntity(bpmaterial);
+            tableio.insertEntity(transactionqueue, bpmaterial);
         }
     }
 
-    /**
-     * try to update Bpmaterial in database
-     * @param bpmaterial Bpmaterial object
-     * @throws DBException
-     * @throws DataException
-     */
-    public void updateBpmaterial(IBpmaterial bpmaterial) throws DBException, DataException {
-        super.updateEntity(bpmaterial);
+    public void updateBpmaterial(SQLTqueue transactionqueue, IBpmaterial bpmaterial) throws DBException, DataException {
+    	checkDATA(bpmaterial);
+        tableio.updateEntity(transactionqueue, bpmaterial);
     }
 
-    /**
-     * try to delete Bpmaterial in database
-     * @param bpmaterial Bpmaterial object
-     * @throws DBException
-     */
-    public void deleteBpmaterial(IBpmaterial bpmaterial) throws DBException {
-        cascadedeleteBpmaterial(bpmaterial.getPrimaryKey());
-        super.deleteEntity(bpmaterial);
+    public void deleteBpmaterial(SQLTqueue transactionqueue, IBpmaterial bpmaterial) throws DBException {
+        cascadedeleteBpmaterial(transactionqueue, bpmaterial.getPrimaryKey());
+        tableio.deleteEntity(transactionqueue, bpmaterial);
     }
 
-    /**
-     * check data rules in Bpmaterial, throw DataException with customized message if rules do not apply
-     * @param bpmaterial Bpmaterial object
-     * @throws DataException
-     * @throws DBException
-     */
-    public void checkDATA(IBpmaterial bpmaterial) throws DataException, DBException {
+    private void checkDATA(IBpmaterial bpmaterial) throws DataException, DBException {
         StringBuffer message = new StringBuffer();
         //foreign key Bpmaterial.Bp - Evetype.Id
         //foreign key Bpmaterial.Material - Evetype.Id
@@ -225,51 +149,24 @@ public abstract class Bbpmaterial extends BLtable {
      * delete all records in tables where bpmaterialPK is used in a primary key
      * @param bpmaterialPK: Bpmaterial primary key
      */
-    public void cascadedeleteBpmaterial(IBpmaterialPK bpmaterialPK) {
+    public void cascadedeleteBpmaterial(SQLTqueue transactionqueue, IBpmaterialPK bpmaterialPK) {
     }
 
-    /**
-     * @param evetypePK: foreign key for Evetype
-     * @delete all Bpmaterial Entity objects for Evetype in database
-     */
-    public void delete4evetypeBp(IEvetypePK evetypePK) {
-        super.addStatement(EMbpmaterial.SQLDelete4evetypeBp, evetypePK.getSQLprimarykey());
+    public void delete4evetypeBp(SQLTqueue transactionqueue, IEvetypePK evetypePK) {
+        tableio.addStatement(transactionqueue, EMbpmaterial.SQLDelete4evetypeBp, evetypePK.getSQLprimarykey());
     }
 
-    /**
-     * @param evetypePK: foreign key for Evetype
-     * @return all Bpmaterial Entity objects for Evetype
-     * @throws CustomException
-     */
     public ArrayList<Bpmaterial> getBpmaterials4evetypeBp(IEvetypePK evetypePK) throws CustomException {
-        return super.getEntities(EMbpmaterial.SQLSelect4evetypeBp, evetypePK.getSQLprimarykey());
+        return tableio.getEntities(EMbpmaterial.SQLSelect4evetypeBp, evetypePK.getSQLprimarykey());
     }
-    /**
-     * @param evetypePK: foreign key for Evetype
-     * @delete all Bpmaterial Entity objects for Evetype in database
-     */
-    public void delete4evetypeMaterial(IEvetypePK evetypePK) {
-        super.addStatement(EMbpmaterial.SQLDelete4evetypeMaterial, evetypePK.getSQLprimarykey());
+    public void delete4evetypeMaterial(SQLTqueue transactionqueue, IEvetypePK evetypePK) {
+        tableio.addStatement(transactionqueue, EMbpmaterial.SQLDelete4evetypeMaterial, evetypePK.getSQLprimarykey());
     }
 
-    /**
-     * @param evetypePK: foreign key for Evetype
-     * @return all Bpmaterial Entity objects for Evetype
-     * @throws CustomException
-     */
     public ArrayList<Bpmaterial> getBpmaterials4evetypeMaterial(IEvetypePK evetypePK) throws CustomException {
-        return super.getEntities(EMbpmaterial.SQLSelect4evetypeMaterial, evetypePK.getSQLprimarykey());
+        return tableio.getEntities(EMbpmaterial.SQLSelect4evetypeMaterial, evetypePK.getSQLprimarykey());
     }
 
-    /**
-     * get all Bpmaterial objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @param sortlist sql sort string
-     * @param sortoperator asc/desc
-     * @return ArrayList of Bpmaterial objects
-     * @throws DBException
-     */
     public ArrayList<Bpmaterial> getBpmaterials(SQLparameters sqlparameters, String andoroperator, String sortlist, String sortoperator) throws DBException {
         StringBuilder sql = new StringBuilder(EMbpmaterial.SQLSelect);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
@@ -284,16 +181,10 @@ public abstract class Bbpmaterial extends BLtable {
         if(sortlist.length()>0) {
             sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return (ArrayList<Bpmaterial>)super.getEntities(sql.toString(), sqlparameters);
+        return (ArrayList<Bpmaterial>)tableio.getEntities(sql.toString(), sqlparameters);
     }
 
-    /**
-     * delete all Bpmaterial objects for sqlparameters
-     * @param sqlparameters SQLparameters object
-     * @param andoroperator "and"/"or"
-     * @throws DBException
-     */
-    public void delBpmaterial(SQLparameters sqlparameters, String andoroperator) throws DBException {
+    public void delBpmaterial(SQLTqueue transactionqueue, SQLparameters sqlparameters, String andoroperator) throws DBException {
         StringBuilder sql = new StringBuilder("delete from ").append(Bpmaterial.table);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
         int l = parameters.size();
@@ -304,7 +195,7 @@ public abstract class Bbpmaterial extends BLtable {
                 if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(sql.toString(), sqlparameters);
+        tableio.addStatement(transactionqueue, sql.toString(), sqlparameters);
     }
 
 

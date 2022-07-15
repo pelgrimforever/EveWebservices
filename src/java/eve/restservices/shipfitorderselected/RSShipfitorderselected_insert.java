@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.shipfitorderselected;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IShipfitorderselectedOperation;
 import eve.logicentity.Shipfitorderselected;
 import eve.searchentity.Shipfitorderselectedsearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,13 +46,15 @@ import org.json.simple.parser.ParseException;
 @Path("rsshipfitorderselected_insert")
 public class RSShipfitorderselected_insert extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Shipfitorderselected_usecases shipfitorderselectedusecases = new Shipfitorderselected_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
@@ -89,7 +89,7 @@ public class RSShipfitorderselected_insert extends RS_json_login {
 
     private void insert_shipfitorderselected(Shipfitorderselected_usecases shipfitorderselectedusecases, JSONObject json) throws ParseException, CustomException {
         IShipfitorderselected shipfitorderselected = (IShipfitorderselected)JSONShipfitorderselected.toShipfitorderselected((JSONObject)json.get("shipfitorderselected"));
-        shipfitorderselectedusecases.secureinsertShipfitorderselected(shipfitorderselected);
+        shipfitorderselectedusecases.insertShipfitorderselected(shipfitorderselected);
         setReturnstatus("OK");
     }
 }

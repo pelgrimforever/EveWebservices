@@ -1,9 +1,6 @@
 /*
- * JSONView_system.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 30.11.2021 19:35
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_system {
@@ -36,10 +32,6 @@ public class JSONView_system {
         return jsonview_systems;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_system view_system) {
         JSONObject json = new JSONObject();
         json.put("jumpssafe", view_system.getJumpssafe());
@@ -88,11 +80,6 @@ public class JSONView_system {
         return view_system;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_systemsearch parameters
-     * @return 
-     */
     public static View_systemsearch toView_systemsearch(JSONObject json) {
         View_systemsearch view_systemsearch = new View_systemsearch();
         view_systemsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

@@ -1,9 +1,6 @@
 /*
- * JSONStation_service.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.0.2022 19:32
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONStation_service {
@@ -41,10 +37,6 @@ public class JSONStation_service {
         return jsonstation_services;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IStation_servicePK station_servicePK) {
         JSONObject json = null;
         if(station_servicePK!=null) {
@@ -55,10 +47,6 @@ public class JSONStation_service {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IStation_service station_service) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(station_service.getPrimaryKey()));
@@ -67,10 +55,6 @@ public class JSONStation_service {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Station_servicesearch station_servicesearch) {
         JSONObject json = new JSONObject();
         if(station_servicesearch.used()) {
@@ -109,11 +93,6 @@ public class JSONStation_service {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Station_servicesearch toStation_servicesearch(JSONObject json) {
         Station_servicesearch station_servicesearch = new Station_servicesearch();
         station_servicesearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

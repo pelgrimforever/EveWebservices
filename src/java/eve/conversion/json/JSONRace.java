@@ -1,9 +1,6 @@
 /*
- * JSONRace.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONRace {
@@ -41,10 +37,6 @@ public class JSONRace {
         return jsonraces;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IRacePK racePK) {
         JSONObject json = null;
         if(racePK!=null) {
@@ -54,10 +46,6 @@ public class JSONRace {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IRace race) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(race.getPrimaryKey()));
@@ -69,10 +57,6 @@ public class JSONRace {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Racesearch racesearch) {
         JSONObject json = new JSONObject();
         if(racesearch.used()) {
@@ -111,11 +95,6 @@ public class JSONRace {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Racesearch toRacesearch(JSONObject json) {
         Racesearch racesearch = new Racesearch();
         racesearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

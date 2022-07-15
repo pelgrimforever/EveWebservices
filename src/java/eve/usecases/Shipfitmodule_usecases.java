@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Shipfitmodule;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Shipfitmodule_usecases {
 
     private boolean loggedin = false;
-    private BLshipfitmodule blshipfitmodule = new BLshipfitmodule();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLshipfitmodule blshipfitmodule = new BLshipfitmodule(sqlreader);
     
     public Shipfitmodule_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Shipfitmodule_usecases {
     }
     
     public boolean getShipfitmoduleExists(IShipfitmodulePK shipfitmodulePK) throws DBException {
-        return blshipfitmodule.getEntityExists(shipfitmodulePK);
+        return blshipfitmodule.getShipfitmoduleExists(shipfitmodulePK);
     }
     
     public Shipfitmodule get_shipfitmodule_by_primarykey(IShipfitmodulePK shipfitmodulePK) throws DBException {
@@ -73,16 +79,35 @@ public class Shipfitmodule_usecases {
         return blshipfitmodule.searchcount(shipfitmodulesearch);
     }
 
-    public void secureinsertShipfitmodule(IShipfitmodule shipfitmodule) throws DBException, DataException {
-        blshipfitmodule.secureinsertShipfitmodule(shipfitmodule);
+    public void insertShipfitmodule(IShipfitmodule shipfitmodule) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blshipfitmodule.insertShipfitmodule(tq, shipfitmodule);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateShipfitmodule(IShipfitmodule shipfitmodule) throws DBException, DataException {
-        blshipfitmodule.secureupdateShipfitmodule(shipfitmodule);
+    public void updateShipfitmodule(IShipfitmodule shipfitmodule) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blshipfitmodule.updateShipfitmodule(tq, shipfitmodule);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteShipfitmodule(IShipfitmodule shipfitmodule) throws DBException, DataException {
-        blshipfitmodule.securedeleteShipfitmodule(shipfitmodule);
+    public void deleteShipfitmodule(IShipfitmodule shipfitmodule) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blshipfitmodule.deleteShipfitmodule(tq, shipfitmodule);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Evetype(IEvetypePK evetypePK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blshipfitmodule.delete4evetype(tq, evetypePK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Shipfit(IShipfitPK shipfitPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blshipfitmodule.delete4shipfit(tq, shipfitPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

@@ -1,9 +1,6 @@
 /*
- * JSONView_wishlist.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 17:36
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_wishlist {
@@ -36,10 +32,6 @@ public class JSONView_wishlist {
         return jsonview_wishlists;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_wishlist view_wishlist) {
         JSONObject json = new JSONObject();
         json.put("username", view_wishlist.getUsername());
@@ -96,11 +88,6 @@ public class JSONView_wishlist {
         return view_wishlist;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_wishlistsearch parameters
-     * @return 
-     */
     public static View_wishlistsearch toView_wishlistsearch(JSONObject json) {
         View_wishlistsearch view_wishlistsearch = new View_wishlistsearch();
         view_wishlistsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

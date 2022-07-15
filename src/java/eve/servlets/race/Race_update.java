@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.race;
@@ -61,7 +61,7 @@ public class Race_update extends SecurityDataServlet {
 
     private void update_race(Race_usecases raceusecases) throws CustomException {
         IRace race = (IRace)parser.getJavaObject("race");
-        raceusecases.secureupdateRace(race);
+        raceusecases.updateRace(race);
     }
     
     @Override

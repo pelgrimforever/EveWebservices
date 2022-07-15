@@ -1,9 +1,6 @@
 /*
- * JSONConstellation_neighbour.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 8.0.2022 19:32
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -27,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * JSON fields are by default ignored
  * @author Franky Laseure
  */
 public class JSONConstellation_neighbour {
@@ -41,10 +37,6 @@ public class JSONConstellation_neighbour {
         return jsonconstellation_neighbours;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IConstellation_neighbourPK constellation_neighbourPK) {
         JSONObject json = null;
         if(constellation_neighbourPK!=null) {
@@ -55,10 +47,6 @@ public class JSONConstellation_neighbour {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IConstellation_neighbour constellation_neighbour) {
         JSONObject json = new JSONObject();
         json.put("PK", toJSON(constellation_neighbour.getPrimaryKey()));
@@ -67,10 +55,6 @@ public class JSONConstellation_neighbour {
         return json;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(Constellation_neighboursearch constellation_neighboursearch) {
         JSONObject json = new JSONObject();
         if(constellation_neighboursearch.used()) {
@@ -112,11 +96,6 @@ public class JSONConstellation_neighbour {
         return json;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the Filmsearch parameters
-     * @return 
-     */
     public static Constellation_neighboursearch toConstellation_neighboursearch(JSONObject json) {
         Constellation_neighboursearch constellation_neighboursearch = new Constellation_neighboursearch();
         constellation_neighboursearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

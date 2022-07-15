@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.allnodes_stargate;
@@ -61,7 +61,7 @@ public class Allnodes_stargate_insert extends SecurityDataServlet {
 
     private void insert_allnodes_stargate(Allnodes_stargate_usecases allnodes_stargateusecases) throws CustomException {
         IAllnodes_stargate allnodes_stargate = (IAllnodes_stargate)parser.getJavaObject("allnodes_stargate");
-        allnodes_stargateusecases.secureinsertAllnodes_stargate(allnodes_stargate);
+        allnodes_stargateusecases.insertAllnodes_stargate(allnodes_stargate);
     }
     
     @Override

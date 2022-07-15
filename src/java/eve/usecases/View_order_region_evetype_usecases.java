@@ -1,16 +1,19 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.gis.shape.piPoint;
 import eve.interfaces.searchentity.*;
 import eve.logicview.*;
 import eve.BusinessObject.Logic.*;
 import eve.entity.pk.*;
-import eve.logicview.View_order_region_evetype;
+import eve.logicentity.*;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -23,7 +26,8 @@ import org.json.simple.parser.ParseException;
 public class View_order_region_evetype_usecases {
 
     private boolean loggedin = false;
-    private BLview_order_region_evetype blview_order_region_evetype = new BLview_order_region_evetype();
+    private SQLreader sqlreader = new SQLreader();
+    private BLview_order_region_evetype blview_order_region_evetype = new BLview_order_region_evetype(sqlreader);
     
     public View_order_region_evetype_usecases() {
         this(false);

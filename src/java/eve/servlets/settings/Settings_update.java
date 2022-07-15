@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.settings;
@@ -61,7 +61,7 @@ public class Settings_update extends SecurityDataServlet {
 
     private void update_settings(Settings_usecases settingsusecases) throws CustomException {
         ISettings settings = (ISettings)parser.getJavaObject("settings");
-        settingsusecases.secureupdateSettings(settings);
+        settingsusecases.updateSettings(settings);
     }
     
     @Override

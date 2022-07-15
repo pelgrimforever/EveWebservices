@@ -2,23 +2,25 @@
  * WSContractitem.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 13.6.2022 18:20
  *
  */
 
 package eve.webservices;
 
+import base.restservices.RS_json_login;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.IContractitemsearch;
 import eve.interfaces.webservice.WSIContractitem;
 import eve.logicentity.Contractitem;
 import eve.searchentity.Contractitemsearch;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import general.exception.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.jws.WebMethod;
@@ -27,14 +29,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import eve.usecases.custom.Security_usecases;
 
 /**
  *
  * @author Franky Laseure
  */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSIContractitem")
-public class WSContractitem implements WSIContractitem {
+public class WSContractitem extends RS_json_login implements WSIContractitem {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     private JSONArray toJSONArray(ArrayList contractitems) {
         JSONArray jsoncontractitems = new JSONArray();
         Iterator contractitemsI = contractitems.iterator();
@@ -44,189 +49,206 @@ public class WSContractitem implements WSIContractitem {
         return jsoncontractitems;
     }
 
-    /**
-     * Web service operation
-     */
     //@WebMethod(operationName = "getContractitems")
     @Override
     public String getContractitems() {
         try {
-            BLcontractitem blcontractitem = new BLcontractitem();
-            ArrayList contractitems = blcontractitem.getAll();
-            JSONArray jsoncontractitems = toJSONArray(contractitems);
-            return jsoncontractitems.toJSONString();
+            Contractitem_usecases contractitemusecases = new Contractitem_usecases(loggedin);
+            return get_all_contractitem(contractitemusecases);
         }
-        catch(DBException e) {
+        catch(CustomException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "search")
     @Override
-    public String search(String json) {
-        BLcontractitem blcontractitem = new BLcontractitem();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Contractitem contractitem;
+    public String search(String jsonstring) {
         try {
-            Contractitemsearch contractitemsearch = JSONContractitem.toContractitemsearch((JSONObject)parser.parse(json));
-            ArrayList contractitems = blcontractitem.search(contractitemsearch);
-            JSONArray jsoncontractitems = toJSONArray(contractitems);
-            result = jsoncontractitems.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Contractitem_usecases contractitemusecases = new Contractitem_usecases(loggedin);
+            return search_contractitem(contractitemusecases, json);
         }
-        catch(ParseException e) {
-            result = "";
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-            result = "";
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "getContractitem")
     @Override
-    public String getContractitem(String json) {
-        BLcontractitem blcontractitem = new BLcontractitem();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Contractitem contractitem;
+    public String getContractitem(String jsonstring) {
         try {
-            ContractitemPK contractitemPK = JSONContractitem.toContractitemPK((JSONObject)parser.parse(json));
-            contractitem = blcontractitem.getContractitem(contractitemPK);
-            if(contractitem!=null) {
-                result = JSONContractitem.toJSON(contractitem).toJSONString();
-            }
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Contractitem_usecases contractitemusecases = new Contractitem_usecases(loggedin);
+            return get_contractitem_with_primarykey(contractitemusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "insertContractitem")
     @Override
-    public void insertContractitem(String json) {
-        BLcontractitem blcontractitem = new BLcontractitem();
-        JSONParser parser = new JSONParser();
+    public void insertContractitem(String jsonstring) {
         try {
-            IContractitem contractitem = JSONContractitem.toContractitem((JSONObject)parser.parse(json));
-            blcontractitem.insertContractitem(contractitem);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Contractitem_usecases contractitemusecases = new Contractitem_usecases(loggedin);
+            insert_contractitem(contractitemusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "updateContractitem")
     @Override
-    public void updateContractitem(String json) {
-        BLcontractitem blcontractitem = new BLcontractitem();
-        JSONParser parser = new JSONParser();
+    public void updateContractitem(String jsonstring) {
         try {
-            IContractitem contractitem = JSONContractitem.toContractitem((JSONObject)parser.parse(json));
-            blcontractitem.updateContractitem(contractitem);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Contractitem_usecases contractitemusecases = new Contractitem_usecases(loggedin);
+            update_contractitem(contractitemusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "deleteContractitem")
     @Override
-    public void deleteContractitem(String json) {
-        BLcontractitem blcontractitem = new BLcontractitem();
-        JSONParser parser = new JSONParser();
+    public void deleteContractitem(String jsonstring) {
         try {
-            IContractitem contractitem = JSONContractitem.toContractitem((JSONObject)parser.parse(json));
-            blcontractitem.deleteContractitem(contractitem);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Contractitem_usecases contractitemusecases = new Contractitem_usecases(loggedin);
+            delete_contractitem(contractitemusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getContractitems4evetype")
     @Override
-    public String getContractitems4evetype(String json) {
-        BLcontractitem blcontractitem = new BLcontractitem();
-        JSONParser parser = new JSONParser();
-        Contractitem contractitem;
+    public String getContractitems4evetype(String jsonstring) {
         try {
-            IEvetypePK evetypePK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            ArrayList contractitems = blcontractitem.getContractitems4evetype(evetypePK);
-            JSONArray jsoncontractitems = toJSONArray(contractitems);
-            return jsoncontractitems.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Contractitem_usecases contractitemusecases = new Contractitem_usecases(loggedin);
+            return get_contractitem_with_foreignkey_evetype(contractitemusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4evetype")
     @Override
-    public void delete4evetype(String json) {
-        BLcontractitem blcontractitem = new BLcontractitem();
-        JSONParser parser = new JSONParser();
-        Contractitem contractitem;
+    public void delete4evetype(String jsonstring) {
         try {
-            IEvetypePK evetypePK = JSONEvetype.toEvetypePK((JSONObject)parser.parse(json));
-            blcontractitem.delete4evetype(evetypePK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Contractitem_usecases contractitemusecases = new Contractitem_usecases(loggedin);
+            delete_contractitem(contractitemusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getContractitems4contract")
     @Override
-    public String getContractitems4contract(String json) {
-        BLcontractitem blcontractitem = new BLcontractitem();
-        JSONParser parser = new JSONParser();
-        Contractitem contractitem;
+    public String getContractitems4contract(String jsonstring) {
         try {
-            IContractPK contractPK = JSONContract.toContractPK((JSONObject)parser.parse(json));
-            ArrayList contractitems = blcontractitem.getContractitems4contract(contractPK);
-            JSONArray jsoncontractitems = toJSONArray(contractitems);
-            return jsoncontractitems.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Contractitem_usecases contractitemusecases = new Contractitem_usecases(loggedin);
+            return get_contractitem_with_foreignkey_contract(contractitemusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4contract")
     @Override
-    public void delete4contract(String json) {
-        BLcontractitem blcontractitem = new BLcontractitem();
-        JSONParser parser = new JSONParser();
-        Contractitem contractitem;
+    public void delete4contract(String jsonstring) {
         try {
-            IContractPK contractPK = JSONContract.toContractPK((JSONObject)parser.parse(json));
-            blcontractitem.delete4contract(contractPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Contractitem_usecases contractitemusecases = new Contractitem_usecases(loggedin);
+            delete_contractitem(contractitemusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
+
+    private String count_records(Contractitem_usecases contractitemusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", contractitemusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_contractitem(Contractitem_usecases contractitemusecases) throws ParseException, CustomException {
+    	return JSONContractitem.toJSONArray(contractitemusecases.get_all()).toJSONString();
+    }
+    
+    private String get_contractitem_with_primarykey(Contractitem_usecases contractitemusecases, JSONObject json) throws ParseException, CustomException {
+        IContractitemPK contractitemPK = (IContractitemPK)JSONContractitem.toContractitemPK((JSONObject)json.get("contractitempk"));
+	return JSONContractitem.toJSON(contractitemusecases.get_contractitem_by_primarykey(contractitemPK)).toJSONString();
+    }
+    
+    private String get_contractitem_with_foreignkey_evetype(Contractitem_usecases contractitemusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        return JSONContractitem.toJSONArray(contractitemusecases.get_contractitem_with_foreignkey_evetype(evetypePK)).toJSONString();
+    }
+    
+    private String get_contractitem_with_foreignkey_contract(Contractitem_usecases contractitemusecases, JSONObject json) throws ParseException, CustomException {
+        IContractPK contractPK = (IContractPK)JSONContract.toContractPK((JSONObject)json.get("contractpk"));
+        return JSONContractitem.toJSONArray(contractitemusecases.get_contractitem_with_foreignkey_contract(contractPK)).toJSONString();
+    }
+    
+    private String search_contractitem(Contractitem_usecases contractitemusecases, JSONObject json) throws ParseException, CustomException {
+        IContractitemsearch search = (IContractitemsearch)JSONContractitem.toContractitemsearch((JSONObject)json.get("search"));
+        return JSONContractitem.toJSONArray(contractitemusecases.search_contractitem(search)).toJSONString();
+    }
+    
+    private String search_contractitem_count(Contractitem_usecases contractitemusecases, JSONObject json) throws ParseException, CustomException {
+        IContractitemsearch contractitemsearch = (IContractitemsearch)JSONContractitem.toContractitemsearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", contractitemusecases.search_contractitem_count(contractitemsearch));
+        return jsonsearchcount.toJSONString();
+    }
+
+    private void insert_contractitem(Contractitem_usecases contractitemusecases, JSONObject json) throws ParseException, CustomException {
+        IContractitem contractitem = (IContractitem)JSONContractitem.toContractitem((JSONObject)json.get("contractitem"));
+        contractitemusecases.insertContractitem(contractitem);
+        setReturnstatus("OK");
+    }
+
+    private void update_contractitem(Contractitem_usecases contractitemusecases, JSONObject json) throws ParseException, CustomException {
+        IContractitem contractitem = (IContractitem)JSONContractitem.toContractitem((JSONObject)json.get("contractitem"));
+        contractitemusecases.updateContractitem(contractitem);
+        setReturnstatus("OK");
+    }
+
+    private void delete_contractitem(Contractitem_usecases contractitemusecases, JSONObject json) throws ParseException, CustomException {
+        IContractitem contractitem = (IContractitem)JSONContractitem.toContractitem((JSONObject)json.get("contractitem"));
+        contractitemusecases.deleteContractitem(contractitem);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Evetype(Contractitem_usecases contractitemusecases, JSONObject json) throws ParseException, CustomException {
+        IEvetypePK evetypePK = (IEvetypePK)JSONEvetype.toEvetypePK((JSONObject)json.get("evetypepk"));
+        contractitemusecases.delete_all_containing_Evetype(evetypePK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Contract(Contractitem_usecases contractitemusecases, JSONObject json) throws ParseException, CustomException {
+        IContractPK contractPK = (IContractPK)JSONContract.toContractPK((JSONObject)json.get("contractpk"));
+        contractitemusecases.delete_all_containing_Contract(contractPK);
+        setReturnstatus("OK");
+    }
 
 }
 

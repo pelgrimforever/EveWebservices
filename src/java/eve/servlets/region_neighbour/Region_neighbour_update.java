@@ -1,6 +1,6 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.servlets.region_neighbour;
@@ -61,7 +61,7 @@ public class Region_neighbour_update extends SecurityDataServlet {
 
     private void update_region_neighbour(Region_neighbour_usecases region_neighbourusecases) throws CustomException {
         IRegion_neighbour region_neighbour = (IRegion_neighbour)parser.getJavaObject("region_neighbour");
-        region_neighbourusecases.secureupdateRegion_neighbour(region_neighbour);
+        region_neighbourusecases.updateRegion_neighbour(region_neighbour);
     }
     
     @Override

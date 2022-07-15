@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Userbp;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Userbp_usecases {
 
     private boolean loggedin = false;
-    private BLuserbp bluserbp = new BLuserbp();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLuserbp bluserbp = new BLuserbp(sqlreader);
     
     public Userbp_usecases() {
         this(false);
@@ -40,15 +46,33 @@ public class Userbp_usecases {
 //Custom code, do not change this line
 //add here custom operations
     public void add_blueprint(IUserbp userbp) throws DBException, DataException {
-        bluserbp.insertNewbp(userbp);
+        SQLTqueue transactionqueue = new SQLTqueue();
+        bluserbp.insertNewbp(transactionqueue, userbp);
+        sqlwriter.Commit2DB(transactionqueue);
     }
 
     public void updateProperties(IUserbp userbp) throws DBException, DataException {
-        bluserbp.updateProperties(userbp);
+        SQLTqueue transactionqueue = new SQLTqueue();
+        bluserbp.updateProperties(transactionqueue, userbp);
+        sqlwriter.Commit2DB(transactionqueue);
     }
 
+    private BLbpmaterial blbpmaterial;
+    private BLmaterialinput blmaterialinput;
+    
     public void run_blueprint(UserbpPK userbpPK_torun, int amount) throws DBException, CustomException {
-        bluserbp.runbp(userbpPK_torun, amount);
+        SQLTqueue transactionqueue = new SQLTqueue();
+        blbpmaterial = new BLbpmaterial(bluserbp);
+        blmaterialinput = new BLmaterialinput(bluserbp);
+        Userbp userbp = bluserbp.getUserbp(userbpPK_torun);
+        ArrayList<Bpmaterial> bpmaterials = blbpmaterial.getBpmaterials4evetypeBp(userbpPK_torun.getEvetypePK());
+        for(Bpmaterial bpmaterial: bpmaterials) {
+            long totamount = Double.valueOf(Math.ceil(bpmaterial.getAmount() * amount * (100-userbp.getMaterialefficiency()) / 100)).longValue();
+            blmaterialinput.useMaterial(transactionqueue, userbpPK_torun.getUsername(), (EvetypePK)bpmaterial.getPrimaryKey().getEvetypematerialPK(), totamount);
+        }
+        userbp.setAmountproduced(userbp.getAmountproduced() + amount);
+        bluserbp.updateUserbp(transactionqueue, userbp);
+        sqlwriter.Commit2DB(transactionqueue);
     }
 //Custom code, do not change this line   
 
@@ -61,7 +85,7 @@ public class Userbp_usecases {
     }
     
     public boolean getUserbpExists(IUserbpPK userbpPK) throws DBException {
-        return bluserbp.getEntityExists(userbpPK);
+        return bluserbp.getUserbpExists(userbpPK);
     }
     
     public Userbp get_userbp_by_primarykey(IUserbpPK userbpPK) throws DBException {
@@ -80,16 +104,29 @@ public class Userbp_usecases {
         return bluserbp.searchcount(userbpsearch);
     }
 
-    public void secureinsertUserbp(IUserbp userbp) throws DBException, DataException {
-        bluserbp.secureinsertUserbp(userbp);
+    public void insertUserbp(IUserbp userbp) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        bluserbp.insertUserbp(tq, userbp);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateUserbp(IUserbp userbp) throws DBException, DataException {
-        bluserbp.secureupdateUserbp(userbp);
+    public void updateUserbp(IUserbp userbp) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        bluserbp.updateUserbp(tq, userbp);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteUserbp(IUserbp userbp) throws DBException, DataException {
-        bluserbp.securedeleteUserbp(userbp);
+    public void deleteUserbp(IUserbp userbp) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        bluserbp.deleteUserbp(tq, userbp);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Evetype(IEvetypePK evetypePK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        bluserbp.delete4evetype(tq, evetypePK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

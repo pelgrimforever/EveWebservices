@@ -1,9 +1,6 @@
 /*
- * JSONView_evetypes.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 21.1.2022 12:5
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_evetypes {
@@ -36,10 +32,6 @@ public class JSONView_evetypes {
         return jsonview_evetypess;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_evetypes view_evetypes) {
         JSONObject json = new JSONObject();
         json.put("category", String.valueOf(view_evetypes.getCategory()));
@@ -64,11 +56,6 @@ public class JSONView_evetypes {
         return view_evetypes;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_evetypessearch parameters
-     * @return 
-     */
     public static View_evetypessearch toView_evetypessearch(JSONObject json) {
         View_evetypessearch view_evetypessearch = new View_evetypessearch();
         view_evetypessearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

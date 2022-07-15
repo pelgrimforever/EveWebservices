@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Location;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Location_usecases {
 
     private boolean loggedin = false;
-    private BLlocation bllocation = new BLlocation();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLlocation bllocation = new BLlocation(sqlreader);
     
     public Location_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Location_usecases {
     }
     
     public boolean getLocationExists(ILocationPK locationPK) throws DBException {
-        return bllocation.getEntityExists(locationPK);
+        return bllocation.getLocationExists(locationPK);
     }
     
     public Location get_location_by_primarykey(ILocationPK locationPK) throws DBException {
@@ -69,16 +75,29 @@ public class Location_usecases {
         return bllocation.searchcount(locationsearch);
     }
 
-    public void secureinsertLocation(ILocation location) throws DBException, DataException {
-        bllocation.secureinsertLocation(location);
+    public void insertLocation(ILocation location) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        bllocation.insertLocation(tq, location);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateLocation(ILocation location) throws DBException, DataException {
-        bllocation.secureupdateLocation(location);
+    public void updateLocation(ILocation location) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        bllocation.updateLocation(tq, location);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteLocation(ILocation location) throws DBException, DataException {
-        bllocation.securedeleteLocation(location);
+    public void deleteLocation(ILocation location) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        bllocation.deleteLocation(tq, location);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_System(ISystemPK systemPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        bllocation.delete4system(tq, systemPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

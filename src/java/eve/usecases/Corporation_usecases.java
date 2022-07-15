@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Corporation;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Corporation_usecases {
 
     private boolean loggedin = false;
-    private BLcorporation blcorporation = new BLcorporation();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLcorporation blcorporation = new BLcorporation(sqlreader);
     
     public Corporation_usecases() {
         this(false);
@@ -50,7 +56,7 @@ public class Corporation_usecases {
     }
     
     public boolean getCorporationExists(ICorporationPK corporationPK) throws DBException {
-        return blcorporation.getEntityExists(corporationPK);
+        return blcorporation.getCorporationExists(corporationPK);
     }
     
     public Corporation get_corporation_by_primarykey(ICorporationPK corporationPK) throws DBException {
@@ -77,16 +83,41 @@ public class Corporation_usecases {
         return blcorporation.searchcount(corporationsearch);
     }
 
-    public void secureinsertCorporation(ICorporation corporation) throws DBException, DataException {
-        blcorporation.secureinsertCorporation(corporation);
+    public void insertCorporation(ICorporation corporation) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blcorporation.insertCorporation(tq, corporation);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateCorporation(ICorporation corporation) throws DBException, DataException {
-        blcorporation.secureupdateCorporation(corporation);
+    public void updateCorporation(ICorporation corporation) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blcorporation.updateCorporation(tq, corporation);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteCorporation(ICorporation corporation) throws DBException, DataException {
-        blcorporation.securedeleteCorporation(corporation);
+    public void deleteCorporation(ICorporation corporation) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blcorporation.deleteCorporation(tq, corporation);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Station(IStationPK stationPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blcorporation.delete4station(tq, stationPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Faction(IFactionPK factionPK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blcorporation.delete4faction(tq, factionPK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
+    public void delete_all_containing_Alliance(IAlliancePK alliancePK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blcorporation.delete4alliance(tq, alliancePK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

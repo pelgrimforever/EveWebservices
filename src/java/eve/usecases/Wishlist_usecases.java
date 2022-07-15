@@ -1,9 +1,10 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 11:21
  */
 
 package eve.usecases;
 
+import db.*;
 import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
@@ -13,7 +14,10 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.*;
 import eve.interfaces.entity.pk.*;
+import eve.logicentity.*;
 import eve.logicentity.Wishlist;
+import eve.logicview.*;
+import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
 import java.util.*;
@@ -26,7 +30,9 @@ import org.json.simple.parser.ParseException;
 public class Wishlist_usecases {
 
     private boolean loggedin = false;
-    private BLwishlist blwishlist = new BLwishlist();
+    private SQLreader sqlreader = new SQLreader();
+    private SQLTwriter sqlwriter = new SQLTwriter();
+    private BLwishlist blwishlist = new BLwishlist(sqlreader);
     
     public Wishlist_usecases() {
         this(false);
@@ -40,7 +46,9 @@ public class Wishlist_usecases {
 //Custom code, do not change this line
 //add here custom operations
     public void add_wishlist_item(IWishlist wishlist) throws DBException, DataException {
-        blwishlist.addWishlist(wishlist);
+        SQLTqueue tq = new SQLTqueue();
+        blwishlist.insertupdateWishlist(tq, wishlist);
+        sqlwriter.Commit2DB(tq);
     }
 //Custom code, do not change this line   
 
@@ -53,7 +61,7 @@ public class Wishlist_usecases {
     }
     
     public boolean getWishlistExists(IWishlistPK wishlistPK) throws DBException {
-        return blwishlist.getEntityExists(wishlistPK);
+        return blwishlist.getWishlistExists(wishlistPK);
     }
     
     public Wishlist get_wishlist_by_primarykey(IWishlistPK wishlistPK) throws DBException {
@@ -72,16 +80,29 @@ public class Wishlist_usecases {
         return blwishlist.searchcount(wishlistsearch);
     }
 
-    public void secureinsertWishlist(IWishlist wishlist) throws DBException, DataException {
-        blwishlist.secureinsertWishlist(wishlist);
+    public void insertWishlist(IWishlist wishlist) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blwishlist.insertWishlist(tq, wishlist);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void secureupdateWishlist(IWishlist wishlist) throws DBException, DataException {
-        blwishlist.secureupdateWishlist(wishlist);
+    public void updateWishlist(IWishlist wishlist) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blwishlist.updateWishlist(tq, wishlist);
+        sqlwriter.Commit2DB(tq);
     }
 
-    public void securedeleteWishlist(IWishlist wishlist) throws DBException, DataException {
-        blwishlist.securedeleteWishlist(wishlist);
+    public void deleteWishlist(IWishlist wishlist) throws DBException, DataException {
+        SQLTqueue tq = new SQLTqueue();
+        blwishlist.deleteWishlist(tq, wishlist);
+        sqlwriter.Commit2DB(tq);
     }
+
+    public void delete_all_containing_Evetype(IEvetypePK evetypePK) throws CustomException {
+        SQLTqueue tq = new SQLTqueue();
+        blwishlist.delete4evetype(tq, evetypePK);
+        sqlwriter.Commit2DB(tq);
+    }
+    
 }
 

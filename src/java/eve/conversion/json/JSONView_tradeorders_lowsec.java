@@ -1,9 +1,6 @@
 /*
- * JSONView_tradeorders_lowsec.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 16.11.2021 15:46
- *
+ * Generated on 13.6.2022 11:21
  */
  
 package eve.conversion.json;
@@ -22,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author Franky Laseure
  */
 public class JSONView_tradeorders_lowsec {
@@ -36,10 +32,6 @@ public class JSONView_tradeorders_lowsec {
         return jsonview_tradeorders_lowsecs;
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static JSONObject toJSON(IView_tradeorders_lowsec view_tradeorders_lowsec) {
         JSONObject json = new JSONObject();
         json.put("tradevolume", String.valueOf(view_tradeorders_lowsec.getTradevolume()));
@@ -92,11 +84,6 @@ public class JSONView_tradeorders_lowsec {
         return view_tradeorders_lowsec;
     }
 
-    /**
-     * 
-     * @param json: JSONObject with the View_tradeorders_lowsecsearch parameters
-     * @return 
-     */
     public static View_tradeorders_lowsecsearch toView_tradeorders_lowsecsearch(JSONObject json) {
         View_tradeorders_lowsecsearch view_tradeorders_lowsecsearch = new View_tradeorders_lowsecsearch();
         view_tradeorders_lowsecsearch.setANDORoperator(JSONConversion.getbyte(json, "andor"));

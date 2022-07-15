@@ -2,23 +2,25 @@
  * WSSystemjumps.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 13.6.2022 18:20
  *
  */
 
 package eve.webservices;
 
+import base.restservices.RS_json_login;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.ISystemjumpssearch;
 import eve.interfaces.webservice.WSISystemjumps;
 import eve.logicentity.Systemjumps;
 import eve.searchentity.Systemjumpssearch;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import general.exception.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.jws.WebMethod;
@@ -27,14 +29,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import eve.usecases.custom.Security_usecases;
 
 /**
  *
  * @author Franky Laseure
  */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSISystemjumps")
-public class WSSystemjumps implements WSISystemjumps {
+public class WSSystemjumps extends RS_json_login implements WSISystemjumps {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     private JSONArray toJSONArray(ArrayList systemjumpss) {
         JSONArray jsonsystemjumpss = new JSONArray();
         Iterator systemjumpssI = systemjumpss.iterator();
@@ -44,189 +49,206 @@ public class WSSystemjumps implements WSISystemjumps {
         return jsonsystemjumpss;
     }
 
-    /**
-     * Web service operation
-     */
     //@WebMethod(operationName = "getSystemjumpss")
     @Override
     public String getSystemjumpss() {
         try {
-            BLsystemjumps blsystemjumps = new BLsystemjumps();
-            ArrayList systemjumpss = blsystemjumps.getAll();
-            JSONArray jsonsystemjumpss = toJSONArray(systemjumpss);
-            return jsonsystemjumpss.toJSONString();
+            Systemjumps_usecases systemjumpsusecases = new Systemjumps_usecases(loggedin);
+            return get_all_systemjumps(systemjumpsusecases);
         }
-        catch(DBException e) {
+        catch(CustomException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "search")
     @Override
-    public String search(String json) {
-        BLsystemjumps blsystemjumps = new BLsystemjumps();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Systemjumps systemjumps;
+    public String search(String jsonstring) {
         try {
-            Systemjumpssearch systemjumpssearch = JSONSystemjumps.toSystemjumpssearch((JSONObject)parser.parse(json));
-            ArrayList systemjumpss = blsystemjumps.search(systemjumpssearch);
-            JSONArray jsonsystemjumpss = toJSONArray(systemjumpss);
-            result = jsonsystemjumpss.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Systemjumps_usecases systemjumpsusecases = new Systemjumps_usecases(loggedin);
+            return search_systemjumps(systemjumpsusecases, json);
         }
-        catch(ParseException e) {
-            result = "";
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-            result = "";
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "getSystemjumps")
     @Override
-    public String getSystemjumps(String json) {
-        BLsystemjumps blsystemjumps = new BLsystemjumps();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Systemjumps systemjumps;
+    public String getSystemjumps(String jsonstring) {
         try {
-            SystemjumpsPK systemjumpsPK = JSONSystemjumps.toSystemjumpsPK((JSONObject)parser.parse(json));
-            systemjumps = blsystemjumps.getSystemjumps(systemjumpsPK);
-            if(systemjumps!=null) {
-                result = JSONSystemjumps.toJSON(systemjumps).toJSONString();
-            }
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Systemjumps_usecases systemjumpsusecases = new Systemjumps_usecases(loggedin);
+            return get_systemjumps_with_primarykey(systemjumpsusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "insertSystemjumps")
     @Override
-    public void insertSystemjumps(String json) {
-        BLsystemjumps blsystemjumps = new BLsystemjumps();
-        JSONParser parser = new JSONParser();
+    public void insertSystemjumps(String jsonstring) {
         try {
-            ISystemjumps systemjumps = JSONSystemjumps.toSystemjumps((JSONObject)parser.parse(json));
-            blsystemjumps.insertSystemjumps(systemjumps);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Systemjumps_usecases systemjumpsusecases = new Systemjumps_usecases(loggedin);
+            insert_systemjumps(systemjumpsusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "updateSystemjumps")
     @Override
-    public void updateSystemjumps(String json) {
-        BLsystemjumps blsystemjumps = new BLsystemjumps();
-        JSONParser parser = new JSONParser();
+    public void updateSystemjumps(String jsonstring) {
         try {
-            ISystemjumps systemjumps = JSONSystemjumps.toSystemjumps((JSONObject)parser.parse(json));
-            blsystemjumps.updateSystemjumps(systemjumps);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Systemjumps_usecases systemjumpsusecases = new Systemjumps_usecases(loggedin);
+            update_systemjumps(systemjumpsusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "deleteSystemjumps")
     @Override
-    public void deleteSystemjumps(String json) {
-        BLsystemjumps blsystemjumps = new BLsystemjumps();
-        JSONParser parser = new JSONParser();
+    public void deleteSystemjumps(String jsonstring) {
         try {
-            ISystemjumps systemjumps = JSONSystemjumps.toSystemjumps((JSONObject)parser.parse(json));
-            blsystemjumps.deleteSystemjumps(systemjumps);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Systemjumps_usecases systemjumpsusecases = new Systemjumps_usecases(loggedin);
+            delete_systemjumps(systemjumpsusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getSystemjumpss4systemSystem_end")
     @Override
-    public String getSystemjumpss4systemSystem_end(String json) {
-        BLsystemjumps blsystemjumps = new BLsystemjumps();
-        JSONParser parser = new JSONParser();
-        Systemjumps systemjumps;
+    public String getSystemjumpss4systemSystem_end(String jsonstring) {
         try {
-            ISystemPK systemSystem_endPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            ArrayList systemjumpss = blsystemjumps.getSystemjumpss4systemSystem_end(systemSystem_endPK);
-            JSONArray jsonsystemjumpss = toJSONArray(systemjumpss);
-            return jsonsystemjumpss.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Systemjumps_usecases systemjumpsusecases = new Systemjumps_usecases(loggedin);
+            return get_systemjumps_with_foreignkey_systemSystem_end(systemjumpsusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4systemSystem_end")
     @Override
-    public void delete4systemSystem_end(String json) {
-        BLsystemjumps blsystemjumps = new BLsystemjumps();
-        JSONParser parser = new JSONParser();
-        Systemjumps systemjumps;
+    public void delete4systemSystem_end(String jsonstring) {
         try {
-            ISystemPK systemSystem_endPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blsystemjumps.delete4systemSystem_end(systemSystem_endPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Systemjumps_usecases systemjumpsusecases = new Systemjumps_usecases(loggedin);
+            delete_systemjumps(systemjumpsusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getSystemjumpss4systemSystem_start")
     @Override
-    public String getSystemjumpss4systemSystem_start(String json) {
-        BLsystemjumps blsystemjumps = new BLsystemjumps();
-        JSONParser parser = new JSONParser();
-        Systemjumps systemjumps;
+    public String getSystemjumpss4systemSystem_start(String jsonstring) {
         try {
-            ISystemPK systemSystem_startPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            ArrayList systemjumpss = blsystemjumps.getSystemjumpss4systemSystem_start(systemSystem_startPK);
-            JSONArray jsonsystemjumpss = toJSONArray(systemjumpss);
-            return jsonsystemjumpss.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Systemjumps_usecases systemjumpsusecases = new Systemjumps_usecases(loggedin);
+            return get_systemjumps_with_foreignkey_systemSystem_start(systemjumpsusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4systemSystem_start")
     @Override
-    public void delete4systemSystem_start(String json) {
-        BLsystemjumps blsystemjumps = new BLsystemjumps();
-        JSONParser parser = new JSONParser();
-        Systemjumps systemjumps;
+    public void delete4systemSystem_start(String jsonstring) {
         try {
-            ISystemPK systemSystem_startPK = JSONSystem.toSystemPK((JSONObject)parser.parse(json));
-            blsystemjumps.delete4systemSystem_start(systemSystem_startPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Systemjumps_usecases systemjumpsusecases = new Systemjumps_usecases(loggedin);
+            delete_systemjumps(systemjumpsusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
+
+    private String count_records(Systemjumps_usecases systemjumpsusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", systemjumpsusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_systemjumps(Systemjumps_usecases systemjumpsusecases) throws ParseException, CustomException {
+    	return JSONSystemjumps.toJSONArray(systemjumpsusecases.get_all()).toJSONString();
+    }
+    
+    private String get_systemjumps_with_primarykey(Systemjumps_usecases systemjumpsusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemjumpsPK systemjumpsPK = (ISystemjumpsPK)JSONSystemjumps.toSystemjumpsPK((JSONObject)json.get("systemjumpspk"));
+	return JSONSystemjumps.toJSON(systemjumpsusecases.get_systemjumps_by_primarykey(systemjumpsPK)).toJSONString();
+    }
+    
+    private String get_systemjumps_with_foreignkey_systemSystem_end(Systemjumps_usecases systemjumpsusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemSystem_endPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        return JSONSystemjumps.toJSONArray(systemjumpsusecases.get_systemjumps_with_foreignkey_systemSystem_end(systemSystem_endPK)).toJSONString();
+    }
+    
+    private String get_systemjumps_with_foreignkey_systemSystem_start(Systemjumps_usecases systemjumpsusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemSystem_startPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        return JSONSystemjumps.toJSONArray(systemjumpsusecases.get_systemjumps_with_foreignkey_systemSystem_start(systemSystem_startPK)).toJSONString();
+    }
+    
+    private String search_systemjumps(Systemjumps_usecases systemjumpsusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemjumpssearch search = (ISystemjumpssearch)JSONSystemjumps.toSystemjumpssearch((JSONObject)json.get("search"));
+        return JSONSystemjumps.toJSONArray(systemjumpsusecases.search_systemjumps(search)).toJSONString();
+    }
+    
+    private String search_systemjumps_count(Systemjumps_usecases systemjumpsusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemjumpssearch systemjumpssearch = (ISystemjumpssearch)JSONSystemjumps.toSystemjumpssearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", systemjumpsusecases.search_systemjumps_count(systemjumpssearch));
+        return jsonsearchcount.toJSONString();
+    }
+
+    private void insert_systemjumps(Systemjumps_usecases systemjumpsusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemjumps systemjumps = (ISystemjumps)JSONSystemjumps.toSystemjumps((JSONObject)json.get("systemjumps"));
+        systemjumpsusecases.insertSystemjumps(systemjumps);
+        setReturnstatus("OK");
+    }
+
+    private void update_systemjumps(Systemjumps_usecases systemjumpsusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemjumps systemjumps = (ISystemjumps)JSONSystemjumps.toSystemjumps((JSONObject)json.get("systemjumps"));
+        systemjumpsusecases.updateSystemjumps(systemjumps);
+        setReturnstatus("OK");
+    }
+
+    private void delete_systemjumps(Systemjumps_usecases systemjumpsusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemjumps systemjumps = (ISystemjumps)JSONSystemjumps.toSystemjumps((JSONObject)json.get("systemjumps"));
+        systemjumpsusecases.deleteSystemjumps(systemjumps);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Systemsystem_end(Systemjumps_usecases systemjumpsusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemSystem_endPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        systemjumpsusecases.delete_all_containing_Systemsystem_end(systemSystem_endPK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Systemsystem_start(Systemjumps_usecases systemjumpsusecases, JSONObject json) throws ParseException, CustomException {
+        ISystemPK systemSystem_startPK = (ISystemPK)JSONSystem.toSystemPK((JSONObject)json.get("systempk"));
+        systemjumpsusecases.delete_all_containing_Systemsystem_start(systemSystem_startPK);
+        setReturnstatus("OK");
+    }
 
 }
 

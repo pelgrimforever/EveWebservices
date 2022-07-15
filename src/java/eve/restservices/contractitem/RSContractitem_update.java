@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.contractitem;
@@ -18,10 +18,9 @@ import eve.interfaces.servlet.IContractitemOperation;
 import eve.logicentity.Contractitem;
 import eve.searchentity.Contractitemsearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,13 +47,15 @@ import org.json.simple.parser.ParseException;
 @Path("rscontractitem_update")
 public class RSContractitem_update extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Contractitem_usecases contractitemusecases = new Contractitem_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
@@ -80,7 +81,7 @@ public class RSContractitem_update extends RS_json_login {
 
     private void update_contractitem(Contractitem_usecases contractitemusecases, JSONObject json) throws ParseException, CustomException {
         IContractitem contractitem = (IContractitem)JSONContractitem.toContractitem((JSONObject)json.get("contractitem"));
-        contractitemusecases.secureupdateContractitem(contractitem);
+        contractitemusecases.updateContractitem(contractitem);
         setReturnstatus("OK");
     }
 }

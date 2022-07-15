@@ -1,5 +1,5 @@
 /*
- * Generated on 20.4.2022 10:3
+ * Generated on 13.6.2022 18:20
  */
 
 package eve.restservices.frontendpage;
@@ -10,7 +10,7 @@ import data.gis.shape.GISConversion;
 import data.gis.shape.piPoint;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
-import eve.usecases.Frontendpage_usecases;
+import eve.usecases.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.IFrontendpagesearch;
@@ -18,10 +18,8 @@ import eve.interfaces.servlet.IFrontendpageOperation;
 import eve.logicentity.Frontendpage;
 import eve.searchentity.Frontendpagesearch;
 import eve.servlets.DataServlet;
-import eve.usecases.Security_usecases;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.custom.*;
+import general.exception.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.io.File;
@@ -48,15 +46,15 @@ import org.json.simple.parser.ParseException;
 @Path("rsfrontendpage_select")
 public class RSFrontendpage_select extends RS_json_login {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String post(String jsonstring) {
         try {
             Consume_jsonstring(jsonstring);
-            setLoggedin(Security_usecases.check_authorization(authorisationstring));
-            IFrontendpagePK frontendpagePK;
-            IFrontendpage frontendpage;
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
             Frontendpage_usecases frontendpageusecases = new Frontendpage_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations

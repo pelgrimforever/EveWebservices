@@ -8,32 +8,18 @@
 
 package eve.BusinessObject.table;
 
-import BusinessObject.BLtable;
+import db.*;
 import general.exception.*;
 import java.util.ArrayList;
-import db.SQLMapperFactory;
-import db.SQLparameters;
-import data.gis.shape.*;
-import data.json.piJson;
-import data.json.psqlJsonobject;
-import db.SQLMapper_pgsql;
-import data.interfaces.db.Filedata;
-import eve.BusinessObject.Logic.*;
-import eve.conversion.json.JSONSystemactivity;
+import db.*;
+import db.SQLTqueue;
+import db.SQLreader;
 import eve.conversion.entity.EMsystemactivity;
 import eve.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.ISystemactivitysearch;
 import eve.logicentity.Systemactivity;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import org.postgresql.geometric.PGpoint;
-import org.postgis.PGgeometry;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
  * Business Entity class Bsystemactivity
@@ -45,13 +31,15 @@ import org.json.simple.parser.ParseException;
  *
  * @author Franky Laseure
  */
-public abstract class Bsystemactivity extends BLtable {
+public abstract class Bsystemactivity extends TableIO {
+
+    protected TableIO tableio;
 
     /**
      * Constructor, sets Systemactivity as default Entity
      */
-    public Bsystemactivity() {
-        super(new Systemactivity(), new EMsystemactivity());
+    public Bsystemactivity(SQLreader sqlreader) {
+        super(sqlreader, new EMsystemactivity());
     }
 
     /**
@@ -60,8 +48,8 @@ public abstract class Bsystemactivity extends BLtable {
      * all transactions will commit at same time
      * @param transactionobject: GeneralEntityObjects that holds the transaction queue
      */
-    public Bsystemactivity(BLtable transactionobject) {
-        super(transactionobject, new Systemactivity(), new EMsystemactivity());
+    public Bsystemactivity(TableIO tableio) {
+        super(tableio, new EMsystemactivity());
     }
 
     /**
@@ -116,7 +104,7 @@ public abstract class Bsystemactivity extends BLtable {
      * @throws DBException
      */
     public ArrayList<Systemactivity> getSystemactivitys() throws DBException {
-        return (ArrayList<Systemactivity>)super.getEntities(EMsystemactivity.SQLSelectAll);
+        return (ArrayList<Systemactivity>)tableio.getEntities(EMsystemactivity.SQLSelectAll);
     }
 
     /**
@@ -126,7 +114,7 @@ public abstract class Bsystemactivity extends BLtable {
      * @throws DBException
      */
     public Systemactivity getSystemactivity(ISystemactivityPK systemactivityPK) throws DBException {
-        return (Systemactivity)super.getEntity((SystemactivityPK)systemactivityPK);
+        return (Systemactivity)tableio.getEntity((SystemactivityPK)systemactivityPK);
     }
 
     /**
@@ -136,7 +124,7 @@ public abstract class Bsystemactivity extends BLtable {
      * @throws DBException 
      */
     public ArrayList<Systemactivity> searchsystemactivitys(ISystemactivitysearch search) throws DBException {
-        return (ArrayList<Systemactivity>)this.search(search);
+        return (ArrayList<Systemactivity>)tableio.search(search);
     }
 
     /**
@@ -147,7 +135,7 @@ public abstract class Bsystemactivity extends BLtable {
      * @throws DBException 
      */
     public ArrayList<Systemactivity> searchsystemactivitys(ISystemactivitysearch search, String orderby) throws DBException {
-        return (ArrayList<Systemactivity>)this.search(search, orderby);
+        return (ArrayList<Systemactivity>)tableio.search(search, orderby);
     }
 
     /**
@@ -157,7 +145,7 @@ public abstract class Bsystemactivity extends BLtable {
      * @throws DBException
      */
     public boolean getSystemactivityExists(ISystemactivityPK systemactivityPK) throws DBException {
-        return super.getEntityExists((SystemactivityPK)systemactivityPK);
+        return tableio.getEntityExists((SystemactivityPK)systemactivityPK);
     }
 
     /**
@@ -166,8 +154,8 @@ public abstract class Bsystemactivity extends BLtable {
      * @throws DBException
      * @throws DataException
      */
-    public void insertSystemactivity(ISystemactivity systemactivity) throws DBException, DataException {
-        super.insertEntity(systemactivity);
+    public void insertSystemactivity(SQLTqueue transactionqueue, ISystemactivity systemactivity) throws DBException, DataException {
+        tableio.insertEntity(transactionqueue, systemactivity);
     }
 
     /**
@@ -178,11 +166,11 @@ public abstract class Bsystemactivity extends BLtable {
      * @throws DBException
      * @throws DataException
      */
-    public void insertupdateSystemactivity(ISystemactivity systemactivity) throws DBException, DataException {
+    public void insertupdateSystemactivity(SQLTqueue transactionqueue, ISystemactivity systemactivity) throws DBException, DataException {
         if(this.getSystemactivityExists(systemactivity.getPrimaryKey())) {
-            super.updateEntity(systemactivity);
+            tableio.updateEntity(transactionqueue, systemactivity);
         } else {
-            super.insertEntity(systemactivity);
+            tableio.insertEntity(transactionqueue, systemactivity);
         }
     }
 
@@ -192,8 +180,8 @@ public abstract class Bsystemactivity extends BLtable {
      * @throws DBException
      * @throws DataException
      */
-    public void updateSystemactivity(ISystemactivity systemactivity) throws DBException, DataException {
-        super.updateEntity(systemactivity);
+    public void updateSystemactivity(SQLTqueue transactionqueue, ISystemactivity systemactivity) throws DBException, DataException {
+        tableio.updateEntity(transactionqueue, systemactivity);
     }
 
     /**
@@ -201,9 +189,9 @@ public abstract class Bsystemactivity extends BLtable {
      * @param systemactivity Systemactivity object
      * @throws DBException
      */
-    public void deleteSystemactivity(ISystemactivity systemactivity) throws DBException {
+    public void deleteSystemactivity(SQLTqueue transactionqueue, ISystemactivity systemactivity) throws DBException {
         cascadedeleteSystemactivity(systemactivity.getPrimaryKey());
-        super.deleteEntity(systemactivity);
+        tableio.deleteEntity(transactionqueue, systemactivity);
     }
 
     /**
@@ -232,8 +220,8 @@ public abstract class Bsystemactivity extends BLtable {
      * @param systemPK: foreign key for System
      * @delete all Systemactivity Entity objects for System in database
      */
-    public void delete4system(ISystemPK systemPK) {
-        super.addStatement(EMsystemactivity.SQLDelete4system, systemPK.getSQLprimarykey());
+    public void delete4system(SQLTqueue transactionqueue, ISystemPK systemPK) {
+        tableio.addStatement(transactionqueue, EMsystemactivity.SQLDelete4system, systemPK.getSQLprimarykey());
     }
 
     /**
@@ -242,7 +230,7 @@ public abstract class Bsystemactivity extends BLtable {
      * @throws CustomException
      */
     public ArrayList<Systemactivity> getSystemactivitys4system(ISystemPK systemPK) throws CustomException {
-        return super.getEntities(EMsystemactivity.SQLSelect4system, systemPK.getSQLprimarykey());
+        return tableio.getEntities(EMsystemactivity.SQLSelect4system, systemPK.getSQLprimarykey());
     }
 
     /**
@@ -268,7 +256,7 @@ public abstract class Bsystemactivity extends BLtable {
         if(sortlist.length()>0) {
             sql.append(" order by ").append(sortlist).append(" ").append(sortoperator);
         }
-        return (ArrayList<Systemactivity>)super.getEntities(sql.toString(), sqlparameters);
+        return (ArrayList<Systemactivity>)tableio.getEntities(sql.toString(), sqlparameters);
     }
 
     /**
@@ -277,7 +265,7 @@ public abstract class Bsystemactivity extends BLtable {
      * @param andoroperator "and"/"or"
      * @throws DBException
      */
-    public void delSystemactivity(SQLparameters sqlparameters, String andoroperator) throws DBException {
+    public void delSystemactivity(SQLTqueue transactionqueue, SQLparameters sqlparameters, String andoroperator) throws DBException {
         StringBuilder sql = new StringBuilder("delete from ").append(Systemactivity.table);
         ArrayList<Object[]> parameters = sqlparameters.getParameters();
         int l = parameters.size();
@@ -288,7 +276,7 @@ public abstract class Bsystemactivity extends BLtable {
                 if(i<l-1) sql.append(" ").append(andoroperator).append(" ");
             }
         }
-        this.addStatement(sql.toString(), sqlparameters);
+        tableio.addStatement(transactionqueue, sql.toString(), sqlparameters);
     }
 
 

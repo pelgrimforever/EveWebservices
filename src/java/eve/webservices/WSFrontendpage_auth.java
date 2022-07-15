@@ -2,23 +2,25 @@
  * WSFrontendpage_auth.java
  *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 11.4.2022 9:13
+ * Generated on 13.6.2022 18:20
  *
  */
 
 package eve.webservices;
 
+import base.restservices.RS_json_login;
 import eve.BusinessObject.Logic.*;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
+import eve.interfaces.searchentity.IFrontendpage_authsearch;
 import eve.interfaces.webservice.WSIFrontendpage_auth;
 import eve.logicentity.Frontendpage_auth;
 import eve.searchentity.Frontendpage_authsearch;
-import general.exception.CustomException;
-import general.exception.DataException;
-import general.exception.DBException;
+import eve.usecases.*;
+import general.exception.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.jws.WebMethod;
@@ -27,14 +29,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import eve.usecases.custom.Security_usecases;
 
 /**
  *
  * @author Franky Laseure
  */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSIFrontendpage_auth")
-public class WSFrontendpage_auth implements WSIFrontendpage_auth {
+public class WSFrontendpage_auth extends RS_json_login implements WSIFrontendpage_auth {
 
+    private Security_usecases security_usecases = new Security_usecases();
+    
     private JSONArray toJSONArray(ArrayList frontendpage_auths) {
         JSONArray jsonfrontendpage_auths = new JSONArray();
         Iterator frontendpage_authsI = frontendpage_auths.iterator();
@@ -44,189 +49,206 @@ public class WSFrontendpage_auth implements WSIFrontendpage_auth {
         return jsonfrontendpage_auths;
     }
 
-    /**
-     * Web service operation
-     */
     //@WebMethod(operationName = "getFrontendpage_auths")
     @Override
     public String getFrontendpage_auths() {
         try {
-            BLfrontendpage_auth blfrontendpage_auth = new BLfrontendpage_auth();
-            ArrayList frontendpage_auths = blfrontendpage_auth.getAll();
-            JSONArray jsonfrontendpage_auths = toJSONArray(frontendpage_auths);
-            return jsonfrontendpage_auths.toJSONString();
+            Frontendpage_auth_usecases frontendpage_authusecases = new Frontendpage_auth_usecases(loggedin);
+            return get_all_frontendpage_auth(frontendpage_authusecases);
         }
-        catch(DBException e) {
+        catch(CustomException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "search")
     @Override
-    public String search(String json) {
-        BLfrontendpage_auth blfrontendpage_auth = new BLfrontendpage_auth();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Frontendpage_auth frontendpage_auth;
+    public String search(String jsonstring) {
         try {
-            Frontendpage_authsearch frontendpage_authsearch = JSONFrontendpage_auth.toFrontendpage_authsearch((JSONObject)parser.parse(json));
-            ArrayList frontendpage_auths = blfrontendpage_auth.search(frontendpage_authsearch);
-            JSONArray jsonfrontendpage_auths = toJSONArray(frontendpage_auths);
-            result = jsonfrontendpage_auths.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Frontendpage_auth_usecases frontendpage_authusecases = new Frontendpage_auth_usecases(loggedin);
+            return search_frontendpage_auth(frontendpage_authusecases, json);
         }
-        catch(ParseException e) {
-            result = "";
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-            result = "";
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "getFrontendpage_auth")
     @Override
-    public String getFrontendpage_auth(String json) {
-        BLfrontendpage_auth blfrontendpage_auth = new BLfrontendpage_auth();
-        JSONParser parser = new JSONParser();
-        String result = "";
-        Frontendpage_auth frontendpage_auth;
+    public String getFrontendpage_auth(String jsonstring) {
         try {
-            Frontendpage_authPK frontendpage_authPK = JSONFrontendpage_auth.toFrontendpage_authPK((JSONObject)parser.parse(json));
-            frontendpage_auth = blfrontendpage_auth.getFrontendpage_auth(frontendpage_authPK);
-            if(frontendpage_auth!=null) {
-                result = JSONFrontendpage_auth.toJSON(frontendpage_auth).toJSONString();
-            }
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Frontendpage_auth_usecases frontendpage_authusecases = new Frontendpage_auth_usecases(loggedin);
+            return get_frontendpage_auth_with_primarykey(frontendpage_authusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
+            return null;
         }
-        catch(DBException e) {
-        }
-        return result;
     }
 
     //@WebMethod(operationName = "insertFrontendpage_auth")
     @Override
-    public void insertFrontendpage_auth(String json) {
-        BLfrontendpage_auth blfrontendpage_auth = new BLfrontendpage_auth();
-        JSONParser parser = new JSONParser();
+    public void insertFrontendpage_auth(String jsonstring) {
         try {
-            IFrontendpage_auth frontendpage_auth = JSONFrontendpage_auth.toFrontendpage_auth((JSONObject)parser.parse(json));
-            blfrontendpage_auth.insertFrontendpage_auth(frontendpage_auth);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Frontendpage_auth_usecases frontendpage_authusecases = new Frontendpage_auth_usecases(loggedin);
+            insert_frontendpage_auth(frontendpage_authusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "updateFrontendpage_auth")
     @Override
-    public void updateFrontendpage_auth(String json) {
-        BLfrontendpage_auth blfrontendpage_auth = new BLfrontendpage_auth();
-        JSONParser parser = new JSONParser();
+    public void updateFrontendpage_auth(String jsonstring) {
         try {
-            IFrontendpage_auth frontendpage_auth = JSONFrontendpage_auth.toFrontendpage_auth((JSONObject)parser.parse(json));
-            blfrontendpage_auth.updateFrontendpage_auth(frontendpage_auth);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Frontendpage_auth_usecases frontendpage_authusecases = new Frontendpage_auth_usecases(loggedin);
+            update_frontendpage_auth(frontendpage_authusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DataException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "deleteFrontendpage_auth")
     @Override
-    public void deleteFrontendpage_auth(String json) {
-        BLfrontendpage_auth blfrontendpage_auth = new BLfrontendpage_auth();
-        JSONParser parser = new JSONParser();
+    public void deleteFrontendpage_auth(String jsonstring) {
         try {
-            IFrontendpage_auth frontendpage_auth = JSONFrontendpage_auth.toFrontendpage_auth((JSONObject)parser.parse(json));
-            blfrontendpage_auth.deleteFrontendpage_auth(frontendpage_auth);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Frontendpage_auth_usecases frontendpage_authusecases = new Frontendpage_auth_usecases(loggedin);
+            delete_frontendpage_auth(frontendpage_authusecases, json);
         }
-        catch(ParseException e) {
-        }
-        catch(DBException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getFrontendpage_auths4frontendpage")
     @Override
-    public String getFrontendpage_auths4frontendpage(String json) {
-        BLfrontendpage_auth blfrontendpage_auth = new BLfrontendpage_auth();
-        JSONParser parser = new JSONParser();
-        Frontendpage_auth frontendpage_auth;
+    public String getFrontendpage_auths4frontendpage(String jsonstring) {
         try {
-            IFrontendpagePK frontendpagePK = JSONFrontendpage.toFrontendpagePK((JSONObject)parser.parse(json));
-            ArrayList frontendpage_auths = blfrontendpage_auth.getFrontendpage_auths4frontendpage(frontendpagePK);
-            JSONArray jsonfrontendpage_auths = toJSONArray(frontendpage_auths);
-            return jsonfrontendpage_auths.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Frontendpage_auth_usecases frontendpage_authusecases = new Frontendpage_auth_usecases(loggedin);
+            return get_frontendpage_auth_with_foreignkey_frontendpage(frontendpage_authusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4frontendpage")
     @Override
-    public void delete4frontendpage(String json) {
-        BLfrontendpage_auth blfrontendpage_auth = new BLfrontendpage_auth();
-        JSONParser parser = new JSONParser();
-        Frontendpage_auth frontendpage_auth;
+    public void delete4frontendpage(String jsonstring) {
         try {
-            IFrontendpagePK frontendpagePK = JSONFrontendpage.toFrontendpagePK((JSONObject)parser.parse(json));
-            blfrontendpage_auth.delete4frontendpage(frontendpagePK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Frontendpage_auth_usecases frontendpage_authusecases = new Frontendpage_auth_usecases(loggedin);
+            delete_frontendpage_auth(frontendpage_authusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
     //@WebMethod(operationName = "getFrontendpage_auths4eveuser")
     @Override
-    public String getFrontendpage_auths4eveuser(String json) {
-        BLfrontendpage_auth blfrontendpage_auth = new BLfrontendpage_auth();
-        JSONParser parser = new JSONParser();
-        Frontendpage_auth frontendpage_auth;
+    public String getFrontendpage_auths4eveuser(String jsonstring) {
         try {
-            IEveuserPK eveuserPK = JSONEveuser.toEveuserPK((JSONObject)parser.parse(json));
-            ArrayList frontendpage_auths = blfrontendpage_auth.getFrontendpage_auths4eveuser(eveuserPK);
-            JSONArray jsonfrontendpage_auths = toJSONArray(frontendpage_auths);
-            return jsonfrontendpage_auths.toJSONString();
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Frontendpage_auth_usecases frontendpage_authusecases = new Frontendpage_auth_usecases(loggedin);
+            return get_frontendpage_auth_with_foreignkey_eveuser(frontendpage_authusecases, json);
         }
-        catch(ParseException e) {
-            return null;
-        }
-        catch(DBException e) {
-            return null;
-        }
-        catch(CustomException e) {
+        catch(CustomException | IOException | ParseException e) {
             return null;
         }
     }
 
     //@WebMethod(operationName = "delete4eveuser")
     @Override
-    public void delete4eveuser(String json) {
-        BLfrontendpage_auth blfrontendpage_auth = new BLfrontendpage_auth();
-        JSONParser parser = new JSONParser();
-        Frontendpage_auth frontendpage_auth;
+    public void delete4eveuser(String jsonstring) {
         try {
-            IEveuserPK eveuserPK = JSONEveuser.toEveuserPK((JSONObject)parser.parse(json));
-            blfrontendpage_auth.delete4eveuser(eveuserPK);
+            Consume_jsonstring(jsonstring);
+            setLoggedin(security_usecases.check_authorization(authorisationstring));
+            Frontendpage_auth_usecases frontendpage_authusecases = new Frontendpage_auth_usecases(loggedin);
+            delete_frontendpage_auth(frontendpage_authusecases, json);
         }
-        catch(ParseException e) {
+        catch(CustomException | IOException | ParseException e) {
         }
     }
 
+
+    private String count_records(Frontendpage_auth_usecases frontendpage_authusecases) throws ParseException, CustomException {
+        JSONObject jsoncount = new JSONObject();
+        jsoncount.put("recordcount", frontendpage_authusecases.count());
+        return jsoncount.toJSONString();
+    }
+    
+    private String get_all_frontendpage_auth(Frontendpage_auth_usecases frontendpage_authusecases) throws ParseException, CustomException {
+    	return JSONFrontendpage_auth.toJSONArray(frontendpage_authusecases.get_all()).toJSONString();
+    }
+    
+    private String get_frontendpage_auth_with_primarykey(Frontendpage_auth_usecases frontendpage_authusecases, JSONObject json) throws ParseException, CustomException {
+        IFrontendpage_authPK frontendpage_authPK = (IFrontendpage_authPK)JSONFrontendpage_auth.toFrontendpage_authPK((JSONObject)json.get("frontendpage_authpk"));
+	return JSONFrontendpage_auth.toJSON(frontendpage_authusecases.get_frontendpage_auth_by_primarykey(frontendpage_authPK)).toJSONString();
+    }
+    
+    private String get_frontendpage_auth_with_foreignkey_frontendpage(Frontendpage_auth_usecases frontendpage_authusecases, JSONObject json) throws ParseException, CustomException {
+        IFrontendpagePK frontendpagePK = (IFrontendpagePK)JSONFrontendpage.toFrontendpagePK((JSONObject)json.get("frontendpagepk"));
+        return JSONFrontendpage_auth.toJSONArray(frontendpage_authusecases.get_frontendpage_auth_with_foreignkey_frontendpage(frontendpagePK)).toJSONString();
+    }
+    
+    private String get_frontendpage_auth_with_foreignkey_eveuser(Frontendpage_auth_usecases frontendpage_authusecases, JSONObject json) throws ParseException, CustomException {
+        IEveuserPK eveuserPK = (IEveuserPK)JSONEveuser.toEveuserPK((JSONObject)json.get("eveuserpk"));
+        return JSONFrontendpage_auth.toJSONArray(frontendpage_authusecases.get_frontendpage_auth_with_foreignkey_eveuser(eveuserPK)).toJSONString();
+    }
+    
+    private String search_frontendpage_auth(Frontendpage_auth_usecases frontendpage_authusecases, JSONObject json) throws ParseException, CustomException {
+        IFrontendpage_authsearch search = (IFrontendpage_authsearch)JSONFrontendpage_auth.toFrontendpage_authsearch((JSONObject)json.get("search"));
+        return JSONFrontendpage_auth.toJSONArray(frontendpage_authusecases.search_frontendpage_auth(search)).toJSONString();
+    }
+    
+    private String search_frontendpage_auth_count(Frontendpage_auth_usecases frontendpage_authusecases, JSONObject json) throws ParseException, CustomException {
+        IFrontendpage_authsearch frontendpage_authsearch = (IFrontendpage_authsearch)JSONFrontendpage_auth.toFrontendpage_authsearch((JSONObject)json.get("search"));
+        JSONObject jsonsearchcount = new JSONObject();
+        jsonsearchcount.put("recordcount", frontendpage_authusecases.search_frontendpage_auth_count(frontendpage_authsearch));
+        return jsonsearchcount.toJSONString();
+    }
+
+    private void insert_frontendpage_auth(Frontendpage_auth_usecases frontendpage_authusecases, JSONObject json) throws ParseException, CustomException {
+        IFrontendpage_auth frontendpage_auth = (IFrontendpage_auth)JSONFrontendpage_auth.toFrontendpage_auth((JSONObject)json.get("frontendpage_auth"));
+        frontendpage_authusecases.insertFrontendpage_auth(frontendpage_auth);
+        setReturnstatus("OK");
+    }
+
+    private void update_frontendpage_auth(Frontendpage_auth_usecases frontendpage_authusecases, JSONObject json) throws ParseException, CustomException {
+        IFrontendpage_auth frontendpage_auth = (IFrontendpage_auth)JSONFrontendpage_auth.toFrontendpage_auth((JSONObject)json.get("frontendpage_auth"));
+        frontendpage_authusecases.updateFrontendpage_auth(frontendpage_auth);
+        setReturnstatus("OK");
+    }
+
+    private void delete_frontendpage_auth(Frontendpage_auth_usecases frontendpage_authusecases, JSONObject json) throws ParseException, CustomException {
+        IFrontendpage_auth frontendpage_auth = (IFrontendpage_auth)JSONFrontendpage_auth.toFrontendpage_auth((JSONObject)json.get("frontendpage_auth"));
+        frontendpage_authusecases.deleteFrontendpage_auth(frontendpage_auth);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Frontendpage(Frontendpage_auth_usecases frontendpage_authusecases, JSONObject json) throws ParseException, CustomException {
+        IFrontendpagePK frontendpagePK = (IFrontendpagePK)JSONFrontendpage.toFrontendpagePK((JSONObject)json.get("frontendpagepk"));
+        frontendpage_authusecases.delete_all_containing_Frontendpage(frontendpagePK);
+        setReturnstatus("OK");
+    }
+
+    private void delete_all_containing_Eveuser(Frontendpage_auth_usecases frontendpage_authusecases, JSONObject json) throws ParseException, CustomException {
+        IEveuserPK eveuserPK = (IEveuserPK)JSONEveuser.toEveuserPK((JSONObject)json.get("eveuserpk"));
+        frontendpage_authusecases.delete_all_containing_Eveuser(eveuserPK);
+        setReturnstatus("OK");
+    }
 
 }
 
