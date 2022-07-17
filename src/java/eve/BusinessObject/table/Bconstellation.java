@@ -1,6 +1,6 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 13.6.2022 11:21
+ * Generated on 17.6.2022 13:4
  */
 
 package eve.BusinessObject.table;
@@ -156,8 +156,10 @@ public abstract class Bconstellation extends TableBusinessrules {
      */
     public void cascadedeleteConstellation(SQLTqueue transactionqueue, IConstellationPK constellationPK) {
         BLconstellation_neighbour blconstellation_neighbourNeighbour = new BLconstellation_neighbour(this);
+        blconstellation_neighbourNeighbour.setAuthenticated(isAuthenticated());
         blconstellation_neighbourNeighbour.delete4constellationNeighbour(transactionqueue, constellationPK);
         BLconstellation_neighbour blconstellation_neighbourConstellation = new BLconstellation_neighbour(this);
+        blconstellation_neighbourConstellation.setAuthenticated(isAuthenticated());
         blconstellation_neighbourConstellation.delete4constellationConstellation(transactionqueue, constellationPK);
     }
 

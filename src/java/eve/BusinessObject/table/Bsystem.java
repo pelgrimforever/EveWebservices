@@ -1,6 +1,6 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 13.6.2022 11:21
+ * Generated on 17.6.2022 13:4
  */
 
 package eve.BusinessObject.table;
@@ -162,12 +162,16 @@ public abstract class Bsystem extends TableBusinessrules {
      */
     public void cascadedeleteSystem(SQLTqueue transactionqueue, ISystemPK systemPK) {
         BLsystemjumps blsystemjumpsSystem_end = new BLsystemjumps(this);
+        blsystemjumpsSystem_end.setAuthenticated(isAuthenticated());
         blsystemjumpsSystem_end.delete4systemSystem_end(transactionqueue, systemPK);
         BLsystemjumps blsystemjumpsSystem_start = new BLsystemjumps(this);
+        blsystemjumpsSystem_start.setAuthenticated(isAuthenticated());
         blsystemjumpsSystem_start.delete4systemSystem_start(transactionqueue, systemPK);
         BLtradecombined bltradecombinedBuy_system = new BLtradecombined(this);
+        bltradecombinedBuy_system.setAuthenticated(isAuthenticated());
         bltradecombinedBuy_system.delete4systemBuy_system(transactionqueue, systemPK);
         BLtradecombined bltradecombinedSell_system = new BLtradecombined(this);
+        bltradecombinedSell_system.setAuthenticated(isAuthenticated());
         bltradecombinedSell_system.delete4systemSell_system(transactionqueue, systemPK);
     }
 

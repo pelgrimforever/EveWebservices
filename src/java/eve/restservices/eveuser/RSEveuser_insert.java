@@ -1,5 +1,5 @@
 /*
- * Generated on 13.6.2022 18:20
+ * Generated on 17.6.2022 13:4
  */
 
 package eve.restservices.eveuser;
@@ -58,7 +58,7 @@ public class RSEveuser_insert extends RS_json_login {
             Eveuser_usecases eveuserusecases = new Eveuser_usecases(loggedin);
 //Custom code, do not change this line
 //add here custom operations
-            Frontendpage_auth_usecases frontendpage_auth_usecases = new Frontendpage_auth_usecases(loggedin);
+            frontendpage_auth_usecases = new Frontendpage_auth_usecases(loggedin);
             loggedin = loggedin && isauthorized();
             eveuserusecases = new Eveuser_usecases(loggedin);
 //Custom code, do not change this line   

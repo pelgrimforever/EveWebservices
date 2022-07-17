@@ -1,6 +1,6 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 13.6.2022 11:21
+ * Generated on 17.6.2022 13:4
  */
 
 package eve.BusinessObject.table;
@@ -152,6 +152,7 @@ public abstract class Bshipfitorder extends TableBusinessrules {
      */
     public void cascadedeleteShipfitorder(SQLTqueue transactionqueue, IShipfitorderPK shipfitorderPK) {
         BLshipfitorderselected blshipfitorderselected = new BLshipfitorderselected(this);
+        blshipfitorderselected.setAuthenticated(isAuthenticated());
         blshipfitorderselected.delete4shipfitorder(transactionqueue, shipfitorderPK);
     }
 

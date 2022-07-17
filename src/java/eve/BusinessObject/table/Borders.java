@@ -1,6 +1,6 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 13.6.2022 11:21
+ * Generated on 17.6.2022 13:4
  */
 
 package eve.BusinessObject.table;
@@ -159,14 +159,19 @@ public abstract class Borders extends TableBusinessrules {
      */
     public void cascadedeleteOrders(SQLTqueue transactionqueue, IOrdersPK ordersPK) {
         BLtradecombined_sell bltradecombined_sellBuy_order_id = new BLtradecombined_sell(this);
+        bltradecombined_sellBuy_order_id.setAuthenticated(isAuthenticated());
         bltradecombined_sellBuy_order_id.delete4ordersBuy_order_id(transactionqueue, ordersPK);
         BLtradecombined_sell bltradecombined_sellSell_order_id = new BLtradecombined_sell(this);
+        bltradecombined_sellSell_order_id.setAuthenticated(isAuthenticated());
         bltradecombined_sellSell_order_id.delete4ordersSell_order_id(transactionqueue, ordersPK);
         BLshipfitorderselected blshipfitorderselected = new BLshipfitorderselected(this);
+        blshipfitorderselected.setAuthenticated(isAuthenticated());
         blshipfitorderselected.delete4orders(transactionqueue, ordersPK);
         BLtrade bltradeSell_order_id = new BLtrade(this);
+        bltradeSell_order_id.setAuthenticated(isAuthenticated());
         bltradeSell_order_id.delete4ordersSell_order_id(transactionqueue, ordersPK);
         BLtrade bltradeBuy_order_id = new BLtrade(this);
+        bltradeBuy_order_id.setAuthenticated(isAuthenticated());
         bltradeBuy_order_id.delete4ordersBuy_order_id(transactionqueue, ordersPK);
     }
 

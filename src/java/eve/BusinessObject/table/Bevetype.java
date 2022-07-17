@@ -1,6 +1,6 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 13.6.2022 11:21
+ * Generated on 17.6.2022 13:4
  */
 
 package eve.BusinessObject.table;
@@ -159,26 +159,37 @@ public abstract class Bevetype extends TableBusinessrules {
      */
     public void cascadedeleteEvetype(SQLTqueue transactionqueue, IEvetypePK evetypePK) {
         BLwishlist blwishlist = new BLwishlist(this);
+        blwishlist.setAuthenticated(isAuthenticated());
         blwishlist.delete4evetype(transactionqueue, evetypePK);
         BLmaterialinput blmaterialinput = new BLmaterialinput(this);
+        blmaterialinput.setAuthenticated(isAuthenticated());
         blmaterialinput.delete4evetype(transactionqueue, evetypePK);
         BLbpmaterial blbpmaterialBp = new BLbpmaterial(this);
+        blbpmaterialBp.setAuthenticated(isAuthenticated());
         blbpmaterialBp.delete4evetypeBp(transactionqueue, evetypePK);
         BLbpmaterial blbpmaterialMaterial = new BLbpmaterial(this);
+        blbpmaterialMaterial.setAuthenticated(isAuthenticated());
         blbpmaterialMaterial.delete4evetypeMaterial(transactionqueue, evetypePK);
         BLorder_history_month blorder_history_month = new BLorder_history_month(this);
+        blorder_history_month.setAuthenticated(isAuthenticated());
         blorder_history_month.delete4evetype(transactionqueue, evetypePK);
         BLstock blstock = new BLstock(this);
+        blstock.setAuthenticated(isAuthenticated());
         blstock.delete4evetype(transactionqueue, evetypePK);
         BLorder_history blorder_history = new BLorder_history(this);
+        blorder_history.setAuthenticated(isAuthenticated());
         blorder_history.delete4evetype(transactionqueue, evetypePK);
         BLshipfitmodule blshipfitmodule = new BLshipfitmodule(this);
+        blshipfitmodule.setAuthenticated(isAuthenticated());
         blshipfitmodule.delete4evetype(transactionqueue, evetypePK);
         BLshipfitorder blshipfitorder = new BLshipfitorder(this);
+        blshipfitorder.setAuthenticated(isAuthenticated());
         blshipfitorder.delete4evetype(transactionqueue, evetypePK);
         BLtradecombined bltradecombined = new BLtradecombined(this);
+        bltradecombined.setAuthenticated(isAuthenticated());
         bltradecombined.delete4evetype(transactionqueue, evetypePK);
         BLuserbp bluserbp = new BLuserbp(this);
+        bluserbp.setAuthenticated(isAuthenticated());
         bluserbp.delete4evetype(transactionqueue, evetypePK);
     }
 

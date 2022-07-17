@@ -1,6 +1,6 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 13.6.2022 11:21
+ * Generated on 17.6.2022 13:4
  */
 
 package eve.BusinessObject.table;
@@ -156,12 +156,16 @@ public abstract class Bregion extends TableBusinessrules {
      */
     public void cascadedeleteRegion(SQLTqueue transactionqueue, IRegionPK regionPK) {
         BLorder_history_month blorder_history_month = new BLorder_history_month(this);
+        blorder_history_month.setAuthenticated(isAuthenticated());
         blorder_history_month.delete4region(transactionqueue, regionPK);
         BLorder_history blorder_history = new BLorder_history(this);
+        blorder_history.setAuthenticated(isAuthenticated());
         blorder_history.delete4region(transactionqueue, regionPK);
         BLregion_neighbour blregion_neighbourRegion = new BLregion_neighbour(this);
+        blregion_neighbourRegion.setAuthenticated(isAuthenticated());
         blregion_neighbourRegion.delete4regionRegion(transactionqueue, regionPK);
         BLregion_neighbour blregion_neighbourNeighbour = new BLregion_neighbour(this);
+        blregion_neighbourNeighbour.setAuthenticated(isAuthenticated());
         blregion_neighbourNeighbour.delete4regionNeighbour(transactionqueue, regionPK);
     }
 

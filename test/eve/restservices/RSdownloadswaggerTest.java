@@ -33,7 +33,7 @@ import org.mockito.Spy;
  */
 public class RSdownloadswaggerTest {
     
-    private MarketService marketservice = new MarketService(new SQLreader(), new SQLTwriter(), "");
+    private MarketService marketservice;
     
     @Mock(name="security_usecases")
     private Security_usecases security_usecases_mock = new Security_usecases();
@@ -51,6 +51,7 @@ public class RSdownloadswaggerTest {
     public RSdownloadswaggerTest() {
         MockitoAnnotations.initMocks(this);
         try {
+            marketservice = new MarketService(new SQLreader(), new SQLTwriter(), "");
             doReturn(true).when(security_usecases_mock).check_authorization(anyString());   
             doReturn(true).when(security_usecases_mock).isadmin(anyString());   
             doReturn(true).when(downloadmarket_usecase_mock).isServiceRunning();   

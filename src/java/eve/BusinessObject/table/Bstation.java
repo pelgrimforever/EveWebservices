@@ -1,6 +1,6 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 13.6.2022 11:21
+ * Generated on 17.6.2022 13:4
  */
 
 package eve.BusinessObject.table;
@@ -159,6 +159,7 @@ public abstract class Bstation extends TableBusinessrules {
      */
     public void cascadedeleteStation(SQLTqueue transactionqueue, IStationPK stationPK) {
         BLstation_service blstation_service = new BLstation_service(this);
+        blstation_service.setAuthenticated(isAuthenticated());
         blstation_service.delete4station(transactionqueue, stationPK);
     }
 

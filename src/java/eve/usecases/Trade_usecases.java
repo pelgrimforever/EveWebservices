@@ -1,5 +1,5 @@
 /*
- * Generated on 13.6.2022 11:21
+ * Generated on 17.6.2022 13:4
  */
 
 package eve.usecases;
@@ -9,7 +9,6 @@ import data.conversion.JSONConversion;
 import data.interfaces.db.Filedata;
 import data.gis.shape.piPoint;
 import eve.BusinessObject.Logic.*;
-import eve.conversion.entity.EMtrade;
 import eve.entity.pk.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;

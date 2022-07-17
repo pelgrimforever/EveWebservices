@@ -32,7 +32,8 @@ public class BLfrontendpage_auth extends Bfrontendpage_auth {
     
     public BLfrontendpage_auth(TableBusinessrules businessrules) {
         super(businessrules);
-        tableio.setLogginrequired(isprivatetable);
+        setLogginrequired(isprivatetable);
+        setAuthenticated(businessrules.isAuthenticated());
     }
 
 }

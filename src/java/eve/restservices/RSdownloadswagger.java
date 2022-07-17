@@ -75,22 +75,24 @@ public class RSdownloadswagger extends RS_json_admin {
 
     private void build_JSON_response_marketdetails(JSONArray jsonregions, JSONArray jsonmessages, JSONObject jsonstatus) {
         MarketStatus status = downloadmarket_usecase.getStatus();
-        status.getRegions().forEach((regionid, regionstatus) -> {
-            JSONObject jsonregion = new JSONObject();
-            jsonregion.put("region", regionid);
-            jsonregion.put("name", regionstatus.getName());
-            jsonregion.put("totalpages", regionstatus.getTotalpages());
-            jsonregion.put("orders", regionstatus.getOrders());
-            jsonregion.put("page", regionstatus.getPage());
-            jsonregion.put("done", regionstatus.isDone());
-            jsonregions.add(jsonregion);
-        });
-        Iterator<String> messagesI = status.getMessages().iterator();
-        while(messagesI.hasNext())
-            jsonmessages.add(messagesI.next());
-        jsonstatus.put("done", status.isDone());
-        if(status.isDone())
-            downloadmarket_usecase.resetMarket();
+        if(status!=null) {
+            status.getRegions().forEach((regionid, regionstatus) -> {
+                JSONObject jsonregion = new JSONObject();
+                jsonregion.put("region", regionid);
+                jsonregion.put("name", regionstatus.getName());
+                jsonregion.put("totalpages", regionstatus.getTotalpages());
+                jsonregion.put("orders", regionstatus.getOrders());
+                jsonregion.put("page", regionstatus.getPage());
+                jsonregion.put("done", regionstatus.isDone());
+                jsonregions.add(jsonregion);
+            });
+            Iterator<String> messagesI = status.getMessages().iterator();
+            while(messagesI.hasNext())
+                jsonmessages.add(messagesI.next());
+            jsonstatus.put("done", status.isDone());
+            if(status.isDone())
+                downloadmarket_usecase.resetMarket();
+        }
     }
     
     public String returnstatus(String status) {
