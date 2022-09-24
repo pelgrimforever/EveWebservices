@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IEveusersearch;
 import eve.logicentity.Eveuser;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Beveuser extends TableBusinessrules {
 
     public Beveuser(SQLreader sqlreader) {
@@ -147,10 +145,6 @@ public abstract class Beveuser extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where eveuserPK is used in a primary key
-     * @param eveuserPK: Eveuser primary key
-     */
     public void cascadedeleteEveuser(SQLTqueue transactionqueue, IEveuserPK eveuserPK) {
         BLfrontendpage_auth blfrontendpage_auth = new BLfrontendpage_auth(this);
         blfrontendpage_auth.setAuthenticated(isAuthenticated());

@@ -1,7 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 12.6.2022 10:8
- *
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.view;
@@ -14,9 +14,6 @@ import java.util.ArrayList;
 import eve.logicview.Order_history_maxdate;
 import java.sql.Time;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Border_history_maxdate extends ViewBusinessrules {
 
     public Border_history_maxdate(SQLreader sqlreader) {

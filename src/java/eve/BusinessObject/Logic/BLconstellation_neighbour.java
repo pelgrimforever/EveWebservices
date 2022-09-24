@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 24.4.2021 15:45
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -14,9 +15,6 @@ import eve.BusinessObject.table.Bconstellation_neighbour;
 import eve.conversion.entity.EMconstellation_neighbour;
 import general.exception.DataException;
 
-/**
- * @author Franky Laseure
- */
 public class BLconstellation_neighbour extends Bconstellation_neighbour {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data

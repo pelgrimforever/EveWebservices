@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.ITypegroupsearch;
 import eve.logicentity.Typegroup;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Btypegroup extends TableBusinessrules {
 
     public Btypegroup(SQLreader sqlreader) {
@@ -150,10 +148,6 @@ public abstract class Btypegroup extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where typegroupPK is used in a primary key
-     * @param typegroupPK: Typegroup primary key
-     */
     public void cascadedeleteTypegroup(SQLTqueue transactionqueue, ITypegroupPK typegroupPK) {
     }
 

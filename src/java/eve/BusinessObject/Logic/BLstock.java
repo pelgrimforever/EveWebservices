@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 24.7.2021 17:21
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -19,9 +20,6 @@ import eve.logicentity.Stocktrade;
 import general.exception.DataException;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLstock extends Bstock {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data

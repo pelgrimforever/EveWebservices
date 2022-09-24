@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 16.11.2021 15:46
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -14,9 +15,6 @@ import eve.logicentity.Wishlist;
 import eve.BusinessObject.table.Bwishlist;
 import general.exception.DataException;
 
-/**
- * @author Franky Laseure
- */
 public class BLwishlist extends Bwishlist {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data

@@ -1,5 +1,6 @@
 /*
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.usecases;
@@ -20,13 +21,11 @@ import eve.logicview.*;
 import eve.usecases.custom.*;
 import general.exception.*;
 import java.sql.Date;
+import java.io.*;
 import java.util.*;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
-/**
- * @author Franky Laseure
- */
 public class Order_history_month_usecases {
 
     private boolean loggedin = false;

@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IRegionsearch;
 import eve.logicentity.Region;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Bregion extends TableBusinessrules {
 
     public Bregion(SQLreader sqlreader) {
@@ -150,10 +148,6 @@ public abstract class Bregion extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where regionPK is used in a primary key
-     * @param regionPK: Region primary key
-     */
     public void cascadedeleteRegion(SQLTqueue transactionqueue, IRegionPK regionPK) {
         BLorder_history_month blorder_history_month = new BLorder_history_month(this);
         blorder_history_month.setAuthenticated(isAuthenticated());

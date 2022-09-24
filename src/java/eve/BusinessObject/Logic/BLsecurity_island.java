@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 24.4.2021 17:5
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -15,9 +16,6 @@ import eve.conversion.entity.EMsecurity_island;
 import eve.conversion.entity.EMsystem;
 import general.exception.DataException;
 
-/**
- * @author Franky Laseure
- */
 public class BLsecurity_island extends Bsecurity_island {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data

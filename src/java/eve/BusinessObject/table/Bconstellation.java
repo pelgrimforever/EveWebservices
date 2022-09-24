@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IConstellationsearch;
 import eve.logicentity.Constellation;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Bconstellation extends TableBusinessrules {
 
     public Bconstellation(SQLreader sqlreader) {
@@ -150,10 +148,6 @@ public abstract class Bconstellation extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where constellationPK is used in a primary key
-     * @param constellationPK: Constellation primary key
-     */
     public void cascadedeleteConstellation(SQLTqueue transactionqueue, IConstellationPK constellationPK) {
         BLconstellation_neighbour blconstellation_neighbourNeighbour = new BLconstellation_neighbour(this);
         blconstellation_neighbourNeighbour.setAuthenticated(isAuthenticated());

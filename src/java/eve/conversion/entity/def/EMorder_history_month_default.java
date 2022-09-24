@@ -1,6 +1,7 @@
 /*
  * Created on Okt 8, 2021
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 package eve.conversion.entity.def;
 
@@ -18,9 +19,6 @@ import java.sql.Time;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-/**
- * @author Franky Laseure
- */
 public class EMorder_history_month_default implements eveDatabaseproperties, TableMapper {
     
     public static final String SQLWhere1 = "region = :order_history_month.region: and evetype = :order_history_month.evetype: and year = :order_history_month.year: and month = :order_history_month.month:";

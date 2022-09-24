@@ -1,6 +1,7 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.servlets.trade;
@@ -22,9 +23,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * @author Franky Laseure
- */
 @WebServlet(name="Trade_select", urlPatterns={"/eve.Trade_select"})
 public class Trade_select extends SecurityDataServlet {
    

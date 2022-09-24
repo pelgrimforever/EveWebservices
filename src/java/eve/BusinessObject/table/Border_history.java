@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IOrder_historysearch;
 import eve.logicentity.Order_history;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Border_history extends TableBusinessrules {
 
     public Border_history(SQLreader sqlreader) {
@@ -146,10 +144,6 @@ public abstract class Border_history extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where order_historyPK is used in a primary key
-     * @param order_historyPK: Order_history primary key
-     */
     public void cascadedeleteOrder_history(SQLTqueue transactionqueue, IOrder_historyPK order_historyPK) {
     }
 

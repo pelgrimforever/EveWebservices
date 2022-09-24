@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 18.8.2021 9:31
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -18,9 +19,6 @@ import eve.logicview.View_stocktrade_system;
 import general.exception.DataException;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_stocktrade_system extends Bview_stocktrade_system {
 //Metacoder: NO AUTHOMATIC UPDATE
 	

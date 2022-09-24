@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 18.6.2021 14:35
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -19,9 +20,6 @@ import eve.logicentity.Syssettings;
 import general.exception.DataException;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_order extends Bview_order {
 //Metacoder: NO AUTHOMATIC UPDATE
 	

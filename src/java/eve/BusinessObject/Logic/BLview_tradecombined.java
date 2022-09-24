@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 23.10.2021 18:1
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -14,9 +15,6 @@ import eve.entity.pk.TradecombinedPK;
 import eve.logicview.View_tradecombined;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_tradecombined extends Bview_tradecombined {
 //Metacoder: NO AUTHOMATIC UPDATE
 	

@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 18.4.2021 16:59
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -22,9 +23,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import org.json.simple.JSONObject;
 
-/**
- * @author Franky Laseure
- */
 public class BLstargate extends Bstargate {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data

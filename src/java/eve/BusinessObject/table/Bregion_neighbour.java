@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IRegion_neighboursearch;
 import eve.logicentity.Region_neighbour;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Bregion_neighbour extends TableBusinessrules {
 
     public Bregion_neighbour(SQLreader sqlreader) {
@@ -145,10 +143,6 @@ public abstract class Bregion_neighbour extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where region_neighbourPK is used in a primary key
-     * @param region_neighbourPK: Region_neighbour primary key
-     */
     public void cascadedeleteRegion_neighbour(SQLTqueue transactionqueue, IRegion_neighbourPK region_neighbourPK) {
     }
 

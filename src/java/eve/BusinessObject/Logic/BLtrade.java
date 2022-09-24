@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 1.5.2021 17:54
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -17,9 +18,6 @@ import eve.logicentity.Trade;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/**
- * @author Franky Laseure
- */
 public class BLtrade extends Btrade {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data

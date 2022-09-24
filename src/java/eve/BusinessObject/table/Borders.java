@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IOrderssearch;
 import eve.logicentity.Orders;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Borders extends TableBusinessrules {
 
     public Borders(SQLreader sqlreader) {
@@ -153,10 +151,6 @@ public abstract class Borders extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where ordersPK is used in a primary key
-     * @param ordersPK: Orders primary key
-     */
     public void cascadedeleteOrders(SQLTqueue transactionqueue, IOrdersPK ordersPK) {
         BLtradecombined_sell bltradecombined_sellBuy_order_id = new BLtradecombined_sell(this);
         bltradecombined_sellBuy_order_id.setAuthenticated(isAuthenticated());

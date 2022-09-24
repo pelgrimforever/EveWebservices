@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 6.4.2021 15:56
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -15,9 +16,6 @@ import eve.BusinessObject.table.Bgraphic;
 import general.exception.DataException;
 import org.json.simple.JSONObject;
 
-/**
- * @author Franky Laseure
- */
 public class BLgraphic extends Bgraphic {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data

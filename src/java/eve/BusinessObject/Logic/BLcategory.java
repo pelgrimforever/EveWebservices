@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 5.4.2021 17:46
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -15,9 +16,6 @@ import eve.BusinessObject.table.Bcategory;
 import general.exception.DataException;
 import org.json.simple.JSONObject;
 
-/**
- * @author Franky Laseure
- */
 public class BLcategory extends Bcategory {
 //Metacoder: NO AUTHOMATIC UPDATE
 

@@ -1,5 +1,6 @@
 /*
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.usecases;
@@ -20,9 +21,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import org.json.simple.parser.ParseException;
 
-/**
- * @author Franky Laseure
- */
 public class View_userbp_usecases {
 
     private boolean loggedin = false;

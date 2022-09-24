@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 3.4.2021 17:22
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -20,9 +21,6 @@ import java.util.Iterator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-/**
- * @author Franky Laseure
- */
 public class BLregion extends Bregion {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data

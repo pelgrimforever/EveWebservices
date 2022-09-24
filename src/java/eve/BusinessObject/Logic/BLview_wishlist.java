@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 16.11.2021 15:51
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -12,9 +13,6 @@ import eve.BusinessObject.view.Bview_wishlist;
 import eve.conversion.entity.EMview_wishlist;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_wishlist extends Bview_wishlist {
 //Metacoder: NO AUTHOMATIC UPDATE
 	

@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 6.4.2021 17:24
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -16,9 +17,6 @@ import eve.entity.pk.Market_groupPK;
 import general.exception.DataException;
 import org.json.simple.JSONObject;
 
-/**
- * @author Franky Laseure
- */
 public class BLmarket_group extends Bmarket_group {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data

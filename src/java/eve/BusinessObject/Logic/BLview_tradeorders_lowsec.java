@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 7.11.2021 16:9
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -11,9 +12,6 @@ import eve.BusinessObject.view.Bview_tradeorders_lowsec;
 import eve.conversion.entity.EMview_tradeorders_lowsec;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_tradeorders_lowsec extends Bview_tradeorders_lowsec {
 //Metacoder: NO AUTHOMATIC UPDATE
 	

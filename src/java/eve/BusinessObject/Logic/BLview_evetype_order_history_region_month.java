@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 11.1.2022 21:46
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -19,9 +20,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_evetype_order_history_region_month extends Bview_evetype_order_history_region_month {
 //Metacoder: NO AUTHOMATIC UPDATE
 	

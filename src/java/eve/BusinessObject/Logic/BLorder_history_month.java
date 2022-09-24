@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 13.11.2021 15:8
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -14,9 +15,6 @@ import eve.BusinessObject.table.Border_history_month;
 import eve.conversion.entity.EMorder_history_month;
 import general.exception.DataException;
 
-/**
- * @author Franky Laseure
- */
 public class BLorder_history_month extends Border_history_month {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data

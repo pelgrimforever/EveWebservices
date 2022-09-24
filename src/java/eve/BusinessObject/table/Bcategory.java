@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.ICategorysearch;
 import eve.logicentity.Category;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Bcategory extends TableBusinessrules {
 
     public Bcategory(SQLreader sqlreader) {
@@ -150,10 +148,6 @@ public abstract class Bcategory extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where categoryPK is used in a primary key
-     * @param categoryPK: Category primary key
-     */
     public void cascadedeleteCategory(SQLTqueue transactionqueue, ICategoryPK categoryPK) {
     }
 

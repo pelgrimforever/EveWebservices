@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 9.0.2022 7:52
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -13,9 +14,6 @@ import eve.conversion.entity.EMview_contractitem;
 import eve.entity.pk.ContractPK;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_contractitem extends Bview_contractitem {
 //Metacoder: NO AUTHOMATIC UPDATE
 	

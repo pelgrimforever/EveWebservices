@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 19.11.2021 16:16
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -16,9 +17,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_shipfitorder extends Bview_shipfitorder {
 //Metacoder: NO AUTHOMATIC UPDATE
 	

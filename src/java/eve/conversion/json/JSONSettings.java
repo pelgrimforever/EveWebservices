@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
  
 package eve.conversion.json;
@@ -23,9 +24,6 @@ import java.util.Iterator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-/**
- * @author Franky Laseure
- */
 public class JSONSettings {
     
     public static JSONArray toJSONArray(ArrayList settingss) {

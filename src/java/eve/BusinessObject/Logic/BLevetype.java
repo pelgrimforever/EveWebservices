@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 6.4.2021 15:56
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -26,9 +27,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import org.json.simple.JSONObject;
 
-/**
- * @author Franky Laseure
- */
 public class BLevetype extends Bevetype {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data
@@ -43,7 +41,7 @@ public class BLevetype extends Bevetype {
         tableio.setLogginrequired(isprivatetable);
     }
 
-    public Evetype updateEvetype(SQLTqueue transactionqueue, JSONObject jsontypedetails) throws DBException, DataException {
+    public Evetype convert2Evetype(JSONObject jsontypedetails) throws DBException, DataException {
         Evetype evetype = new Evetype(JSONConversion.getLong(jsontypedetails, "type_id"));
         evetype.setName(JSONConversion.getString(jsontypedetails, "name"));
         evetype.setDescription(JSONConversion.getString(jsontypedetails, "description"));
@@ -58,7 +56,6 @@ public class BLevetype extends Bevetype {
         if(jsontypedetails.containsKey("portion_size")) evetype.setPortion_size(JSONConversion.getint(jsontypedetails, "portion_size"));
         if(jsontypedetails.containsKey("radius")) evetype.setRadius(JSONConversion.getDouble(jsontypedetails, "radius"));
         if(jsontypedetails.containsKey("volume")) evetype.setVolume(JSONConversion.getDouble(jsontypedetails, "volume"));
-        insertupdateEvetype(transactionqueue, evetype);
         return evetype;
     }
 

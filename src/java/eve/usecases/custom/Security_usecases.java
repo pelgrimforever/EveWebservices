@@ -3,6 +3,7 @@ package eve.usecases.custom;
 import base.servlets.DataHandler;
 import base.servlets.Securitycheck;
 import static base.servlets.Securitycheck.decode;
+import static base.servlets.Securitycheck.filterPassword;
 import static base.servlets.Securitycheck.filterUsername;
 import general.exception.DatahandlerException;
 import java.io.IOException;
@@ -18,6 +19,11 @@ public class Security_usecases {
     public String getUsername(String encryptedstring) throws IOException {
         String decoded = decode(encryptedstring);
         return filterUsername(decoded);
+    }
+    
+    public String getEncryptedpassword(String encryptedstring) throws IOException {
+        String decoded = decode(encryptedstring);
+        return filterPassword(decoded);
     }
     
     public boolean check_authorization(String authorisationstring) throws IOException, DatahandlerException {

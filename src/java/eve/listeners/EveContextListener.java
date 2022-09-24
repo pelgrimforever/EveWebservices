@@ -1,9 +1,7 @@
 /*
- * EveContextListener.java
- *
  * Created on Dec 23, 2012, 6:22 PM
- * Generated on 12.6.2022 10:8
- *
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.listeners;
@@ -15,10 +13,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-/**
- *
- * @author Laseure Franky
- */
 @WebListener()
 public class EveContextListener implements ServletContextListener, Contextparameters {
    

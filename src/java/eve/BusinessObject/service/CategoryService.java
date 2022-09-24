@@ -10,6 +10,7 @@ import eve.data.Swagger;
 import eve.entity.pk.CategoryPK;
 import eve.entity.pk.EvetypePK;
 import eve.entity.pk.TypegroupPK;
+import eve.logicentity.Evetype;
 import general.exception.DBException;
 import general.exception.DataException;
 import java.util.ArrayList;
@@ -191,7 +192,8 @@ public class CategoryService implements Runnable {
 
     private void load_and_save_evetype_details() throws DBException, DataException {
         jsonevetypedetails = Swagger.getType(evetypeid);
-        blevetype.updateEvetype(transactionqueue, jsonevetypedetails);
+        Evetype evetype = blevetype.convert2Evetype(jsonevetypedetails);
+        blevetype.insertupdateEvetype(transactionqueue, evetype);
         evetypecounter++;
         if(evetypecounter==100)
             save_evetype_buffer();

@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 30.11.2021 19:35
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -11,9 +12,6 @@ import eve.logicview.View_system;
 import eve.BusinessObject.view.Bview_system;
 import eve.conversion.entity.EMview_system;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_system extends Bview_system {
 //Metacoder: NO AUTHOMATIC UPDATE
 	

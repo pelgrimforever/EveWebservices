@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IOrder_history_monthsearch;
 import eve.logicentity.Order_history_month;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Border_history_month extends TableBusinessrules {
 
     public Border_history_month(SQLreader sqlreader) {
@@ -147,10 +145,6 @@ public abstract class Border_history_month extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where order_history_monthPK is used in a primary key
-     * @param order_history_monthPK: Order_history_month primary key
-     */
     public void cascadedeleteOrder_history_month(SQLTqueue transactionqueue, IOrder_history_monthPK order_history_monthPK) {
     }
 

@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 2.11.2021 21:14
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -13,9 +14,6 @@ import eve.entity.pk.SystemPK;
 import eve.logicview.View_tradesystem;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_tradesystem extends Bview_tradesystem {
 //Metacoder: NO AUTHOMATIC UPDATE
 	

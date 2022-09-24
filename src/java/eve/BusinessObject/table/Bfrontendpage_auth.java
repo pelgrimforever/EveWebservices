@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IFrontendpage_authsearch;
 import eve.logicentity.Frontendpage_auth;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Bfrontendpage_auth extends TableBusinessrules {
 
     public Bfrontendpage_auth(SQLreader sqlreader) {
@@ -145,10 +143,6 @@ public abstract class Bfrontendpage_auth extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where frontendpage_authPK is used in a primary key
-     * @param frontendpage_authPK: Frontendpage_auth primary key
-     */
     public void cascadedeleteFrontendpage_auth(SQLTqueue transactionqueue, IFrontendpage_authPK frontendpage_authPK) {
     }
 

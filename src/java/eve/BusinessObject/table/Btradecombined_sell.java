@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.ITradecombined_sellsearch;
 import eve.logicentity.Tradecombined_sell;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Btradecombined_sell extends TableBusinessrules {
 
     public Btradecombined_sell(SQLreader sqlreader) {
@@ -148,10 +146,6 @@ public abstract class Btradecombined_sell extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where tradecombined_sellPK is used in a primary key
-     * @param tradecombined_sellPK: Tradecombined_sell primary key
-     */
     public void cascadedeleteTradecombined_sell(SQLTqueue transactionqueue, ITradecombined_sellPK tradecombined_sellPK) {
     }
 

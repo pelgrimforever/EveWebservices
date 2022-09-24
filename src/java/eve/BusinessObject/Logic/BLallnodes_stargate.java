@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 15.11.2021 15:0
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -14,9 +15,6 @@ import eve.BusinessObject.table.Ballnodes_stargate;
 import eve.conversion.entity.EMallnodes_stargate;
 import general.exception.DataException;
 
-/**
- * @author Franky Laseure
- */
 public class BLallnodes_stargate extends Ballnodes_stargate {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data

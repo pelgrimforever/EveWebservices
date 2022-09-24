@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 17.11.2021 15:41
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -11,9 +12,6 @@ import eve.BusinessObject.view.Bview_shipfit;
 import eve.conversion.entity.EMview_shipfit;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_shipfit extends Bview_shipfit {
 //Metacoder: NO AUTHOMATIC UPDATE
 	

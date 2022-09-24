@@ -1,9 +1,7 @@
 /*
- * WSAllnodes_stargate.java
- *
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 13.6.2022 18:20
- *
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.webservices;
@@ -31,10 +29,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import eve.usecases.custom.Security_usecases;
 
-/**
- *
- * @author Franky Laseure
- */
 @WebService(endpointInterface = "eve.interfaces.webservice.WSIAllnodes_stargate")
 public class WSAllnodes_stargate extends RS_json_login implements WSIAllnodes_stargate {
 

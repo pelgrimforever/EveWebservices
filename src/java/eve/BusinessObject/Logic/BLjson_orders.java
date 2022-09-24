@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 5.5.2021 16:49
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -12,9 +13,6 @@ import db.*;
 import eve.BusinessObject.table.Bjson_orders;
 import general.exception.DataException;
 
-/**
- * @author Franky Laseure
- */
 public class BLjson_orders extends Bjson_orders {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data

@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IUsersettingssearch;
 import eve.logicentity.Usersettings;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Busersettings extends TableBusinessrules {
 
     public Busersettings(SQLreader sqlreader) {
@@ -148,10 +146,6 @@ public abstract class Busersettings extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where usersettingsPK is used in a primary key
-     * @param usersettingsPK: Usersettings primary key
-     */
     public void cascadedeleteUsersettings(SQLTqueue transactionqueue, IUsersettingsPK usersettingsPK) {
     }
 

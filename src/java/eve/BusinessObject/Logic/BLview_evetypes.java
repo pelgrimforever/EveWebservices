@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 18.11.2021 18:23
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -13,9 +14,6 @@ import eve.conversion.entity.EMview_evetypes;
 import eve.searchentity.View_evetypessearch;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_evetypes extends Bview_evetypes {
 //Metacoder: NO AUTHOMATIC UPDATE
     

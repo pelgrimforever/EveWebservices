@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 11.11.2021 13:40
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -13,9 +14,6 @@ import eve.BusinessObject.table.Bsyssettings;
 import eve.entity.pk.SyssettingsPK;
 import general.exception.DataException;
 
-/**
- * @author Franky Laseure
- */
 public class BLsyssettings extends Bsyssettings {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data

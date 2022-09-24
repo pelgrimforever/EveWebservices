@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 19.11.2021 16:16
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -18,9 +19,6 @@ import eve.interfaces.logicentity.IShipfitorder;
 import general.exception.DataException;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLshipfitorder extends Bshipfitorder {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data

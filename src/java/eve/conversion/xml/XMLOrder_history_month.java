@@ -1,9 +1,7 @@
 /*
- * XMLOrder_history_month.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 5.5.2022 8:27
- *
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
  
 package eve.conversion.xml;
@@ -24,16 +22,8 @@ import java.sql.Time;
 import java.util.Iterator;
 import org.jdom2.Element;
 
-/**
- *
- * @author Franky Laseure
- */
 public class XMLOrder_history_month {
     
-    /**
-     * 
-     * @return all keys and fields as XML
-     */
     public static void addXML(Element PK, IOrder_history_monthPK order_history_monthPK) {
         PK.addContent(XMLElement.newContent("region", order_history_monthPK.getRegion()));
         PK.addContent(XMLElement.newContent("evetype", order_history_monthPK.getEvetype()));
@@ -41,10 +31,6 @@ public class XMLOrder_history_month {
         PK.addContent(XMLElement.newContent("month", order_history_monthPK.getMonth()));
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static void addXML(Element Order_history_monthXML, Order_history_month order_history_month) {
         Element PK = XMLElement.newContent("PK", "");
         addXML(PK, order_history_month.getPrimaryKey());

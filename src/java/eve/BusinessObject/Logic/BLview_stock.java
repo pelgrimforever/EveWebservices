@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 25.7.2021 16:36
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -11,9 +12,6 @@ import eve.conversion.entity.EMview_stock;
 import general.exception.DBException;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_stock extends Bview_stock {
 //Metacoder: NO AUTHOMATIC UPDATE
 	

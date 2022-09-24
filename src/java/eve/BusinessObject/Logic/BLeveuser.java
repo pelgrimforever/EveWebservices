@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 13.1.2022 17:48
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -14,9 +15,6 @@ import eve.BusinessObject.table.Beveuser;
 import general.exception.DataException;
 import java.sql.Date;
 
-/**
- * @author Franky Laseure
- */
 public class BLeveuser extends Beveuser {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data

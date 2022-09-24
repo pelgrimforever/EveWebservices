@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.ISystemsearch;
 import eve.logicentity.System;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Bsystem extends TableBusinessrules {
 
     public Bsystem(SQLreader sqlreader) {
@@ -156,10 +154,6 @@ public abstract class Bsystem extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where systemPK is used in a primary key
-     * @param systemPK: System primary key
-     */
     public void cascadedeleteSystem(SQLTqueue transactionqueue, ISystemPK systemPK) {
         BLsystemjumps blsystemjumpsSystem_end = new BLsystemjumps(this);
         blsystemjumpsSystem_end.setAuthenticated(isAuthenticated());

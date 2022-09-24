@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 16.1.2022 20:53
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -13,9 +14,6 @@ import eve.BusinessObject.table.Bfrontendpage_auth;
 import eve.entity.pk.Frontendpage_authPK;
 import general.exception.DataException;
 
-/**
- * @author Franky Laseure
- */
 public class BLfrontendpage_auth extends Bfrontendpage_auth {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data

@@ -1,9 +1,7 @@
 /*
- * Requesthandler.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 12.6.2022 10:8
- *
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.HTTPtools.fileUpload;
@@ -29,14 +27,6 @@ import java.util.HashMap;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Requesthandler class
- * Load form parameters and files
- * methods to transfor request parameters to java types
- * methods to save files
- *
- * @author Franky Laseure
- */
 public class Requesthandler {
 
     //String formdata
@@ -63,13 +53,6 @@ public class Requesthandler {
     private String boundary = null;
     private String header_line = null;
   
-    /**
-     * get saved Requesthandler in request attribute
-     * if null, create new Requesthandler
-     * @param request: HttpServletRequest from browser or from redirect
-     * @return initialized Requesthandler
-     * @throws IOException
-     */
     public static Requesthandler get(HttpServletRequest request) throws IOException {
         if(request.getAttribute("parser")==null) {
             return new Requesthandler(request);
@@ -78,11 +61,6 @@ public class Requesthandler {
         }
     }
 
-    /**
-     * Constructor
-     * analyse HttpServletRequest and set all parameters and files
-     * put Requesthandler object in Attribute "parser" of request object
-     */
     public Requesthandler(HttpServletRequest request) throws IOException {
         //Get properties from request header
         accept = request.getHeader("accept");
@@ -204,24 +182,11 @@ public class Requesthandler {
         request.setAttribute("parser", this);
     }
 
-    /**
-     * save file (select by name) in given directory
-     * @param name: filename
-     * @param dir: directory to save file in
-     * @return true if successfull
-     */
     public boolean saveFile(String name, String dir) throws IOException {
         String filename = ((Filedata)filedata.get(name)).getFilename();
         return saveFileAs(name, dir, filename);
     }
 
-    /**
-     * save file (select by name) in given directory as filename
-     * @param name: filename
-     * @param dir: directory to save file in
-     * @param filename: new filename to use as local name
-     * @return true if successfull
-     */
     public boolean saveFileAs(String name, String dir, String filename) throws IOException {
         boolean result = false;
         File destination = new File(dir);
@@ -242,19 +207,10 @@ public class Requesthandler {
         return result;
     }
 
-    /**
-     * does parameter exist
-     * @param parameter: parameter name
-     * @return true if exists
-     */
     public boolean getParemeterExist(String parameter) {
         return formdata.containsKey(parameter);
     }
 
-    /**
-     * parameter value
-     * @return Parameter value as String
-     */
     public String getParameter(String parameter) {
         String returnvalue = (String)formdata.get(parameter);
         if(returnvalue!=null)
@@ -262,188 +218,93 @@ public class Requesthandler {
         return returnvalue;
     }
 
-    /**
-     * accept header value
-     * @return accept header value
-     */
     public String getaccept() {
         return accept;
     }
 
-    /**
-     * referer header value
-     * @return referer header value
-     */
     public String getreferer() {
         return referer;
     }
 
-    /**
-     * accept language header value
-     * @return accept language header value
-     */
     public String getaccept_language() {
         return accept_language;
     }
 
-    /**
-     * content type header value
-     * @return content type header value
-     */
     public String getcontent_type() {
         return content_type;
     }
 
-    /**
-     * accept encoding header value
-     * @return accept encoding header value
-     */
     public String getaccept_encoding() {
         return accept_encoding;
     }
 
-    /**
-     * user agent header value
-     * @return user agent header value
-     */
     public String getuser_agent() {
         return user_agent;
     }
 
-    /**
-     * host header value
-     * @return host header value
-     */
     public String gethost() {
         return host;
     }
 
-    /**
-     * content length header value
-     * @return content length header value
-     */
     public String getcontent_length() {
         return content_length;
     }
 
-    /**
-     * connection header value
-     * @return connection header value
-     */
     public String getconnection() {
         return connection;
     }
 
-    /**
-     * cache control header value
-     * @return cache control header value
-     */
     public String getcache_control() {
         return cache_control;
     }
 
-    /**
-     * context path header value
-     * @return context path header value
-     */
     public String getContextPath() {
         return ContextPath;
     }
 
-    /**
-     * boundary header value
-     * @return boundary header value
-     */
     public String getboundary() {
         return boundary;
     }
 
-    /**
-     * Content disposition of file
-     * @param name: filename from client
-     * @return Content disposition of file
-     */
     public String getContent_Disposition(String name) {
         return ((Filedata)filedata.get(name)).getContent_Disposition();
     }
 
-    /**
-     * headerline header value
-     * @return headerline header value
-     */
     public String getHeader_Line() {
         return header_line;
     }
 
-    /**
-     * File content for file
-     * @param name: filename from client
-     * @return File content
-     */
     public String getfilecontent(String name) {
         return ((Filedata)filedata.get(name)).getFilecontent();
     }
 
-    /**
-     * full filename of file
-     * @param name: filename from client
-     * @return full filename (with path)
-     */
     public String getfullFilename(String name) {
         String filename = ((Filedata)filedata.get(name)).getFilename();
         return filename;
     }
 
-    /**
-     * Filename of file
-     * @param name: filename from client
-     * @return filename (without path)
-     */
     public String getFilename(String name) {
         String filename = ((Filedata)filedata.get(name)).getFilename();
         return filename.substring(filename.lastIndexOf("\\") + 1);
     }
 
-    /**
-     * Dirname of file
-     * @param name: filename from client
-     * @return directory of file
-     */
     public String getDirname(String name) {
         String filename = ((Filedata)filedata.get(name)).getFilename();
         return filename.substring(0, filename.lastIndexOf("\\"));
     }
 
-    /**
-     * get File for formvariable name
-     * @param name: form variable
-     * @return Filedata with file
-     */
     public Filedata getFiledata(String name) {
         return (Filedata)filedata.get(name);
     }
 
-    /**
-     * get JavaObject for formvariable name
-     * @param name: form variable
-     * @return Object
-     */
     public Object getJavaObject(String name) {
         return javadata.get(name);
     }
 
-    /**
-     * @param name: parameter name
-     * @return matching value, parsed to String
-     */
     public String getStringParameter(String name) {
         return formdata.get(name)==null ? null : String.valueOf(formdata.get(name));
     }
 
-    /**
-     * @param name: parameter name
-     * @return matching value, parsed to Byte, Byte(0) if conversion has errors
-     */
     public Byte getByteParameter(String name) {
         try {
             String number = (String)getParameter(name);
@@ -466,10 +327,6 @@ public class Requesthandler {
         }
     }
 
-    /**
-     * @param name: parameter name
-     * @return matching value, parsed to Integer, Integer(0) if conversion has errors
-     */
     public Integer getIntegerParameter(String name) {
         try {
             String number = (String)getParameter(name);
@@ -481,10 +338,6 @@ public class Requesthandler {
         }
     }
 
-    /**
-     * @param name: parameter name
-     * @return matching value, parsed to Long, Long(0) if conversion has errors
-     */
     public Long getLongParameter(String name) {
         try {
             String number = (String)getParameter(name);
@@ -496,10 +349,6 @@ public class Requesthandler {
         }
     }
 
-    /**
-     * @param name: parameter name
-     * @return matching value, parsed to Float, Float(0) if conversion has errors
-     */
     public Float getFloatParameter(String name) {
         try {
             String number = (String)getParameter(name);

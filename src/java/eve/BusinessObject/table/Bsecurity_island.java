@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.ISecurity_islandsearch;
 import eve.logicentity.Security_island;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Bsecurity_island extends TableBusinessrules {
 
     public Bsecurity_island(SQLreader sqlreader) {
@@ -147,10 +145,6 @@ public abstract class Bsecurity_island extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where security_islandPK is used in a primary key
-     * @param security_islandPK: Security_island primary key
-     */
     public void cascadedeleteSecurity_island(SQLTqueue transactionqueue, ISecurity_islandPK security_islandPK) {
     }
 

@@ -1,11 +1,12 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.servlets.eveuser;
 
-import general.exception.CustomException;
+import general.exception.*;
 import data.interfaces.db.Filedata;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.IEveuser;
@@ -22,9 +23,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * @author Franky Laseure
- */
 @WebServlet(name="Eveuser_update", urlPatterns={"/eve.Eveuser_update"})
 public class Eveuser_update extends SecurityDataServlet {
    

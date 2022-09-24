@@ -1,6 +1,7 @@
 /*
  * Created on Okt 8, 2021
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 package eve.conversion.entity.def;
 
@@ -18,9 +19,6 @@ import java.sql.Time;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-/**
- * @author Franky Laseure
- */
 public class EMtradecombined_sell_default implements eveDatabaseproperties, TableMapper {
     
     public static final String SQLWhere1 = "sell_system = :tradecombined_sell.sell_system: and buy_system = :tradecombined_sell.buy_system: and evetype = :tradecombined_sell.evetype: and buy_order_id = :tradecombined_sell.buy_order_id: and sell_order_id = :tradecombined_sell.sell_order_id:";

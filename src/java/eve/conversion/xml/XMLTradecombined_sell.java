@@ -1,9 +1,7 @@
 /*
- * XMLTradecombined_sell.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 5.5.2022 8:27
- *
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
  
 package eve.conversion.xml;
@@ -24,16 +22,8 @@ import java.sql.Time;
 import java.util.Iterator;
 import org.jdom2.Element;
 
-/**
- *
- * @author Franky Laseure
- */
 public class XMLTradecombined_sell {
     
-    /**
-     * 
-     * @return all keys and fields as XML
-     */
     public static void addXML(Element PK, ITradecombined_sellPK tradecombined_sellPK) {
         PK.addContent(XMLElement.newContent("sell_system", tradecombined_sellPK.getSell_system()));
         PK.addContent(XMLElement.newContent("buy_system", tradecombined_sellPK.getBuy_system()));
@@ -42,10 +32,6 @@ public class XMLTradecombined_sell {
         PK.addContent(XMLElement.newContent("sell_order_id", tradecombined_sellPK.getSell_order_id()));
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static void addXML(Element Tradecombined_sellXML, Tradecombined_sell tradecombined_sell) {
         Element PK = XMLElement.newContent("PK", "");
         addXML(PK, tradecombined_sell.getPrimaryKey());

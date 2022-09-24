@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IStation_servicesearch;
 import eve.logicentity.Station_service;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Bstation_service extends TableBusinessrules {
 
     public Bstation_service(SQLreader sqlreader) {
@@ -145,10 +143,6 @@ public abstract class Bstation_service extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where station_servicePK is used in a primary key
-     * @param station_servicePK: Station_service primary key
-     */
     public void cascadedeleteStation_service(SQLTqueue transactionqueue, IStation_servicePK station_servicePK) {
     }
 

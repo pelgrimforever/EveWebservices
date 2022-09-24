@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IUserbpsearch;
 import eve.logicentity.Userbp;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Buserbp extends TableBusinessrules {
 
     public Buserbp(SQLreader sqlreader) {
@@ -146,10 +144,6 @@ public abstract class Buserbp extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where userbpPK is used in a primary key
-     * @param userbpPK: Userbp primary key
-     */
     public void cascadedeleteUserbp(SQLTqueue transactionqueue, IUserbpPK userbpPK) {
     }
 

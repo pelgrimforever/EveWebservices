@@ -1,5 +1,6 @@
 /*
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.restservices.materialinput;
@@ -11,6 +12,7 @@ import data.gis.shape.piPoint;
 import eve.conversion.json.*;
 import eve.entity.pk.*;
 import eve.usecases.*;
+import eve.usecases.custom.*;
 import eve.interfaces.entity.pk.*;
 import eve.interfaces.logicentity.*;
 import eve.interfaces.searchentity.IMaterialinputsearch;
@@ -41,9 +43,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-/**
- * @author Franky Laseure
- */
 @Path("rsmaterialinput_update")
 public class RSMaterialinput_update extends RS_json_login {
 

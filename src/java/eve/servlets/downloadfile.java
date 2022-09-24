@@ -1,9 +1,7 @@
 /*
- * downloadfile.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 12.6.2022 10:8
- *
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.servlets;
@@ -17,30 +15,16 @@ import javax.servlet.SingleThreadModel;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Servlet, sends file to browser as binary stream
- *
- * @author Franky Laseure
- */
  public class downloadfile extends javax.servlet.http.HttpServlet implements SingleThreadModel {
 
-    /* (non-Java-doc)
-     * @see javax.servlet.http.HttpServlet#HttpServlet()
-     */
     public downloadfile() {
             super();
     }
 
-    /* (non-Javadoc)
-     * @see javax.servlet.Servlet#destroy()
-     */
     public void destroy() {
             super.destroy();
     }
 
-    /* (non-Java-doc)
-     * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Filedata filedata = (Filedata)request.getAttribute("filedata");
         ServletOutputStream outputstream = response.getOutputStream();
@@ -50,9 +34,6 @@ import javax.servlet.http.HttpServletResponse;
         outputstream.close();
     }
 
-    /* (non-Java-doc)
-     * @see javax.servlet.http.HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }

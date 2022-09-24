@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 7.4.2021 18:56
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -16,9 +17,6 @@ import eve.entity.pk.FactionPK;
 import general.exception.DataException;
 import org.json.simple.JSONObject;
 
-/**
- * @author Franky Laseure
- */
 public class BLrace extends Brace {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data

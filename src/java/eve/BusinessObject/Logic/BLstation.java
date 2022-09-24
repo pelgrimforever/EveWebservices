@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 5.4.2021 17:46
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -22,9 +23,6 @@ import general.exception.CustomException;
 import java.sql.Date;
 import org.json.simple.JSONObject;
 
-/**
- * @author Franky Laseure
- */
 public class BLstation extends Bstation {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data

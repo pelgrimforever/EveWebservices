@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.ISyssettingssearch;
 import eve.logicentity.Syssettings;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Bsyssettings extends TableBusinessrules {
 
     public Bsyssettings(SQLreader sqlreader) {
@@ -150,10 +148,6 @@ public abstract class Bsyssettings extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where syssettingsPK is used in a primary key
-     * @param syssettingsPK: Syssettings primary key
-     */
     public void cascadedeleteSyssettings(SQLTqueue transactionqueue, ISyssettingsPK syssettingsPK) {
     }
 

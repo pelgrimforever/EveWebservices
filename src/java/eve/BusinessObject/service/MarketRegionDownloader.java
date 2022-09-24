@@ -290,17 +290,18 @@ public class MarketRegionDownloader implements Runnable {
         }
 
         private void save_evetype_and_related_data(long evetypeid) throws DBException, DataException {
-            download_and_save_evetype(evetypeid);
+            download_and_convert_evetype(evetypeid);
             add_graphic_if_not_in_database();
             add_marketgroup_if_not_in_database();
             add_typegroup_if_not_in_database();
+            blevetype.insertupdateEvetype(transactionqueue, evetype);
             save_changes_to_database(evetypeid);
         }
 
-        private void download_and_save_evetype(long evetypeid) throws DataException, DBException {
+        private void download_and_convert_evetype(long evetypeid) throws DataException, DBException {
             evetypehash.put(evetypeid, true);
             JSONObject jsonevetypedetails = Swagger.getType(evetypeid);
-            evetype = blevetype.updateEvetype(transactionqueue, jsonevetypedetails);
+            evetype = blevetype.convert2Evetype(jsonevetypedetails);
         }
 
         private void add_graphic_if_not_in_database() throws DataException, DBException {

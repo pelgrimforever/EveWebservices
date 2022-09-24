@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 18.8.2021 9:39
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -11,9 +12,6 @@ import eve.conversion.entity.EMview_stocktrade_orders;
 import general.exception.DBException;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_stocktrade_orders extends Bview_stocktrade_orders {
 //Metacoder: NO AUTHOMATIC UPDATE
 	

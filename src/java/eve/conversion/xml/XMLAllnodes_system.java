@@ -1,9 +1,7 @@
 /*
- * XMLAllnodes_system.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 5.5.2022 8:27
- *
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
  
 package eve.conversion.xml;
@@ -24,24 +22,12 @@ import java.sql.Time;
 import java.util.Iterator;
 import org.jdom2.Element;
 
-/**
- *
- * @author Franky Laseure
- */
 public class XMLAllnodes_system {
     
-    /**
-     * 
-     * @return all keys and fields as XML
-     */
     public static void addXML(Element PK, IAllnodes_systemPK allnodes_systemPK) {
         PK.addContent(XMLElement.newContent("id", allnodes_systemPK.getId()));
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static void addXML(Element Allnodes_systemXML, Allnodes_system allnodes_system) {
         Element PK = XMLElement.newContent("PK", "");
         addXML(PK, allnodes_system.getPrimaryKey());

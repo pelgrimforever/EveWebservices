@@ -72,7 +72,8 @@ public class BLevetypeTest {
             jsontypedetails.put("radius", expected_radius);
             double expected_volume = 50000;
             jsontypedetails.put("volume", expected_volume);
-            Evetype evetype = blevetype.updateEvetype(transactionqueue, jsontypedetails);
+            Evetype evetype = blevetype.convert2Evetype(jsontypedetails);
+            blevetype.insertupdateEvetype(transactionqueue, evetype);
             Assert.assertEquals(evetype.getPrimaryKey().getId(), expected_type_id);
             Assert.assertEquals(evetype.getName(), expected_name);
             Assert.assertEquals(evetype.getDescription(), expected_description);
@@ -116,7 +117,8 @@ public class BLevetypeTest {
             long expected_portion_size = 0;
             double expected_radius = 0;
             double expected_volume = 0;
-            Evetype evetype = blevetype.updateEvetype(transactionqueue, jsontypedetails);
+            Evetype evetype = blevetype.convert2Evetype(jsontypedetails);
+            blevetype.insertupdateEvetype(transactionqueue, evetype);
             Assert.assertEquals(evetype.getPrimaryKey().getId(), expected_type_id);
             Assert.assertEquals(evetype.getName(), expected_name);
             Assert.assertEquals(evetype.getDescription(), expected_description);

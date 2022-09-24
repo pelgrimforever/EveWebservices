@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 28.0.2022 15:57
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -12,9 +13,6 @@ import eve.BusinessObject.view.Bview_userbp;
 import eve.conversion.entity.EMview_userbp;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_userbp extends Bview_userbp {
 //Metacoder: NO AUTHOMATIC UPDATE
 	

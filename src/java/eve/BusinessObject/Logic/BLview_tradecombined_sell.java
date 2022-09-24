@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 27.10.2021 18:14
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -18,9 +19,6 @@ import eve.logicview.View_tradecombined_sell;
 import java.util.ArrayList;
 import org.json.simple.JSONObject;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_tradecombined_sell extends Bview_tradecombined_sell {
 //Metacoder: NO AUTHOMATIC UPDATE
 	

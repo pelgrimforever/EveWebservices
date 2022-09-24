@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 25.9.2021 14:57
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -16,9 +17,6 @@ import eve.usecases.Settings_usecases;
 import general.exception.DataException;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLusersettings extends Busersettings {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data

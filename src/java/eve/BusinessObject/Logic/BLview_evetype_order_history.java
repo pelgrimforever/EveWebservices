@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 13.11.2021 18:30
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -13,9 +14,6 @@ import eve.conversion.entity.EMview_evetype_order_history;
 import eve.interfaces.entity.pk.IEvetypePK;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_evetype_order_history extends Bview_evetype_order_history {
 //Metacoder: NO AUTHOMATIC UPDATE
 

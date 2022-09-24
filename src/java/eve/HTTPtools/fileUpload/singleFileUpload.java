@@ -1,14 +1,10 @@
 /*
- * e:Entity:.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 12.6.2022 10:8
- *
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.HTTPtools.fileUpload;
-
-//import eve.general.log.EveLog;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,15 +18,6 @@ import java.util.HashMap;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Simple File Upload class
- * Load form parameters and first file
- * all form parameters and files after first file are ignored
- * This class is replaced by Requesthandler which handles
- * all form data without restriction
- *
- * @author Franky Laseure
- */
 public class singleFileUpload {
 
     private HashMap formdata = new HashMap();
@@ -52,14 +39,8 @@ public class singleFileUpload {
     private String filename = "";
     private String filecontent = null;
     private String[] header_line = new String[3];
-//    private EveLog log;
 
-    /**
-     * Constructor
-     * analyse HttpServletRequest and set all parameters and first file
-     */
     public singleFileUpload(HttpServletRequest request) throws IOException {
-    //	EveLog log = new EveLog(this);
         //Get properties from request header
         accept = request.getHeader("accept");
         referer = request.getHeader("referer");
@@ -143,19 +124,10 @@ public class singleFileUpload {
         //}
     }
 
-    /**
-     * saves file in given directory
-     * @param dir: directory
-     * @return true if successfull
-     */
     public boolean saveFile(String dir) throws IOException {
         return saveFileAs(dir, this.getFilename());
     }
 
-    /**
-     * saves file in given directory with new filename
-     * @return true if successfull
-     */
     public boolean saveFileAs(String dir, String filename) throws IOException {
         boolean result = false;
         File destination = new File(dir);
@@ -175,10 +147,6 @@ public class singleFileUpload {
         return result;
     }
 
-    /**
-     * parameter value
-     * @return Parameter value as String
-     */
     public String getParameter(String parameter) {
         String returnvalue = (String)formdata.get(parameter);
         if(returnvalue!=null)
@@ -186,155 +154,78 @@ public class singleFileUpload {
         return returnvalue;
     }
 
-    /**
-     * accept header value
-     * @return accept header value
-     */
     public String getaccept() {
         return accept;
     }
 
-    /**
-     * referer header value
-     * @return referer header value
-     */
     public String getreferer() {
         return referer;
     }
 
-    /**
-     * accept language header value
-     * @return accept language header value
-     */
     public String getaccept_language() {
         return accept_language;
     }
 
-    /**
-     * content type header value
-     * @return content type header value
-     */
     public String getcontent_type() {
         return content_type;
     }
 
-    /**
-     * accept encoding header value
-     * @return accept encoding header value
-     */
     public String getaccept_encoding() {
         return accept_encoding;
     }
 
-    /**
-     * user agent header value
-     * @return user agent header value
-     */
     public String getuser_agent() {
         return user_agent;
     }
 
-    /**
-     * host header value
-     * @return host header value
-     */
     public String gethost() {
         return host;
     }
 
-    /**
-     * content length header value
-     * @return content length header value
-     */
     public String getcontent_length() {
         return content_length;
     }
 
-    /**
-     * connection header value
-     * @return connection header value
-     */
     public String getconnection() {
         return connection;
     }
 
-    /**
-     * cache control header value
-     * @return cache control header value
-     */
     public String getcache_control() {
         return cache_control;
     }
 
-    /**
-     * context path header value
-     * @return context path header value
-     */
     public String getContextPath() {
         return ContextPath;
     }
 
-    /**
-     * boundary header value
-     * @return boundary header value
-     */
     public String getboundary() {
         return boundary;
     }
 
-    /**
-     * Content Disposition header value
-     * @return Content Disposition header value
-     */
     public String getContent_Disposition() {
         return Content_Disposition;
     }
 
-    /**
-     * filename
-     * @return filename
-     */
     public String getname() {
         return name;
     }
 
-    /**
-     * headerline header value
-     * @param line: line number
-     * @return headerline header value
-     */
     public String getHeader_Line(int line) {
         return header_line[line];
     }
 
-    /**
-     * file content header value
-     * @return file content header value
-     */
     public String getfilecontent() {
         return filecontent;
     }
 
-    /**
-     * file path
-     * @return file path
-     */
     public String getfullFilename() {
         return filename;
     }
 
-    /**
-     * filename (no path)
-     * @return filename
-     */
     public String getFilename() {
         return filename.substring(filename.lastIndexOf("\\") + 1);
     }
 
-    /**
-     * file path
-     * @return file path
-     */
     public String getDirname() {
         return filename.substring(0, filename.lastIndexOf("\\"));
     }

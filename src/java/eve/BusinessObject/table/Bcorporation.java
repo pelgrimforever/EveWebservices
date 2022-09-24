@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.ICorporationsearch;
 import eve.logicentity.Corporation;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Bcorporation extends TableBusinessrules {
 
     public Bcorporation(SQLreader sqlreader) {
@@ -162,10 +160,6 @@ public abstract class Bcorporation extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where corporationPK is used in a primary key
-     * @param corporationPK: Corporation primary key
-     */
     public void cascadedeleteCorporation(SQLTqueue transactionqueue, ICorporationPK corporationPK) {
     }
 

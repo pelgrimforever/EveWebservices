@@ -1,9 +1,7 @@
 /*
- * XMLJson_orders.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 5.5.2022 8:27
- *
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
  
 package eve.conversion.xml;
@@ -24,24 +22,12 @@ import java.sql.Time;
 import java.util.Iterator;
 import org.jdom2.Element;
 
-/**
- *
- * @author Franky Laseure
- */
 public class XMLJson_orders {
     
-    /**
-     * 
-     * @return all keys and fields as XML
-     */
     public static void addXML(Element PK, IJson_ordersPK json_ordersPK) {
         PK.addContent(XMLElement.newContent("id", json_ordersPK.getId()));
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static void addXML(Element Json_ordersXML, Json_orders json_orders) {
         Element PK = XMLElement.newContent("PK", "");
         addXML(PK, json_orders.getPrimaryKey());

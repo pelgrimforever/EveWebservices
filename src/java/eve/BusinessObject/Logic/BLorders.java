@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 20.4.2021 16:1
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -25,9 +26,6 @@ import eve.interfaces.entity.pk.ISystemPK;
 import java.util.ArrayList;
 import org.json.simple.JSONObject;
 
-/**
- * @author Franky Laseure
- */
 public class BLorders extends Borders {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data

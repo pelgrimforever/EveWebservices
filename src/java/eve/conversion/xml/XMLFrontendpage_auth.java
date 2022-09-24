@@ -1,9 +1,7 @@
 /*
- * XMLFrontendpage_auth.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 5.5.2022 8:27
- *
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
  
 package eve.conversion.xml;
@@ -24,25 +22,13 @@ import java.sql.Time;
 import java.util.Iterator;
 import org.jdom2.Element;
 
-/**
- *
- * @author Franky Laseure
- */
 public class XMLFrontendpage_auth {
     
-    /**
-     * 
-     * @return all keys and fields as XML
-     */
     public static void addXML(Element PK, IFrontendpage_authPK frontendpage_authPK) {
         PK.addContent(XMLElement.newContent("username", frontendpage_authPK.getUsername()));
         PK.addContent(XMLElement.newContent("frontendpage", frontendpage_authPK.getFrontendpage()));
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static void addXML(Element Frontendpage_authXML, Frontendpage_auth frontendpage_auth) {
         Element PK = XMLElement.newContent("PK", "");
         addXML(PK, frontendpage_auth.getPrimaryKey());

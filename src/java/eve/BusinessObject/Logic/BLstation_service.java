@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 8.4.2021 13:20
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -15,9 +16,6 @@ import eve.entity.pk.StationPK;
 import eve.entity.pk.Station_servicePK;
 import general.exception.DataException;
 
-/**
- * @author Franky Laseure
- */
 public class BLstation_service extends Bstation_service {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = false; //set this to true if only a loggin account has access to this data

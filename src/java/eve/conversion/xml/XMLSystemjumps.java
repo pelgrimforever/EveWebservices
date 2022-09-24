@@ -1,9 +1,7 @@
 /*
- * XMLSystemjumps.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 5.5.2022 8:27
- *
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
  
 package eve.conversion.xml;
@@ -24,25 +22,13 @@ import java.sql.Time;
 import java.util.Iterator;
 import org.jdom2.Element;
 
-/**
- *
- * @author Franky Laseure
- */
 public class XMLSystemjumps {
     
-    /**
-     * 
-     * @return all keys and fields as XML
-     */
     public static void addXML(Element PK, ISystemjumpsPK systemjumpsPK) {
         PK.addContent(XMLElement.newContent("system_start", systemjumpsPK.getSystem_start()));
         PK.addContent(XMLElement.newContent("system_end", systemjumpsPK.getSystem_end()));
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static void addXML(Element SystemjumpsXML, Systemjumps systemjumps) {
         Element PK = XMLElement.newContent("PK", "");
         addXML(PK, systemjumps.getPrimaryKey());

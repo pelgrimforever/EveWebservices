@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 22.1.2022 8:34
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -18,9 +19,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-/**
- * @author Franky Laseure
- */
 public class BLview_bp_profitperregion extends Bview_bp_profitperregion {
 //Metacoder: NO AUTHOMATIC UPDATE
 	

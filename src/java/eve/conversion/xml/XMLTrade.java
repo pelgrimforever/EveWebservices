@@ -1,9 +1,7 @@
 /*
- * XMLTrade.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 5.5.2022 8:27
- *
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
  
 package eve.conversion.xml;
@@ -24,25 +22,13 @@ import java.sql.Time;
 import java.util.Iterator;
 import org.jdom2.Element;
 
-/**
- *
- * @author Franky Laseure
- */
 public class XMLTrade {
     
-    /**
-     * 
-     * @return all keys and fields as XML
-     */
     public static void addXML(Element PK, ITradePK tradePK) {
         PK.addContent(XMLElement.newContent("sell_order_id", tradePK.getSell_order_id()));
         PK.addContent(XMLElement.newContent("buy_order_id", tradePK.getBuy_order_id()));
     }
 
-    /**
-     * 
-     * @return all keys and fields in a JSONObject
-     */
     public static void addXML(Element TradeXML, Trade trade) {
         Element PK = XMLElement.newContent("PK", "");
         addXML(PK, trade.getPrimaryKey());

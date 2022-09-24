@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.table;
@@ -17,9 +18,6 @@ import eve.interfaces.entity.pk.*;
 import eve.interfaces.searchentity.IAllnodes_systemsearch;
 import eve.logicentity.Allnodes_system;
 
-/**
- * @author Franky Laseure
- */
 public abstract class Ballnodes_system extends TableBusinessrules {
 
     public Ballnodes_system(SQLreader sqlreader) {
@@ -144,10 +142,6 @@ public abstract class Ballnodes_system extends TableBusinessrules {
         }
     }
         
-    /**
-     * delete all records in tables where allnodes_systemPK is used in a primary key
-     * @param allnodes_systemPK: Allnodes_system primary key
-     */
     public void cascadedeleteAllnodes_system(SQLTqueue transactionqueue, IAllnodes_systemPK allnodes_systemPK) {
     }
 

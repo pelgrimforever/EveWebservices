@@ -1,19 +1,10 @@
 /*
- * rawData.java
- *
  * Created on March 26, 2007, 5:44 PM
- * Generated on 12.6.2022 10:8
- *
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.HTTPtools.fileUpload;
-
-/**
- * Test class
- * put all TttpServletRequest data in html format
- *
- * @author Franky Laseure
- */
 
 import java.io.IOException;
 
@@ -24,19 +15,10 @@ public class rawData {
 
     private HttpServletRequest thisRequest= null;
 
-    /**
-     * Constructor
-     * set servlet request parameter
-     * @param request: HttpServletRequest instance
-     */
     public rawData(HttpServletRequest request) {
         thisRequest = request;
     }
 
-    /**
-     * output request inputstream to html
-     * @return html String in table format
-     */
     public String getData2HTML() throws IOException {
         String result = "<table>";
         //Get all lines and put them to html

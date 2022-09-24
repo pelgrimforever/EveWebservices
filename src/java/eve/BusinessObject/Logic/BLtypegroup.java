@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 5.4.2021 17:46
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -19,9 +20,6 @@ import eve.interfaces.entity.pk.ICategoryPK;
 import general.exception.CustomException;
 import org.json.simple.JSONObject;
 
-/**
- * @author Franky Laseure
- */
 public class BLtypegroup extends Btypegroup {
 //Metacoder: NO AUTHOMATIC UPDATE
 

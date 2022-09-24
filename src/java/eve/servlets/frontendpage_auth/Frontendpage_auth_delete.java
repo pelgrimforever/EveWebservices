@@ -1,6 +1,7 @@
 /*
  * Created on Dec 23, 2012, 7:24 PM
- * Generated on 17.6.2022 13:4
+ * Generated on 23.8.2022 14:38
+ * @author Franky Laseure
  */
 
 package eve.servlets.frontendpage_auth;
@@ -22,9 +23,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * @author Franky Laseure
- */
 @WebServlet(name="Frontendpage_auth_delete", urlPatterns={"/eve.Frontendpage_auth_delete"})
 public class Frontendpage_auth_delete extends SecurityDataServlet {
    

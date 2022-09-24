@@ -391,7 +391,8 @@ public class ContractRegionDownloader implements Runnable {
 
     private void process_evetype_statement(long type_statement) throws DataException, DBException {
         JSONObject jsonevetypedetails = Swagger.getType(type_statement);
-        evetype = blevetype.updateEvetype(transactionqueue, jsonevetypedetails);
+        evetype = blevetype.convert2Evetype(jsonevetypedetails);
+        blevetype.insertupdateEvetype(transactionqueue, evetype);
         graphicPK = evetype.getGraphicPK();
         boolean graphic_not_in_database = !blgraphic.getGraphicExists(graphicPK);
         if(graphicPK!=null && graphic_not_in_database)

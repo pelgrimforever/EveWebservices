@@ -1,6 +1,7 @@
 /*
  * Created on March 26, 2007, 5:44 PM
  * Generated on 17.0.2022 13:37
+ * @author Franky Laseure
  */
 
 package eve.BusinessObject.Logic;
@@ -18,9 +19,6 @@ import general.exception.DataException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-/**
- * @author Franky Laseure
- */
 public class BLmaterialinput extends Bmaterialinput {
 //Metacoder: NO AUTHOMATIC UPDATE
     private boolean isprivatetable = true; //set this to true if only a loggin account has access to this data
