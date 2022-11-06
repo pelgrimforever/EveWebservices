@@ -231,7 +231,7 @@ public class RouteService {
 
         private void check_all_connections_startside(Systemdata activesystem) {
             for(Systemdata connection: activesystem.getConnectedsystems()) {
-                startsideparams.highsec_connection_found = connection.isHighsec();
+                startsideparams.highsec_connection_found |= connection.isAvailable(STARTROUTE) && connection.isHighsec();
                 check_connections_startside(activesystem, connection);
                 if(is_route_complete()) break;
             }
@@ -239,7 +239,7 @@ public class RouteService {
 
         private void check_all_connections_endside(Systemdata activesystem) {
             for(Systemdata connection: activesystem.getConnectedsystems()) {
-                endsideparams.highsec_connection_found = connection.isHighsec();
+                endsideparams.highsec_connection_found |= connection.isAvailable(ENDROUTE) && connection.isHighsec();
                 check_connections_endside(activesystem, connection);
                 if(is_route_complete()) break;
             }
