@@ -111,6 +111,7 @@ public class RouteService {
         private long startpoint;
         private long endpoint;
         private ArrayList<Long> avoidlist;
+        private boolean findsaferoute = true;
         private Route_parameters startsideparams = new Route_parameters();
         private Route_parameters endsideparams = new Route_parameters();
         private Systemdata tempsystemdata;
@@ -144,14 +145,14 @@ public class RouteService {
                 activesystems.addAll(checkedsystems);
             }
 
-            public void process_new_connections() {
+            public void process_new_connections(boolean findsaferoute) {
                 checkedsystems.addAll(new_connections);
                 activesystems.clear();
-                if(!is_route_complete())
+                if(!is_route_complete()) {
                     activesystems.addAll(new_connections);
-                    if(highsec_connection_found) {
+                    if(findsaferoute && highsec_connection_found)
                         activesystems.removeIf(s -> !s.isHighsec());
-                    }
+                }
                 new_connections.clear();            
             }
         }
@@ -167,6 +168,7 @@ public class RouteService {
             this.startpoint = startpoint;
             this.endpoint = endpoint;
             this.avoidlist = avoidlist;
+            this.findsaferoute = true;
             initialize();
             //isolated clusters of systems exists in eve
             //so we check if there are still open connection in stead of looking if all systems are checked
@@ -204,7 +206,7 @@ public class RouteService {
                 check_all_highsecconnections_startside(activesystem);
                 if(is_route_complete()) break;
             }
-            startsideparams.process_new_connections();
+            startsideparams.process_new_connections(findsaferoute);
         }
 
         private void explore_active_highsecconnections_endside() {
@@ -212,7 +214,7 @@ public class RouteService {
                 check_all_highsecconnections_endside(activesystem);
                 if(is_route_complete()) break;
             }
-            endsideparams.process_new_connections();
+            endsideparams.process_new_connections(findsaferoute);
         }
 
         private void check_all_highsecconnections_startside(Systemdata activesystem) {
@@ -249,6 +251,7 @@ public class RouteService {
             this.startpoint = startpoint;
             this.endpoint = endpoint;
             this.avoidlist = avoidlist;
+            this.findsaferoute = false;
             initialize();
             while(has_unexplored_connections())
                 explore_activeconnections();
@@ -272,7 +275,7 @@ public class RouteService {
                 check_all_connections_startside(activesystem);
                 if(is_route_complete()) break;
             }
-            startsideparams.process_new_connections();
+            startsideparams.process_new_connections(findsaferoute);
         }
 
         private void explore_activeconnections_endside() {
@@ -280,7 +283,7 @@ public class RouteService {
                 check_all_connections_endside(activesystem);
                 if(is_route_complete()) break;
             }
-            endsideparams.process_new_connections();
+            endsideparams.process_new_connections(findsaferoute);
         }
 
         private void initialize() {
